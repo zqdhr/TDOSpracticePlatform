@@ -1,22 +1,36 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import index from '../views/index.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'index',
+    component: index,
+    children:[
+      {
+        path: '/',
+        name: '',
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/statisticalAnalysis.vue')
+      },
+      {
+        path: '/personnelManage',
+        name: 'personnelManage',
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/personnelManage.vue')
+      }
+    ]
   },
   {
     path: '/about',
     name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+  },
+  {
+    path: '/login',//页面登录
+    name: 'login',
+    component: () => import(/* webpackChunkName: "about" */ '../views/login.vue')
   }
 ]
 
@@ -25,4 +39,20 @@ const router = new VueRouter({
   routes
 })
 
+
+router.beforeEach((to, from, next) => {
+  //对于登录页面不拦截
+  if (to.path === '/login') {
+    // 接下来的函数
+    next();
+  } else {
+    //var会将作用域放大，let只是局部的作用域
+    let username = sessionStorage.getItem('p_p-userName');
+    if (username === null || username === '') {
+      next('/login');
+    } else {
+      next();
+    }
+  }
+});
 export default router

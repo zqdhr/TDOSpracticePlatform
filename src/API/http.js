@@ -12,6 +12,11 @@ const http = axios.create({
 //添加请求拦截器
 http.interceptors.request.use(function (config) {
 	//console.log(config)
+	/*
+	if (localStorage.getItem('Authorer')) {
+		config.headers.Authorization = localStorage.getItem('Authorer');
+	  }
+	  */
 	//对响应数据做点什么\
 	return config;
 	

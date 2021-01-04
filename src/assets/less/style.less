@@ -1,7 +1,36 @@
 video{touch-action: none;}
+
+@fontColor:#010101;
+@fontColor1:#666666;
+@basecolor:#006BFF;
+@hnavcolor:#9b9b9b;
+@tabcolor:#333;
 .borderRadius(@param1,@param2,@param3,@param4){
     -webkit-border-radius:@param1 @param2 @param3 @param4;
     -moz-border-radius:@param1 @param2 @param3 @param4;
     -o-border-radius:@param1 @param2 @param3 @param4;
     border-radius:@param1 @param2 @param3 @param4;
+}
+
+.boxsizing{
+    -moz-box-sizing: border-box;  
+    -webkit-box-sizing: border-box; 
+    -o-box-sizing: border-box; 
+    -ms-box-sizing: border-box; 
+    box-sizing: border-box; 
+}
+
+.container{width:1560px; margin: 0 auto;}
+
+.pagewrap{width: 100%;height: 100%;;}
+.main{width:100%;height: 100%; padding-top: 75px;}
+
+
+@media screen and(max-width:1600px){
+  .container{width:90%;} 
+  .PP_header .container{width:100%; }
+}
+
+@media screen and(max-width:1200px){
+  .main{padding-top: 0px; height: auto;}
 }
