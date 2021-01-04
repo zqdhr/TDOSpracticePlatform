@@ -1,5 +1,5 @@
 <template>
-    <div class="pageWrap">
+    <div class="pageWrap wrap-login">
         <div class="loginMain">
             <div class="d-col"><label>账号</label><input placeholder="请输入账号" v-model="userName"/></div>
             <div class="d-col"><label>密码</label><input placeholder="请输入密码" v-model="password"/></div>
@@ -15,10 +15,25 @@ export default {
         return{
            userName:'',//用户名
            password:'',//密码
-            bodyBgImage: 'url(' + require('../../assets/img/login_bg.png') + ')'
+            bodyBgImage: 'url(' + require('../assets/img/login_bg.png') + ')'
         }
     },
-    methods:{
+
+    mounted(){
+        console.log('ok')
+    
+        this.$nextTick(()=>{
+           this.setBodyBackGround()
+        })
+         
+         
+    },
+     beforeDestroy(){
+        // 离开页面的时候清除
+            this.clearBodyBackGround()
+            
+    },
+   methods:{
         pp_login(){
             let that = this;
             if(that.userName ==''){
@@ -34,26 +49,21 @@ export default {
         },
          // 添加body图片
         setBodyBackGround () {
+            
             document.body.style.backgroundSize = '100%'
             document.body.style.backgroundImage = this.bodyBgImage
-            console.log(123)
+            
         },
             // 清除背景图
         clearBodyBackGround () {
            document.body.style.backgroundImage = ''
         }
-    },
-    created(){
-         this.setBodyBackGround()
-    },
-     beforeDestroy(){
-        // 离开页面的时候清除
-            this.clearBodyBackGround()
     }
 }
 </script>
 <style lang="less" scoped>
-.loginMain{width:500px;margin: 0 auto;}
+.wrap-login{display: table;}
+.loginMain{ display: table-cell; vertical-align: middle;}
 .d-col{padding: 10px 0;}
 .btnlogin{cursor: pointer; padding:8px 5px; background:@basecolor; color:#fff;}
 </style>
