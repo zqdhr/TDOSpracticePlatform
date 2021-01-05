@@ -182,6 +182,13 @@ export default {
       }
     }
   }
+   @media screen and (max-width: 1240px) {
+    .nav_ul {
+      > li {
+        padding: 0 10px;
+      }
+    }
+  }
 }
 
 @media screen and (max-width: 1200px) {

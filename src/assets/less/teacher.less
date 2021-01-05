@@ -1,9 +1,38 @@
 .pageTab{
     padding:20px 0;
     .mess{
-        font-size: 16px;color: @fontColor;
+        font-size: 16px;color: @fontColor; padding-top:15px;
         span{color: @basecolor;}
         .nosubmit{width:24px;height:24px;display: inline-block; position: relative; vertical-align: middle;
         background: url(../img/icon_job.png) center no-repeat; cursor: pointer;}
     }
+    .fl{
+       .sel-box{margin-right: 20px;display: inline-block; vertical-align: middle; font-size: 16px; width: 180px;}
+    }
+    .fr{
+        .abtn{margin-right: 20px;}
+        .d-serach{width:280px;height:38px;border:1px solid @basecolor; display: inline-block; vertical-align: middle;.borderRadius(5px,5px,5px,5px);
+        padding-right: 48px; padding-left: 20px; position: relative;}
+        input{background: 0 none; height: 38px;line-height: 38px; font-size:16px;}
+        .searchBtn{width:48px;height: 48px;display: block; position: absolute;right:0px;top:0px;
+        background: url(../img/icon_search.png) center no-repeat;}
+        
+    }
+}
+.tea_list{
+    li{background:#fff; padding:20px 0;.borderRadius(5px,5px,5px,5px);font-size: 0px; margin-bottom: 20px;}
+    li:last-child{margin-bottom: 0px;}
+    li>div{font-size: 16px; color:@fontColor;}
+    .d1,.d2,.d3,.d4,.d5{display: inline-block; vertical-align: middle;}
+    .d20{width:20%}
+    .d22{width:22%}
+    .d30{width:30%}
+    .d15{width:15%}
+    .d13{width:13%}
+    .d10{width:10%}
+    .d28{width:28%}
+    .d14{width:14%}
+    .cell{margin: 0 15px; text-align: center;}
+    .pnum{font-size:50px; color:@fontColor1;}
+    .btn_py{.borderRadius(20px,20px,20px,20px)}
 }
