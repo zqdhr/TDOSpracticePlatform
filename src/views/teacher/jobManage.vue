@@ -8,7 +8,9 @@
                 </div>
                 <div class="mess">
                     当前选择XXXX班级，共有<span>60</span>名学员，已提交<span>45</span>份，还剩<span>15</span>份未提交
-                    <div class="nosubmit"></div>
+                    <el-tooltip class="item" effect="light" :content="userList" placement="right-start">
+                       <a class="nosubmit"></a>
+                    </el-tooltip>
                 </div>
             </div>
         </div>
@@ -18,7 +20,7 @@
 export default {
     data(){
       return{
-
+        userList:'张三，李四，王龙，李明'
       }
     }
 }
