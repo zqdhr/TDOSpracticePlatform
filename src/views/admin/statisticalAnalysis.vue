@@ -1,5 +1,5 @@
 <template>
-    <div class="main boxsizing">
+    <div class="pp_main boxsizing">
 
         <div class="container statistics-container">
            <div class="sta-box clearfix">

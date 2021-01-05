@@ -1,11 +1,34 @@
 <template>
     <div class="pageWrap wrap-login">
         <div class="loginMain">
-            <div class="d-col"><label>账号</label><input placeholder="请输入账号" v-model="userName"/></div>
-            <div class="d-col"><label>密码</label><input placeholder="请输入密码" v-model="password"/></div>
-            <div>
-                <a class="btnlogin" @click="pp_login">登陆</a>
+            <div class="lo-form">
+                <img src="../assets/img/login_form.png"/>
+                <div class="logoin-info">
+                    <div class="tab-cell">
+                        <div class="icon">
+                            <img src="../assets/img/login_icon.png"/>
+                        </div>
+                        <div class="login-from">
+                            <h3 class="htitle">欢迎登陆实链通</h3>
+                            <div class="din din-user">
+                                <input placeholder="请输入账号" v-model="userName" autocomplete="off"/>
+                            </div>
+                            <div class="din din-paw">
+                                <input type="password" placeholder="请输入密码" v-model="password" autocomplete="off"/>
+                            </div>
+                             <p class="p-forget">
+                                <router-link to="">忘记密码？</router-link>
+                            </p>
+                            <div class="btnbox">
+                                <a class="pointer btnlogin"  @click="pp_login">登录</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="logo"></div>
+                </div>
             </div>
+         
+            
         </div>
     </div>
 </template>
@@ -20,8 +43,6 @@ export default {
     },
 
     mounted(){
-        console.log('ok')
-    
         this.$nextTick(()=>{
            this.setBodyBackGround()
         })
@@ -42,16 +63,33 @@ export default {
             if(that.password ==''){
                 return  that.$toast('请输入密码',2000)
             }
-
+            
             window.sessionStorage.setItem('p_p-userName',that.userName)
-            window.sessionStorage.setItem('p_p-password',that.password)
-            that.$router.push({path:'/'})
+            if(that.userName == 'admin'){
+                //0,1 2学生，教师，管理员 
+                window.sessionStorage.setItem('p_p-authority',2)
+                that.$router.push({path:'/'})
+            }
+            if(that.userName == 'teacher'){
+                //0,1 2学生，教师，管理员 
+                window.sessionStorage.setItem('p_p-authority',1)
+                that.$router.push({path:'/teacher'})
+            }
+            if(that.userName == 'student'){
+                //0,1 2学生，教师，管理员 
+                window.sessionStorage.setItem('p_p-authority',0)
+            }
+
+            
+            //window.sessionStorage.setItem('p_p-password',that.password)
+            
         },
          // 添加body图片
         setBodyBackGround () {
             
-            document.body.style.backgroundSize = '100%'
+          
             document.body.style.backgroundImage = this.bodyBgImage
+           
             
         },
             // 清除背景图
@@ -62,8 +100,37 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.wrap-login{display: table;}
-.loginMain{ display: table-cell; vertical-align: middle;}
+.wrap-login{display: table;width:100%;height:100%;}
+.loginMain{ display: table-cell; vertical-align: middle;padding:50px 0}
 .d-col{padding: 10px 0;}
-.btnlogin{cursor: pointer; padding:8px 5px; background:@basecolor; color:#fff;}
+
+
+.lo-form{
+    width: 1560px; margin: 0 auto; position: relative;
+    img{width:100%;}
+    .logoin-info{position:absolute;width:100%;height:100%;left:0px;top:0px;display: table;}
+    .tab-cell{
+        display: table-cell; vertical-align:middle;text-align:center;
+        .icon{width:40%;display: inline-block; vertical-align:middle; margin: 0 50px;}
+    
+    }
+    .login-from{display: inline-block; vertical-align: middle; text-align: center;margin: 0 50px;}
+    .htitle{font-size:40px;color: @fontColor2; padding-bottom: 40px;}
+    .din{width:248px;border-bottom: 1px solid #666666; margin-top: 15px;}
+    input{width:100%;font-size: 16px; height:40px;line-height:40px;}
+    .din-user{background: url(../assets/img/icon_user.png) 5px center no-repeat; padding-left: 34px;}
+    .din-paw{background: url(../assets/img/icon_paw.png) 5px center no-repeat; padding-left: 34px;}
+    .p-forget{text-align: right; width:282px; padding: 8px 0;}
+    .router-link-exact-active{color:@tabcolor;font-size:16px;}
+    .router-link-exact-active:hover{color:@basecolor;}
+    .btnbox{padding: 30px 0;}
+    .btnlogin{width:324px;height:68px; display: block; margin: 0 auto;line-height: 68px;.borderRadius(34px,34px,34px,34px);
+    font-size:24px;color:#fff;
+    .gradientlr(#6AB8FC,#0B69F7)
+    }
+    .logo{width:50px;height: 50px;position: absolute; left:160px;top:50px;background: @basecolor;}
+}
+@media screen and (max-width:1600px) {
+    .lo-form{width:80%}
+}
 </style>

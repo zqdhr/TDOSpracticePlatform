@@ -25,3 +25,51 @@
    .data-2{font-size:48px;}
    .data-1,.data-2{color:#fff; padding:0 40px}
 }
+
+.pageTab{
+    height:80px;
+    .fl{padding-top: 20px;}
+    .sel-box{margin-right: 20px;display: inline-block; vertical-align: middle; font-size: 16px;}
+    .fr{
+        padding-top:20px;
+        .abtn{margin-right: 20px;}
+        .d-serach{width:280px;height:38px;border:1px solid @basecolor; display: inline-block; vertical-align: middle;.borderRadius(5px,5px,5px,5px);
+        padding-right: 48px; padding-left: 20px; position: relative;}
+        input{background: 0 none; height: 38px;line-height: 38px; font-size:16px;}
+        .searchBtn{width:48px;height: 48px;display: block; position: absolute;right:0px;top:0px;
+        background: url(../img/icon_search.png) center no-repeat;}
+        
+    }
+}
+.container-userList{padding-bottom: 50px;}
+.tablex_box{
+  background:#fff;.borderRadius(5px,5px,5px,5px); overflow: hidden;
+   .atab-btn{color:@basecolor;}
+}
+.list_box{background:0 none; overflow: hidden;
+.l_box{margin-left: -10px; margin-right: -10px;}
+}
+.default_List{
+    >li{width:16.666%;display: inline-block; margin-bottom: 20px;.box-shadow( 0px 3px 10px 0px rgba(0, 0, 0, 0.1));}
+   .p_id{font-size: 18px;color:@tabcolor; text-align:center;}
+   .d-icon{width:80px;height: 80px;background: url(../../assets/img/icon_vmachine.png) center no-repeat; margin: 0 auto 20px auto;}
+   .btnbox{text-align: center; padding-top: 20px;}
+   .info-box{background:#fff; margin: 0 10px; padding: 20px 0;.borderRadius(5px,5px,5px,5px)}
+   .machbtn{
+       background:@machbtncolor;width:120px; 
+       span{background: url(../../assets/img/icon_play.png)left center no-repeat; padding-left:20px;}
+    } 
+}
+
+@media screen and (max-width:1470px){
+    .default_List{
+        .p_id{font-size: 16px;}
+    }
+}
+
+@media screen and (max-width:1470px){
+    .default_List{
+       >li{width:20%} 
+       .p_id{font-size: 16px;}
+    }
+}

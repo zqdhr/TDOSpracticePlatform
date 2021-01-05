@@ -1,24 +1,45 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import index from '../views/index.vue'
+const originalPush = VueRouter.prototype.push
+   VueRouter.prototype.push = function push(location) {
+   return originalPush.call(this, location).catch(err => err)
+}
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'index',
+   
     component: index,
     children:[
       {
         path: '/',
-        name: '',
+        name: 'statisticalAnalysis',//统计分析
         component: () => import(/* webpackChunkName: "about" */ '../views/admin/statisticalAnalysis.vue')
       },
       {
-        path: '/personnelManage',
+        path: '/personnelManage',//管理员端人员管理
         name: 'personnelManage',
         component: () => import(/* webpackChunkName: "about" */ '../views/admin/personnelManage.vue')
+      },
+      {
+        path: '/experimentManage',//运行实验管理
+        name: 'experimentManage',
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/experimentManage.vue')
+      }
+      
+    ]
+  },
+  {
+    path:'/teacher',
+    component: index,
+    children:[
+      {
+        path: '/jobManage',//教师端作业管理
+        name: 'jobManage',
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/jobManage.vue')
       }
     ]
   },
@@ -36,7 +57,7 @@ const routes = [
 
 const router = new VueRouter({
   //mode: 'history',
-  routes
+  routes,
 })
 
 
