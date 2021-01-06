@@ -63,8 +63,9 @@ export default {
       that.$store.commit("updateNavindex", num);
       let tmp = that.menus;
       if (!item.children) {
+    
         that.$router.push({ path: item.path }).catch((err) => {
-          console.log("输出报错", err);
+          console.log( err);
         });
       }
     },
@@ -72,10 +73,10 @@ export default {
     logOut(){
       let that = this;
       window.sessionStorage.removeItem('p_p-userName')
-      window.sessionStorage.removeItem('p_p-authority')
+      window.sessionStorage.removeItem('p_p-authority')   
       that.$store.commit("updateNavindex", 0);
       that.$router.push({ path:'/login'}).catch((err) => {
-        console.log("输出报错", err);
+        console.log(err);
       });
     }
   },

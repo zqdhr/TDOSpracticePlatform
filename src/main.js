@@ -6,8 +6,12 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/less/common.less'
 import toastRegistry from './components/toast/index'
+
+import Base64 from './util/base64.js' 
 Vue.use(ElementUI);
 Vue.use(toastRegistry)
+
+Vue.prototype.$Base64 = Base64;
 Vue.config.productionTip = false
 
 new Vue({

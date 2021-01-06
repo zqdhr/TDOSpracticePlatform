@@ -33,14 +33,42 @@ const routes = [
     ]
   },
   {
-    path:'/teacher',
+    path:'/teacher',//教师端
     component: index,
     children:[
       {
-        path: '/jobManage',//教师端作业管理
-        name: 'jobManage',
-        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/jobManage.vue')
+        path: '/',//开课管理
+        name: 'newCourseManagement',
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/newCourseManagement.vue')
+      },
+      {
+        path: '/jobManagement',//作业管理
+        name: 'jobManagement',
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/jobManagement.vue')
+      },
+      {
+        path: '/experimentalReport',//实验报告
+        name: 'experimentalReport',
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/experimentalReport.vue')
+      },
+      {
+        path: '/courseManagement',//课程管理
+        name: 'courseManagement',
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/courseManagement.vue')
+      },
+      {
+        path: '/lessonPreparationManagement',//备课管理
+        name: 'lessonPreparationManagement',
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/lessonPreparationManagement.vue'),
+       
+
+      },
+      {  
+        path: '/couseDetail',//备课管理-课程详情
+        name: 'couseDetail',
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/lp_courseDetail.vue'),
       }
+     
     ]
   },
   {

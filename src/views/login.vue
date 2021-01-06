@@ -118,8 +118,8 @@ export default {
     .htitle{font-size:40px;color: @fontColor2; padding-bottom: 40px;}
     .din{width:248px;border-bottom: 1px solid #666666; margin-top: 15px;}
     input{width:100%;font-size: 16px; height:40px;line-height:40px;}
-    .din-user{background: url(../assets/img/icon_user.png) 5px center no-repeat; padding-left: 34px;}
-    .din-paw{background: url(../assets/img/icon_paw.png) 5px center no-repeat; padding-left: 34px;}
+    .din-user{background: url(../assets/img/icon_user.png) 5px center no-repeat; padding-left:40px;}
+    .din-paw{background: url(../assets/img/icon_paw.png) 5px center no-repeat; padding-left:40px;}
     .p-forget{text-align: right; width:282px; padding: 8px 0;}
     .router-link-exact-active{color:@tabcolor;font-size:16px;}
     .router-link-exact-active:hover{color:@basecolor;}

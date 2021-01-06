@@ -25,11 +25,11 @@ export default new Vuex.Store({
       { text: "人员管理", path: "/personnelManage" },
     ],
     tea_menus: [
-      { text: "开课管理", path: "/" },
-      { text: "备课管理", path: "" },
-      { text: "作业管理", path: "/jobManage"},
-      { text: "实验报告管理", path: ""},
-      { text: "课堂管理", path: "" },
+      { text: "开课管理", path: "/teacher" },
+      { text: "备课管理", path: "/lessonPreparationManagement" },
+      { text: "作业管理", path: "/jobManagement"},
+      { text: "实验报告管理", path: "/experimentalReport"},
+      { text: "课堂管理", path: "/courseManagement" },
     ]
     
   
