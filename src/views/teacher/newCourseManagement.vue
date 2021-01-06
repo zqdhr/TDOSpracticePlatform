@@ -75,7 +75,7 @@ export default {
         linkDetail(){
             let that = this
             that.$store.commit("updateNavindex", 1);
-            that.$router.push({path:'/couseDetail',query:{back:this.$Base64.encode(1)}}).catch((err)=>{
+            that.$router.push({path:'/teacher/couseDetail',query:{back:this.$Base64.encode(1)}}).catch((err)=>{
                 console.log(err)
             })
         }

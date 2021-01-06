@@ -10,8 +10,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-   
+    path: '/admin',   
     component: index,
     children:[
       {
@@ -20,12 +19,12 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/admin/statisticalAnalysis.vue')
       },
       {
-        path: '/personnelManage',//管理员端人员管理
+        path: '/admin/personnelManage',//管理员端人员管理
         name: 'personnelManage',
         component: () => import(/* webpackChunkName: "about" */ '../views/admin/personnelManage.vue')
       },
       {
-        path: '/experimentManage',//运行实验管理
+        path: '/admin/experimentManage',//运行实验管理
         name: 'experimentManage',
         component: () => import(/* webpackChunkName: "about" */ '../views/admin/experimentManage.vue')
       }
@@ -42,31 +41,32 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/teacher/newCourseManagement.vue')
       },
       {
-        path: '/jobManagement',//作业管理
+        path: '/teacher/jobManagement',//作业管理
         name: 'jobManagement',
         component: () => import(/* webpackChunkName: "about" */ '../views/teacher/jobManagement.vue')
       },
       {
-        path: '/experimentalReport',//实验报告
+        path: '/teacher/experimentalReport',//实验报告
         name: 'experimentalReport',
         component: () => import(/* webpackChunkName: "about" */ '../views/teacher/experimentalReport.vue')
       },
       {
-        path: '/courseManagement',//课程管理
+        path: '/teacher/courseManagement',//课程管理
         name: 'courseManagement',
         component: () => import(/* webpackChunkName: "about" */ '../views/teacher/courseManagement.vue')
       },
       {
-        path: '/lessonPreparationManagement',//备课管理
+        path: '/teacher/lessonPreparationManagement',//备课管理
         name: 'lessonPreparationManagement',
         component: () => import(/* webpackChunkName: "about" */ '../views/teacher/lessonPreparationManagement.vue'),
        
 
       },
       {  
-        path: '/couseDetail',//备课管理-课程详情
+        path: '/teacher/couseDetail',//备课管理-课程详情
         name: 'couseDetail',
         component: () => import(/* webpackChunkName: "about" */ '../views/teacher/lp_courseDetail.vue'),
+       
       }
      
     ]
@@ -96,12 +96,23 @@ router.beforeEach((to, from, next) => {
     next();
   } else {
     //var会将作用域放大，let只是局部的作用域
-    let username = sessionStorage.getItem('p_p-userName');
-    if (username === null || username === '') {
-      next('/login');
-    } else {
-      next();
+    let admin_username = sessionStorage.getItem('p_p-admin_userName');
+    let teacher_username = sessionStorage.getItem('p_p-teacher_userName');
+    if(to.path.indexOf("admin") != -1){
+        if (admin_username === null || admin_username === '') {
+          next('/login');
+        } else {
+          next();
+        }
     }
+    if(to.path.indexOf("teacher") != -1){
+        if (teacher_username === null || teacher_username === '') {
+          next('/login');
+        } else {
+          next();
+        }
+    }
+    
   }
 });
 export default router

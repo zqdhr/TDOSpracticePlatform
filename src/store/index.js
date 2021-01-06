@@ -8,8 +8,8 @@ export default new Vuex.Store({
     navindex:0,
     uploadUrl:'http://192.168.1.11:8088/upload_excel',
     ad_menus: [
-      { text: "统计分析", path: "/" },
-      { text: "课程管理", path: "/statisticalAnalysis" },
+      { text: "统计分析", path: "/admin" },
+      { text: "课程管理", path: "/admin/statisticalAnalysis" },
       {
         text: "库",
         path: "",
@@ -21,15 +21,15 @@ export default new Vuex.Store({
         ],
         showChilren: false,
       },
-      { text: "运行实验管理", path: "/experimentManage" },
-      { text: "人员管理", path: "/personnelManage" },
+      { text: "运行实验管理", path: "/admin/experimentManage" },
+      { text: "人员管理", path: "/admin/personnelManage" },
     ],
     tea_menus: [
       { text: "开课管理", path: "/teacher" },
-      { text: "备课管理", path: "/lessonPreparationManagement" },
-      { text: "作业管理", path: "/jobManagement"},
-      { text: "实验报告管理", path: "/experimentalReport"},
-      { text: "课堂管理", path: "/courseManagement" },
+      { text: "备课管理", path: "/teacher/lessonPreparationManagement" },
+      { text: "作业管理", path: "/teacher/jobManagement"},
+      { text: "实验报告管理", path: "/teacher/experimentalReport"},
+      { text: "课堂管理", path: "/teacher/courseManagement" },
     ]
     
   

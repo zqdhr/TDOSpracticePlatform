@@ -64,15 +64,17 @@ export default {
                 return  that.$toast('请输入密码',2000)
             }
             
-            window.sessionStorage.setItem('p_p-userName',that.userName)
+           
             if(that.userName == 'admin'){
                 //0,1 2学生，教师，管理员 
                 window.sessionStorage.setItem('p_p-authority',2)
-                that.$router.push({path:'/'})
+                window.sessionStorage.setItem('p_p-admin_userName',that.userName)
+                that.$router.push({path:'/admin'})
             }
             if(that.userName == 'teacher'){
                 //0,1 2学生，教师，管理员 
                 window.sessionStorage.setItem('p_p-authority',1)
+                window.sessionStorage.setItem('p_p-teacher_userName',that.userName)
                 that.$router.push({path:'/teacher'})
             }
             if(that.userName == 'student'){

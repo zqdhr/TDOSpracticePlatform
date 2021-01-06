@@ -72,8 +72,16 @@ export default {
     //退出登录
     logOut(){
       let that = this;
-      window.sessionStorage.removeItem('p_p-userName')
-      window.sessionStorage.removeItem('p_p-authority')   
+     
+      let authority = sessionStorage.getItem('p_p-authority') ;
+      if(authority==2){
+          window.sessionStorage.removeItem('p_p-admin_userName')
+          window.sessionStorage.removeItem('p_p-authority')
+      }  
+      if(authority==1){
+          window.sessionStorage.removeItem('p_p-teacher_userName')
+          window.sessionStorage.removeItem('p_p-authority')
+      }
       that.$store.commit("updateNavindex", 0);
       that.$router.push({ path:'/login'}).catch((err) => {
         console.log(err);
