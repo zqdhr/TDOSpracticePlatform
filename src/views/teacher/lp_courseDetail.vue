@@ -13,6 +13,7 @@
                     <a  :class="{'cur':index==navindex}" v-for="(item,index) in menu" :key="index" @click="linkDetails(index)">{{item.name}}</a>
                 </div>
             </div>
+            <router-view/>
         </div>
     </div>
 </template>
