@@ -146,3 +146,29 @@ a,a:hover{text-decoration: none;}
 /*下拉*/
 .el-select-dropdown .el-scrollbar{max-width: 260px;}
 
+/*div表格垂直居中*/
+.v-middle{display: table-cell; vertical-align:middle;}
+/*课程详情scroll*/
+.content_el-scrollbar{
+  height:30%;
+  .el-scrollbar__wrap{overflow-x: hidden;}
+}
+
+/*时间插件*/
+.courseTime_box{
+   .el-date-editor{width:300px}
+}
+
+@media screen and (max-width:1600px){
+  .content_el-scrollbar{
+    height:24%;
+    .el-scrollbar__wrap{overflow-x: hidden;}
+  }
+}
+
+@media screen and (max-width:1470px){
+  .content_el-scrollbar{
+    height:23%;
+    .el-scrollbar__wrap{overflow-x: hidden;}
+  }
+}

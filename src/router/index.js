@@ -10,11 +10,12 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/admin',   
+    path: '/',   
     component: index,
+    redirect: '/admin',
     children:[
       {
-        path: '/',
+        path: '/admin',
         name: 'statisticalAnalysis',//统计分析
         component: () => import(/* webpackChunkName: "about" */ '../views/admin/statisticalAnalysis.vue')
       },
@@ -34,9 +35,10 @@ const routes = [
   {
     path:'/teacher',//教师端
     component: index,
+    redirect: '/teacher/newCourseManagement',
     children:[
       {
-        path: '/',//开课管理
+        path: '/teacher/newCourseManagement',//开课管理
         name: 'newCourseManagement',
         component: () => import(/* webpackChunkName: "about" */ '../views/teacher/newCourseManagement.vue')
       },
