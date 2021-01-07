@@ -53,44 +53,11 @@
                 </div>
 
                  <!--课程大纲-->
-                <div v-if="navindex==0" class="chapter_box">
-                    <ul class="chapter_ul">                         
-                         <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}">
-                             <div class="textline1 cha_title " :class="{'arrow':!item.show,'arrow_up':item.show}" @click="showSection(item,item.show)">
-                                 <span class="s_name">章节{{index+1}}：{{item.name}}</span>
-                                 <span class="s_intro">{{item.introduction}}</span>
-                             </div>
-                             <div class="section_box" v-show="item.show">
-                                 <ul class="section_ul">
-                                     <li class="section_li" v-for="(iitem,iindex) in item.sections" :key="iindex">
-                                         <div class="sec_name textline1">
-                                            <p class="textline1">第{{iindex+1}}节：{{iitem.name}}</p>
-                                         </div>
-                                         <div class="sec_enclosure">
-                                             <div>附件包含：
-                                                 <span 
-                                                  v-for="(i_item,index) in iitem.enclosure.split(',')" :key="index" class="icon" 
-                                                  :class="{'s-video':i_item==1,'s-pdf':i_item==2,'s-exper':i_item==3,'s-job':i_item==4}">
+                <chapter v-if="navindex==0"></chapter>
 
-                                                 </span>
-                                             </div>
-                                         </div>
-                                     </li>
-
-                                 </ul>
-                                 <div class="add-btn-box">
-                                    <a class="btnDefault add-btn pointer">+ 新建小节</a>
-                                </div>
-                             </div>
-                         </li>
-                    </ul>
-                    <div class="add-btn-box">
-                        <a class="btnDefault add-btn pointer">+ 新建章节</a>
-                    </div>
-                </div>
                 
                 <!--开课时间-->
-                <div v-show="navindex==1" class="courseTime_box">
+                <div v-if="navindex==1" class="courseTime_box">
                    <div class="time_table">
                        <div class="v-middle">
                            <div class="din">  
@@ -120,34 +87,18 @@
                        </div>
                    </div>
                 </div>
+                
+                <!--班级列表-->
+                <classList v-show="navindex==2 && !showStudentList" @sureCheckClass="sureCheckClass" ></classList>
 
-                <div v-show="navindex==2" class="classList_box">
-                    <div class="classList_div">
-                        <div class="classList_intro">
-                            <span class="s1">为已选择班级</span><span class="s2">为未选择班级</span><span class="s3">为已编辑班级</span>
-                        </div>
-                        <ul class="classList_ul clearfix">
-                            <li v-for="(item,index) in classList" :key="index">                               
-                                <div class="class_info">
-                                    <span class="s-radion"></span>
-                                    <p class="p_name">{{item.name}}</p>
-                                    <div class="line"></div>
-                                    <p class="p_number">(共有{{item.number}}名学员)</p>
-                                </div>
-                            </li>
-                        </ul>  
-                    </div>
-                    <!--已开课班级列表不可编辑-->
-                    <div class="btnbox">
-                        <a class="btnDefault">确认选择</a>
-                    </div>
-                </div>
+                <!--学生列表-->
+                <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="showStudentList && navindex==2"></studentList>
 
-                <div v-show="navindex==3">课程实验</div>
+                <div v-if="navindex==3">课程实验</div>
 
-                <div v-show="navindex==4">课程课件</div>
+                <div v-if="navindex==4">课程课件</div>
 
-                <div v-show="navindex==5">课程作业</div>
+                <div v-if="navindex==5">课程作业</div>
   
                 
             </div>
@@ -157,6 +108,9 @@
     </div>
 </template>
 <script>
+import classList from "@/components/d_classList_box.vue";
+import studentList from "@/components/d_studentList_box.vue";
+import chapter from "@/components/d_chapter_box.vue";
 export default {
     data(){
         return{
@@ -172,36 +126,7 @@ export default {
             ],
 
            picurl:require('../../assets/pic/course.png'),
-           chapters:[
-                {
-                    name:'标题内容标题内容标题内容',
-                    introduction:'简介内容简介内容简介内容简介内容简介内容简介内容简介内容简介内容',
-                    sections:[
-                        {
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:'1,2,3,4' //包含视频，pdf,实验，作业
-                        },
-                        {
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:'1,2,3,4'
-                        }
-                    ],
-                },
-                {
-                    name:'标题内容标题内容标题内容',
-                    introduction:'简介内容简介内容简介内容简介内容简介内容简介内容简介内容简介内容',
-                    sections:[
-                        {
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:'1,2,3,4'
-                        },
-                        {
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:'1,2,3,4'
-                        }
-                    ]
-                }
-            ],
+           
             startTime:'',//课程开始时间
             endTime:'',//课程结束时间
               // 开始日期 :picker-options 中引用
@@ -210,13 +135,13 @@ export default {
             pickerOptionsEnd: {},
             isSetTime:false,//设置时间是否设置(这个根据课程是否是已开课)
 
-            classList:[//班级列表
-                {id:'20100101',name:'四年级六班',number:60}, {id:'20100101',name:'四年级六班',number:60}, {id:'20100101',name:'四年级六班',number:60},
-                {id:'20100101',name:'四年级六班',number:60}, {id:'20100101',name:'四年级六班',number:60}, {id:'20100101',name:'四年级六班',number:60}
-            ],
+
+
+            showStudentList:false//是否显示学生列表
             
         }
     },
+    components:{classList,studentList,chapter},
     created(){
         let that = this;
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2
@@ -224,12 +149,8 @@ export default {
     },
     mounted(){
         let that = this;
-        //章节下拉添加子元素是否显示参数show
-        that.chapters.forEach(item => {
-           this.$set(item, 'show', false)
-        })
+       
 
-        //班级列表添加班级是否被选中状态参数，type 0未选中 1全部选中 2部分选中
       
     },
     methods:{
@@ -281,20 +202,25 @@ export default {
         linkDetails(item,num){
           let that = this;
           that.navindex = num;
-      
+          that.showStudentList = false
         },
-        //显示章节
-        showSection(item,show){
-            let that = this;
-            let tmp = that.chapters
-            for(var i = 0;i<tmp.length;i++){
-               that.$set(that.chapters[i],'show',false)
-               
-            }
+       
 
-            that.$set(item,'show',!show)
-            
-            
+        //学生选择确认
+        sureStudent(){
+          let that = this;
+          that.showStudentList = false
+          console.log('选择学生确认')
+          
+        },
+        //学生列表返回班级列表
+        backClass(){
+          this.showStudentList = false;
+       
+        },
+        //班级选择确认
+        sureCheckClass(){
+            this.showStudentList = true
         }
 
     },
