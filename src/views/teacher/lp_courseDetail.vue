@@ -89,16 +89,18 @@
                 </div>
                 
                 <!--班级列表-->
-                <classList v-show="navindex==2 && !showStudentList" @sureCheckClass="sureCheckClass" ></classList>
+                <classList v-if="navindex==2 && !showStudentList" @sureCheckClass="sureCheckClass" ></classList>
 
                 <!--学生列表-->
                 <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="showStudentList && navindex==2"></studentList>
+                
+                <!--课程实验-->
+                <experiment v-if="navindex==3"></experiment>
+                
+                <!--课程课件-->
+                <courseware v-if="navindex==4"></courseware>
 
-                <div v-if="navindex==3">课程实验</div>
-
-                <div v-if="navindex==4">课程课件</div>
-
-                <div v-if="navindex==5">课程作业</div>
+                <coursework v-if="navindex==5"></coursework>
   
                 
             </div>
@@ -108,14 +110,17 @@
     </div>
 </template>
 <script>
-import classList from "@/components/d_classList_box.vue";
-import studentList from "@/components/d_studentList_box.vue";
-import chapter from "@/components/d_chapter_box.vue";
+import classList from "@/components/d_classList_box.vue";//学生信息-班级列表
+import studentList from "@/components/d_studentList_box.vue";//学生信息-学生列表
+import chapter from "@/components/d_chapter_box.vue";//课程大纲
+import experiment from "@/components/d_experiment_box.vue";//课程实验
+import courseware from "@/components/d_courseware_box.vue";//课程课件
+import coursework from "@/components/d_coursework_box.vue";//课程作业
 export default {
     data(){
         return{
            backNum:1,
-           navindex:2,
+           navindex:5,
            menu:[
                {name:'课程大纲'},
                {name:'开课时间'},
@@ -141,7 +146,7 @@ export default {
             
         }
     },
-    components:{classList,studentList,chapter},
+    components:{classList,studentList,chapter,experiment,courseware,coursework},
     created(){
         let that = this;
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2

@@ -165,6 +165,20 @@ a,a:hover{text-decoration: none;}
   th,td{text-align:center;}
 }
 
+/*课程详情课程menu样式*/
+.courseNav{
+  .el-scrollbar__wrap{overflow-x: hidden;}
+  
+}
+
+
+/*下拉*/
+.el-select{
+   .el-input__inner{border:1px solid @selectline}
+   
+}
+.el-select .el-input.is-focus .el-input__inner{border-color: @basecolor}
+.el-select-dropdown__item.selected{color: @basecolor;}
 @media screen and (max-width:1600px){
   .content_el-scrollbar{
     height:24%;
