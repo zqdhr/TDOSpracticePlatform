@@ -7,15 +7,16 @@
                   <div class="p-name" :class="{'arrow':!item.show,'arrow_up':item.show}" @click="showSection(item,item.show)">
                       <p class="textline1">{{index+1}}、{{item.name}}({{item.num}})</p>
                  </div>
-                   <transition name="fade">
-                        <ul class="children_ul" v-if="item.show">
+                   
+                    <el-collapse-transition>
+                        <ul class="children_ul" v-show="item.show">
                             <li v-for="(iitem,iindex) in item.sections" :key="iindex" class="pointer">
                                 <div class=" children_name">
                                     <p class="textline1">{{iitem.name}}({{iitem.num}})</p>
                                 </div>
                             </li>
                         </ul>
-                  </transition>
+                   </el-collapse-transition>
                  
               </li>       
            </ul>
@@ -64,6 +65,19 @@ export default {
         }
     },
     methods:{
+            menuEnter: function(el, done) {
+    //这行是关键
+      el.offsetWidth;
+      el.style.maxHeight =  600
+      el.style.transition = "all 0.3s ease-in";
+      done();
+    },
+    menuLeave: function(el) {
+      el.offsetWidth;
+      el.style.maxHeight = 0;
+      el.style.transition = "all 0.3s ease-out";
+    },
+
         handleNodeClick(data) {
             console.log(data);
         },
@@ -102,6 +116,9 @@ export default {
     
 
 }
+
+
+
 @media screen and (max-width:1440px) {
     .courseNav{width:280px;
      .p-courseName{font-size:18px;}
