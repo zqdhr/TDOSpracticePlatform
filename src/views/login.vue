@@ -33,6 +33,7 @@
     </div>
 </template>
 <script>
+import {login,createToken} from '@/API/api';
 export default {
     data(){
         return{
@@ -63,29 +64,48 @@ export default {
             if(that.password ==''){
                 return  that.$toast('请输入密码',2000)
             }
-            
-           
-            if(that.userName == 'admin'){
-                //0,1 2学生，教师，管理员 
-                window.sessionStorage.setItem('p_p-authority',2)
-                window.sessionStorage.setItem('p_p-admin_userName',that.userName)
-                that.$router.push({path:'/admin'})
-            }
-            if(that.userName == 'teacher'){
-                //0,1 2学生，教师，管理员 
-                window.sessionStorage.setItem('p_p-authority',1)
-                window.sessionStorage.setItem('p_p-teacher_userName',that.userName)
-                that.$router.push({path:'/teacher'})
-            }
-            if(that.userName == 'student'){
-                //0,1 2学生，教师，管理员 
-                window.sessionStorage.setItem('p_p-authority',0)
-            }
+            let obj = {}
+            obj.id = that.userName;
+            obj.password = that.password;
+            let role_id;
+            login(obj).then(res=> {
+                if(res.code==200){
+                    //生成token
+                    that.getJwt(that.userName);
 
-            
-            //window.sessionStorage.setItem('p_p-password',that.password)
-            
+                    role_id = res.data.role_id;
+                    if(role_id == 0){
+                        //0,1 2学生，教师，管理员
+                        window.sessionStorage.setItem('p_p-authority',2)
+                        window.sessionStorage.setItem('p_p-admin_userName',that.userName)
+                        that.$router.push({path:'/admin'})
+                    }
+                    if(role_id == 1){
+                        //0,1 2学生，教师，管理员
+                        window.sessionStorage.setItem('p_p-authority',1)
+                        window.sessionStorage.setItem('p_p-teacher_userName',that.userName)
+                        that.$router.push({path:'/teacher'})
+                    }
+                    if(role_id == 2){
+                        //0,1 2学生，教师，管理员
+                        window.sessionStorage.setItem('p_p-authority',0)
+                    }
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
         },
+       getJwt(id){
+           let obj={};
+           obj.id=id
+           createToken(obj).then(res=> {
+               if(res.code==200){
+                   sessionStorage.setItem('jwt',res.data);
+               }else{
+                   this.$toast(res.message,2000)
+               }
+           })
+       },
          // 添加body图片
         setBodyBackGround () {
             
@@ -97,7 +117,7 @@ export default {
             // 清除背景图
         clearBodyBackGround () {
            document.body.style.backgroundImage = ''
-        }
+        },
     }
 }
 </script>
