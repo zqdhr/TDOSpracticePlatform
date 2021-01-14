@@ -338,9 +338,9 @@ export default {
           //console.log('response', newFile.response)
           let response = newFile.response;
           if (response.code == 200) {
-            console.log("ok");
+            this.$message.success('文件上传成功')
           } else {
-            console.log("失败");
+            this.$message.success('文件上传失败')
           }
           if (newFile.xhr) {
             //  Get the response status code
