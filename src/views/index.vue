@@ -1,7 +1,7 @@
 <template>
     <div class="pagewrap">
         <comheader></comheader>
-         <router-view/>
+        <router-view/>
     </div>
 </template>
 <script>

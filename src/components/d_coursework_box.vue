@@ -15,41 +15,30 @@
                             </el-option>
                         </el-select>               
                     </div>
-                    
+                    <a class="btnDefault pointer mr20">删除题目</a>
                     <a class="btnDefault pointer">新增题目</a>
                 </div>
-                <div class="list_box">
-                    <ul class="list_ul clearfix">
-                        <li v-for="(item,index) in experimentList" :key="index">
-                            <div class="info">
-                                <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                                   <a class="icon icon_close pointer"></a>
-                                </el-tooltip>
-                                <el-tooltip class="item" effect="dark" content="设置" placement="top">
-                                   <a class="icon icon_set pointer"></a>
-                                </el-tooltip>
-                                <div class="icon-box">
-                                    <span class="c_icon" :class="{'icon_video':item.type==0,'icon_pdf':item.type==1}"></span>
-                                </div>
-                                <p class="p-text textline1 p-name">{{item.name}}</p>
-                                <div class="line"></div>
-                                <p class="p-text textline1">课件大小：{{item.size}}</p>
-                                <p class="p-text textline1">视频时长：{{item.duration}}</p>
+               <!--课程题目-->
+               <div class="coursework_box">
+                    <div class="in-box"><input placeholder="请输入作业名称" type="text"  autocomplete="off" maxlength="15"/><a class="edit"></a></div>
+                    <div class="course_list">
+                        <!--选择题-->
+                       <ul class="choice_question">
+                           <li></li>
+                       </ul>
+                       <!--简答题-->
+                       <ul class="answer_questions">
+                           <li>                              
+                            <div class="title">2.题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
+题目文本题目文本题目文本题目文本题目文本题目文本？ 
                             </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="page_box">
-                    <el-pagination
-                        background
-                        :current-page="curPage"
-                        :page-size="perPage"
-                        @current-change="handleCurrentChange"
-                        layout="prev, pager, next,jumper"
-                        :total="150"
-                    >
-                    </el-pagination>
-                </div>
+                            <div class="pic"></div>   
+                            <p class="answer_box">答案：题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
+题目文本题目文本题目文本题目文本题目文本题目</p>                        
+                           </li>
+                       </ul>
+                    </div>
+               </div>
             </div>
          </div>
     </div>
@@ -64,19 +53,12 @@ export default {
             ],
        
             cate:'选择题',//课件分类默认内置课件
-   
-            experimentList:[
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
-            ],
-            perPage:8, //8个实验一页
-            curPage:1//设备列表
+
+            //作业列表参数根据具体实际情况来定
+            coursework:{
+               name:'', 
+                
+            }
         }
     },
     components:{
@@ -87,20 +69,13 @@ export default {
        
     },
     methods:{
-         //底部分页
-        handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        },
-
+      
         //选择分类
         selectCate(val){
             console.log(val)
         },
 
-        //选择课件类型
-         selectType(val){
-            console.log(val)
-        },
+       
     }
 }
 </script>
@@ -113,25 +88,25 @@ export default {
 
 .page_box{text-align:right;}
 .add_btn_box{padding-bottom:15px; text-align:right;}
+.mr20{margin-right: 20px;}
 
 .sel-box{float: left; margin-right: 30px;}
-/*列表*/
-.list_box{ overflow: hidden;
-    .list_ul{ margin-left: -10px; margin-right: -10px;
-        li{width:25%;min-height: 40px;float: left; margin-bottom: 20px; }    
-      
-        .info{margin: 0 10px; min-height: 30px;background: @background; padding: 40px 0 20px 0; position:relative;}
-        .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px;}
-        .icon{width: 20px;height: 20px;display: block; position:absolute;top:10px}
-        /*.icon_close{background: url(../assets/img/n_close.png) center no-repeat;right:28px}*/
-        .icon_set{background: url(../assets/img/n_set.png) center no-repeat;right:28px}
-        .p-name{padding:12px 0;}
-        .c_icon{width:58px;height: 58px;margin:0 auto; display: block;}
-        .icon_video{background: url(../assets/img/courseware_video.png) center no-repeat;}
-        .icon_pdf{background: url(../assets/img/courseware_pdf.png) center no-repeat;}
 
-        .line{margin: 0 30px; height: 2px; background: @linecoloe; margin-bottom: 10px;}
-    }
+.coursework_box{min-height: 500px; border: 1px solid @hnavcolor; padding:10px 0;
+   .edit{width:18px;height: 18px; display: inline-block; background: url(../assets/img/icon_edit.png) center no-repeat; vertical-align:middle; cursor: pointer;}
+   .in-box{
+       text-align: center;
+       input{font-size:18px;color:#333; text-align: center; line-height:30px;}
+      
+   }
+}
+
+/*作业列表*/
+.course_list{
+    padding:0 40px;
+    .title{font-size:16px;color:@tabcolor;}
+     .pic{width:400px;height:150px;background: @background;.borderRadius(5px,5px,5px,5px); overflow: hidden; margin: 8px 0;}
+    .answer_box{margin: 8px 0;}
 }
 
 @media screen and (max-width:1440px) {

@@ -45,7 +45,7 @@
         <!--学生列表-->
         <el-table
           class="center-tab tab-userList"
-          :data="studentList"
+          :data="studentList" 
           @selection-change="handleSelectionChange"
           style="width: 100%"
         >
