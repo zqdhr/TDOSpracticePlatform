@@ -6,11 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     navindex:0,
-<<<<<<< HEAD
-    uploadUrl:'http://192.168.1.138:123/upload_excel',
-=======
     uploadUrl:'http://192.168.1.138:8111/upload_excel',
->>>>>>> e0f6896166449a710480aace41ab24b56558d7e3
     ad_menus: [
       { text: "统计分析", path: "/admin" },
       { text: "课程管理", path: "/admin/statisticalAnalysis" },

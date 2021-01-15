@@ -22,12 +22,12 @@ var hardware = function(data){
 
 //用户在线人数
 var online = function(data){
-	return axios.post('/online', getJson(data))
+	return axios.get('/online', getJson(data))
 }
 
 //在线用户列表
 var onlineUsers = function(data){
-	return axios.post('/online_users', getJson(data))
+	return axios.get('/online_user?page='+data.page+'&per_page='+data.per_page)
 }
 
 //查询学生，教师信息

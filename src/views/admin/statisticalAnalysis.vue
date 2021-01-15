@@ -63,8 +63,8 @@
                   :data="tabData"
                   style="width: 100%;">
                   <el-table-column
-                      prop="sno"
-                      label="学号"
+                      prop="user_id"
+                      label="学号/工号/账号"
                       >
                   </el-table-column>
                   <el-table-column
@@ -73,19 +73,20 @@
                     >
                   </el-table-column>
                   <el-table-column
-                      prop="state"
-                      label="状态"
+                      prop="type"
+                      label="类型"
                   >
-                   <template slot-scope="scope">
-                    <div :class="{'online-circle':scope.row.state==1}"></div>
-                  </template>
+<!--                   <template slot-scope="scope">-->
+<!--                    <div :class="{'online-circle':scope.row.state==1}"></div>-->
+<!--                  </template>-->
                   </el-table-column>
                   </el-table>
                   <div class="pagination-box">
                      <el-pagination
                       background
                       layout="prev, next"
-                      :total="100" :current-page.sync="online_page">
+                      :total="onlineTotal" :current-page.sync="online_page"
+                      @current-change="handleOnlineCurrentChange">
                     </el-pagination>
                   </div>
                 </div>
@@ -145,28 +146,14 @@ export default {
     data(){
       return{
           tabData: [//在线人数显示12条数据
-            {sno: '20200118',name: '王小虎',state: 1}, 
-            {sno: '20200118',name: '王小虎',state: 1}, 
-            {sno: '20200118',name: '王小虎',state: 1}, 
-            {sno: '20200118',name: '王小虎',state: 1},
-            {sno: '20200118',name: '王小虎',state: 1},
-            {sno: '20200118',name: '王小虎',state: 1},
-            {sno: '20200118',name: '王小虎',state: 1},
             {sno: '20200118',name: '王小虎',state: 1},
           
           ],
-          onlineTotal:0,
+          onlineTotal:1,
           online_page:1,//在线人数当前页
           onlinePage:1,//在线人数分页
           onlinePageSize:10,//在线人数每页条数
           experimentData:[//运行实验每页8条
-            {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
-            {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
-            {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
-            {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
-            {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
-            {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
-            {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
             {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
           ],
           ex_Page:1,//实验当前页
@@ -196,10 +183,8 @@ export default {
             let that = this;
             online().then(res=> {
                 if(res.code==200){
-                    let total = res.data;
                     let that = this;
-                    that.totalUser = total;
-                    that.tabData = res.data;
+                    that.onlineTotal = res.data;
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -209,13 +194,26 @@ export default {
         /*在线人数列表*/
         onlineUsers(){
             let that = this;
+            that.searchUserOnline(10,0);
+        },
+        searchUserOnline(per_page,page){
+            let that = this;
             let obj = {};
-            obj.per_page = that.onlinePageSize
-            obj.page = that.onlinePage-1
+            obj.per_page = per_page;
+            obj.page = page;
             onlineUsers(obj).then(res=> {
                 if(res.code==200){
-                    let onLineList = res.data.content;
-                    this.onLineList=onLineList;
+                    that.tabData = res.data.content;
+                    for(let i = 0 ;i<res.data.content.length;i++){
+                        if(res.data.content[i].type == 0){
+                            res.data.content[i].type = "管理员"
+                        }else if(res.data.content[i].type == 1){
+                            res.data.content[i].type = "教师"
+                        }else if(res.data.content[i].type == 2){
+                            res.data.content[i].type = "学生"
+                        }
+                    }
+                    that.onlinePage = res.data.totalPages;
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -223,8 +221,14 @@ export default {
         },
       handleCurrentChange(val){
         let that = this;
+
         console.log(`当前页 ${val} 条`);
-      }
+      },
+        handleOnlineCurrentChange(val){
+            let that = this;
+            that.searchUserOnline(10,val-1);
+            console.log(`当前页 ${val} 条`);
+        },
     },
     mounted() {
         let that = this;
