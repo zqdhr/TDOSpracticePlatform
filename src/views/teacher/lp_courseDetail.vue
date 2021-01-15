@@ -120,7 +120,7 @@ export default {
     data(){
         return{
            backNum:1,
-           navindex:5,
+           navindex:0,
            menu:[
                {name:'课程大纲'},
                {name:'开课时间'},
