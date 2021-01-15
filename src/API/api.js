@@ -45,8 +45,13 @@ var deleteUser = function(params){
 	return axios.delete('/delete_user', {data:params})
 }
 
+//老师获取管理员内置课程（开课管理页面的列表）
+var getAdminCourseList = function(params){
+	return axios.get('/get_admin_course_list', {data:params})
+}
+
 export{
-	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser
+	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList
 }
 
 function getJson (data) {
