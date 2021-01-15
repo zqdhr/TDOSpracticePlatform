@@ -24,7 +24,18 @@
                     <div class="course_list">
                         <!--选择题-->
                        <ul class="choice_question">
-                           <li></li>
+                           <li>                              
+                            <div class="title">1.题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
+题目文本题目文本题目文本题目文本题目文本题目文本？ 
+                            </div>
+                            <div class="pic"></div>   
+                            <p class="answer_box">
+                               <span class="">选项111</span>
+                               <span>选项222</span>
+                               <span>选项333</span>
+                               <span>选项444</span>
+                            </p>                        
+                           </li>
                        </ul>
                        <!--简答题-->
                        <ul class="answer_questions">
@@ -104,7 +115,7 @@ export default {
 /*作业列表*/
 .course_list{
     padding:0 40px;
-    .title{font-size:16px;color:@tabcolor;}
+    .title{font-size:16px;color:@tabcolor;margin: 8px 0;}
      .pic{width:400px;height:150px;background: @background;.borderRadius(5px,5px,5px,5px); overflow: hidden; margin: 8px 0;}
     .answer_box{margin: 8px 0;}
 }
