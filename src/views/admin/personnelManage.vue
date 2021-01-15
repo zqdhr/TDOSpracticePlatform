@@ -55,7 +55,11 @@
           </el-table-column>
           <el-table-column prop="name" label="姓名" width="180">
           </el-table-column>
-          <el-table-column prop="gender" label="性别"> </el-table-column>
+          <el-table-column prop="gender" label="性别">
+             <template slot-scope="scope">
+                <span>{{scope.row.gender=0?'男':scope.row.gender=1?'女':'未知'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="phoneNumber" label="号码"> </el-table-column>
           <el-table-column prop="identificationNumber" label="邮箱"> </el-table-column>
           <el-table-column prop="" label="操作">
@@ -79,7 +83,11 @@
           </el-table-column>
           <el-table-column prop="name" label="姓名" width="180">
           </el-table-column>
-          <el-table-column prop="gender" label="性别"> </el-table-column>
+          <el-table-column prop="gender" label="性别">
+             <template slot-scope="scope">
+                <span>{{scope.row.gender=0?'男':scope.row.gender=1?'女':'未知'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="phoneNumber" label="号码"> </el-table-column>
           <el-table-column prop="identificationNumber" label="邮箱"> </el-table-column>
           <el-table-column prop="" label="操作">
@@ -103,7 +111,11 @@
           </el-table-column>
           <el-table-column prop="name" label="姓名" width="180">
           </el-table-column>
-          <el-table-column prop="gender" label="性别"> </el-table-column>
+          <el-table-column prop="gender" label="性别">
+            <template slot-scope="scope">
+                <span>{{scope.row.gender=0?'男':scope.row.gender=1?'女':'未知'}}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="phoneNumber" label="号码"> </el-table-column>
           <el-table-column prop="identificationNumber" label="邮箱"> </el-table-column>
           <el-table-column prop="" label="操作">
@@ -217,11 +229,13 @@ export default {
       obj.per_page = per_page;
       searchUser(obj).then(res=> {
         if(res.code==200){
+          /*
           for(let i =0;i<res.data.list.length;i++){
             if(res.data.list[i].gender == 0){
               res.data.list[i].gender = "男"
             }else res.data.list[i].gender = "女"
-          }
+          }*/
+          /*
           if(type == 0){
             that.adminList = res.data.list
           }else if(type == 1){
@@ -229,6 +243,8 @@ export default {
           }else if(type == 2) {
             that.studentList = res.data.list
           }
+          */
+          type ==0 ? that.adminList = res.data.list:type==1? that.teacherList = res.data.list:that.studentList = res.data.list
           that.total = res.data.total;
         }else{
           that.$toast(res.message,3000)

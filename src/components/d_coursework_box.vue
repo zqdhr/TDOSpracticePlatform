@@ -15,43 +15,99 @@
                             </el-option>
                         </el-select>               
                     </div>
-                    <a class="btnDefault pointer mr20">删除题目</a>
-                    <a class="btnDefault pointer">新增题目</a>
+                    <a class="btnDefault pointer mr20" @click="deleteOperation">删除题目</a>
+                    <a class="btnDefault pointer" @click="showQuestionBank=true">新增题目</a>
                 </div>
                <!--课程题目-->
                <div class="coursework_box">
-                    <div class="in-box"><input placeholder="请输入作业名称" type="text"  autocomplete="off" maxlength="15"/><a class="edit"></a></div>
+                   <!--未开课-->
+                    <template>
+                    <div class="in-box"><input placeholder="请输入作业名称" type="text"  autocomplete="off" maxlength="15" ref="inputVal"/><a class="edit" @click="input_focus"></a></div>
+                   </template>
+                   <!--已开课-->
+                   <template>
+                       <div class="coursework_name">区块链原理篇作业</div>
+                   </template>
+
                     <div class="course_list">
                         <!--选择题-->
                        <ul class="choice_question">
-                           <li>                              
+                           <li :class="{'li_choose':isShow}">                              
                             <div class="title">1.题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
 题目文本题目文本题目文本题目文本题目文本题目文本？ 
                             </div>
                             <div class="pic"></div>   
                             <p class="answer_box">
-                               <span class="">选项111</span>
-                               <span>选项222</span>
-                               <span>选项333</span>
-                               <span>选项444</span>
-                            </p>                        
+                               <span class="s_radio">选项111</span>
+                               <span class="s_radio s_radio_answer">选项222</span>
+                               <span class="s_radio">选项333</span>
+                               <span class="s_radio">选项444</span>
+                            </p>
+                            <!--选中的状态添加class   li_radio_h-->
+                            <span class="li_radio li_radio_h"></span>                        
                            </li>
                        </ul>
                        <!--简答题-->
                        <ul class="answer_questions">
-                           <li>                              
+                           <li :class="{'li_choose':isShow}">                              
                             <div class="title">2.题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
 题目文本题目文本题目文本题目文本题目文本题目文本？ 
                             </div>
                             <div class="pic"></div>   
                             <p class="answer_box">答案：题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
-题目文本题目文本题目文本题目文本题目文本题目</p>                        
+题目文本题目文本题目文本题目文本题目文本题目</p> 
+                            <span class="li_radio"></span>                        
                            </li>
                        </ul>
                     </div>
                </div>
             </div>
          </div>
+
+         <!--题库选择弹出框-->
+         <el-dialog
+            title="新增题目（题目库选择）"
+            :visible.sync="showQuestionBank"
+            :width="dialogWidth"
+            :before-close="handleClose">
+            <div class="course_list dialog_course_list">
+                <!--选择题-->
+                <ul class="choice_question">
+                    <li class="li_choose">                              
+                    <div class="title">1.题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
+题目文本题目文本题目文本题目文本题目文本题目文本？ 
+                    </div>
+                    <div class="pic"></div>   
+                    <p class="answer_box">
+                        <span class="s_radio">选项111</span>
+                        <span class="s_radio s_radio_answer">选项222</span>
+                        <span class="s_radio">选项333</span>
+                        <span class="s_radio">选项444</span>
+                    </p>
+                    <!--选中的状态添加class   li_radio_h-->
+                    <span class="li_radio li_radio_h"></span>                        
+                    </li>
+                </ul>
+                <!--简答题-->
+                <ul class="answer_questions">
+                    <li class="li_choose">                              
+                    <div class="title">2.题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
+题目文本题目文本题目文本题目文本题目文本题目文本？ 
+                    </div>
+                    <div class="pic"></div>   
+                    <p class="answer_box">答案：题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
+题目文本题目文本题目文本题目文本题目文本题目</p> 
+                    <span class="li_radio"></span>                        
+                    </li>
+                </ul>
+                
+            </div>
+
+            <div slot="footer" class="dialog-footer ">
+              
+                <el-button type="primary"  @click="showQuestionBank = false">确 定</el-button>
+            </div>
+            </el-dialog>
     </div>
 </template>
 <script>
@@ -64,12 +120,16 @@ export default {
             ],
        
             cate:'选择题',//课件分类默认内置课件
-
+            showQuestionBank:false,//题库是否显示(弹出框)
+            dialogWidth: 0,
             //作业列表参数根据具体实际情况来定
             coursework:{
-               name:'', 
-                
-            }
+               name:'',    
+            },
+            isShow:false,
+            deleteList:[
+
+            ]
         }
     },
     components:{
@@ -77,14 +137,51 @@ export default {
     },
      created(){
         this.cate = this.options[0].value;//默认选中内置课件
+        this.setDialogWidth();
        
     },
+    mounted(){
+       window.onresize = () => {
+        return (() => {
+            this.setDialogWidth()
+        })()
+        }
+    },
     methods:{
-      
+        
+        //弹出框设置响应式宽度
+        setDialogWidth() {
+       
+            var val = document.body.clientWidth
+            const def = 1200 // 默认宽度
+            if (val < def) {
+                this.dialogWidth = '80%'
+            } else {
+                this.dialogWidth = def + 'px'
+            }
+        },
+        //弹出框右上角关闭安妮
+        handleClose(){
+           let that = this;
+           that.showQuestionBank = false
+        },
         //选择分类
         selectCate(val){
             console.log(val)
         },
+
+        //删除题目
+        deleteOperation(){
+            let that = this;
+            that.isShow = !that.isShow
+        },
+        //点击编辑框输入作业名获取焦点
+        input_focus(){
+             this.$nextTick(function () {
+                //DOM 更新了
+                this.$refs.inputVal.focus()
+            })
+        }
 
        
     }
@@ -103,8 +200,11 @@ export default {
 
 .sel-box{float: left; margin-right: 30px;}
 
+
 .coursework_box{min-height: 500px; border: 1px solid @hnavcolor; padding:10px 0;
-   .edit{width:18px;height: 18px; display: inline-block; background: url(../assets/img/icon_edit.png) center no-repeat; vertical-align:middle; cursor: pointer;}
+  .coursework_name{text-align: center;}
+   .edit{width:18px;height: 18px; display: inline-block; background: url(../assets/img/icon_edit.png) center no-repeat; vertical-align:top; cursor: pointer;
+   margin-top: 5px;}
    .in-box{
        text-align: center;
        input{font-size:18px;color:#333; text-align: center; line-height:30px;}
@@ -117,8 +217,40 @@ export default {
     padding:0 40px;
     .title{font-size:16px;color:@tabcolor;margin: 8px 0;}
      .pic{width:400px;height:150px;background: @background;.borderRadius(5px,5px,5px,5px); overflow: hidden; margin: 8px 0;}
-    .answer_box{margin: 8px 0;}
+    .answer_box{
+        margin: 8px 0;
+        .s_radio{background: url(../assets/img/course_radion.png) left center no-repeat; padding-left: 24px; display: inline-block; margin-right: 20px;cursor: pointer;}
+        .s_radio_answer{background: url(../assets/img/course_radioh.png) left center no-repeat;}
+    }
+    li{
+        padding-left:0px;  
+        transition: all .1s ease-in-out;
+        -moz-transition: all .1s ease-in-out;
+        -webkit-transition: all .1s ease-in-out;
+        -o-transition: all .1s ease-in-out; 
+       .li_radio{opacity:0}
+    }
+    .li_choose{
+        position: relative; padding-left: 40px;
+        transition: all .2s ease-in-out;
+        -moz-transition: all .2s ease-in-out;
+        -webkit-transition: all .2s ease-in-out;
+        -o-transition: all .2s ease-in-out;
+        .li_radio{width:26px;height:26px;display: block;background: url(../assets/img/rad2.png) center no-repeat; position: absolute;left:0px; top:12px;
+            -webkit-background-size:24px; background-size:24px; 
+            opacity:1;
+            transition: all .2s ease-in-out;
+            -moz-transition: all .2s ease-in-out;
+            -webkit-transition: all .2s ease-in-out;
+            -o-transition: all .2s ease-in-out; 
+        }
+        .li_radio_h{background: url(../assets/img/radh11.png) center no-repeat;-webkit-background-size:24px; background-size:24px;}
+    }
 }
+
+/*弹出框 */
+.dialog_course_list{padding:0px}
+.dialog-footer{text-align: center;}
 
 @media screen and (max-width:1440px) {
     .experiment_box{
