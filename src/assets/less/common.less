@@ -125,6 +125,7 @@ a,a:hover{text-decoration: none;}
   background:#006BFF;color:#fff;font-size:16px;.borderRadius(5px,5px,5px,5px)
 }
 
+
 /*表格居中对齐*/
 .center-tab{
   td,th{text-align: center; font-size: 16px;}
@@ -184,6 +185,19 @@ a,a:hover{text-decoration: none;}
 .el-button--primary{background: @basecolor; border-color:@basecolor;}
 .el-button--primary:hover{background:@btnHover;border-color:@btnHover}
 
+/*弹出框头部样式修改*/
+.el-dialog__header{
+  background: @basecolor; padding:15px 20px; color:@fontfff;  position: relative;
+  .el-icon-close{color: @fontfff; border:1px solid #fff;.borderRadius(50%,50%,50%,50%);padding:3px ;}
+  .el-icon-close:hover{color: @fontfff;}
+  .el-dialog__headerbtn{top:50%;margin-top: -12px;}
+}
+.el-table__header{
+  width: 100% !important;
+}
+.el-table__body{
+  width: 100% !important;
+}
 
 @media screen and (max-width:1600px){
   .content_el-scrollbar{

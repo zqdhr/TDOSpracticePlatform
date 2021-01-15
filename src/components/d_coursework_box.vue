@@ -20,12 +20,12 @@
                 </div>
                <!--课程题目-->
                <div class="coursework_box">
-                   <!--未开课-->
+                   <!--未开课显示的样式 根据情况只显示一个-->
                     <template>
                     <div class="in-box"><input placeholder="请输入作业名称" type="text"  autocomplete="off" maxlength="15" ref="inputVal"/><a class="edit" @click="input_focus"></a></div>
                    </template>
-                   <!--已开课-->
-                   <template>
+                   <!--已开课显示的样式-->
+                   <template v-if="1==0">
                        <div class="coursework_name">区块链原理篇作业</div>
                    </template>
 
@@ -66,10 +66,12 @@
 
          <!--题库选择弹出框-->
          <el-dialog
-            title="新增题目（题目库选择）"
+           
             :visible.sync="showQuestionBank"
-            :width="dialogWidth"
-            :before-close="handleClose">
+            :width="dialogWidth">
+            <div slot="title" class="dialog_header">
+                新增题目（题目库选择）
+            </div>
             <div class="course_list dialog_course_list">
                 <!--选择题-->
                 <ul class="choice_question">
@@ -202,7 +204,7 @@ export default {
 
 
 .coursework_box{min-height: 500px; border: 1px solid @hnavcolor; padding:10px 0;
-  .coursework_name{text-align: center;}
+  .coursework_name{text-align: center; margin: 0 50px; padding: 20px 0; font-size: 24px;}
    .edit{width:18px;height: 18px; display: inline-block; background: url(../assets/img/icon_edit.png) center no-repeat; vertical-align:top; cursor: pointer;
    margin-top: 5px;}
    .in-box{
