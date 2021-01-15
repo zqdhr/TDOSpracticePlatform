@@ -57,7 +57,7 @@
           </el-table-column>
           <el-table-column prop="gender" label="性别">
              <template slot-scope="scope">
-                <span>{{scope.row.gender=0?'男':scope.row.gender=1?'女':'未知'}}</span>
+               <span>{{scope.row.gender==0?'男':scope.row.gender==1?'女':'未知'}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="phoneNumber" label="号码"> </el-table-column>
@@ -85,7 +85,7 @@
           </el-table-column>
           <el-table-column prop="gender" label="性别">
              <template slot-scope="scope">
-                <span>{{scope.row.gender=0?'男':scope.row.gender=1?'女':'未知'}}</span>
+               <span>{{scope.row.gender==0?'男':scope.row.gender==1?'女':'未知'}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="phoneNumber" label="号码"> </el-table-column>
@@ -113,7 +113,7 @@
           </el-table-column>
           <el-table-column prop="gender" label="性别">
             <template slot-scope="scope">
-                <span>{{scope.row.gender=0?'男':scope.row.gender=1?'女':'未知'}}</span>
+                <span>{{scope.row.gender==0?'男':scope.row.gender==1?'女':'未知'}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="phoneNumber" label="号码"> </el-table-column>

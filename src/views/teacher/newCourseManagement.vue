@@ -21,8 +21,8 @@
                         <div class="course-info boxsizing">
                             <div class="info_box">
                                 <div class="cell-info boxsizing">
-                                    <p class="p-name textline1">{{item.courname}}</p>
-                                    <p class="p-text textline1">共有{{item.chapter}}个章节，共{{item.section}}个知识点</p>
+                                    <p class="p-name textline1">{{item.name}}</p>
+                                    <p class="p-text textline1">共有{{chapter}}个章节，共{{section}}个知识点</p>
                                     <p class="p-text textline1">{{item.introduction}}</p>
                                 </div>
                                 <div class="cell-fun boxsizing">
@@ -50,22 +50,22 @@
     </div>
 </template>
 <script>
+import {getAdminCourseList} from '@/API/api';
 export default {
     data(){
        return{
             perPage: 10,//每页条数
             curPage:1, //当前页
+            chapter:'',
+            section:'',
             inplaceholder:'请输入课程名称',
             courseList:[
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述'},
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述'},
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述'},
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述'},
                 {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述'}
             ]
        }
     },
     methods:{
+
         //底部分页
         handleCurrentChange(val) {
            console.log(`当前页: ${val}`);
