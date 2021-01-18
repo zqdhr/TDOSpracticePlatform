@@ -37,7 +37,7 @@
         <div class="fr">
           <a class="btnDefault pointer abtn" @click="delUser">删除人员</a>
 
-          <a class="btnDefault pointer abtn" @click="isUpload = true"
+          <a class="btnDefault pointer abtn" @click="isUpload = true;$refs.upload.active = true"
             >上传人员</a
           >
 
@@ -200,7 +200,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <a class="btnDefault" @click="downloadTemplate">下载模板</a>
-        <a class="btnDefault" @click.prevent="$refs.upload.active = true"
+        <a class="btnDefault" @click.prevent=""
           >确认上传</a
         >
       </div>

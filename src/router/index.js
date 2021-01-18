@@ -22,12 +22,17 @@ const routes = [
       {
         path: '/admin/personnelManage',//管理员端人员管理
         name: 'personnelManage',
-        component: () => import(/* webpackChunkName: "about" */ '../views/admin/personnelManage.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/personnelManagement.vue')
       },
       {
         path: '/admin/experimentManage',//运行实验管理
         name: 'experimentManage',
-        component: () => import(/* webpackChunkName: "about" */ '../views/admin/experimentManage.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/experimentManagement.vue')
+      },
+      {
+        path: '/admin/courseManagement',//课程管理
+        name: 'courseManagement',
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/courseManagement.vue')
       }
       
     ]
