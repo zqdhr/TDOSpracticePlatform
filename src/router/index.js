@@ -37,7 +37,15 @@ const routes = [
       {
         path: '/admin/newCourse',//新建课程
         name: 'newCourse',
-        component: () => import(/* webpackChunkName: "about" */ '../views/admin/newCourse.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/newCourse.vue'),
+        meta:{navindex:1},
+      },
+
+      {
+        path: '/admin/ImageRepository',//镜像库
+        name: 'ImageRepository',
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/ImageRepository.vue'),
+        meta:{navindex:2},
       },
    
       
@@ -93,6 +101,11 @@ const routes = [
     path: '/login',//页面登录
     name: 'login',
     component: () => import(/* webpackChunkName: "about" */ '../views/login.vue')
+  },
+  {
+    path: '/home',//页面登录
+    name: 'home',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')
   }
 ]
 
@@ -125,7 +138,7 @@ router.beforeEach((to, from, next) => {
           next();
         }
     }
-    
+    next();
   }
 });
 export default router

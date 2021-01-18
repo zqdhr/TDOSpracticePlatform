@@ -87,7 +87,8 @@ export default {
         sources: [
           {
             type: "video/mp4", // 类型
-            src: require("../assets/video.mp4"), // url地址
+            //src: require("../assets/video.mp4"), // url地址
+            src:'http://192.168.1.167:8080/data/GH015432.MP4'
           },
         ],
         poster: "", // 封面地址

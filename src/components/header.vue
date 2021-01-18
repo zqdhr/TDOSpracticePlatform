@@ -21,7 +21,7 @@
             <a @click="linPath(item, index)">{{ item.text }}</a>
             <ul v-if="item.children" class="children-ul">
               <li v-for="(iitem, iindex) in item.children" :key="iindex">
-                <a @click="children_linPath(item, index)">{{ iitem.text }}</a>
+                <a @click="children_linPath(iitem, index)">{{ iitem.text }}</a>
               </li>
             </ul>
           </li>
@@ -43,10 +43,17 @@ export default {
       state: (state) => state,
     }),
   },
+  created(){
+    let that = this;
+    if(this.$route.meta.navindex){
+       that.$store.commit("updateNavindex", this.$route.meta.navindex);
+    }
+    
+  },
   mounted(){
       let that = this;
       let num = sessionStorage.getItem('p_p-authority');
-  
+      console.log(this.$route.meta.navindex)
       if(num==2){
          that.menus = that.$store.state.ad_menus;
       
@@ -69,6 +76,13 @@ export default {
           console.log( err);
         });
       }
+    },
+    children_linPath(item){
+      let that = this;
+  
+      that.$router.push({ path: item.path }).catch((err) => {
+          console.log( err);
+        });
     },
     //退出登录
     logOut(){

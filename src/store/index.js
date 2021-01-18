@@ -16,7 +16,7 @@ export default new Vuex.Store({
         children: [
           { text: "实验库", path: "" },
           { text: "课件库", path: "" },
-          { text: "镜像库", path: "" },
+          { text: "镜像库", path: "/admin/ImageRepository" },
           { text: "题库", path: "" },
         ],
         showChilren: false,

@@ -210,6 +210,33 @@ a,a:hover{text-decoration: none;}
     font-size: 16px;
   }
 }
+
+/*镜像表格*/
+.imageReposittory_table{
+  .el-table{
+    background: #F3F4FA;  border-collapse: collapse;border-left:1px solid @hnavcolor;border-right:1px solid @hnavcolor;color:@basecolor;}
+  .el-table tr {
+  background: #F3F4FA;;
+  }
+  .el-table td{border-bottom:1px solid @hnavcolor}
+}
+/*镜像分页*/
+.imageReposittory_pagination{
+  .el-input__inner{background: 0 none;}
+}
+
+/*镜像添加弹出框*/
+.dialog_add_mirroring,.dialog_body_nopadding_bottom
+{
+  padding-bottom: 0px;
+  .el-form-item__label{font-size: 16px;}
+  .el-dialog__body{padding-bottom: 0px;}
+  
+  
+}
+.dialog_add_mirroring{
+  .file-uploads{ display: block;}
+}
 @media screen and (max-width:1600px){
   .content_el-scrollbar{
     height:24%;
