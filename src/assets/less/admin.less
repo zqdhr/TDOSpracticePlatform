@@ -64,7 +64,7 @@
 
 /*相关弹窗*/
 .dialog-footer {
-    text-align: center;
+    text-align: center; width:100%;
     .el-button{margin: 0 10px}
     .btnDefault{cursor: pointer;margin: 0 10px;border:0 none}
     .btnDefault:hover{background: @btnHover;}
@@ -75,9 +75,17 @@
        .icon_waring{background: url(../img/icon_warning.png) left center no-repeat; padding-left: 56px;}
        .icon_success{background: url(../img/icon_success.png) left center no-repeat; padding-left: 56px;}
     }
+
+    .upload_person{font-size: 18px;color: @tabcolor; text-align: center;}
+
+    .a_upload{
+        border:1px solid @basecolor;white-space: nowrap; display: inline-block; vertical-align: middle; padding: 10px 50px;
+        span{background: url(../img/icon_upload.png) left center no-repeat; display: inline-block; vertical-align: middle; padding: 5px 0 5px 30px;}
+    }
    
 
 }
+.alignCenter{text-align: center;}
 
 @media screen and (max-width:1470px){
     .default_List{
