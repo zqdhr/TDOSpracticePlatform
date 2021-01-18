@@ -5,7 +5,7 @@
                 <div class="clearfix">
                    
                     <div class="fr">
-                       <a class="btnDefault pointer abtn" >归档</a>
+                       <a class="btnDefault pointer abtn"  @click="show_dialog_file=true;archiveManagementisSuccess=false">归档</a>
                        <div class="d-serach"> 
                             <input :placeholder="inplaceholder" type="text" autocomplete="off" />
                             <a class="searchBtn pointer"></a>
@@ -52,6 +52,27 @@
             </div>
 
         </div>
+          <!--归档弹出框-->
+         <el-dialog
+           
+            :visible.sync="show_dialog_file"
+            width="600">
+            <div slot="title" class="dialog_header">
+               请注意!
+            </div>
+            <div class="confirm_dialog_body">
+               <p class="dialog_mess" v-if="!archiveManagementisSuccess"><span class="span_icon icon_waring">确认要归档所有已结束的课程吗</span></p>
+               <p class="dialog_mess" v-if="archiveManagementisSuccess"><span class="span_icon icon_success">课程归档成功！</span></p>
+            </div>
+            <div slot="footer" class="dialog-footer " v-if="!archiveManagementisSuccess">
+                <a class="btnDefault" @click="archiveManagement">确 认</a>
+                <a class="btnDefault"   @click="show_dialog_file = false">取 消</a>
+            </div>
+             <div slot="footer" class="dialog-footer " v-if="archiveManagementisSuccess">
+                <a class="btnDefault"  @click="successConfirm">确 认</a>
+         
+            </div>
+            </el-dialog>
     </div>
 </template>
 <script>
@@ -67,7 +88,9 @@ export default {
                 {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:0},
                 {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:1},
                 {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:1}
-            ]
+            ],
+            show_dialog_file:false,
+            archiveManagementisSuccess:false,//归档是否成功
        }
     },
     methods:{
@@ -82,6 +105,16 @@ export default {
             that.$router.push({path:'/teacher/couseDetail',query:{back:this.$Base64.encode(2)}}).catch((err)=>{
                 console.log(err)
             })
+        },
+        //归档管理弹出框确认
+        archiveManagement(){
+            let that = this;
+            that.archiveManagementisSuccess = true
+        },
+        //归档成功确认
+        successConfirm(){
+            let that = this;
+            that.show_dialog_file = false
         }
     }
 }
@@ -89,4 +122,5 @@ export default {
 
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
+
 </style>

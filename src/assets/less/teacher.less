@@ -159,6 +159,23 @@
     
 }
 
+/*相关弹窗*/
+.dialog-footer {
+    text-align: center;
+    .el-button{margin: 0 10px}
+    .btnDefault{cursor: pointer;margin: 0 10px;border:0 none}
+    .btnDefault:hover{background: @btnHover;}
+}
+.confirm_dialog_body{
+    .dialog_mess{font-size: 18px; color: @tabcolor; text-align: center; 
+       .span_icon{display: inline-block; padding:10px 0;}
+       .icon_waring{background: url(../img/icon_warning.png) left center no-repeat; padding-left: 56px;}
+       .icon_success{background: url(../img/icon_success.png) left center no-repeat; padding-left: 56px;}
+    }
+   
+
+}
+
   @media screen and (max-width:1470px){
       .default_List{
            >li{width:20%} 
