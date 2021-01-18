@@ -531,8 +531,7 @@ export default {
           if (response.code == 200) {
             this.$message.success("文件上传成功");
             that.searchUser(2, "", "", 1, 10);
-            that.isUpload = false
-
+            
           } else {
             this.$message.error("文件上传失败");
           }
@@ -550,7 +549,7 @@ export default {
         // remove
         console.log("remove", oldFile);
       }
-    },
+    }
   },
   mounted() {
     let that = this;

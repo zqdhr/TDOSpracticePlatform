@@ -33,7 +33,13 @@ const routes = [
         path: '/admin/courseManagement',//课程管理
         name: 'courseManagement',
         component: () => import(/* webpackChunkName: "about" */ '../views/admin/courseManagement.vue')
-      }
+      },
+      {
+        path: '/admin/newCourse',//新建课程
+        name: 'newCourse',
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/newCourse.vue')
+      },
+   
       
     ]
   },

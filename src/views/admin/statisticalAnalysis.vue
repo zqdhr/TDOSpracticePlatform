@@ -110,7 +110,7 @@
                       </el-table-column>
                      <el-table-column
                           prop="curDuration"
-                          label="现在时长"
+                          label="实验人数"
                         >
                       </el-table-column>
                       

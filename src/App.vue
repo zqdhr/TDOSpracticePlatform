@@ -38,7 +38,7 @@ sessionStorage.setItem("store",JSON.stringify(this.$store.state))
   font-weight: normal; font-style: normal;
   
 }
-input,select,ul,li{
+input,select,ul,li,textarea{
   font-family: 'Source-Han-Sans-CN-Regular', Helvetica,"Hiragino Sans GB", Arial, sans-serif !important;
 }
 
