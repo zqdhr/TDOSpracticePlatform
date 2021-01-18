@@ -3,9 +3,25 @@
         <div class="container">
             <div class="pageTab">
                 <div class="clearfix">
+
+                    <div class="fl">
+                        <div class="sel-box">
+                          <el-select v-model="coursetype"
+                          
+                          >
+                                <el-option
+                                v-for="item in coursetypeList"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                                </el-option>
+                            </el-select>
+                         
+                        </div>
+                    </div>
                    
                     <div class="fr">
-                       <a class="btnDefault pointer abtn"  @click="show_dialog_file=true;archiveManagementisSuccess=false">归档</a>
+                       <a class="btnDefault pointer abtn"  @click="show_dialog_file=true;archiveManagementisSuccess=false">新建课程</a>
                        <div class="d-serach"> 
                             <input :placeholder="inplaceholder" type="text" autocomplete="off" />
                             <a class="searchBtn pointer"></a>
@@ -31,7 +47,9 @@
                                     </div>
                                 </div>
                                 <div class="cell-fun boxsizing">
-                                    <a class="btnDefault btn-fun pointer" @click="linkDetail">{{item.state==0?'待开课':'已开课'}}</a>
+                                    <!--点击归档课程状态是已结束-->
+                                    <a class="btnDefault btn-fun pointer" v-if="coursetype==0" @click="linkDetail">{{item.state==0?'待发布':'已发布'}}</a>
+                                    <a class="btnDefault btn-fun pointer" v-if="coursetype==1" @click="linkDetail">已结束</a>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +109,13 @@ export default {
             ],
             show_dialog_file:false,
             archiveManagementisSuccess:false,//归档是否成功
+            coursetypeList:[{value:0,label:'我的课程'},{value:1,label:'归档课程'}],
+            coursetype:'我的课程'
        }
+    },
+    created(){
+	this.coursetype = this.coursetypeList[0].value
+       
     },
     methods:{
         //底部分页

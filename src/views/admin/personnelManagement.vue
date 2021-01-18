@@ -37,7 +37,7 @@
         <div class="fr">
           <a class="btnDefault pointer abtn" @click="delUser">删除人员</a>
 
-          <a class="btnDefault pointer abtn" @click="isUpload = true;$refs.upload.active = true"
+          <a class="btnDefault pointer abtn" @click="isUpload = true;"
             >上传人员</a
           >
 
@@ -179,6 +179,12 @@
     <el-dialog :visible.sync="isUpload" width="600">
       <div slot="title" class="dialog_header">人员上传</div>
       <div class="confirm_dialog_body alignCenter">
+        <ul class="fileList_name">
+        <li v-for="(file) in files" :key="file.id">
+          <span>{{file.name}}</span> -
+         
+        </li>
+      </ul>
         <div class="upload_person">
           人员列表:
           <file-upload
@@ -189,6 +195,7 @@
             v-model="files"
             extensions="xlsx,xls"
             :post-action="uploadUrl"
+            :auto-upload="false"
             @input-file="inputFile"
             @input-filter="inputFilter"
             name="excel_file"
@@ -200,7 +207,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <a class="btnDefault" @click="downloadTemplate">下载模板</a>
-        <a class="btnDefault" @click.prevent=""
+        <a class="btnDefault" @click.prevent="$refs.upload.active = true"
           >确认上传</a
         >
       </div>
@@ -507,22 +514,25 @@ export default {
     //上传的回调函数，每次上传回调都不一样
     inputFile(newFile, oldFile) {
       let that = this;
-      if (
-        Boolean(newFile) !== Boolean(oldFile) ||
-        oldFile.error !== newFile.error
-      ) {
+      console.log('123')
+      /*
+      if ( Boolean(newFile) !== Boolean(oldFile) ||oldFile.error !== newFile.error) {
         if (!this.$refs.upload.active) {
           this.$refs.upload.active = true;
         }
       }
+      */
       if (newFile && oldFile) {
         //add
         if (newFile && oldFile && !newFile.active && oldFile.active) {
           //console.log('response', newFile.response)
           let response = newFile.response;
+          console.log(this.files)
           if (response.code == 200) {
             this.$message.success("文件上传成功");
             that.searchUser(2, "", "", 1, 10);
+            that.isUpload = false
+
           } else {
             this.$message.error("文件上传失败");
           }
@@ -559,5 +569,10 @@ export default {
 .excel_file {
   cursor: pointer;
 }
+.fileList_name{
+  font-size: 18px;color:@tabcolor;
+  li{margin-bottom:8px;}
+}
 @import url(../../assets/less/admin.less);
+
 </style>
