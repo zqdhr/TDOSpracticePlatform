@@ -63,7 +63,19 @@
                </div>
             </div>
          </div>
-
+        <!--删除弹出框-->
+        <el-dialog :visible.sync="isDelete" width="600">
+        <div slot="title" class="dialog_header">请注意!</div>
+        <div class="confirm_dialog_body">
+            <p class="dialog_mess">
+            <span class="span_icon icon_waring">确定要删除当前选中作业吗？</span>
+            </p>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <a class="btnDefault" @click="confirmDeleteCourseWork">确 认</a>
+            <a class="btnDefault" @click="isDelete = false">取 消</a>
+        </div>
+        </el-dialog>
          <!--题库选择弹出框-->
          <el-dialog
            
@@ -75,33 +87,22 @@
             <div class="course_list dialog_course_list">
                 <!--选择题-->
                 <ul class="choice_question">
-                    <li class="li_choose">                              
-                    <div class="title">1.题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
-题目文本题目文本题目文本题目文本题目文本题目文本？ 
+                    <li class="li_choose" v-for="(item,index) in courseList" :key="index">                              
+                    <div class="title">{{item.title}} 
                     </div>
-                    <div class="pic"></div>   
-                    <p class="answer_box">
-                        <span class="s_radio">选项111</span>
-                        <span class="s_radio s_radio_answer">选项222</span>
-                        <span class="s_radio">选项333</span>
-                        <span class="s_radio">选项444</span>
+                    <div class="pic">
+                       <img :src="item.pic"/>    
+                    </div>   
+                    <p class="answer_box" v-if="item.type==1">
+                        <span class="s_radio" :class="{'s_radio_answer':index==item.answer}" v-for="(iitem,iindex) in item.chose" :key="iindex">
+                        </span>
                     </p>
+                    <p class="answer_box" v-if="item.type==2">{{item.answer}}</p> 
                     <!--选中的状态添加class   li_radio_h-->
                     <span class="li_radio li_radio_h"></span>                        
                     </li>
                 </ul>
-                <!--简答题-->
-                <ul class="answer_questions">
-                    <li class="li_choose">                              
-                    <div class="title">2.题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
-题目文本题目文本题目文本题目文本题目文本题目文本？ 
-                    </div>
-                    <div class="pic"></div>   
-                    <p class="answer_box">答案：题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
-题目文本题目文本题目文本题目文本题目文本题目</p> 
-                    <span class="li_radio"></span>                        
-                    </li>
-                </ul>
+
                 
             </div>
 
@@ -128,10 +129,15 @@ export default {
             coursework:{
                name:'',    
             },
+            courseList:[
+               {id:'',title:'1.题目文本题目文本题目文本题目文本题目?',type:1,chose:['选项111','选项222','选项3333','选项4444'],pic:'',answer:2},
+               {id:'',title:'1.题目文本题目文本题目文本题目文本题目?',type:2,pic:'',answer:'题目文本题目文本题目文本题目文本题目'}
+            ],
             isShow:false,
             deleteList:[
 
-            ]
+            ],
+            isDelete:true
         }
     },
     components:{
@@ -140,6 +146,8 @@ export default {
      created(){
         this.cate = this.options[0].value;//默认选中内置课件
         this.setDialogWidth();
+
+      
        
     },
     mounted(){
@@ -151,15 +159,23 @@ export default {
     },
     methods:{
         
+        addState(){
+        //获取的作业列表，添加选中状态
+            for(var i=0;i++;i<courseList.length){
+
+            }
+          
+        },
         //弹出框设置响应式宽度
-        setDialogWidth() {
-       
-            var val = document.body.clientWidth
+        setDialogWidth() {          
+            var val =document.documentElement.clientWidth
             const def = 1200 // 默认宽度
             if (val < def) {
-                this.dialogWidth = '80%'
+                this.dialogWidth = '80%';
+                console.log(111)
             } else {
-                this.dialogWidth = def + 'px'
+                this.dialogWidth = (def-200) + 'px'
+                
             }
         },
         //弹出框右上角关闭安妮
@@ -175,7 +191,12 @@ export default {
         //删除题目
         deleteOperation(){
             let that = this;
-            that.isShow = !that.isShow
+            
+            if(that.isShow && that.deleteList.length>0){
+               that.isDelete = true;
+            }else{
+               that.isShow = !that.isShow
+            }
         },
         //点击编辑框输入作业名获取焦点
         input_focus(){
@@ -183,6 +204,14 @@ export default {
                 //DOM 更新了
                 this.$refs.inputVal.focus()
             })
+        }
+
+        ,
+        //删除确认
+        confirmDeleteCourseWork(){
+            let that = this;
+            that.isDelete = false;
+            that.isShow = false;
         }
 
        

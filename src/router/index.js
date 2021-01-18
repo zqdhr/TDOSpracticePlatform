@@ -40,6 +40,18 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/admin/newCourse.vue'),
         meta:{navindex:1},
       },
+      {
+        path: '/admin/courseDetail',//新建课程
+        name: 'courseDetail',
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/lp_courseDetail.vue'),
+        meta:{navindex:1},
+      },
+      {
+        path: '/admin/experimentLibrary',//实验库
+        name: 'experimentLibrary',
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/experimentLibrary.vue'),
+        meta:{navindex:2},
+      },
 
       {
         path: '/admin/ImageRepository',//镜像库
@@ -47,6 +59,16 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/admin/ImageRepository.vue'),
         meta:{navindex:2},
       },
+      
+      {
+        path: '/admin/coursewareLibrary',//课件库
+        name: 'coursewareLibrary',
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/coursewareLibrary.vue'),
+        meta:{navindex:2},
+      },
+
+      
+
    
       
     ]

@@ -219,7 +219,7 @@ export default {
 @media screen and (max-width: 1200px) {
   .PP_header {
     width: 1200px;
-    position: static;
+    position:relative;
   }
 }
 </style>

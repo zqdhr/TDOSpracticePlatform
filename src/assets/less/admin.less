@@ -155,6 +155,36 @@ span{color:@tabcolor}
     .a_upload{border: 1px solid @border; width: 100%; padding: 0px; display: block;}
 }
 
+/*列表*/
+.list_box{ overflow: hidden;
+    .list_ul{ margin-left: -10px; margin-right: -10px;
+        li{width:20%;min-height: 40px;float: left; margin-bottom: 20px; }    
+        .pic{width:100%; margin-bottom: 10px;
+          .pic_box{padding-bottom:50%; background:@basecolor;.borderRadius(5px,5px,0,0);}
+        }   
+        .info{margin: 0 10px; min-height: 30px;background: @fontfff; padding:0px 0 20px 0; position:relative;
+          .borderRadius(5px,5px,5px,5px); overflow: hidden;
+        }
+        .padt20{padding-top: 20px;}
+        .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px;}
+        .icon{width: 20px;height: 20px;display: block; position:absolute;top:10px}
+        .icon_close{background: url(../img/white_close.png) center no-repeat;right:15px}
+        .icon_set{background: url(../img/n_set.png) center no-repeat;right:0px}
+        .c_icon{width:58px;height: 58px;margin:0 auto; display: block;}
+        .icon_video{background: url(../img/courseware_video.png) center no-repeat;}
+        .icon_pdf{background: url(../img/courseware_pdf.png) center no-repeat;}
+        .p-name{padding:12px 0;}
+        .line{margin: 0 30px; height: 2px; background: @linecoloe; margin-bottom: 10px;}
+    }
+
+    .coursewareLibrary_ul{
+        .icon_close{background: url(../img/blue_close.png) center no-repeat;right:15px}
+    }
+}
+
+
+
+
 
 
 @media screen and (max-width:1470px){
