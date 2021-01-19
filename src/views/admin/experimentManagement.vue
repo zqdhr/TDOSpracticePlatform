@@ -59,7 +59,7 @@
     <el-dialog
       
       :visible.sync="show_Release"
-      width="600">
+      width="600px">
       <div slot="title" class="dialog_header">
           请注意!
       </div>

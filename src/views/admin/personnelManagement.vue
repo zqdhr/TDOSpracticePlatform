@@ -176,7 +176,7 @@
       </div>
     </div>
     <!--点击上传人员弹出框-->
-    <el-dialog :visible.sync="isUpload" width="600">
+    <el-dialog :visible.sync="isUpload" width="600px">
       <div slot="title" class="dialog_header">人员上传</div>
       <div class="confirm_dialog_body alignCenter">
         <ul class="fileList_name">
@@ -214,7 +214,7 @@
     </el-dialog>
 
     <!--删除人员弹出框-->
-    <el-dialog :visible.sync="isDelete" width="600">
+    <el-dialog :visible.sync="isDelete" width="600px">
       <div slot="title" class="dialog_header">请注意!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
@@ -231,7 +231,7 @@
     <el-dialog
      
       :visible.sync="editDialog"
-      width="600"
+      width="600px"
       class="personDialog"
       
     >

@@ -100,7 +100,7 @@ export default {
           fullscreenToggle: true, // 是否显示全屏按钮
         },
       },
-      url: "/Vue.pdf",
+      url: "http://192.168.1.167:8888/data/test.pdf",//"/Vue.pdf",
       currentPage: 0, // pdf文件页码
       pageCount: 0, // pdf文件总页数
       fileType: "pdf", // 文件类型

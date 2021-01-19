@@ -65,7 +65,7 @@
     </div>
 
      <!--删除镜像弹出框-->
-    <el-dialog :visible.sync="isDelete" width="600">
+    <el-dialog :visible.sync="isDelete" width="600px">
       <div slot="title" class="dialog_header">请注意!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
@@ -78,11 +78,11 @@
       </div>
     </el-dialog>
    
-    <!--虚拟机内存释放弹出框-->
+    <!--新增镜像弹出框-->
     <el-dialog class="dialog_add_mirroring dialog_body_nopadding_bottom"
       
       :visible.sync="show_Add"
-      width="600">
+      width="600px">
       <div slot="title" class="dialog_header">
           请注意!
       </div>

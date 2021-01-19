@@ -32,39 +32,27 @@
                     <div class="course_list">
                         <!--选择题-->
                        <ul class="choice_question">
-                           <li :class="{'li_choose':isShow}">                              
-                            <div class="title">1.题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
-题目文本题目文本题目文本题目文本题目文本题目文本？ 
-                            </div>
-                            <div class="pic"></div>   
-                            <p class="answer_box">
-                               <span class="s_radio">选项111</span>
-                               <span class="s_radio s_radio_answer">选项222</span>
-                               <span class="s_radio">选项333</span>
-                               <span class="s_radio">选项444</span>
-                            </p>
-                            <!--选中的状态添加class   li_radio_h-->
-                            <span class="li_radio li_radio_h"></span>                        
+                           <li :class="{'li_choose':isShow}"  v-for="(item,index) in courseList" :key="index">                              
+                                <div class="title">{{item.title}} </div>
+                                <div class="pic">
+                                <img :src="item.pic"/>    
+                                </div>   
+                                <p class="answer_box" v-if="item.type==1">
+                                    <span class="s_radio" :class="{'s_radio_answer':index==item.answer}" v-for="(iitem,iindex) in item.chose" :key="iindex">
+                                    </span>
+                                </p>
+                                <p class="answer_box" v-if="item.type==2">{{item.answer}}</p> 
+                                <!--选中的状态添加class   li_radio_h-->
+                                <span class="li_radio " :class="{'li_radio_h':item.checked}"></span>                   
                            </li>
                        </ul>
-                       <!--简答题-->
-                       <ul class="answer_questions">
-                           <li :class="{'li_choose':isShow}">                              
-                            <div class="title">2.题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
-题目文本题目文本题目文本题目文本题目文本题目文本？ 
-                            </div>
-                            <div class="pic"></div>   
-                            <p class="answer_box">答案：题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题目文本题
-题目文本题目文本题目文本题目文本题目文本题目</p> 
-                            <span class="li_radio"></span>                        
-                           </li>
-                       </ul>
+                    
                     </div>
                </div>
             </div>
          </div>
         <!--删除弹出框-->
-        <el-dialog :visible.sync="isDelete" width="600">
+        <el-dialog :visible.sync="isDelete" width="600px">
         <div slot="title" class="dialog_header">请注意!</div>
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
@@ -99,7 +87,7 @@
                     </p>
                     <p class="answer_box" v-if="item.type==2">{{item.answer}}</p> 
                     <!--选中的状态添加class   li_radio_h-->
-                    <span class="li_radio li_radio_h"></span>                        
+                    <span class="li_radio " :class="{'li_radio_h':item.checked}"></span>                        
                     </li>
                 </ul>
 
@@ -151,18 +139,22 @@ export default {
        
     },
     mounted(){
+        let that = this;
        window.onresize = () => {
         return (() => {
             this.setDialogWidth()
         })()
         }
+
+        that.addState();
     },
     methods:{
         
         addState(){
         //获取的作业列表，添加选中状态
-            for(var i=0;i++;i<courseList.length){
-
+            let that = this;
+            for(var i=0;i++;i<that.courseList.length){
+               that.$set(that.courseList[i],'checked',false)
             }
           
         },
