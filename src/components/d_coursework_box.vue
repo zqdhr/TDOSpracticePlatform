@@ -71,7 +71,7 @@
                 <!--选中的状态添加class   li_radio_h-->
                 <span
                   class="li_radio"
-                  @click="cheeckedList(item, index, item.checked)"
+                  @click="cheeckedList(1,item, index, item.checked)"
                   :class="{ li_radio_h: item.checked }"
                 ></span>
               </li>
@@ -129,7 +129,7 @@
             <span
               class="li_radio"
               :class="{ li_radio_h: item.checked }"
-              @click="cheeckedList(item, index, item.checked)"
+              @click="cheeckedList(2,item, index, item.checked)"
             ></span>
           </li>
         </ul>
@@ -197,6 +197,7 @@ export default {
       ],
       isShow: false,
       deleteList: [], //选中需要删除的题目列表
+      chooseList:[],//新增题目选中
       isDelete: false,
     };
   },
@@ -219,22 +220,42 @@ export default {
   },
   methods: {
     //选中事件
-    cheeckedList(obj, index, checked) {
+    cheeckedList(num,obj, index, checked) {
       let that = this;
-      if (!checked) {
-        if (!(that.deleteList.indexOf(obj.id) != -1)) {
-          that.deleteList.push(obj.id);
+      //删除选中
+      if(num==1){
+        if (!checked) {
+            if (!(that.deleteList.indexOf(obj.id) != -1)) {
+            that.deleteList.push(obj.id);
+            }
+            that.$set(that.courseList[index], "checked", true);
+            
+        } else {
+            that.$set(that.courseList[index], "checked", false);
+            let  i = that.deleteList.indexOf(obj.id);
+            that.deleteList.splice(i, 1);
         }
-        that.$set(that.courseList[index], "checked", true);
+      }else{
+        //新增选中
         
-      } else {
-        that.$set(that.courseList[index], "checked", false);
-        var i = that.deleteList.indexOf(obj.id);
-        that.deleteList.splice(i, 1);
+        if (!checked) {
+            if (!(that.chooseList.indexOf(obj.id) != -1)) {
+            that.chooseList.push(obj.id);
+            }
+            that.$set(that.all_courseList[index], "checked", true);
+            
+        } else {
+            that.$set(that.all_courseList[index], "checked", false);
+            let i = that.chooseList.indexOf(obj.id);
+            that.chooseList.splice(i, 1);
+        }
+          
       }
     },
+    
+    //数组列表添加是否选中字段
     addState(array) {
-      //获取的作业列表，添加选中状态
+     
 
       let that = this;
       for (var i = 0; i < array.length; i++) {
@@ -411,7 +432,7 @@ export default {
       background: url(../assets/img/rad2.png) center no-repeat;
       position: absolute;
       left: 0px;
-      top: 12px;
+      top:2px;
       -webkit-background-size: 24px;
       background-size: 24px;
       opacity: 1;

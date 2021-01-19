@@ -39,6 +39,7 @@
 
     <div class="coursewareLibrary_box">
         <div class="container">
+            
             <div class="list_box">
                 <ul class="list_ul coursewareLibrary_ul  clearfix">
                     <li v-for="(item,index) in experimentList" :key="index">
@@ -62,6 +63,8 @@
                     </li>
                 </ul>
             </div>
+
+
         </div>
     </div>
      <!--删除实验弹出框-->

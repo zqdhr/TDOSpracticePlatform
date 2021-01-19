@@ -32,7 +32,7 @@
                         <li v-for="(item,index) in experimentList" :key="index">
                             <div class="info">
                                 <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                                   <a class="icon icon_close pointer"></a>
+                                   <a class="icon icon_close pointer" @click="click_delete(item)"></a>
                                 </el-tooltip>
                                 <!--
                                 <el-tooltip class="item" effect="dark" content="设置" placement="top">
@@ -66,6 +66,23 @@
                 </div>
             </div>
          </div>
+         <!--删除弹出框-->
+        <el-dialog :visible.sync="isDelete" width="600px">
+        <div slot="title" class="dialog_header">请注意!</div>
+        <div class="confirm_dialog_body">
+            <p class="dialog_mess">
+            <span class="span_icon icon_waring">确定要删除该课件吗？</span>
+            </p>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <a class="btnDefault" @click="confirmDelete">确 认</a>
+            <a
+            class="btnDefault"
+            @click="isDelete = false;"
+            >取 消</a
+            >
+        </div>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -92,7 +109,8 @@ export default {
                {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
             ],
             perPage:8, //8个实验一页
-            curPage:1//设备列表
+            curPage:1,//设备列表
+            isDelete:false//是否删除弹出框是否显示
         }
     },
     components:{
@@ -117,6 +135,17 @@ export default {
          selectType(val){
             console.log(val)
         },
+
+        //是否删除
+        click_delete(){
+            let that = this;
+            that.isDelete = true;
+        },
+        //删除弹出确认
+        confirmDelete(){
+            let that = this;
+            that.isDelete = false;
+        }
     }
 }
 </script>
@@ -138,7 +167,7 @@ export default {
       
         .info{margin: 0 10px; min-height: 30px;background: @background; padding: 40px 0 20px 0; position:relative;}
         .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px;}
-        .icon{width: 20px;height: 20px;display: block; position:absolute;top:10px}
+        .icon{width: 20px;height: 20px;display: block; position:absolute;top:10px;user-select: none;}
         .icon_close{background: url(../assets/img/n_close.png) center no-repeat;right:15px}
         .icon_set{background: url(../assets/img/n_set.png) center no-repeat;right:28px}
         .p-name{padding:12px 0;}
