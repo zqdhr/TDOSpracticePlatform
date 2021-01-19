@@ -1,7 +1,7 @@
 <template>
     <div class="pp_main boxsizing detail_main">
         <div class="container">
-            <div class="pageTab">
+            <div class="pageTab clearfix">
                 <div class="mess">
                     当前位置：<a class="pointer" @click="back">课程管理</a> > <span>区块链密码学（待发布）</span>
                 </div>

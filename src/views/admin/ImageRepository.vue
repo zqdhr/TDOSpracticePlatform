@@ -1,7 +1,7 @@
 <template>
   <div class="pp_main boxsizing">
     <div class="container">
-      <div class="pageTab">
+      <div class="pageTab clearfix">
         <div class="fl">
           <div class="sel-box">
             <el-select v-model="type" placeholder="镜像类型" @change="selectType" >

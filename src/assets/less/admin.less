@@ -27,7 +27,7 @@
 }
 
 .pageTab{
-    height:80px;
+     padding-bottom:20px;
     .fl{padding-top: 20px;}
     .sel-box{margin-right: 20px;display: inline-block; vertical-align: middle; font-size: 16px;}
     .fr{
@@ -175,6 +175,9 @@ span{color:@tabcolor}
         .icon_pdf{background: url(../img/courseware_pdf.png) center no-repeat;}
         .p-name{padding:12px 0;}
         .line{margin: 0 30px; height: 2px; background: @linecoloe; margin-bottom: 10px;}
+
+        .icon_radio{background: url(../img/rad1.png) center no-repeat; right: 15px;}
+        .icon_radio_h{background: url(../img/radh1.png) center no-repeat;}
     }
 
     .coursewareLibrary_ul{
@@ -182,9 +185,19 @@ span{color:@tabcolor}
     }
 }
 
+.experimentLibrary_box,.coursewareLibrary_box{
+    .list_box{min-height: 500px;}
+}
 
-
-
+.div_checked{
+    border-bottom: 1px solid @linecoloe; padding-bottom: 8px; margin-top: 10px;
+    span{display: inline-block; margin-bottom: 12px; margin-right: 10px; line-height: 40px; background:#F0F0F0;
+       font-size: 16px; padding: 0 18px; color:@tabcolor;.borderRadius(5px,5px,5px,5px);
+       position: relative;
+    }
+    .icon{width: 20px;height: 20px;display: block; position:absolute;top:-10px}
+    .icon_close{background: url(../img/n_close.png) center no-repeat;right:-10px}
+}
 
 
 @media screen and (max-width:1470px){

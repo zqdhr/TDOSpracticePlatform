@@ -1,7 +1,7 @@
 <template>
   <div class="pp_main boxsizing">
     <div class="container container-userList">
-      <div class="pageTab">
+      <div class="pageTab clearfix">
         <div class="fl">
           <div class="sel-box">
             <el-select
