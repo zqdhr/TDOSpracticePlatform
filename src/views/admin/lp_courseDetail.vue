@@ -41,7 +41,7 @@
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
                                 <div class="btnbox">
-                                    <a class="btnDefault pointer btn-course">确认开课</a>
+                                    <a class="btnDefault pointer btn-course">确认发布</a>
                                 </div>
                              </div>
                          </div>
