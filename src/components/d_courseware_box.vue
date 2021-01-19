@@ -34,9 +34,11 @@
                                 <el-tooltip class="item" effect="dark" content="删除" placement="top">
                                    <a class="icon icon_close pointer"></a>
                                 </el-tooltip>
+                                <!--
                                 <el-tooltip class="item" effect="dark" content="设置" placement="top">
                                    <a class="icon icon_set pointer"></a>
                                 </el-tooltip>
+                                -->
                                 <div class="icon-box">
                                     <span class="c_icon" :class="{'icon_video':item.type==0,'icon_pdf':item.type==1}"></span>
                                 </div>
@@ -44,6 +46,9 @@
                                 <div class="line"></div>
                                 <p class="p-text textline1">课件大小：{{item.size}}</p>
                                 <p class="p-text textline1">视频时长：{{item.duration}}</p>
+                                <!---
+                                <p class="p-text textline1">文档页数：共16页</p>
+                                -->
                             </div>
                         </li>
                     </ul>
@@ -77,7 +82,7 @@ export default {
             cate:'内置课件',//课件分类默认内置课件
             type:'全部',//课件类型默认全部
             experimentList:[
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
+               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0,},
                {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
                {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
                {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
@@ -134,7 +139,7 @@ export default {
         .info{margin: 0 10px; min-height: 30px;background: @background; padding: 40px 0 20px 0; position:relative;}
         .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px;}
         .icon{width: 20px;height: 20px;display: block; position:absolute;top:10px}
-        /*.icon_close{background: url(../assets/img/n_close.png) center no-repeat;right:28px}*/
+        .icon_close{background: url(../assets/img/n_close.png) center no-repeat;right:15px}
         .icon_set{background: url(../assets/img/n_set.png) center no-repeat;right:28px}
         .p-name{padding:12px 0;}
         .c_icon{width:58px;height: 58px;margin:0 auto; display: block;}
