@@ -28,13 +28,14 @@
                      <a class=" a_delete"></a>
                      <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
+
                 <el-collapse-transition>
                 <div class="section_box" v-if="item.show">
                     <ul class="section_ul">
                         <li class="section_li" v-for="(iitem,iindex) in item.sections" :key="iindex" :class="{'new_section_li':!iitem.id}">
                             <!--节-->
                             <template v-if="iitem.id">
-                            <div class="section_box" :class="{'arrow':!iitem.show,'arrow_up':iitem.show}">
+                            <div class="section_box d-section_name" :class="{'arrow':!iitem.show,'arrow_up':iitem.show}">
                                 <div class="sec_name textline1">
                                     <p class="textline1">第{{iindex+1}}节：{{iitem.name}}</p>
                                     
@@ -52,7 +53,7 @@
                             </div>                    
                             </template>>
                             <template v-if="!iitem.id">
-                            <div class="section_box">
+                            <div class="section_box new_section_in_box">
                                 <div class="sec_name textline1 new_sec_name">
                                     <span class="textline1">第{{iindex+1}}节：</span>
                                     <div class="din">
@@ -106,6 +107,9 @@
         </ul>
         <div class="add-btn-box">
             <a class="btnDefault add-btn pointer" @click="click_newChapter">+ 新建章节</a>
+        </div>
+        <div class="add-btn-box last-btn-box">
+            <a class="btnDefault add-btn pointer" >确认上传</a>
         </div>
     </div>
 
@@ -230,7 +234,7 @@ export default{
      .chapter_box{
         .chapter_li{ margin-top: 20px;}
         .li_focus{border:2px solid @basecolor;.borderRadius(10px,10px,10px,10px); overflow: hidden;}
-        .cha_title{background:#F5F5F7; font-size: 18px;line-height: 40px; padding: 7px 60px 7px 60px; position: relative;
+        .cha_title{background:#F5F5F7; font-size: 18px;line-height: 40px; padding: 7px 60px 7px 20px; position: relative;
            .s_name{color:@fontColor; background: url(../assets/img/d_chapter.png) left center no-repeat; padding: 5px 0 5px 35px; }
            .s_intro{color: @hnavcolor; padding-left: 20px;}  
            .chapter_name_box{
@@ -264,6 +268,7 @@ export default{
     /*添加按钮样式*/
     .add-btn-box{padding: 20px 0; text-align: center;}
     .add-btn{width:auto;padding:0 50px}
+    .last-btn-box{padding-top:0px}
    
     /*附件*/
     .sec_enclosure{display: inline-block; width:40%;vertical-align:middle;
@@ -281,17 +286,23 @@ export default{
 
     /*结列表*/
     .section_box{
+
          .a_delete{right:30px}
         .add-btn{padding: 0 20px;}
+    }
+    .d-section_name{
+        background: @bge3e3e3; padding: 10px 40px 10px 0;
+        .sec_enclosure div{margin-left: 40px;}
+        .a_arrow{right:20px;}
     }
 
     .section_ul{
         overflow: hidden;
-        .section_li{font-size: 0px;   position: relative;padding:10px 20px 0 60px;
+        .section_li{font-size: 0px;   position: relative;margin:15px 20px 0 30px; 
             >div{font-size: 16px;color:@fontColor1;}
             .section_box{
                 position: relative;
-                .a_arrow{right: 0px;}
+                
             }
             .arrow_up{
                 .a_arrow{background: url(../assets/img/d_arrow_u.png)  center no-repeat;cursor: pointer;}
@@ -305,7 +316,11 @@ export default{
                 input{font-size: 16px; line-height:40px;}
             }
         }
-        .new_section_li{padding:8px 20px 8px 60px;}
+        .new_section_in_box{background:@bge3e3e3;
+         .a_arrow{right:58px;}
+         .a_delete{right:20px}
+        }
+      
 
         .line1{width:30px;height: 1px;background: @linecoloe; position: absolute; top:50%; margin-top: -0.5px;}
         .line2{width:1px;height:60px;background: @linecoloe;position: absolute;left:0px; top:-31px}
@@ -313,18 +328,20 @@ export default{
         
     }
     /*小节列表*/
-    .i_section_ul{ margin-top: 10px;
+    .i_section_ul{ 
         .section_li{
-            .sec_name{width:90%}
-            .sec_name p{padding-left:0px;}
+             margin: 15px 0 0 30px;
+             .sec_name{background: @bgf0f0f0; width:100%}
+            .sec_name p{padding-left:0px; line-height: 40px; padding-left: 30px;}
             .din input{font-size: 16px;}
             .a_delete{right:0px}
         }
         .new_section_li{
             margin-right: 0px;
-           .sec_name{width:100%} 
-           .a_delete{right:0px}
+           .sec_name{ display: block; padding-left: 30px; width:auto;} 
+           .a_delete{right:20px}
         }
+        
     }
 }
 </style>
