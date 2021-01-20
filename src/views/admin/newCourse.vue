@@ -83,6 +83,7 @@
         <div slot="title" class="dialog_header">请注意!</div>
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
+            <!--成功span的class为icon_success-->
             <span class="span_icon icon_waring">当前课程暂未新建完成！确定要退出吗？</span>
             </p>
         </div>
