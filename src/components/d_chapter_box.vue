@@ -25,7 +25,7 @@
                      <div class="din">
                          <input type="text" placeholder="请输入章节"/>
                      </div>
-                     <a class=" a_delete"></a>
+                     <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该章吗？'"></a>
                      <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
 
@@ -57,10 +57,10 @@
                                 <div class="sec_name textline1 new_sec_name">
                                     <span class="textline1">第{{iindex+1}}节：</span>
                                     <div class="din">
-                                        <input placeholder="请输入章节名称"/>
+                                        <input placeholder="请输入节名称"/>
                                     </div>
                                 </div>
-                                <a class=" a_delete"></a>
+                                <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该节吗？'"></a>
                                 <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a> 
                             </div>
                             </template>
@@ -78,9 +78,9 @@
                                             <div class="sec_name textline1 ">
                                                 <span class="textline1">第{{i_index+1}}小节：</span>
                                                 <div class="din">
-                                                    <input placeholder="请输入章节名称"/>
+                                                    <input placeholder="请输入小节名称"/>
                                                 </div>
-                                                <a class=" a_delete"></a>
+                                                <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该小节吗？'"></a>
                                             </div>
                                     </template>
 
@@ -111,6 +111,25 @@
         <div class="add-btn-box last-btn-box">
             <a class="btnDefault add-btn pointer" >确认上传</a>
         </div>
+        
+         <!--删除弹出框-->
+        <el-dialog :visible.sync="isDelete" width="600px">
+        <div slot="title" class="dialog_header">请注意!</div>
+        <div class="confirm_dialog_body">
+            <p class="dialog_mess">
+            <span class="span_icon icon_waring">{{deleteMess}}</span>
+            </p>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <a class="btnDefault" @click="isDelete=false">确 认</a>
+            <a
+            class="btnDefault"
+            @click="isDelete = false;"
+            >取 消</a
+            >
+        </div>
+        </el-dialog>
+
     </div>
 
 </template>
@@ -171,6 +190,8 @@ export default{
                     ]
                 }
             ],
+            isDelete:false,
+            deleteMess:''
         }
     },
     mounted(){
@@ -317,8 +338,8 @@ export default{
             }
         }
         .new_section_in_box{background:@bge3e3e3;
-         .a_arrow{right:58px;}
-         .a_delete{right:20px}
+         .a_arrow{right:20px;}
+         .a_delete{right:58px}
         }
       
 
