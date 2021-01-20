@@ -25,7 +25,7 @@
                             </el-option>
                         </el-select>               
                     </div>
-                    <a class="btnDefault pointer">新增课件</a>
+                    <a class="btnDefault pointer" @click="click_new">新增课件</a>
                 </div>
                 <div class="list_box">
                     <ul class="list_ul clearfix">
@@ -83,10 +83,13 @@
             >
         </div>
         </el-dialog>
+        <newdialog  @hidedialog="hidedialog" ref="newdialog"></newdialog>
+        
     </div>
 </template>
 <script>
 import courseNav from "@/components/left_courseNav.vue";
+import newdialog from '@/components/dialog_newCourseware'
 export default {
     data(){
         return{
@@ -114,7 +117,7 @@ export default {
         }
     },
     components:{
-        courseNav
+        courseNav,newdialog
     },
      created(){
         this.cate = this.options[0].value;//默认选中内置课件
@@ -145,7 +148,11 @@ export default {
         confirmDelete(){
             let that = this;
             that.isDelete = false;
-        }
+        },
+         click_new(){
+            let that = this;
+            that.$refs.newdialog.click_new();
+        },
     }
 }
 </script>
