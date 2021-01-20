@@ -77,6 +77,20 @@
                 </div>
             </div>
         </div>
+
+         <!--课程暂未新建退出-->
+        <el-dialog :visible.sync="isNewComplete" width="600px">
+        <div slot="title" class="dialog_header">请注意!</div>
+        <div class="confirm_dialog_body">
+            <p class="dialog_mess">
+            <span class="span_icon icon_waring">当前课程暂未新建完成！确定要退出吗？</span>
+            </p>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <a class="btnDefault" @click="confirm">确 认</a>
+            <a class="btnDefault" @click="isNewComplete = false">取 消</a>
+        </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -97,6 +111,8 @@ export default {
             ],
             uploadUrl:'',
             jwt:'',
+
+            isNewComplete:false, 
            
 
         }
@@ -196,9 +212,15 @@ export default {
         //跳转到课程管理页面
         linkcourse(){
             let that = this;
-            that.$router.push({path:'/admin/courseManagement'}).catch((err)=>{
+            that.isNewComplete = true;
+           
+        },
+        confirm(){
+          let that = this;
+           that.$router.push({path:'/admin/courseManagement'}).catch((err)=>{
                 console.log(err)
             })
+            that.isNewComplete = true;
         },
         //添加章节
         addchapter(){
