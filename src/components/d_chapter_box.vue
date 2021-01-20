@@ -2,9 +2,19 @@
     <div class="chapter_box">
         <ul class="chapter_ul">                         
             <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}">
-                <div class="textline1 cha_title " :class="{'arrow':!item.show,'arrow_up':item.show}" @click="showSection(item,item.show)">
+                <!--已有章节内容-->
+               
+                <div class="textline1 cha_title " :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="item.id">
                     <span class="s_name">章节{{index+1}}：{{item.name}}</span>
-                    <span class="s_intro">{{item.introduction}}</span>
+                    <!--<span class="s_intro">{{item.introduction}}</span>-->
+                    <a class="a_arrow" @click="showSection(item,item.show)"></a>
+                </div>
+                <div  class="textline1 cha_title new_cha_title" :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="!item.id">
+                     <span class="s_name">章节{{index+1}}：{{item.name}}</span>
+                     <div class="din">
+                         <input type="text" placeholder="请输入章节"/>
+                     </div>
+                     <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
                 <div class="section_box" v-show="item.show">
                     <ul class="section_ul">
@@ -23,15 +33,20 @@
                             </div>
                         </li>
 
+
                     </ul>
                     <div class="add-btn-box">
                         <a class="btnDefault add-btn pointer">+ 新建小节</a>
                     </div>
                 </div>
+               
+                
             </li>
+
+
         </ul>
         <div class="add-btn-box">
-            <a class="btnDefault add-btn pointer">+ 新建章节</a>
+            <a class="btnDefault add-btn pointer" @click="click_newChapter">+ 新建章节</a>
         </div>
     </div>
 
@@ -43,6 +58,7 @@ export default{
           chapters:[
                 {
                     name:'标题内容标题内容标题内容',
+                    id:'xjkc2211',
                     introduction:'简介内容简介内容简介内容简介内容简介内容简介内容简介内容简介内容',
                     sections:[
                         {
@@ -56,6 +72,7 @@ export default{
                     ],
                 },
                 {
+                    id:'xjkc2211',
                     name:'标题内容标题内容标题内容',
                     introduction:'简介内容简介内容简介内容简介内容简介内容简介内容简介内容简介内容',
                     sections:[
@@ -90,6 +107,11 @@ export default{
             }
 
             that.$set(item,'show',!show)   
+        },
+        //新建章节
+        click_newChapter(){
+            let that = this;
+            that.chapters.push({name:'',show:false})
         }
     }
 }
@@ -101,16 +123,28 @@ export default{
      .chapter_box{
         .chapter_li{ margin-top: 20px;}
         .li_focus{border:2px solid @basecolor;.borderRadius(10px,10px,10px,10px); overflow: hidden;}
-        .cha_title{background:#F5F5F7; font-size: 18px;line-height: 40px; padding: 7px 60px 7px 60px;
+        .cha_title{background:#F5F5F7; font-size: 18px;line-height: 40px; padding: 7px 60px 7px 60px; position: relative;
            .s_name{color:@fontColor; background: url(../assets/img/d_chapter.png) left center no-repeat; padding: 5px 0 5px 35px; }
            .s_intro{color: @hnavcolor; padding-left: 20px;}
+           
         }
-        .cha_title.arrow{
-            background:#F5F5F7 url(../assets/img/d_arrow_d.png) right 20px center no-repeat;cursor: pointer;
+        .a_arrow{
+           width:20px;height:20px;display: block;position: absolute;right:20px;top:50%;margin-top: -10px; 
+            background:#F5F5F7 url(../assets/img/d_arrow_d.png)  center no-repeat;cursor: pointer;
         }
+
         .cha_title.arrow_up{
-            background:#F5F5F7 url(../assets/img/d_arrow_u.png) right 20px center no-repeat;cursor: pointer;
+           
+             .a_arrow{
+                  background:#F5F5F7 url(../assets/img/d_arrow_u.png)  center no-repeat;cursor: pointer;
+             }
         }
+
+        .din{display: inline-block; width: 80%;
+          input{font-size: 18px;color: #6666; width: 100%; padding:0 20px; background: 0 none;color:#333;}
+        }
+
+        .new_cha_title{padding-right:90px;}
 
   
 

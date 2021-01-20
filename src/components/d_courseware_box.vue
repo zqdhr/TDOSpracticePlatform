@@ -83,7 +83,7 @@
             >
         </div>
         </el-dialog>
-        <newdialog  @hidedialog="hidedialog" ref="newdialog"></newdialog>
+        <newdialog   ref="newdialog"></newdialog>
         
     </div>
 </template>
