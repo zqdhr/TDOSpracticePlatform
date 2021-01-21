@@ -11,9 +11,19 @@
                     <el-collapse-transition>
                         <ul class="children_ul" v-show="item.show">
                             <li v-for="(iitem,iindex) in item.sections" :key="iindex" class="pointer">
-                                <div class=" children_name">
+                                <div class=" children_name" :class="{'arrow_up':iitem.show}" @click="showSubsection(index,iitem,iitem.show)">
                                     <p class="textline1">{{iitem.name}}({{iitem.num}})</p>
                                 </div>
+                               <el-collapse-transition>
+                                <ul class="subSection_ul" v-if="iitem.subsection && iitem.show">
+                                    <li v-for="(subitem,sub_index) in iitem.subsection" :key="sub_index">
+                                        <div class="subSection_name">
+                                            <p class="textline1">{{subitem.name}}</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                               </el-collapse-transition>
+                                
                             </li>
                         </ul>
                    </el-collapse-transition>
@@ -36,7 +46,28 @@ export default {
                 name: '节点共识模拟',
                 num:120,
                 sections: [
-                    {id:'5662222',name: '节点启停',num:40}
+                    {
+                        id:'5662222',name: '节点启停1',num:40,
+                        subsection:[{id:'5dffff',name:'节点启动1'},{id:'5dffff',name:'节点停止1'}]
+                    },
+                    {
+                        id:'5662222',name: '节点启停2',num:40,
+                        subsection:[{id:'5dffffss',name:'节点启动2'},{id:'ee5dffff',name:'节点停止2'}]
+                    }
+                ]},
+                 {
+                id:'5662222',
+                name: '节点共识模拟',
+                num:120,
+                sections: [
+                    {
+                        id:'5662222',name: '节点启停1',num:40,
+                        subsection:[{id:'5dffff',name:'节点启动1'},{id:'5dffff',name:'节点停止1'}]
+                    },
+                    {
+                        id:'5662222',name: '节点启停2',num:40,
+                        subsection:[{id:'5dffffss',name:'节点启动2'},{id:'ee5dffff',name:'节点停止2'}]
+                    }
                 ]},
                 {
                 id:'5662222',
@@ -59,24 +90,23 @@ export default {
     },
     mounted(){
         let that = this;
-        //章节下拉添加子元素是否显示参数show
-        for(var i=0;i<that.chapters.length;i++){
-           this.$set(that.chapters[i], 'show', false)
-        }
+        that.addChecked();
+        console.log(that.chapters)
+        
     },
     methods:{
-            menuEnter: function(el, done) {
-    //这行是关键
-      el.offsetWidth;
-      el.style.maxHeight =  600
-      el.style.transition = "all 0.3s ease-in";
-      done();
-    },
-    menuLeave: function(el) {
-      el.offsetWidth;
-      el.style.maxHeight = 0;
-      el.style.transition = "all 0.3s ease-out";
-    },
+        //章、杰添加子元素是否显示参数show
+        addChecked(){
+            let that = this;
+            for(var i=0;i<that.chapters.length;i++){
+                this.$set(that.chapters[i], 'show', false)
+
+                for(var j=0;j<that.chapters[i].sections.length;j++){
+                    this.$set(that.chapters[i].sections[j], 'show', false)
+                }
+               
+            }
+        },
 
         handleNodeClick(data) {
             console.log(data);
@@ -85,12 +115,22 @@ export default {
         showSection(item,show){
             let that = this;
             let tmp = that.chapters
-            for(var i = 0;i<tmp.length;i++){
-               that.$set(that.chapters[i],'show',false)
-               
-            }
+            
+                that.$set(item,'show',!show)   
+            
+           
 
-            that.$set(item,'show',!show)   
+            
+        },
+
+        //显示小节
+        showSubsection(index,obj,show){
+            console.log(show)
+            let that = this;
+            let temp =that.chapters[index].sections
+            
+            that.$set(obj,'show',!show) 
+            
         }
        
     }
@@ -103,15 +143,34 @@ export default {
 .courseNav{
     position: absolute;width: 320px; background: @background; height: 100%;
     .p-courseName{font-size: 22px; color:@basecolor;text-align: center; padding: 20px 10px;}
-    .p-name{padding:0  40px 0 10px ;font-size:20px; color: @fontColor; cursor: pointer; line-height: 50px;}
+    .p-name{padding:0  40px 0 10px ;font-size:20px; color: @fontColor; cursor: pointer; line-height: 50px;
+      position: relative; z-index:9999;
+    }
     .p-name.arrow{background: url(../assets/img/n_arrow_d.png) right 20px center no-repeat;}
     .p-name.arrow_up{background:@basecolor url(../assets/img/n_arrow_u.png) right 20px center no-repeat; color:#fff;}
     .children_ul{
         
-        >li{border-bottom: 2px solid @linecoloe; height: 50px; line-height: 50px;}
+     
         .children_name{
-            font-size: 18px;color:@fontColor1;padding: 0 50px;
+            font-size: 16px;color:@tabcolor;padding: 0 20px 0 30px;line-height: 50px;border-bottom:1px solid @border;
+            background: url(../assets/img/n_arrow_d.png) right 20px center no-repeat;
+            overflow: hidden;
         }
+        .arrow_up{
+            background: url(../assets/img/n_arrow_d_u.png) right 20px center no-repeat;
+        }
+        >li:last-child{
+            .children_name{
+                border:0 none
+            }
+        }
+
+    }
+
+    .subSection_ul{
+        border-bottom:1px solid @border;
+        li{background: @dialog_nav;}
+        .subSection_name{height: 40px; line-height: 40px; padding-left: 50px; padding-right: 20px;color:@fontColor1;}
     }
     
 
