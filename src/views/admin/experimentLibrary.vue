@@ -118,6 +118,7 @@ export default {
     },
     components:{newExperiment},
     methods:{
+
         //自定义分类
         selectType(val){
 

@@ -52,7 +52,7 @@
             </span>
           </div>
           <ul class="list_ul clearfix">
-              <li v-for="(item,index) in experimentList" :key="index">
+              <li v-for="(item,index) in all_experimentList" :key="index">
                   <div class="info">
                      <a
                       class="icon icon_radio pointer"
@@ -97,15 +97,15 @@ export default {
   data() {
     return {
       inplaceholder: "请输入实验名",
-        experimentList:[
-              {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
+        all_experimentList:[
+              {id:'52ddda',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
+              {id:'52ddd1',name:'ccccc实验',duration:'45分钟',endtime:'15:40'},
+              {id:'52ddd2',name:'vvvvv实验',duration:'45分钟',endtime:'15:40'},
+              {id:'52ddd3',name:'bbbbb实验',duration:'45分钟',endtime:'15:40'},
+              {id:'52ddd4',name:'nnnnn实验',duration:'45分钟',endtime:'15:40'},
+              {id:'52ddd5',name:'sssss实验',duration:'45分钟',endtime:'15:40'},
+              {id:'52ddd6',name:'zzzzz实验',duration:'45分钟',endtime:'15:40'},
+              {id:'52ddd7',name:'mmmmm实验',duration:'45分钟',endtime:'15:40'},
           ],
      
       total: 100,

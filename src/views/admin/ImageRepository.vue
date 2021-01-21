@@ -34,7 +34,7 @@
 
           <el-table-column prop="name" label="名称" width="240">
           </el-table-column>
-          <el-table-column prop="type" label="性别">
+          <el-table-column prop="type" label="镜像类型">
             <template slot-scope="scope">
               <span>{{
                 scope.row.type == 0
@@ -140,8 +140,8 @@ export default {
   data() {
     return {
      options: [ { value: "0", label: "KVM"}, { value: "1", label: "Docker"} ],
-     type: "", //人员类型选择 
-      className: "", //选择的班级
+     type: "", //
+      className: "", //
       inplaceholder: "请输入镜像名称",
       
       //新增镜像
