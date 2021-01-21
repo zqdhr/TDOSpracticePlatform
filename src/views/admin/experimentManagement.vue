@@ -29,7 +29,7 @@
         <div class="l_box">
           <ul class="default_List">
              <li v-for="(item,index) in machineList" :key="index">
-                 <div class="info-box">
+                 <div class="info-box ">
                    
                      <div class="d-icon"></div>
                       <p class="p_id textline1">ID：{{item.id}}</p>

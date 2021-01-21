@@ -44,7 +44,7 @@
             <div class="list_box">
                 <ul class="list_ul coursewareLibrary_ul  clearfix">
                     <li v-for="(item,index) in experimentList" :key="index">
-                        <div class="info padt20">
+                        <div class="info padt20 boxShadow">
                             <el-tooltip class="item" effect="dark" content="删除" placement="top">
                                 <a class="icon icon_close pointer" @click="isDelete=true"></a>
                             </el-tooltip>
