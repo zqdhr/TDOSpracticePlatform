@@ -54,18 +54,20 @@
           <ul class="list_ul clearfix">
               <li v-for="(item,index) in all_experimentList" :key="index">
                   <div class="info">
-                     <a
+                    
+
+                       <div class="pic">
+                            <div class="pic_box"><img src="../assets/pic/course.png"/></div>
+                            <div class="trans"></div>
+                        </div>
+                      <p class="p-text textline1">{{item.name}}</p>
+                      <p class="p-text textline1">实验时长：{{item.duration}}</p>
+                      <p class="p-text textline1">截止时间：{{item.endtime}}</p>
+                       <a
                       class="icon icon_radio pointer"
                       :class="{ icon_radio_h: item.checked }"
                       @click="click_checked(item, index, item.checked)"
                     ></a>
-
-                      <div class="pic">
-                          <div class="pic_box"></div>
-                      </div>
-                      <p class="p-text textline1">{{item.name}}</p>
-                      <p class="p-text textline1">实验时长：{{item.duration}}</p>
-                      <p class="p-text textline1">截止时间：{{item.endtime}}</p>
                   </div>
               </li>
           </ul>

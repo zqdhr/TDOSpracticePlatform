@@ -17,8 +17,8 @@
                                 <el-tooltip class="item" effect="dark" content="设置" placement="top">
                                    <a class="icon icon_set pointer"></a>
                                 </el-tooltip>
-                                <div class="pic">
-                                    <div class="pic_box"></div>
+                                 <div class="pic">
+                                    <div class="pic_box"><img src="../assets/pic/course.png"/></div>
                                 </div>
                                 <p class="p-text textline1">{{item.name}}</p>
                                 <p class="p-text textline1">实验时长：{{item.duration}}</p>
@@ -93,8 +93,10 @@ export default {
     .list_ul{ margin-left: -10px; margin-right: -10px;
         li{width:25%;min-height: 40px;float: left; margin-bottom: 20px; }    
         .pic{width:100%; margin-bottom: 10px;
-          .pic_box{padding-bottom:50%; background:blanchedalmond;.borderRadius(5px,5px,0,0);}
-        }   
+          .pic_box{padding-bottom:50%; background:blanchedalmond;.borderRadius(5px,5px,0,0); position: relative;}
+          img{width:100%;height:100%;position: absolute;}
+        }  
+        /*.trans{position: absolute;width:100%;height: 100%;left:0px;top:0px; background: rgba(0,0,0,.1);} */
         .info{margin: 0 10px; min-height: 30px;background: @background; padding: 40px 0 20px 0; position:relative;}
         .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px;}
         .icon{width: 20px;height: 20px;display: block; position:absolute;top:10px}
