@@ -22,16 +22,16 @@
                         <div class="course-info boxsizing">
                             <div class="info_box">
                                 <div class="cell-info boxsizing">
-                                    <p class="p-name textline1">{{item.courname}}</p>
-                                    <p class="p-text textline1">共有{{item.chapter}}个章节，共{{item.section}}个知识点</p>
+                                    <p class="p-name textline1">{{item.name}}</p>
+                                    <p class="p-text textline1">共有{{item.chapter_number}}个章节，共{{item.section_number}}个知识点</p>
                                     <p class="p-text textline1">{{item.introduction}}</p>
                                     <div class="data-box">
                                         <span class="s-time">{{item.time}}</span>
-                                        <span class="s-number">共有{{item.number}}人参加该门课程</span>
+                                        <span class="s-number">共有{{item.numbers=="null"?0:item.numbers}}人参加该门课程</span>
                                     </div>
                                 </div>
                                 <div class="cell-fun boxsizing">
-                                    <a class="btnDefault btn-fun pointer" @click="linkDetail">{{item.state==0?'待开课':'已开课'}}</a>
+                                    <a class="btnDefault btn-fun pointer" @click="linkDetail(item.id)">{{item.status==0?'待开课':'已开课'}}</a>
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                         :page-size="perPage"
                         @current-change="handleCurrentChange"
                         layout="prev, pager, next,jumper"
-                        :total="100"
+                        :total="total"
                     >
                 </el-pagination>
             </div>
@@ -76,33 +76,54 @@
     </div>
 </template>
 <script>
+import {getCourseListByUserId} from '@/API/api';
 export default {
     data(){
        return{
             perPage: 10,//每页条数
             curPage:1, //当前页
+            total:1,
             inplaceholder:'请输入课程名称',
             courseList:[
                 {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:0},
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:1},
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:0},
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:1},
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:1}
             ],
             show_dialog_file:false,
             archiveManagementisSuccess:false,//归档是否成功
        }
     },
     methods:{
+        getCourseListByUserId(){
+            let that = this;
+            that.courseListByUserId(1,10);
+        },
+        courseListByUserId(per_page,page){
+            let that = this;
+            let obj = {};
+            obj.user_id = sessionStorage.getItem("userId");
+            obj.page = page;
+            obj.per_page = per_page;
+            getCourseListByUserId(obj).then(res=> {
+                if(res.code==200){
+                    that.courseList = res.data.list;
+                    for(let i = 0;i<res.data.list.length;i++){
+                        res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
+                        res.data.list[i].time = res.data.list[i].start_at.replace('T',' ') +'-'+ res.data.list[i].end_at.replace('T',' ');
+                    }
+                    that.total = res.data.list.length;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
         //底部分页
         handleCurrentChange(val) {
            console.log(`当前页: ${val}`);
         },
         //点击备课跳转详情
-        linkDetail(){
+        linkDetail(id){
             let that = this
             that.$store.commit("updateNavindex", 1);
-            that.$router.push({path:'/teacher/couseDetail',query:{back:this.$Base64.encode(2)}}).catch((err)=>{
+            that.$router.push({path:'/teacher/couseDetail',query:{back:this.$Base64.encode(2), course_id: id}}).catch((err)=>{
                 console.log(err)
             })
         },
@@ -116,6 +137,10 @@ export default {
             let that = this;
             that.show_dialog_file = false
         }
+    },
+    mounted() {
+        let that = this;
+        that.getCourseListByUserId();
     }
 }
 </script>

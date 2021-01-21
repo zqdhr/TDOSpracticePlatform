@@ -10,13 +10,13 @@
                     </div>
                      <div class="sec_enclosure">
                         <div v-if="item.enclosure">附件包含：
-                            <span 
-                            v-for="(file,file_index) in item.enclosure.split(',')" :key="file_index" class="icon" 
+                            <span
+                            v-for="(file,file_index) in item.enclosure.split(',')" :key="file_index" class="icon"
                             :class="{'s-video':file==1,'s-pdf':file==2,'s-exper':file==3,'s-job':file==4}">
 
                             </span>
                         </div>
-                    </div> 
+                    </div>
                     <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
                 <!--新建章节样式-->
@@ -38,19 +38,19 @@
                             <div class="section_box d-section_name" :class="{'arrow':!iitem.show,'arrow_up':iitem.show}">
                                 <div class="sec_name textline1">
                                     <p class="textline1">第{{iindex+1}}节：{{iitem.name}}</p>
-                                    
+
                                 </div>
                                 <div class="sec_enclosure">
                                     <div>附件包含：
-                                        <span 
-                                        v-for="(i_file_item,i_file_index) in iitem.enclosure.split(',')" :key="i_file_index" class="icon" 
+                                        <span
+                                        v-for="(i_file_item,i_file_index) in iitem.enclosure.split(',')" :key="i_file_index" class="icon"
                                         :class="{'s-video':i_file_item==1,'s-pdf':i_file_item==2,'s-exper':i_file_item==3,'s-job':i_file_item==4}">
 
                                         </span>
                                     </div>
-                                </div> 
-                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>     
-                            </div>                    
+                                </div>
+                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>
+                            </div>
                             </template>>
                             <template v-if="!iitem.id">
                             <div class="section_box new_section_in_box">
@@ -61,7 +61,7 @@
                                     </div>
                                 </div>
                                 <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该节吗？'"></a>
-                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a> 
+                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>
                             </div>
                             </template>
                             <!--小节-->
@@ -71,7 +71,7 @@
                                      <template v-if="i_item.id">
                                         <div class="sec_name textline1">
                                             <p class="textline1">第{{i_index+1}}小节：{{iitem.name}}</p>
-                                             
+
                                         </div>
                                     </template>>
                                     <template v-if="!i_item.id">
@@ -111,7 +111,7 @@
         <div class="add-btn-box last-btn-box">
             <a class="btnDefault add-btn pointer" >确认上传</a>
         </div>
-        
+
          <!--删除弹出框-->
         <el-dialog :visible.sync="isDelete" width="600px">
         <div slot="title" class="dialog_header">请注意!</div>
@@ -134,6 +134,7 @@
 
 </template>
 <script>
+import {getCourseById,getCoursewareBySectionId} from '@/API/api';
 export default{
     data(){
         return{
@@ -203,9 +204,24 @@ export default{
                  this.$set(that.chapters[i].sections[j], 'show', false);
             }
          }
- 
+
     },
     methods:{
+        getCourseById(){
+            let course_id = this.$route.query.course_id
+            let that = this;
+            let obj = {};
+            obj.course_id = course_id;
+            getCourseById(obj).then(res=> {
+                if(res.code==200){
+                    that.chapters = res.data.chapters
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
+
+
          //显示章节
         showSection(item,show){
             let that = this;
@@ -234,10 +250,10 @@ export default{
            let tmp = that.chapters[index].sections;
            console.log(tmp)
            for(var i =0;i<tmp.length;i++){
-     
+
                that.$set(that.chapters[index].sections[i],'show',false)
            }
-           that.$set(item,'show',!show) 
+           that.$set(item,'show',!show)
            console.log(that.chapters)
         },
         /*新建小节 */
@@ -257,10 +273,10 @@ export default{
         .li_focus{border:2px solid @basecolor;.borderRadius(10px,10px,10px,10px); overflow: hidden;}
         .cha_title{background:#F5F5F7; font-size: 18px;line-height: 40px; padding: 7px 60px 7px 20px; position: relative;
            .s_name{color:@fontColor; background: url(../assets/img/d_chapter.png) left center no-repeat; padding: 5px 0 5px 35px; }
-           .s_intro{color: @hnavcolor; padding-left: 20px;}  
+           .s_intro{color: @hnavcolor; padding-left: 20px;}
            .chapter_name_box{
-               display: inline-block; width:60%; vertical-align: middle; 
-               
+               display: inline-block; width:60%; vertical-align: middle;
+
            }
         }
         .a_arrow{
@@ -274,8 +290,8 @@ export default{
              }
         }
 
-        .a_delete{ 
-             width:20px;height:20px;display: block;position: absolute;top:50%;margin-top: -10px; 
+        .a_delete{
+             width:20px;height:20px;display: block;position: absolute;top:50%;margin-top: -10px;
             background: url(../assets/img/icon_del.png)  center no-repeat;cursor: pointer; right:56px}
         .din{display: inline-block; width: 80%;
           input{font-size: 18px;color: #6666; width: 100%; background: 0 none;color:#333; line-height: 40px;}
@@ -290,7 +306,7 @@ export default{
     .add-btn-box{padding: 20px 0; text-align: center;}
     .add-btn{width:auto;padding:0 50px}
     .last-btn-box{padding-top:0px}
-   
+
     /*附件*/
     .sec_enclosure{display: inline-block; width:40%;vertical-align:middle;
         .icon{width:24px;height:24px;display: inline-block; vertical-align:middle; margin-right: 20px;}
@@ -319,11 +335,11 @@ export default{
 
     .section_ul{
         overflow: hidden;
-        .section_li{font-size: 0px;   position: relative;margin:15px 20px 0 30px; 
+        .section_li{font-size: 0px;   position: relative;margin:15px 20px 0 30px;
             >div{font-size: 16px;color:@fontColor1;}
             .section_box{
                 position: relative;
-                
+
             }
             .arrow_up{
                 .a_arrow{background: url(../assets/img/d_arrow_u.png)  center no-repeat;cursor: pointer;}
@@ -331,7 +347,7 @@ export default{
             .sec_name{display: inline-block; width:60%; vertical-align:middle; position: relative;}
             .sec_name p{padding-left:30px;}
 
-      
+
             .new_sec_name{
                 padding-left: 30px; width:90%;
                 input{font-size: 16px; line-height:40px;}
@@ -341,7 +357,7 @@ export default{
          .a_arrow{right:20px;}
          .a_delete{right:58px}
         }
-      
+
 
         .line1{width:30px;height: 1px;background: @linecoloe; position: absolute; top:50%; margin-top: -0.5px;}
         .line2{width:1px;height:60px;background: @linecoloe;position: absolute;left:0px; top:-31px}
@@ -349,7 +365,7 @@ export default{
         
     }
     /*小节列表*/
-    .i_section_ul{ 
+    .i_section_ul{
         .section_li{
              margin: 15px 0 0 30px;
              .sec_name{background: @bgf0f0f0; width:100%}
@@ -359,7 +375,7 @@ export default{
         }
         .new_section_li{
             margin-right: 0px;
-           .sec_name{ display: block; padding-left: 30px; width:auto;} 
+           .sec_name{ display: block; padding-left: 30px; width:auto;}
            .a_delete{right:20px}
         }
         

@@ -189,7 +189,7 @@
           人员列表:
           <file-upload
             style="overflow: visible"
-            :maximum="3"
+            :maximum="1"
             :multiple="true"
             ref="upload"
             v-model="files"
@@ -275,7 +275,7 @@
 import "vue-upload-component/dist/vue-upload-component.part.css";
 import FileUpload from "vue-upload-component";
 import { mapState } from "vuex";
-import { searchUser, searchClass, deleteUser } from "@/API/api";
+import { searchUser, searchClass, deleteUser ,modifyUser} from "@/API/api";
 export default {
   data() {
     return {
@@ -446,6 +446,24 @@ export default {
     
     //信息确认修改
     editUserInfo(){
+      let that = this;
+      let obj = {};
+      obj.user_id = that.userInfo.id;
+      obj.name = that.userInfo.name;
+      obj.gender = that.userInfo.gender;
+      obj.identification_number = that.userInfo.identificationNumber;
+      obj.phone = that.userInfo.phoneNumber;
+      let a = that.curPage
+      console.log(JSON.stringify(obj));
+      modifyUser(JSON.stringify(obj)).then(res=>{
+        if(res.code==200){
+          that.editDialog = false;
+          that.searchUser(that.type, that.searchText, that.className, that.curPage, 10);
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
+      console.log(that.userInfo.id)
       console.log('信息确认修改')
     },
     //性别改变
@@ -465,6 +483,7 @@ export default {
     handleCurrentChange(val) {
       let that = this;
       console.log(that.type);
+      that.curPage = val;
       that.searchUser(that.type, "", "", val, 10);
       console.log(`当前页: ${val}`);
     },
@@ -504,6 +523,7 @@ export default {
     //下载模板
     downloadTemplate() {
       console.log("下载模板");
+      window.location.href = 'http://192.168.1.138:8111/download_excel';
     },
 
     // 文件上传成功
