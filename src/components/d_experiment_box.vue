@@ -5,7 +5,7 @@
             <courseNav></courseNav>
             <div class="right_box">
                 <div class="add_btn_box">
-                    <a class="btnDefault pointer">新增实验</a>
+                    <a class="btnDefault pointer" @click="click_new">新增实验</a>
                 </div>
                 <div class="list_box">
                     <ul class="list_ul clearfix">
@@ -40,10 +40,12 @@
                 </div>
             </div>
          </div>
+         <newdialog   ref="newdialog"></newdialog>
     </div>
 </template>
 <script>
 import courseNav from "@/components/left_courseNav.vue";
+import newdialog from "@/components/teacher_new_experiment.vue";
 export default {
     data(){
         return{
@@ -62,12 +64,16 @@ export default {
         }
     },
     components:{
-        courseNav
+        courseNav,newdialog
     },
     methods:{
          //底部分页
         handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
+        },
+        click_new(){
+            let that = this;
+            that.$refs.newdialog.click_new();
         },
     }
 }
@@ -87,7 +93,7 @@ export default {
     .list_ul{ margin-left: -10px; margin-right: -10px;
         li{width:25%;min-height: 40px;float: left; margin-bottom: 20px; }    
         .pic{width:100%; margin-bottom: 10px;
-          .pic_box{padding-bottom:50%; background:@basecolor;.borderRadius(5px,5px,0,0);}
+          .pic_box{padding-bottom:50%; background:blanchedalmond;.borderRadius(5px,5px,0,0);}
         }   
         .info{margin: 0 10px; min-height: 30px;background: @background; padding: 40px 0 20px 0; position:relative;}
         .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px;}

@@ -22,7 +22,7 @@
           
         </div>
         <div class="fr">
-          <a class="btnDefault pointer abtn" >新增实验</a>
+          <a class="btnDefault pointer abtn"  @click="click_new">新增实验</a>
           
           
           <div class="d-serach"> 
@@ -84,9 +84,11 @@
         <a class="btnDefault" @click="isDelete = false">取 消</a>
       </div>
     </el-dialog>
+    <newExperiment  ref="newExperiment"></newExperiment>
 </div>
 </template>
 <script>
+import newExperiment from '@/components/admin_new_experiment'
 export default {
     data(){
         return{
@@ -111,8 +113,10 @@ export default {
                {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'},
             ],
             isDelete:false,//删除实验弹出框
+            isNewExperiment:false,
         }
     },
+    components:{newExperiment},
     methods:{
         //自定义分类
         selectType(val){
@@ -129,10 +133,18 @@ export default {
         confirmDeleteExper(){
             let that = this;
             that.isDelete = false;
+        },
+        //点击新增实验
+        click_new(){
+          let that = this;
+          that.isNewExperiment = true;
+          that.$refs.newExperiment.click_new();
+
         }
     }
 }
 </script>
 <style lang="less" scoped>
 @import url(../../assets/less/admin.less);
+
 </style>
