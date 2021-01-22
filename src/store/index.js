@@ -17,7 +17,7 @@ export default new Vuex.Store({
           { text: "实验库", path: "/admin/experimentLibrary" },
           { text: "课件库", path: "/admin/coursewareLibrary" },
           { text: "镜像库", path: "/admin/ImageRepository" },
-          { text: "题库", path: "" },
+          { text: "题库", path: "/admin/questionbankManagement" },
         ],
         showChilren: false,
       },

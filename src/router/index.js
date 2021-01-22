@@ -66,6 +66,12 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/admin/coursewareLibrary.vue'),
         meta:{navindex:2},
       },
+      {
+        path: '/admin/questionbankManagement',//题库
+        name: 'questionbankManagement',
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/questionbankManagement.vue'),
+        meta:{navindex:2},
+      },
 
       
 

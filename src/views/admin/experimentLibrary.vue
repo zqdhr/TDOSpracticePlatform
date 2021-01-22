@@ -124,6 +124,14 @@ export default {
         selectType(val){
 
         },
+        //自定义分类
+        selectType1(val){
+
+        },
+        //自定义分类
+        selectType2(val){
+
+        },
          //底部分页
         handleCurrentChange(val) {
         let that = this;
