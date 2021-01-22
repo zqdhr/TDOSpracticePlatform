@@ -151,7 +151,7 @@ export default {
     components:{classList,studentList,chapter,experiment,courseware,coursework},
     created(){
         let that = this;
-        that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2
+        that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
        
     },
     mounted(){

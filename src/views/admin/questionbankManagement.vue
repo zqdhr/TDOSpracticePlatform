@@ -28,7 +28,7 @@
           
         </div>
         <div class="fr">
-          <a class="btnDefault pointer abtn">删除题目</a>
+          <a class="btnDefault pointer abtn" @click="delList">删除题目</a>
           <a class="btnDefault pointer abtn">新增题目</a>
           
           
@@ -44,9 +44,11 @@
         
           class="center-tab tab-userList"
           :data="questionList"
-       
           style="width: 100%"
+          @selection-change="handleSelectionChange"
           >
+            <el-table-column type="selection" width="55" v-if="showDel">
+             </el-table-column>
              <el-table-column prop="serial_number" label="题目序号" width="150">
                 <template scope="scope">
                     <span>{{(curPage - 1) * perPage + scope.$index + 1}}</span>
@@ -100,7 +102,22 @@
 
 
     </div>
-    <el-image-viewer v-if="showViewer"  @close="showViewerClose" :url-list="[guidePic]"></el-image-viewer>
+    <el-image-viewer v-if="showViewer"  :on-close="showViewerClose" :url-list="[guidePic]"></el-image-viewer>
+
+    <!--删除人员弹出框-->
+    <el-dialog :visible.sync="isDelete" width="600px">
+      <div slot="title" class="dialog_header">请注意!</div>
+      <div class="confirm_dialog_body">
+        <p class="dialog_mess">
+          <span class="span_icon icon_waring">确定要删除当前选中的题目吗？</span>
+        </p>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <a class="btnDefault" @click="confirmDelete">确 认</a>
+        <a class="btnDefault" @click="isDelete = false">取 消</a>
+      </div>
+    </el-dialog>
+
 </div>
 </template>
 <script>
@@ -123,12 +140,14 @@ export default {
                 {serial_number:'002',title:'文本内容文本内容文本内容文本内容本内容文本内容文本内容文本内容文本内容文本内容本内容文本内容',answer:'B',pictureAddress:'C：AAAAAAAAAA>BBBBBBBBB>'},
                 {serial_number:'002',title:'文本内容文本内容文本内容文本内容本内容文本内容文本内容文本内容文本内容文本内容本内容文本内容',answer:'文本内容文本内容文本内容文本内容本内容文本内容文本内容文本内容文本内容文本内容本内容文本内容',pictureAddress:'C：AAAAAAAAAA>BBBBBBBBB>'}
             ],
-
+            multipleSelection:[],
             guidePic:null,
             total:100,//总共条数
             perPage:15,//每页页数
             curPage:1,//当前页
             showViewer:false,
+            showDel:false,
+            isDelete:false
         }
     },
     components:{
@@ -171,6 +190,26 @@ export default {
         showViewerClose(){
             console.log('ok')
             this.showViewer = false;
+        },
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+            console.log(val);
+         },
+        //删除题目
+        delList(){
+            let that = this;
+           
+            if (that.multipleSelection.length <= 0) {
+                that.showDel = !that.showDel;
+            } else {
+                that.isDelete = true;
+            }
+        },
+        //确认删除
+        confirmDelete(){
+            let that = this;
+            that.showDel = !that.showDel;
+            that.isDelete = false;
         }
         
     }

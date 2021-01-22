@@ -56,6 +56,7 @@
                 <div class="pic">
                   <img :src="item.pic" />
                 </div>
+                {{item.type}}
                 <p class="answer_box" v-if="item.type == 1">
                   <span
                     class="s_radio"
@@ -63,6 +64,7 @@
                     v-for="(iitem, iindex) in item.chose"
                     :key="iindex"
                   >
+                  {{iitem}}
                   </span>
                 </p>
                 <p class="answer_box" v-if="item.type == 2">
@@ -122,7 +124,9 @@
                 v-for="(iitem, iindex) in item.chose"
                 :key="iindex"
               >
+               {{item}} {{item.answer}}
               </span>
+             
             </p>
             <p class="answer_box" v-if="item.type == 2">{{ item.answer }}</p>
             <!--选中的状态添加class   li_radio_h-->
