@@ -20,10 +20,10 @@
                     <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
                 <!--新建章节样式-->
-                <div  class="textline1 cha_title new_cha_title" :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="!item.id">
-                     <span class="s_name">章节{{index+1}}：{{item.name}}</span>
+                <div  class="textline1 cha_title new_cha_title" :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="!item.id" >
+                     <span class="s_name">章节{{index+1}}：</span>
                      <div class="din">
-                         <input type="text" placeholder="请输入章节"/>
+                         <input type="text" placeholder="请输入章节" v-model="item.name"/>
                      </div>
                      <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该章吗？'"></a>
                      <a class="a_arrow" @click="showSection(item,item.show)"></a>
@@ -57,7 +57,7 @@
                                 <div class="sec_name textline1 new_sec_name">
                                     <span class="textline1">第{{iindex+1}}节：</span>
                                     <div class="din">
-                                        <input placeholder="请输入节名称"/>
+                                        <input placeholder="请输入节名称" v-model="iitem.name"/>
                                     </div>
                                 </div>
                                 <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该节吗？'"></a>
@@ -70,7 +70,7 @@
                                 <li class="section_li" v-for="(i_item,i_index) in iitem.smallSections" :key="i_index" :class="{'new_section_li':!i_item.id}">
                                      <template v-if="i_item.id">
                                         <div class="sec_name textline1">
-                                            <p class="textline1">第{{i_index+1}}小节：{{iitem.name}}</p>
+                                            <p class="textline1">第{{i_index+1}}小节：{{i_item.name}}</p>
 
                                         </div>
                                     </template>>
@@ -78,7 +78,7 @@
                                             <div class="sec_name textline1 ">
                                                 <span class="textline1">第{{i_index+1}}小节：</span>
                                                 <div class="din">
-                                                    <input placeholder="请输入小节名称"/>
+                                                    <input placeholder="请输入小节名称" v-model="i_item.name"/>
                                                 </div>
                                                 <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该小节吗？'"></a>
                                             </div>
@@ -109,7 +109,7 @@
             <a class="btnDefault add-btn pointer" @click="click_newChapter">+ 新建章节</a>
         </div>
         <div class="add-btn-box last-btn-box">
-            <a class="btnDefault add-btn pointer" >确认上传</a>
+            <a class="btnDefault add-btn pointer" @click="addChapters">确认上传</a>
         </div>
 
          <!--删除弹出框-->
@@ -175,6 +175,7 @@ export default{
             default:''
         }
     },
+    /*
     watch:{
         courseId:{
             handler(courseId){
@@ -183,9 +184,14 @@ export default{
             }
         }
     },
+    */
+    created() {
+        let that = this;
+        that.getCourseById();
+    },
     mounted(){
         let that = this
-        that.getCourseById();
+        //that.getCourseById();
          //章节下拉添加子元素是否显示参数show
          for(var i=0;i<that.chapters.length;i++){
             this.$set(that.chapters[i], 'show', false);
@@ -193,15 +199,14 @@ export default{
                  this.$set(that.chapters[i].sections[j], 'show', false);
             }
          }
-         //console.log(that.courseId)
+         console.log(that.courseId)
 
     },
     methods:{
         getCourseById(){
             let that = this;
-            let course_id = that.courseId;
             let obj = {};
-            obj.course_id = "30ca55b6-786c-4080-9e30-579d972f48e0";
+            obj.course_id = that.courseId;
             getCourseById(obj).then(res=> {
                 if(res.code==200){
                     that.chapters = res.data.chapters
@@ -226,12 +231,14 @@ export default{
         //新建章节
         click_newChapter(){
             let that = this;
-            that.chapters.push({name:'',show:false,sections:[]})
+            let tmp = that.chapters.length
+            that.chapters.push({name:'',introduction:'',order:tmp,show:false,sections:[]})
         },
         //新建节
         click_section(index,obj){
            let that = this;
-           that.chapters[index].sections.push({name:'',show:false,smallSections:[]})
+           let tmp = that.chapters[index].sections.length;
+           that.chapters[index].sections.push({name:'',order:tmp,show:false,smallSections:[]})
         },
         /*显示小节 */
         showSection_children(index,item,show){
@@ -249,7 +256,12 @@ export default{
         /*新建小节 */
         click_new_section(index,iindex,item){
           let that = this;
-           that.chapters[index].sections[iindex].smallSections.push({name:'',show:false,smallSections:[]})
+            let tmp = that.chapters[index].sections[iindex].smallSections.length;
+           that.chapters[index].sections[iindex].smallSections.push({name:'',order:tmp,show:false})
+        },
+        addChapters(){
+            let that = this;
+            console.log(that.chapters)
         }
     }
 }

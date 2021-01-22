@@ -114,7 +114,8 @@ export default {
     components:{chapter,experiment,courseware,coursework},
     created(){
         let that = this;
-        that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2
+        that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
+        that.courseId = this.$route.query.courserId
        
     },
     mounted(){
@@ -126,7 +127,7 @@ export default {
             let that = this;
             let obj = {};
             obj.course_id = this.$route.query.courserId
-            that.courseId = this.$route.query.courserId
+
             console.log(that.courseId)
             getCourseById(obj).then(res=> {
                 if(res.code==200){
