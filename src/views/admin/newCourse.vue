@@ -270,12 +270,18 @@ export default {
             console.log("remove", oldFile);
         }
         },
+         //添加章节
+        addchapter(){
+           let that = this;
+           that.chapters.push({name:'',section:[]})
+        },
         //添加小节
         addSection(num){
             let that = this;
-            that.chapters[0].section.push({name:'',subSection:[]});
+            console.log(that.chapters)
+            that.chapters[num].section.push({name:'',subSection:[]});
             let tmp=0
-
+            console.log(num)
             that.newSubSection = that.newSubSection + that.newSubSection_last;
             that.newSubSection_last = 0
 
@@ -307,11 +313,7 @@ export default {
             })
             that.isNewComplete = true;
         },
-        //添加章节
-        addchapter(){
-           let that = this;
-           that.chapters.push({name:''})
-        },
+
         
         //删除
         deleteChapter(num){

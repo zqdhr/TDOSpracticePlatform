@@ -193,4 +193,5 @@ export default {
 
 <style lang="less" scoped>
 @import url(../assets/less/admin.less);
+.fileList_name{padding: 0 30px;}
 </style>

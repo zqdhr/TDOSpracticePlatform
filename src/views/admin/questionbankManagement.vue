@@ -77,7 +77,7 @@
              <el-table-column prop="pictureAddress" label="图片地址">
                  <template slot-scope="scope">
                      <div class="">
-                        <span class="s-text textline1 pointer" :preview-src-list="srcList">{{scope.row.pictureAddress}}</span>
+                        <span class="s-text textline1 pointer" @click="getPreview">{{scope.row.pictureAddress}}</span>
                      </div>
                  </template>
                  
@@ -100,10 +100,11 @@
 
 
     </div>
-    <el-image-viewer v-if="showViewer" on:close="showViewerClose" :url-list="[srcList]"></el-image-viewer>
+    <el-image-viewer v-if="showViewer"  @close="showViewerClose" :url-list="[guidePic]"></el-image-viewer>
 </div>
 </template>
 <script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 export default {
     data(){
         return{
@@ -122,13 +123,16 @@ export default {
                 {serial_number:'002',title:'文本内容文本内容文本内容文本内容本内容文本内容文本内容文本内容文本内容文本内容本内容文本内容',answer:'B',pictureAddress:'C：AAAAAAAAAA>BBBBBBBBB>'},
                 {serial_number:'002',title:'文本内容文本内容文本内容文本内容本内容文本内容文本内容文本内容文本内容文本内容本内容文本内容',answer:'文本内容文本内容文本内容文本内容本内容文本内容文本内容文本内容文本内容文本内容本内容文本内容',pictureAddress:'C：AAAAAAAAAA>BBBBBBBBB>'}
             ],
-            srcList: [
-                'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
-            ],
+
+            guidePic:null,
             total:100,//总共条数
             perPage:15,//每页页数
             curPage:1,//当前页
+            showViewer:false,
         }
+    },
+    components:{
+        ElImageViewer
     },
     created(){
         let that = this;
@@ -158,6 +162,17 @@ export default {
        
         console.log(`当前页: ${val}`);
         },
+        getPreview(){
+            this.showViewer = true;
+            this.guidePic = 'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
+            this.guidePic ? this.showViewer = true: this.$message.info('当前没有可预览的图片')
+        },
+        //图片预览关闭
+        showViewerClose(){
+            console.log('ok')
+            this.showViewer = false;
+        }
+        
     }
 }
 </script>
