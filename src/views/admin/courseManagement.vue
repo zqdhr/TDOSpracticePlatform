@@ -7,7 +7,7 @@
                     <div class="fl">
                         <div class="sel-box">
                           <el-select v-model="coursetype"
-                          
+                                     @change="selectCourse"
                           >
                                 <el-option
                                 v-for="item in coursetypeList"
@@ -23,8 +23,8 @@
                     <div class="fr">
                        <a class="btnDefault pointer abtn"  @click="linkNewCourse">新建课程</a>
                        <div class="d-serach"> 
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off" />
-                            <a class="searchBtn pointer"></a>
+                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="searchText"/>
+                            <a class="searchBtn pointer" @click="searchCourse"></a>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="cell-fun boxsizing">
                                     <!--点击归档课程状态是已结束-->
-                                    <a class="btnDefault btn-fun pointer" v-if="coursetype==0" @click="linkDetail">{{item.state==0?'待发布':'已发布'}}</a>
+                                    <a class="btnDefault btn-fun pointer" v-if="coursetype==0" @click="linkDetail">{{item.status==0?'待发布':'已发布'}}</a>
                                     <a class="btnDefault btn-fun pointer" v-if="coursetype==1" @click="linkDetail">已结束</a>
                                 </div>
                             </div>
@@ -74,7 +74,7 @@
     </div>
 </template>
 <script>
-import {getAdminUnpublishedCourseList} from '@/API/api';
+import {getAdminUnpublishedCourseList,getExpirCourseList} from '@/API/api';
 export default {
     data(){
        return{
@@ -90,7 +90,8 @@ export default {
                 {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:1}
             ],
             coursetypeList:[{value:0,label:'我的课程'},{value:1,label:'归档课程'}],
-            coursetype:'我的课程'
+            coursetype:'我的课程',
+            searchText:''
        }
     },
     created(){
@@ -100,10 +101,16 @@ export default {
     methods:{
         getAdminUnpublishedCourseList(){
             let that = this;
+            that.getAdminCourseList(sessionStorage.getItem("userId"),10,1,'');
+        },
+
+        getAdminCourseList(user_id,per_page,page,name){
+            let that = this;
             let obj = {};
-            obj.user_id = sessionStorage.getItem("userId");
-            obj.per_page = 10;
-            obj.page = 1;
+            obj.user_id = user_id;
+            obj.per_page = per_page;
+            obj.page = page;
+            obj.name = name;
             getAdminUnpublishedCourseList(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
@@ -118,6 +125,34 @@ export default {
                     this.$toast(res.message,2000)
                 }
             })
+        },
+        getExpirCourseList(){
+            let that = this;
+            let obj = {};
+            obj.per_page = 10;
+            obj.page = 1;
+            getExpirCourseList(obj).then(res=> {
+                if(res.code==200){
+                    that.courseList = res.data.list;
+                    for(let i = 0;i<res.data.list.length;i++){
+                        res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
+                        if(res.data.list[i].start_at !=null && res.data.list[i].end_at !=null) {
+                            res.data.list[i].time = res.data.list[i].start_at.replace('T', ' ') + '-' + res.data.list[i].end_at.replace('T', ' ');
+                        }
+                    }
+                    that.total = res.data.list.length;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
+        selectCourse(){
+            let that = this;
+            that.coursetype ==0 ? that.getAdminUnpublishedCourseList() : that.getExpirCourseList()
+        },
+        searchCourse(){
+            let that = this;
+            that.getAdminCourseList(sessionStorage.getItem("userId"),10,1,that.searchText);
         },
         //底部分页
         handleCurrentChange(val) {

@@ -77,12 +77,27 @@ var getCoursewareBySectionId = function(data){
 
 //查询管理员没有发布的课程
 var getAdminUnpublishedCourseList = function(data){
-	return axios.get('/get_admin_unpublished_course_list?user_id='+data.user_id+'&per_page='+data.per_page+'&page='+data.page)
+	return axios.get('/get_admin_unpublished_course_list?user_id='+data.user_id+'&per_page='+data.per_page+'&page='+data.page+'&name='+data.name)
+}
+
+//管理员查询已归档的课程
+var getExpirCourseList = function(data){
+	return axios.get('/get_expired_course_list?per_page='+data.per_page+'&page='+data.page)
+}
+
+//管理员新建课程
+var insertCourse = function(data){
+	return axios.post('/insert_course', data,{headers: {'Content-Type':'application/json'}})
+}
+
+//管理员查询课件库所有的课件
+var getCoursewareAll = function(data){
+	return axios.get('/getCoursewareAll?perPage='+data.per_page+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name)
 }
 
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
-	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList
+	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList
 }
 
 function getJson (data) {

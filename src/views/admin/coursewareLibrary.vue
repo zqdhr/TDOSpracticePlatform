@@ -15,7 +15,7 @@
                 </el-select>               
             </div>
             <div class="sel-box">               
-                <el-select v-model="type" placeholder="请选择课件类型" @click="selectType">
+                <el-select v-model="type" placeholder="请选择课件类型" @change="selectType">
                     <el-option
                     v-for="item in typeList"
                     :key="item.value"
@@ -29,8 +29,8 @@
         <div class="fr">
           <a class="btnDefault pointer abtn" @click="click_new">新增课件</a>      
           <div class="d-serach"> 
-            <input :placeholder="inplaceholder" type="text" autocomplete="off" />
-            <a class="searchBtn pointer"></a>
+            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="searchText"/>
+            <a class="searchBtn pointer" @click="searchCourse"></a>
           </div>
         </div>
 
@@ -101,17 +101,17 @@
 </div>
 </template>
 <script>
-
+import { getCoursewareAll} from "@/API/api";
 import newdialog from '@/components/admin_dialog_newCourseware'
 export default {
     data(){
         return{
            inplaceholder:'请输入课件名',
             options:[
-                {value: '1',label: '内置课件'},{value: '2',label: '教师上传'}
+                {value: '0',label: '内置课件'},{value: '1',label: '教师上传'}
             ],
             typeList:[
-                {value: '1',label: '全部'},{value: '2',label: '文档'},{value: '3',label: '视频'}
+                {value: '',label: '全部'},{value: '1',label: '文档'},{value: '0',label: '视频'}
             ],
              experimentList:[
                {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
@@ -129,6 +129,9 @@ export default {
             total:100,
             perPage:8, //8个实验一页
             curPage:1,//设备列表
+            cate:'',
+            type:'',
+            searchText:''
         }
     },
     components:{
@@ -139,10 +142,39 @@ export default {
         this.type = this.typeList[0].value;//课件类型默认选中全部
     },
     methods:{
+        //课件列表
+        getCoursewareAll() {
+            let that = this;
+            that.getCourseAll(10,1,'',0,'');
+        },
+
+        getCourseAll(per_page,page,kind,type,name){
+            let that = this;
+            let obj = {};
+            obj.per_page = per_page;
+            obj.page = page;
+            obj.kind = kind;
+            obj.type = type;
+            obj.name = name;
+            getCoursewareAll(obj).then((res) => {
+                if (res.code == 200) {
+                    that.experimentList = res.data.list;
+                    that.total = res.data.total
+                } else {
+                    that.$toast(res.message, 3000);
+                }
+            });
+        },
+
+        searchCourse(){
+            let that = this;
+            that.getCourseAll(10,1,that.type,that.cate,that.searchText);
+        },
 
         click_new(){
             let that = this;
             that.$refs.newdialog.click_new();
+
         },
         
         //底部分页
@@ -152,12 +184,14 @@ export default {
 
         //选择分类
         selectCate(val){
-            console.log(val)
+            let that = this;
+            that.getCourseAll(10,1,that.type,val,that.searchText);
         },
 
         //选择课件类型
-            selectType(val){
-            console.log(val)
+         selectType(val){
+             let that = this;
+             that.getCourseAll(10,1,val,that.cate,that.searchText);
         },
         //删除课件库确认
         confirmDeleteCourseWare(){
@@ -172,7 +206,11 @@ export default {
        
 
 
-    }
+    },
+    mounted() {
+        let that = this;
+        that.getCoursewareAll();
+    },
 }
 </script>
 <style lang="less" scoped>

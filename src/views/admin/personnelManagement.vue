@@ -361,21 +361,6 @@ export default {
       obj.per_page = per_page;
       searchUser(obj).then((res) => {
         if (res.code == 200) {
-          /*
-          for(let i =0;i<res.data.list.length;i++){
-            if(res.data.list[i].gender == 0){
-              res.data.list[i].gender = "男"
-            }else res.data.list[i].gender = "女"
-          }*/
-          /*
-          if(type == 0){
-            that.adminList = res.data.list
-          }else if(type == 1){
-            that.teacherList = res.data.list
-          }else if(type == 2) {
-            that.studentList = res.data.list
-          }
-          */
           type == 0
             ? (that.adminList = res.data.list)
             : type == 1
