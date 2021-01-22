@@ -152,6 +152,11 @@ router.beforeEach((to, from, next) => {
     //var会将作用域放大，let只是局部的作用域
     let admin_username = sessionStorage.getItem('p_p-admin_userName');
     let teacher_username = sessionStorage.getItem('p_p-teacher_userName');
+    let user_id =  sessionStorage.getItem('userId');
+
+    if(!(user_id &&user_id!=null)){
+      next('/login');
+    }
     if(to.path.indexOf("admin") != -1){
         if (admin_username === null || admin_username === '') {
           next('/login');

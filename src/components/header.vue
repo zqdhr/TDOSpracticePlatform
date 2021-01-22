@@ -53,7 +53,7 @@ export default {
   mounted(){
       let that = this;
       let num = sessionStorage.getItem('p_p-authority');
-      console.log(this.$route.meta.navindex)
+      //console.log(this.$route.meta.navindex)
       if(num==2){
          that.menus = that.$store.state.ad_menus;
       

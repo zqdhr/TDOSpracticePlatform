@@ -83,11 +83,7 @@ export default {
             total:1,
             inplaceholder:'请输入课程名称',
             courseList:[
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:0},
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:1},
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:0},
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:1},
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:1}
+              
             ],
             coursetypeList:[{value:0,label:'我的课程'},{value:1,label:'归档课程'}],
             coursetype:'我的课程',
