@@ -46,7 +46,7 @@
                 </div>
 
                  <!--课程大纲-->
-                <chapter v-if="navindex==0"></chapter>
+                <chapter :courseId="courseId" v-if="navindex==0"></chapter>
 
                 
                 <!--开课时间-->
@@ -144,7 +144,8 @@ export default {
 
 
 
-            showStudentList:false//是否显示学生列表
+            showStudentList:false,//是否显示学生列表
+            courseId:'kdsfkld'
             
         }
     },

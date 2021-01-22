@@ -108,20 +108,10 @@ export default {
         return{
            inplaceholder:'请输入课件名',
             options:[
-                {value: '0',label: '内置课件'},{value: '1',label: '教师上传'}
             ],
             typeList:[
-                {value: '',label: '全部'},{value: '1',label: '文档'},{value: '0',label: '视频'}
             ],
              experimentList:[
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
             ],
           
             isDelete:false,

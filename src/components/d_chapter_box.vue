@@ -11,7 +11,7 @@
                      <div class="sec_enclosure">
                         <div v-if="item.enclosure">附件包含：
                             <span
-                            v-for="(file,file_index) in item.enclosure.split(',')" :key="file_index" class="icon"
+                            v-for="(file,file_index) in item.enclosure" :key="file_index" class="icon"
                             :class="{'s-video':file==1,'s-pdf':file==2,'s-exper':file==3,'s-job':file==4}">
 
                             </span>
@@ -43,7 +43,7 @@
                                 <div class="sec_enclosure">
                                     <div>附件包含：
                                         <span
-                                        v-for="(i_file_item,i_file_index) in iitem.enclosure.split(',')" :key="i_file_index" class="icon"
+                                        v-for="(i_file_item,i_file_index) in iitem.enclosure" :key="i_file_index" class="icon"
                                         :class="{'s-video':i_file_item==1,'s-pdf':i_file_item==2,'s-exper':i_file_item==3,'s-job':i_file_item==4}">
 
                                         </span>
@@ -67,7 +67,7 @@
                             <!--小节-->
                             <el-collapse-transition>
                             <ul class="section_ul i_section_ul" v-if="iitem.show">
-                                <li class="section_li" v-for="(i_item,i_index) in iitem.section" :key="i_index" :class="{'new_section_li':!i_item.id}">
+                                <li class="section_li" v-for="(i_item,i_index) in iitem.smallSections" :key="i_index" :class="{'new_section_li':!i_item.id}">
                                      <template v-if="i_item.id">
                                         <div class="sec_name textline1">
                                             <p class="textline1">第{{i_index+1}}小节：{{iitem.name}}</p>
@@ -140,32 +140,6 @@ export default{
         return{
           chapters:[
                 {
-                    name:'标题内容标题内容标题内容',
-                    id:'xjkc2211',
-                    introduction:'简介内容简介内容简介内容简介内容简介内容简介内容简介内容简介内容',
-                    enclosure:'1,2,3,4', //包含视频，pdf,实验，作业
-                    sections:[
-                        {
-                        id:'ddddd',
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:'1,2,3,4', //包含视频，pdf,实验，作业
-                        section:[{
-                            id:'section123',
-                            name:'dgfdgfgfdgf',
-                        }]
-                        },
-                        {
-                        id:'ddsssddddd',
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:'1,2,3,4',
-                        section:[{
-                            id:'section123',
-                            name:'df;ldfldffdf',
-                        }]
-                        }
-                    ],
-                },
-                {
                     id:'xjkc2211',
                     name:'标题内容标题内容标题内容',
                     introduction:'简介内容简介内容简介内容简介内容简介内容简介内容简介内容简介内容',
@@ -192,11 +166,26 @@ export default{
                 }
             ],
             isDelete:false,
-            deleteMess:''
+            deleteMess:'',
+            course_Id:''
+        }
+    },
+    props:{
+        courseId:{
+            default:''
+        }
+    },
+    watch:{
+        courseId:{
+            handler(courseId){
+                this.course_Id = courseId;
+
+            }
         }
     },
     mounted(){
         let that = this
+        that.getCourseById();
          //章节下拉添加子元素是否显示参数show
          for(var i=0;i<that.chapters.length;i++){
             this.$set(that.chapters[i], 'show', false);
@@ -204,14 +193,15 @@ export default{
                  this.$set(that.chapters[i].sections[j], 'show', false);
             }
          }
+         //console.log(that.courseId)
 
     },
     methods:{
         getCourseById(){
-            let course_id = this.$route.query.course_id
             let that = this;
+            let course_id = that.courseId;
             let obj = {};
-            obj.course_id = course_id;
+            obj.course_id = "30ca55b6-786c-4080-9e30-579d972f48e0";
             getCourseById(obj).then(res=> {
                 if(res.code==200){
                     that.chapters = res.data.chapters
@@ -241,7 +231,7 @@ export default{
         //新建节
         click_section(index,obj){
            let that = this;
-           that.chapters[index].sections.push({name:'',show:false,section:[]})
+           that.chapters[index].sections.push({name:'',show:false,smallSections:[]})
         },
         /*显示小节 */
         showSection_children(index,item,show){
@@ -259,7 +249,7 @@ export default{
         /*新建小节 */
         click_new_section(index,iindex,item){
           let that = this;
-           that.chapters[index].sections[iindex].section.push({name:'',show:false,section:[]})
+           that.chapters[index].sections[iindex].smallSections.push({name:'',show:false,smallSections:[]})
         }
     }
 }

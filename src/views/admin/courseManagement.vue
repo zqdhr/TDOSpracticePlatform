@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="cell-fun boxsizing">
                                     <!--点击归档课程状态是已结束-->
-                                    <a class="btnDefault btn-fun pointer" v-if="coursetype==0" @click="linkDetail">{{item.status==0?'待发布':'已发布'}}</a>
+                                    <a class="btnDefault btn-fun pointer" v-if="coursetype==0" @click="linkDetail(item.id)">{{item.status==0?'待发布':'已发布'}}</a>
                                     <a class="btnDefault btn-fun pointer" v-if="coursetype==1" @click="linkDetail">已结束</a>
                                 </div>
                             </div>
@@ -116,7 +116,7 @@ export default {
                             res.data.list[i].time = res.data.list[i].start_at.replace('T', ' ') + '-' + res.data.list[i].end_at.replace('T', ' ');
                         }
                     }
-                    that.total = res.data.list.length;
+                    that.total = res.data.total;
                 }else{
                     this.$toast(res.message,2000)
                 }
@@ -152,13 +152,15 @@ export default {
         },
         //底部分页
         handleCurrentChange(val) {
-           console.log(`当前页: ${val}`);
+            let that = this;
+            that.getAdminCourseList(sessionStorage.getItem("userId"),10,val,that.searchText);
+             console.log(`当前页: ${val}`);
         },
         //点击备课跳转详情
-        linkDetail(){
+        linkDetail(id){
             let that = this
             that.$store.commit("updateNavindex", 1);
-            that.$router.push({path:'/admin/courseDetail',query:{courserId:''}}).catch((err)=>{
+            that.$router.push({path:'/admin/courseDetail',query:{courserId:id}}).catch((err)=>{
                 console.log(err)
             })
         },

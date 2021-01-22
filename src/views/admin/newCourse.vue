@@ -58,7 +58,7 @@
                                 <a class="pointer btn_del" @click="deleteChapter(index)"></a>
                             </div>
                             <div class="chapter_box">
-                                <div class="sectionBox "  v-for="(iitem,index1) in item.section" :key="index1">
+                                <div class="sectionBox "  v-for="(iitem,index1) in item.sections" :key="index1">
                                     <div class="din">
                                         <input class="input_section boxsizing" type="text" maxlength="50" v-model="iitem.name" placeholder="请输入课程节名称"/>
                                         <a class="pointer btn_del" @click="deleteSection(index,index1)"></a>
@@ -70,10 +70,10 @@
                                    
                                     
                                     <div class="subSectionBox">
-                                        <div class="sectionBox  sub_sectionBox"  v-for="(sub_iitem,sub_index) in iitem.subSection" :key="sub_index">
+                                        <div class="sectionBox  sub_sectionBox"  v-for="(sub_iitem,sub_index) in iitem.small_sections" :key="sub_index">
                                             <div class="din">
-                                                <input class="input_section boxsizing" type="text" maxlength="50" v-model="iitem.name" placeholder="请输入小节名称"/>
-                                                <a class="pointer btn_del" @click="deleteSection(index,index1)"></a>
+                                                <input class="input_section boxsizing" type="text" maxlength="50" v-model="sub_iitem.name" placeholder="请输入小节名称"/>
+                                                <a class="pointer btn_del" @click="deleteSection(index,sub_index)"></a>
                                                  <div class="line1"></div>
                                             
                                             </div>
@@ -157,6 +157,7 @@
 
 <script>
 import FileUpload from "vue-upload-component";
+import { insertCourse} from "@/API/api";
 export default {
     data(){
         return{
@@ -168,7 +169,7 @@ export default {
            files:[],
            //课程章节
            chapters:[
-               {name:'',section:[]}
+               {name:'',introduction:'',order:0,sections:[]}
             ],
             uploadUrl:'',
             jwt:'',
@@ -273,13 +274,14 @@ export default {
          //添加章节
         addchapter(){
            let that = this;
-           that.chapters.push({name:'',section:[]})
+           let tmp = that.chapters.length;
+           that.chapters.push({name:'',introduction:'',order:tmp,sections:[]})
         },
         //添加小节
         addSection(num){
             let that = this;
             console.log(that.chapters)
-            that.chapters[num].section.push({name:'',subSection:[]});
+            that.chapters[num].sections.push({name:'',order:num,small_sections:[]});
             let tmp=0
             console.log(num)
             that.newSubSection = that.newSubSection + that.newSubSection_last;
@@ -291,12 +293,12 @@ export default {
         addSubSection(index,sectionIndex){
             let that = this;
             
-            if(sectionIndex+1 != that.chapters[index].section.length){
+            if(sectionIndex+1 != that.chapters[index].sections.length){
                 that.newSubSection = that.newSubSection + 1;
             }else{
                 that.newSubSection_last = that.newSubSection_last+1
             }
-             that.chapters[index].section[sectionIndex].subSection.push({name:''});
+             that.chapters[index].sections[sectionIndex].small_sections.push({name:'',order:index});
 
         },
 
@@ -337,7 +339,7 @@ export default {
             if (that.chaptersOrsectio==1) {
                 that.chapters.splice(that.chaptersNum,1)
             } else {
-               that.chapters[that.chaptersNum].section.splice(that.sectionNum,1)
+               that.chapters[that.chaptersNum].sections.splice(that.sectionNum,1)
             }
              that.isDeleteChapter = false; 
         },
@@ -351,11 +353,19 @@ export default {
                 return  that.$toast('请输入课程详情',2000)
             }
             let obj = {};
-            obj.own_id = sessionStorage.getItem("userId");
+            obj.owner_id = sessionStorage.getItem("userId");
             obj.name = that.course.name;
             obj.introduction = that.course.intro
-            console.log(that.files)
-            that.isNewCourses = true;
+            obj.pic_url = "1122"
+            obj.chapters = that.chapters;
+            console.log(that.chapters)
+            insertCourse(JSON.stringify(obj)).then((res) => {
+                if (res.code == 200) {
+                    that.isNewCourses = true;
+                } else {
+                    that.$toast(res.message, 3000);
+                }
+            });
         },
         //此方法是用来写新建课程的接口的
         uploadCourses(){
