@@ -72,7 +72,8 @@ export default {
                 if(res.code==200){
                     //生成token
                     that.getJwt(that.userName);
-
+                    window.sessionStorage.setItem('userId',res.data.user_id);
+                    window.sessionStorage.setItem('userName',res.data.user_name);
                     role_id = res.data.role_id;
                     if(role_id == 0){
                         //0,1 2学生，教师，管理员

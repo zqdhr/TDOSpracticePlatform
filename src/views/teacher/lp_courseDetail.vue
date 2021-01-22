@@ -3,7 +3,7 @@
         <div class="container">
             <div class="pageTab">
                 <div class="mess">
-                    当前位置：<a class="pointer" @click="back">课程管理</a> > <span>区块链密码学（待发布）</span>
+                    当前位置：<a class="pointer" @click="back">课程管理</a> > <span>{{courseName}}</span>
                 </div>
             </div>
         </div>
@@ -17,26 +17,19 @@
                      <div class="c_info">
                          <div class="right_info">
                              <div class="info_detail_box">
-                                <p class="r_name">课程名称课程名称课程名称课程名称课程名称课程名称</p>
+                                <p class="r_name">{{courseName}}</p>
 
                                 <div class="d-cel">
-                                    共有10个章节，20个知识点
+                                    共有{{chapterNumber}}个章节，{{sectionNumber}}个知识点
                                 </div>
                                 <!--已开课才有这个信息-->
                                 <div class="d-cel clearfix">
-                                    <div class="fl">课程时间：2020.9.12-2020.10.12</div>
-                                    <div class="fr">60人学习</div>
+                                    <div class="fl">课程时间：{{time}}</div>
+                                    <div class="fr">{{numbers}}人学习</div>
                                 </div>
                                 <div class="line"></div>
                                  <el-scrollbar class="content_el-scrollbar">
-                                    <div class="d-cel">
-
-                                        包含内容：内容描述内容描述内容描述内容描述内容描述内容描述内容 
-                                        描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内 
-                                        容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述 
-                                        内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描 
-                                        述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容
-                                        内容描述内容描述内容描述。
+                                    <div class="d-cel">{{introduction}}
                                     </div>
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
@@ -82,7 +75,7 @@
                                 </el-date-picker>
                             </div>
                             <div class="btnbox">
-                                <a class="btnDefault pointer">确认</a>
+                                <a class="btnDefault pointer" @click="modifyCourseTime()">确认</a>
                             </div>
                        </div>
                    </div>
@@ -116,11 +109,20 @@ import chapter from "@/components/d_chapter_box.vue";//课程大纲
 import experiment from "@/components/d_experiment_box.vue";//课程实验
 import courseware from "@/components/d_courseware_box.vue";//课程课件
 import coursework from "@/components/d_coursework_box.vue";//课程作业
+import {getCourseById,modifyCourseStatus} from '@/API/api';
 export default {
     data(){
         return{
            backNum:1,
            navindex:0,
+            introduction:'',
+            numbers:'',
+            chapterNumber:'',
+            sectionNumber:'',
+            time:'',
+            courseName:'',
+
+
            menu:[
                {name:'课程大纲'},
                {name:'开课时间'},
@@ -154,11 +156,46 @@ export default {
     },
     mounted(){
         let that = this;
-       
+        that.getCourseById();
 
       
     },
     methods:{
+        getCourseById(){
+            let course_id = this.$route.query.course_id
+            let that = this;
+            let obj = {};
+            obj.course_id = course_id;
+            getCourseById(obj).then(res=> {
+                if(res.code==200){
+                    that.courseName = res.data.name
+                    that.introduction = res.data.introduction
+                    that.numbers = res.data.numbers==null?that.numbers = 0:res.data.numbers
+                    that.chapterNumber = res.data.chapter_number
+                    that.sectionNumber = res.data.section_number
+                    that.time = res.data.time = res.data.start_at.replace('T',' ') +'-'+ res.data.end_at.replace('T',' ');
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
+        modifyCourseTime(){
+            let course_id = this.$route.query.course_id
+            let that = this;
+            let obj = {};
+            obj.user_id = sessionStorage.getItem('userId');
+            obj.course_id = course_id;
+            obj.start = that.startTime;
+            obj.end = that.endTime;
+            obj.class_id = '';
+            modifyCourseStatus(obj).then(res=> {
+                if(res.code==200){
+                    alert("1")
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
         clickStartTime() {
         this.pickerOptionsStart.disabledDate = time => {
           if (this.endTime) {

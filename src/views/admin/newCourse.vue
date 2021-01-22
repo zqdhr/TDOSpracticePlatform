@@ -348,7 +348,11 @@ export default {
             if(that.course.intro ==''){
                 return  that.$toast('请输入课程详情',2000)
             }
-       
+            let obj = {};
+            obj.own_id = sessionStorage.getItem("userId");
+            obj.name = that.course.name;
+            obj.introduction = that.course.intro
+            console.log(that.files)
             that.isNewCourses = true;
         },
         //此方法是用来写新建课程的接口的

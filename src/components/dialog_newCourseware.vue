@@ -347,8 +347,8 @@ export default {
       let that = this;
       if (!checked) {
         if (!(that.chooseList.indexOf(obj.id) != -1)) {
-          if (that.chooseList.length == 2) {
-            return this.$toast("最多上传2个课件", 3000);
+          if (that.chooseList.length == 1) {
+            return this.$toast("最多上传1个课件", 3000);
           }
           that.chooseList.push(obj);
         }
@@ -369,10 +369,10 @@ export default {
           newFile.name.lastIndexOf(".") + 1
         );
         console.log(extension);
-        if (extension != "xlsx" && extension != "xls") {
-          this.$toast("只能上传后缀是.xlsx或xls的文件", 3000);
-          return prevent();
-        }
+        // if (extension != "xlsx" && extension != "xls") {
+        //   this.$toast("只能上传后缀是.xlsx或xls的文件", 3000);
+        //   return prevent();
+        // }
       }
     },
     //上传的回调函数，每次上传回调都不一样
