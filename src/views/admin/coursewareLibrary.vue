@@ -102,7 +102,7 @@
 </template>
 <script>
 
-import newdialog from '@/components/dialog_newCourseware'
+import newdialog from '@/components/admin_dialog_newCourseware'
 export default {
     data(){
         return{
