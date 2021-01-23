@@ -29,7 +29,7 @@
         </div>
         <div class="fr">
           <a class="btnDefault pointer abtn" @click="delList">删除题目</a>
-          <a class="btnDefault pointer abtn">新增题目</a>
+          <a class="btnDefault pointer abtn" @click="isNew=true;files=[];isNewType=0">新增题目</a>
           
           
           <div class="d-serach"> 
@@ -104,7 +104,7 @@
     </div>
     <el-image-viewer v-if="showViewer"  :on-close="showViewerClose" :url-list="[guidePic]"></el-image-viewer>
 
-    <!--删除人员弹出框-->
+    <!--删除题目-->
     <el-dialog :visible.sync="isDelete" width="600px">
       <div slot="title" class="dialog_header">请注意!</div>
       <div class="confirm_dialog_body">
@@ -118,10 +118,62 @@
       </div>
     </el-dialog>
 
+    <!--新增题目-->
+      <el-dialog
+      class="dialog_pagination"
+      :visible.sync="isNew"
+       width="600px"
+      :class="{'newCourseware_dialog':isNewType==0}"
+    > 
+      <template v-if="isNewType==0">
+        <div slot="title" class="dialog_header">新增题目</div>
+        <div class="confirm_dialog_body"></div>
+        <div slot="footer" class="dialog-footer">
+          <a class="btnDefault" @click="isNewType=1">批量上传</a>
+          <a class="btnDefault">单个上传</a>
+          <p class="dialog-mess">（点击此处下载“<a>批量上传</a>”模板）</p>
+        </div>
+      </template>
+      <template v-if="isNewType == 1">
+        <div slot="title" class="dialog_header">本地上传</div>
+        <div class="confirm_dialog_body" style="padding: 60px 0 40px 0">
+          <ul class="fileList_name">
+            <li v-for="file in files" :key="file.id">
+              <span>{{ file.name }}</span>
+            </li>
+          </ul>
+          <div class="upload_person">
+            <file-upload
+              style="overflow: visible"
+              :maximum="1"
+              :multiple="true"
+              ref="upload"
+              v-model="files"
+              extensions="xlsx,xls"
+              :post-action="uploadUrl"
+              :auto-upload="false"
+              @input-file="inputFile"
+              @input-filter="inputFilter"
+              name="excel_file"
+              :headers="{ Authorization: jwt }"
+            >
+              <a class="a_upload pointer"><span>选择需要添加的课件</span></a>
+            </file-upload>
+          </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <a class="btnDefault pointer" @click="confimBatchUpload">确认上传</a>
+        </div>
+      </template>
+      
+      </el-dialog>
+
 </div>
 </template>
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+import FileUpload from "vue-upload-component";
+
 export default {
     data(){
         return{
@@ -145,13 +197,18 @@ export default {
             total:100,//总共条数
             perPage:15,//每页页数
             curPage:1,//当前页
-            showViewer:false,
+            showViewer:false, //图片预览
             showDel:false,
-            isDelete:false
+            isDelete:false,
+            isNew:false, //新增题目
+            isNewType:0,//题目新增方式，1批量上传 2单个上传
+            jwt: "",
+            uploadUrl: "",
+            files: [],
         }
     },
     components:{
-        ElImageViewer
+        ElImageViewer,FileUpload
     },
     created(){
         let that = this;
@@ -159,6 +216,62 @@ export default {
         that.quest_type = that.typeList[0].value
     },
     methods:{
+      //上传前的钩子函数
+      inputFilter(newFile, oldFile, prevent) {
+        if (newFile && !oldFile) {
+          const extension = newFile.name.substring(
+            newFile.name.lastIndexOf(".") + 1
+          );
+         
+          if (extension != "xlsx" && extension != "xls") {
+            this.$toast("只能上传后缀是.xlsx或xls的文件", 3000);
+            return prevent();
+          }
+        }
+      },
+      //上传的回调函数，每次上传回调都不一样
+      inputFile(newFile, oldFile) {
+        let that = this;
+        console.log("123");
+         /*
+        if (
+          Boolean(newFile) !== Boolean(oldFile) ||
+          oldFile.error !== newFile.error
+        ) {
+          if (!this.$refs.upload.active) {
+            this.$refs.upload.active = true;
+          }
+        }
+         */
+        if (newFile && oldFile) {
+          //add
+          if (newFile && oldFile && !newFile.active && oldFile.active) {
+            //console.log('response', newFile.response)
+            let response = newFile.response;
+            console.log(this.files);
+            if (response.code == 200) {
+              this.$message.success("文件上传成功");
+                  that.isNew = false;
+     
+            } else {
+              this.$message.error("文件上传失败");
+
+            }
+            if (newFile.xhr) {
+              //  Get the response status code
+              console.log("status", newFile.xhr.status);
+            }
+          }
+        }
+        if (newFile && oldFile) {
+          // update
+          console.log("update", newFile);
+        }
+        if (!newFile && oldFile) {
+          // remove
+          console.log("remove", oldFile);
+        }
+      },
         //自定义分类
         selectType(val){
 
@@ -210,6 +323,14 @@ export default {
             let that = this;
             that.showDel = !that.showDel;
             that.isDelete = false;
+        },
+        //批量上传确认
+        confimBatchUpload(){
+          let that = this;
+          
+            this.$refs.upload.active = true;
+        
+       
         }
         
     }
@@ -219,4 +340,13 @@ export default {
 @import url(../../assets/less/admin.less);
 .table_box_questionBank{min-height: 500px;}
 .s-text{display: block;}
+.dialog-mess{
+  text-align: center; padding-top:10px; color:@hnavcolor;
+  a{cursor: pointer; color: @basecolor;}
+}
+.fileList_name{
+  li{
+    text-align: center; padding-bottom:5px;
+  }
+}
 </style>

@@ -17,7 +17,7 @@
             :class="{ cur: index == state.navindex }"
             v-for="(item, index) in menus"
             :key="index"
-            @mouseover="isShow=true"
+            @mouseover="item.children?isShow=true:isShow=false"
           
           >
             <a @click="linPath(item, index)" >{{ item.text }}</a>
