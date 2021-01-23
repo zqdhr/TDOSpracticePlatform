@@ -17,10 +17,12 @@
             :class="{ cur: index == state.navindex }"
             v-for="(item, index) in menus"
             :key="index"
+            @mouseover="isShow=true"
+          
           >
-            <a @click="linPath(item, index)">{{ item.text }}</a>
-            <ul v-if="item.children" class="children-ul">
-              <li v-for="(iitem, iindex) in item.children" :key="iindex">
+            <a @click="linPath(item, index)" >{{ item.text }}</a>
+            <ul v-if="item.children && isShow" class="children-ul">
+              <li v-for="(iitem, iindex) in item.children" :key="iindex" >
                 <a @click="children_linPath(iitem, index)">{{ iitem.text }}</a>
               </li>
             </ul>
@@ -36,6 +38,7 @@ export default {
   data() {
     return {
       menus:[],
+      isShow:false
     }
   },
   computed: {
@@ -79,7 +82,7 @@ export default {
     },
     children_linPath(item){
       let that = this;
-  
+      that.isShow =false
       that.$router.push({ path: item.path }).catch((err) => {
           console.log( err);
         });
@@ -183,7 +186,7 @@ export default {
       border: 1px solid #dcdcdc;
       border-top: 0 none;
       padding-top: 5px;
-      display: none;
+      /*display: none;*/
       > li { height: 50px; line-height: 50px; }
       > li a { color: @hnavcolor; }
       > li a:hover { color: @basecolor; }
