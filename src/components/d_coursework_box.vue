@@ -56,11 +56,11 @@
                 <div class="pic">
                   <img :src="item.pic" />
                 </div>
-                {{item.type}}
+          
                 <p class="answer_box" v-if="item.type == 1">
                   <span
                     class="s_radio"
-                    :class="{ s_radio_answer: index == item.answer }"
+                    :class="{ 's_radio_answer': iindex+1 == item.answer }"
                     v-for="(iitem, iindex) in item.chose"
                     :key="iindex"
                   >
@@ -120,11 +120,11 @@
             <p class="answer_box" v-if="item.type == 1">
               <span
                 class="s_radio"
-                :class="{ s_radio_answer: index == item.answer }"
+                :class="{ s_radio_answer: iindex+1 == item.answer }"
                 v-for="(iitem, iindex) in item.chose"
                 :key="iindex"
               >
-               {{item}} {{item.answer}}
+               {{iitem}} 
               </span>
              
             </p>

@@ -144,7 +144,7 @@ export default {
     position: absolute;width: 320px; background: @background; height: 100%;
     .p-courseName{font-size: 22px; color:@basecolor;text-align: center; padding: 20px 10px;}
     .p-name{padding:0  40px 0 10px ;font-size:20px; color: @fontColor; cursor: pointer; line-height: 50px;
-      position: relative; z-index:9999;
+      position: relative; 
     }
     .p-name.arrow{background: url(../assets/img/n_arrow_d.png) right 20px center no-repeat;}
     .p-name.arrow_up{background:@basecolor url(../assets/img/n_arrow_u.png) right 20px center no-repeat; color:#fff;}

@@ -17,6 +17,7 @@
                             </span>
                         </div>
                     </div>
+                    <a class="icon_edit pointer" @click="edit(1,item.id,item.name)"></a>
                     <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
                 <!--新建章节样式-->
@@ -49,6 +50,7 @@
                                         </span>
                                     </div>
                                 </div>
+                                 <a class="icon_edit pointer" @click="edit(2,iitem.id,iitem.name)"></a>
                                 <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>
                             </div>
                             </template>>
@@ -71,7 +73,7 @@
                                      <template v-if="i_item.id">
                                         <div class="sec_name textline1">
                                             <p class="textline1">第{{i_index+1}}小节：{{i_item.name}}</p>
-
+                                              <a class="icon_edit pointer" @click="edit(3,i_item.id,i_item.name)"></a>
                                         </div>
                                     </template>>
                                     <template v-if="!i_item.id">
@@ -130,6 +132,31 @@
         </div>
         </el-dialog>
 
+        <!--编辑弹出框-->
+         <!--修改编辑弹出框-->
+    <el-dialog
+     
+      :visible.sync="isEdit"
+      width="600px"
+      class="personDialog"
+      
+    >
+    <div slot="title" class="dialog_header">{{editTitle}}</div>
+
+      <div class="editMain" >
+        <el-form ref="form" label-width="60px">
+          <el-form-item label="名称">
+            <el-input v-model="editValue"></el-input>
+          </el-form-item>
+        
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <button class="btnDefault" @click="isEdit = false">取消</button>
+        <button class="btnDefault" @click="isEdit = false">确认修改</button>
+      </span>
+    </el-dialog>
+
     </div>
 
 </template>
@@ -167,7 +194,11 @@ export default{
             ],
             isDelete:false,
             deleteMess:'',
-            course_Id:''
+            course_Id:'',
+            editTitle:'',
+            editValue:'',
+            editId:'',
+            isEdit:true,
         }
     },
     props:{
@@ -262,6 +293,28 @@ export default{
         addChapters(){
             let that = this;
             console.log(that.chapters)
+        },
+        //点击编辑
+        edit(num,id,text){
+            let that = this;
+            that.isEdit = true;
+            that.editValue = text;
+            that.editId = id
+            //章
+           if(num==1){
+              that.editTitle = "章修改"
+              console.log(text)
+           }
+           //节
+           if(num==2){
+               that.editTitle = "节修改"
+              console.log(text)
+           }
+           //小节
+           if(num==3){
+              that.editTitle = "小节修改"
+              console.log(text)
+           }
         }
     }
 }
@@ -320,6 +373,7 @@ export default{
     .sec_enclosure div{margin-left: 20px; margin-right:20px;}
 
     .cha_title{
+        position: relative;
        .sec_enclosure div{margin-left:45px; font-size:16px;}
     }
 
@@ -370,10 +424,11 @@ export default{
     .i_section_ul{
         .section_li{
              margin: 15px 0 0 30px;
-             .sec_name{background: @bgf0f0f0; width:100%}
+             .sec_name{background: @bgf0f0f0;  width:80%; padding-right: 20%; position: relative;}
             .sec_name p{padding-left:0px; line-height: 40px; padding-left: 30px;}
             .din input{font-size: 16px;}
             .a_delete{right:0px}
+            .icon_edit{right:20px}
         }
         .new_section_li{
             margin-right: 0px;
@@ -382,5 +437,14 @@ export default{
         }
         
     }
+
+    .icon_edit{width:20px;height:20px;display: block;
+    background: url(../assets/img/icon_edit.png) center no-repeat; position:absolute; top:50%;margin-top: -10px;}
+   .cha_title,.d-section_name{
+       .icon_edit{right:50px}
+   }
+   .editMain{margin:0 30px}
+
+   
 }
 </style>
