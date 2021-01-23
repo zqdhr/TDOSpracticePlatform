@@ -195,10 +195,10 @@ export default{
             isDelete:false,
             deleteMess:'',
             course_Id:'',
-            editTitle:'',
+            editTitle:'章修改',
             editValue:'',
             editId:'',
-            isEdit:true,
+            isEdit:false,
         }
     },
     props:{
