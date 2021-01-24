@@ -23,7 +23,7 @@
             <a @click="linPath(item, index)" >{{ item.text }}</a>
             <ul v-if="item.children && isShow" class="children-ul">
               <li v-for="(iitem, iindex) in item.children" :key="iindex" >
-                <a @click="children_linPath(iitem, index)">{{ iitem.text }}</a>
+                <a  @click="children_linPath(iitem, index)">{{ iitem.text }}</a>
               </li>
             </ul>
           </li>

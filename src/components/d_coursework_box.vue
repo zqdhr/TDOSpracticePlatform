@@ -4,7 +4,9 @@
     <div class="exper_main">
       <courseNav></courseNav>
       <div class="right_box">
-        <div class="add_btn_box">
+        <!--小节下面有作业-->
+  
+        <div class="add_btn_box" v-if="!noData">
           <div class="sel-box">
             <el-select
               v-model="cate"
@@ -26,7 +28,7 @@
           <a class="btnDefault pointer" @click="click_new">新增题目</a>
         </div>
         <!--课程题目-->
-        <div class="coursework_box">
+        <div class="coursework_box" v-if="!noData">
           <!--未开课显示的样式 根据情况只显示一个-->
           <template>
             <div class="in-box">
@@ -80,6 +82,12 @@
             </ul>
           </div>
         </div>
+        
+        <!--小节作业不存在-->
+        <div class="noData_box" v-if="noData">
+            <p class="mess">当前小节下暂无作业，请点击下方新增作业按钮。</p>
+            <div><a class="btnDefault pointer"  @click="click_new">新增题目</a></div>
+        </div>
       </div>
     </div>
     <!--删除弹出框-->
@@ -103,9 +111,26 @@
       </div>
     </el-dialog>
     <!--题库选择弹出框-->
-    <el-dialog :visible.sync="showQuestionBank" :width="dialogWidth">
+    <el-dialog :visible.sync="showQuestionBank" width="1100px" class="dialog_pagination">
       <div slot="title" class="dialog_header">新增题目（题目库选择）</div>
       <div class="course_list dialog_course_list">
+        <div class="pageTab clearfix ">
+        <div class="fl">
+          <div class="sel-box">
+            <el-select v-model="type" placeholder="题目类型" @change="selectQuestionType" >
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+            </el-select>
+          </div>
+       
+        </div>
+        <div class="fr">
+         
+          <div class="d-serach"> 
+            <input placeholder="请输入作业标题" type="text" autocomplete="off" />
+            <a class="searchBtn pointer"></a>
+          </div>
+        </div>
+      </div>
         <!--选择题-->
         <ul class="choice_question">
           <li
@@ -139,11 +164,22 @@
         </ul>
       </div>
 
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="showQuestionBank = false"
-          >确 定</el-button
-        >
-      </div>
+
+      <div  class="choseFooter clearfix">
+          <a class="btnDefault fl pointer" @click="showQuestionBank = false">确认</a>
+
+          <div class="tab-pagination fr">
+            <el-pagination
+              background
+              :current-page="curPage"
+              :page-size="perPage"
+              @current-change="handleCurrentChange"
+              layout="prev, pager, next,jumper"
+              :total="total"
+            >
+            </el-pagination>
+          </div>
+        </div>
     </el-dialog>
   </div>
 </template>
@@ -203,6 +239,11 @@ export default {
       deleteList: [], //选中需要删除的题目列表
       chooseList:[],//新增题目选中
       isDelete: false,
+      type:'',//题目类型
+      curPage:1,
+      perPage:10,
+      total:100,
+      noData:true,//小节没有内容
     };
   },
   components: {
@@ -223,6 +264,10 @@ export default {
     };
   },
   methods: {
+    //分页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    },
     //选中事件
     cheeckedList(num,obj, index, checked) {
       let that = this;
@@ -306,7 +351,11 @@ export default {
         this.$refs.inputVal.focus();
       });
     },
-
+    //新增题目弹出框
+    selectQuestionType(val){
+       let that = this;
+       console.log('选择题类型'+val)
+    },
     //删除确认
     confirmDeleteCourseWork() {
       let that = this;
@@ -324,16 +373,17 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+@import url(../assets/less/admin.less);
 .experiment_box {
   margin-top: 30px;
-  min-height: 600px;
+  min-height: 400px;
   .exper_main {
     width: 100%;
     height: 100%;
     position: relative;
   }
   .right_box {
-    margin-left: 330px;
+    margin-left: 330px; min-height: 400px;
   }
 }
 
@@ -459,6 +509,13 @@ export default {
 }
 .dialog-footer {
   text-align: center;
+}
+.choseFooter{padding: 20px;}
+.choice_question{margin: 0 20px;}
+
+.noData_box{
+  text-align: center; padding:150px 0;
+  .mess{font-size:24px;color: @basecolor; padding: 30px  0;}
 }
 
 @media screen and (max-width: 1440px) {

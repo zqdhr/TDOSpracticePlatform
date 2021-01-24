@@ -75,9 +75,9 @@
                 </div>
                 <div class="mess">
                     当前选择XXXX班级，共有<span>60</span>名学员，已提交<span>45</span>份，还剩<span>15</span>份未提交
-                    <el-tooltip class="item" effect="light" :content="userList" placement="right-start">
-                       <a class="nosubmit"></a>
-                    </el-tooltip>
+                    
+                    <a class="nosubmit" @click="isUnsubmittedlist=true"></a>
+                   
                 </div>
             </div>
         </div>
@@ -118,6 +118,26 @@
                </div>
            </div>
         </div>
+          
+        <!--未提交弹出框-->
+        <el-dialog :visible.sync="isUnsubmittedlist" width="500px">
+        <div slot="title" class="dialog_header">未提交人员（15人）</div>
+        <div class="unSubmitList">
+            <ul>
+                <li v-for="(item,index) in Unsubmittedlist" :key="index">
+                    <div class="d-col">
+                        <div class="d-sno">
+                            <p class="textline1">{{item.sno}}</p>
+                        </div>
+                        <div class="d-name">
+                            <p class="textline1">{{item.name}}</p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+       
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -165,7 +185,9 @@ export default {
         level3List:[],//小节列表
         level3Name:'',//小节名称
 
-        inplaceholder:'请输入学号或姓名'
+        inplaceholder:'请输入学号或姓名',
+        isUnsubmittedlist:false,//人员未提交名单显示
+        Unsubmittedlist:[{sno:'20200112',name:'猜一下'},{sno:'20200112',name:'猜一下'}]
       }
     },
     filters:{

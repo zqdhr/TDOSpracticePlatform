@@ -50,7 +50,7 @@
             <el-table-column type="selection" width="55" v-if="showDel">
              </el-table-column>
              <el-table-column prop="serial_number" label="题目序号" width="150">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <span>{{(curPage - 1) * perPage + scope.$index + 1}}</span>
                 </template>
              </el-table-column>
@@ -130,12 +130,12 @@
         <div class="confirm_dialog_body"></div>
         <div slot="footer" class="dialog-footer">
           <a class="btnDefault" @click="isNewType=1">批量上传</a>
-          <a class="btnDefault">单个上传</a>
+          <a class="btnDefault" @click="singleUpload">单个上传</a>
           <p class="dialog-mess">（点击此处下载“<a>批量上传</a>”模板）</p>
         </div>
       </template>
       <template v-if="isNewType == 1">
-        <div slot="title" class="dialog_header">本地上传</div>
+        <div slot="title" class="dialog_header">批量上传</div>
         <div class="confirm_dialog_body" style="padding: 60px 0 40px 0">
           <ul class="fileList_name">
             <li v-for="file in files" :key="file.id">
@@ -157,7 +157,7 @@
               name="excel_file"
               :headers="{ Authorization: jwt }"
             >
-              <a class="a_upload pointer"><span>选择需要添加的课件</span></a>
+              <a class="a_upload pointer"><span>选择需要添加的题目</span></a>
             </file-upload>
           </div>
         </div>
@@ -165,7 +165,100 @@
           <a class="btnDefault pointer" @click="confimBatchUpload">确认上传</a>
         </div>
       </template>
-      
+
+      <template  v-if="isNewType == 2">
+      <div slot="title" class="dialog_header">单个上传</div>
+    
+      <div class="baseInfo">
+          <div class="fromBox">
+           
+            
+            <el-form ref="form"  label-width="100px">
+                <el-form-item>
+                <span slot="label" class="s-label" >题目类型：</span >
+                <el-select v-model="choseQuestionType" placeholder="题目类型" @change="dialogselectType" >
+                  <el-option v-for="item in questOptions" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+               </el-select>
+              </el-form-item>
+              <el-form-item>
+                <span slot="label" class="s-label" >题目详情：</span >
+                <el-input
+                  v-model="question.title"
+                  type="textarea"
+                ></el-input>
+              </el-form-item>
+
+              <el-form-item v-if="choseQuestionType==0">
+                <span slot="label" class="s-label" >题目选项：</span >
+                <el-input style="margin-bottom:12px" v-for="(item,index) in question.options" :key="index"
+                 v-model="item.label"
+                  type="text"
+                ></el-input>
+                  
+                 
+              </el-form-item>
+              
+              <el-form-item v-if="choseQuestionType==0">
+                <span slot="label" class="s-label" >题目答案：</span >
+                <el-select v-model="question.answer" placeholder="题目答案" @change="dialogselectType" >
+                  <el-option v-for="item in question.options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+               </el-select>
+              </el-form-item>
+
+              <el-form-item v-if="choseQuestionType==1">
+                <span slot="label" class="s-label" >题目答案：</span >
+                <el-input
+                  v-model="question.answer"
+                  type="textarea"
+                ></el-input>
+              </el-form-item>
+              
+              <el-form-item>
+                <span slot="label" class="s-label" >题目图片：</span >
+                <div class="upload_box clearfix">
+                  <div class="left_pic">
+                    <div class="picbox">
+                      <div class="" v-for="(file, index) in files1" :key="index">
+                        <img
+                          class="td-image-thumb"
+                          v-if="file.thumb"
+                          :src="file.thumb"
+                        />
+                      </div>
+                    </div>
+                    <p class="mess">
+                      （上传图片比例为3:2的，支持png.jpg.jpeg）
+                    </p>
+                  </div>
+                  <div class="bupload_btn_box">
+                    <file-upload
+                      style="overflow: visible"
+                      :maximum="1"
+                      :multiple="true"
+                      ref="upload"
+                      v-model="files1"
+                      extensions="jpg,gif,png,webp"
+                      :post-action="uploadUrl"
+                      :auto-upload="false"
+                      @input-file="inputFile1"
+                      @input-filter="inputFilter1"
+                      name="excel_file"
+                      :headers="{ Authorization: jwt }"
+                    >
+                      <a class="btnDefault a_upload">
+                        <span>上传图片</span>
+                      </a>
+                    </file-upload>
+                  </div>
+                </div>
+              </el-form-item>
+            </el-form>
+          </div>
+          <div class="btnBox">
+            <a class="btnDefault pointer" @click="saveTilte">保存</a>
+          </div>
+        </div>
+        </template>
       </el-dialog>
 
 </div>
@@ -204,7 +297,23 @@ export default {
             isNewType:0,//题目新增方式，1批量上传 2单个上传
             jwt: "",
             uploadUrl: "",
-            files: [],
+            files: [], //题目批量上传
+            files1:[],//上传的图片列表
+            
+            //新建题目命名
+            question:{
+              title:'',
+              answer:'',
+              options:[
+                {value:1,label:''},
+                {value:2,label:''},
+                {value:3,label:''},
+                {value:4,label:''},
+              ],
+            },
+            choseQuestionType:'',//单个上传题目类型
+            //新增题目类型
+            questOptions:[{value:'0',label:"选择题"},{value:'1',label:"简答题"}]
         }
     },
     components:{
@@ -272,6 +381,88 @@ export default {
           console.log("remove", oldFile);
         }
       },
+          //上传前的钩子函数
+    inputFilter1(newFile, oldFile, prevent) {
+      const isLt10M = newFile.size / 1024 / 1024 < 10;
+      if (newFile && !oldFile) {
+        const extension = newFile.name.substring(
+          newFile.name.lastIndexOf(".") + 1
+        );
+        console.log(extension);
+        if (
+          extension != "jpg" &&
+          extension != "gif" &&
+          extension != "png" &&
+          extension != "webp"
+        ) {
+          this.$toast("只能上传图片", 3000);
+          return prevent();
+        }
+        if (!isLt10M) {
+          this.$toast("上传图片的大小不能超过 10M!", 3000);
+          return prevent();
+        }
+      }
+
+      if (
+        newFile &&
+        newFile.error === "" &&
+        newFile.file &&
+        (!oldFile || newFile.file !== oldFile.file)
+      ) {
+        // Create a blob field
+        // 创建 blob 字段
+        newFile.blob = "";
+        let URL = window.URL || window.webkitURL;
+        if (URL) {
+          newFile.blob = URL.createObjectURL(newFile.file);
+        }
+        // Thumbnails
+        // 缩略图
+        newFile.thumb = "";
+        if (newFile.blob && newFile.type.substr(0, 6) === "image/") {
+          newFile.thumb = newFile.blob;
+        }
+      }
+    },
+
+    //上传的回调函数，每次上传回调都不一样
+    inputFile1(newFile, oldFile) {
+      let that = this;
+      /*
+        if ( Boolean(newFile) !== Boolean(oldFile) ||oldFile.error !== newFile.error) {
+            if (!this.$refs.upload.active) {
+            this.$refs.upload.active = true;
+            }
+        }
+        */
+      if (newFile && oldFile) {
+        //add
+        if (newFile && oldFile && !newFile.active && oldFile.active) {
+          //console.log('response', newFile.response)
+          let response = newFile.response;
+          console.log(this.files);
+          if (response.code == 200) {
+            this.$message.success("文件上传成功");
+          
+          } else {
+            this.$message.error("文件上传失败");
+          }
+          if (newFile.xhr) {
+            //  Get the response status code
+            console.log("status", newFile.xhr.status);
+          }
+        }
+      }
+      if (newFile && oldFile) {
+        // update
+        console.log("update", newFile);
+      }
+      if (!newFile && oldFile) {
+        // remove
+        console.log("remove", oldFile);
+      }
+    },
         //自定义分类
         selectType(val){
 
@@ -293,6 +484,12 @@ export default {
         let that = this;
        
         console.log(`当前页: ${val}`);
+        },
+        //点击单个上传
+        singleUpload(){
+          let that = this;
+          that.isNewType = 2;
+          that.choseQuestionType = that.questOptions[0].value
         },
         getPreview(){
             this.showViewer = true;
@@ -327,10 +524,34 @@ export default {
         //批量上传确认
         confimBatchUpload(){
           let that = this;
-          
-            this.$refs.upload.active = true;
+          this.$refs.upload.active = true;
         
        
+        },
+        //弹出框内，选择题目类型
+        dialogselectType(val){
+           console.log(val)
+           let that = this;
+           that.files1 = [];
+           /*
+           let obj ={
+              title:'',
+              answer:'',
+              options:[
+                {value:1,label:''},
+                {value:2,label:''},
+                {value:3,label:''},
+                {value:4,label:''},
+              ],
+            }
+          that.question = obj
+          */
+        },
+        //新增题目保存
+        saveTilte(){
+          let that = this
+          this.$refs.upload.active = true;
+          this.isNew = false;
         }
         
     }
@@ -348,5 +569,17 @@ export default {
   li{
     text-align: center; padding-bottom:5px;
   }
+}
+/*新增题目样式 */
+.baseInfo{margin: 0 30px; padding-top:30px}
+.btnBox{text-align: center; padding-bottom: 20px;}
+.left_pic{display: inline-block;}
+.bupload_btn_box{display: inline-block; vertical-align: bottom; margin-left:10px; margin-bottom: 10px;} 
+.picbox{width: 300px;height: 200px;border:1px solid @border; overflow: hidden; position: relative;
+  img{
+    width:100%;position:absolute;
+    top:50%;
+    transform:translate(0,-50%);-moz-transform:translate(0,-50%);-webkit-transform:translate(0,-50%);
+    }
 }
 </style>

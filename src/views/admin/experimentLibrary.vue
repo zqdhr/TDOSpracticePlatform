@@ -38,7 +38,7 @@
             <div class="list_box">
                 <ul class="list_ul clearfix">
                     <li v-for="(item,index) in experimentList" :key="index">
-                        <div class="info boxShadow">
+                        <div class="info boxShadow pointer" @click="link_Detail">
                            
                             <!--
                             <el-tooltip class="item" effect="dark" content="设置" placement="top">
@@ -52,7 +52,7 @@
                              <p class="p-text textline1">虚拟机{{item.num}}台</p>
                             <p class="p-text textline1">实验时长：{{item.duration}}</p>
                              <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                                <a class="icon icon_close pointer" @click="isDelete=true"></a>
+                                <a class="icon icon_close pointer" @click.stop="isDelete=true"></a>
                             </el-tooltip>
                            
                         </div>
@@ -86,10 +86,12 @@
       </div>
     </el-dialog>
     <newExperiment  ref="newExperiment"></newExperiment>
+    <experimentDetail ref="experimentDetail"></experimentDetail>
 </div>
 </template>
 <script>
 import newExperiment from '@/components/admin_new_experiment'
+import experimentDetail from '@/components/experimentDetail'
 export default {
     data(){
         return{
@@ -117,7 +119,7 @@ export default {
             isNewExperiment:false,
         }
     },
-    components:{newExperiment},
+    components:{newExperiment,experimentDetail},
     methods:{
 
         //自定义分类
@@ -150,7 +152,15 @@ export default {
           that.isNewExperiment = true;
           that.$refs.newExperiment.click_new();
 
-        }
+        },
+        //查看实验详情
+        link_Detail(){
+          let that = this;
+          that.isNewExperiment = true;
+          that.$refs.experimentDetail.click_Detail();
+
+        },
+        
     }
 }
 </script>
