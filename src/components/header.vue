@@ -10,18 +10,16 @@
         <div class="fr fr-info">
           欢迎你,<span>陈友谅(工号:0056)</span>
           <div class="hline"></div>
-          <a class="btnexit" @click="logOut">退出系统</a>
+          <a class="btnexit" @click="logOut">退出系统{{isShow}}</a>
         </div>
         <ul class="nav_ul">
           <li
             :class="{ cur: index == state.navindex }"
             v-for="(item, index) in menus"
             :key="index"
-            @mouseover="item.children?isShow=true:isShow=false"
-          
           >
-            <a @click="linPath(item, index)" >{{ item.text }}</a>
-            <ul v-if="item.children && isShow" class="children-ul">
+            <a @click="linPath(item, index)" @mouseover="item.children?isShow=true:isShow=false" >{{ item.text }}</a>
+            <ul v-if="item.children && isShow" class="children-ul" @mouseleave="isShow=false">
               <li v-for="(iitem, iindex) in item.children" :key="iindex" >
                 <a  @click="children_linPath(iitem, index)">{{ iitem.text }}</a>
               </li>
