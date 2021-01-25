@@ -95,9 +95,20 @@ var getCoursewareAll = function(data){
 	return axios.get('/getCoursewareAll?perPage='+data.per_page+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name)
 }
 
+//管理员查询所有的镜像
+var getImagequoteList = function(data){
+	return axios.get('/getImagequoteList?kind='+data.kind+'&imageName='+data.imageName+'&page='+data.page+'&perPage='+data.perPage)
+}
+
+//管理员删除所选的镜像
+var deleteImages = function(data){
+	return axios.post('/deleteImages?imagesID='+data.imagesID)
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
-	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList
+	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
+	getImagequoteList,deleteImages
 }
 
 function getJson (data) {

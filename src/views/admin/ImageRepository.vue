@@ -44,9 +44,9 @@
             </template>
           </el-table-column>
           <el-table-column prop="size" label="容量"> </el-table-column>
-          <el-table-column prop="Introduction" label="简介" width="280">
+          <el-table-column prop="introduction" label="简介" width="280">
           </el-table-column>
-           <el-table-column prop="applicationNumber" label="被引用次数">
+           <el-table-column prop="quotecount" label="被引用次数">
           </el-table-column>
         </el-table>
         </div>
@@ -57,7 +57,7 @@
             :page-size="perPage"
             @current-change="handleCurrentChange"
             layout="prev, pager, next,jumper"
-            :total="150"
+            :total="total"
           >
           </el-pagination>
         </div>
@@ -108,7 +108,7 @@
                             :multiple="true"
                             ref="upload"
                             v-model="files"
-                            extensions="xlsx,xls"
+                            extensions=""
                             :post-action="uploadUrl"
                             :auto-upload="false"
                             @input-file="inputFile"
@@ -136,6 +136,7 @@
 <script>
 import { mapState } from "vuex";
 import FileUpload from "vue-upload-component";
+import {getImagequoteList,deleteImages} from '@/API/api';
 export default {
   data() {
     return {
@@ -146,15 +147,8 @@ export default {
       
       //新增镜像
       Imagelibraries:[
-          {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:0,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'},
-          {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:1,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'},
-          {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:0,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'},
-          {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:0,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'},
-          {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:1,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'},
-          {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:0,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'},
-          {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:1,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'},
-          {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:0,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'}
-      ],
+           ],
+        total:1,
       showDel: false, //删除多选是否显示
       perPage:24, //虚拟机每页
       curPage:1,
@@ -192,6 +186,23 @@ export default {
       }
      
     },
+      //查询所有镜像
+      getImagequoteList(){
+          let that = this;
+          let obj = {};
+          obj.kind = 0;
+          obj.imageName = '';
+          obj.page = 1;
+          obj.perPage = 10;
+          getImagequoteList(obj).then(res=> {
+              if(res.code==200){
+                  that.Imagelibraries = res.data.list;
+                  that.total = res.data.total
+              }else{
+                  this.$toast(res.message,2000)
+              }
+          })
+      },
 
   
     //删除镜像点击
@@ -210,7 +221,20 @@ export default {
     //确认删除镜像列表
     confirmDeleteList(){
         let that = this;
-        console.log('确认删除镜像')
+        let obj = {};
+        let list = [];
+        for(let i =0;i<that.multipleSelection.length;i++){
+            list.push(that.multipleSelection[i].id)
+        }
+        obj.imagesID = list;
+        deleteImages(obj).then(res=> {
+            if(res.code==200){
+                console.log("111")
+            }else{
+                this.$toast(res.message,2000)
+            }
+        })
+        console.log('确认删除镜像'+obj)
     },
 
      //上传前的钩子函数
@@ -220,10 +244,10 @@ export default {
           newFile.name.lastIndexOf(".") + 1
         );
         console.log(extension);
-        if (extension != "xlsx" && extension != "xls") {
-          this.$toast("只能上传后缀是.xlsx或xls的文件", 3000);
-          return prevent();
-        }
+        // if (extension != "xlsx" && extension != "xls") {
+        //   this.$toast("只能上传后缀是.xlsx或xls的文件", 3000);
+        //   return prevent();
+        // }
       }
     },
         //上传的回调函数，每次上传回调都不一样
@@ -232,9 +256,9 @@ export default {
       console.log('123')
       
       if ( Boolean(newFile) !== Boolean(oldFile) ||oldFile.error !== newFile.error) {
-        if (!this.$refs.upload.active) {
-          this.$refs.upload.active = true;
-        }
+        // if (!this.$refs.upload.active) {
+        //   this.$refs.upload.active = true;
+        // }
       }
     
       if (newFile && oldFile) {
@@ -281,6 +305,10 @@ export default {
  
    
   },
+    mounted() {
+        let that = this;
+        that.getImagequoteList();
+    }
 };
 </script>
 <style lang="less" scoped>
