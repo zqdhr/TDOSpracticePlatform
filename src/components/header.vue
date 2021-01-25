@@ -79,9 +79,10 @@ export default {
         });
       }
     },
-    children_linPath(item){
+    children_linPath(item,index){
       let that = this;
-      that.isShow =false
+
+      that.$store.commit("updateNavindex", index);
       that.$router.push({ path: item.path }).catch((err) => {
           console.log( err);
         });
