@@ -97,8 +97,8 @@
                      </div>
                      <div class="d5 d13">
                          <div class="cell">
-                            <a class="btnDefault btn_py pointer" v-if="item.state==0">批阅</a>
-                            <a class="btnDefault btn_py pointer" v-if="item.state==1">查看详情</a>
+                            <a class="btnDefault btn_py pointer" v-if="item.state==0" @click="showDetail(1)">批阅</a>
+                            <a class="btnDefault btn_py pointer" v-if="item.state==1" @click="showDetail(2)">查看详情</a>
                          </div>
                      </div>
                   </li>
@@ -134,6 +134,26 @@
             </ul>
         </div>
        
+        </el-dialog>
+
+        <!--实验报告批阅-->
+        <el-dialog width='1100px' :visible.sync="isReport" class="report_detail_dialog">
+            <div slot="title" class="dialog_header">xxxxx实验---王威龙提交</div>
+            <div class="reportMain">
+                <div class="ptext">
+                    <p>报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文 
+                        报告文本报告文本报告文本报告文本报告文本报告文本报告文本
+                        报告文本报告文本报告文本报告文本报告文本报告文 报告文本报告文本报告文本报告文本报告文本报告文本。</p>
+                </div>
+                <div class="pic">
+                    <img src=""/>
+                </div>
+               
+            </div>
+            <div class="report_detail_btnbox" v-if="isReport_num==1">
+                   <div class="din"><el-input placeholder="请输入分数" style="text-align:center"/></div>
+                   <a class="pointer btnDefault">确认</a>
+                </div>
         </el-dialog>
     </div>
 </template>
@@ -184,7 +204,9 @@ export default {
 
         inplaceholder:'请输入学号或姓名',
         isUnsubmittedlist:false,//人员未提交名单显示
-        Unsubmittedlist:[{sno:'20200112',name:'猜一下'},{sno:'20200112',name:'猜一下'}]
+        Unsubmittedlist:[{sno:'20200112',name:'猜一下'},{sno:'20200112',name:'猜一下'}],
+        isReport:true,
+        isReport_num:0
       }
     },
     filters:{
@@ -249,10 +271,31 @@ export default {
         //选择节
         changeLevel3(val){
             console.log('选择节')
+        },
+        showDetail(num){
+           let that = this;
+           that.isReport = true
+           that.isReport_num = num
         }
     }
 }
 </script>
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
+.reportMain{padding:20px 20px 40px 20px;
+    border: 1px solid @border;
+    .borderRadius(5px,5px,5px,5px);
+    -moz-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
+    -webkit-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04);
+    box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
+    .ptext{font-size:18px; color:#333;}
+    .pic{width:100%; margin-top: 20px;}
+    .pic img{width:100%}
+    
+}.report_detail_btnbox{
+    text-align: center;padding-top:20px;
+    .din{width: 150px;display: inline-block; vertical-align:middle; text-align: center;}
+    input{text-align: center;}
+    a{vertical-align: middle; margin-left: 20px;}
+}
 </style>
