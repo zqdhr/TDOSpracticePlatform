@@ -56,7 +56,7 @@
               >
                 <div class="title">{{ item.title }}</div>
                 <div class="pic">
-                  <img :src="item.pic" />
+                  <span><img :src="item.pic" /></span>
                 </div>
           
                 <p class="answer_box" v-if="item.type == 1">
@@ -86,7 +86,7 @@
         <!--小节作业不存在-->
         <div class="noData_box" v-if="noData">
             <p class="mess">当前小节下暂无作业，请点击下方新增作业按钮。</p>
-            <div><a class="btnDefault pointer"  @click="click_new">新增题目</a></div>
+            <div><a class="btnDefault pointer"  @click="noData=false">新增作业</a></div>
         </div>
       </div>
     </div>
@@ -140,7 +140,7 @@
           >
             <div class="title">{{ item.title }}</div>
             <div class="pic">
-              <img :src="item.pic" />
+              <span><img :src="item.pic" /></span>
             </div>
             <p class="answer_box" v-if="item.type == 1">
               <span
@@ -374,155 +374,5 @@ export default {
 </script>
 <style lang="less" scoped>
 @import url(../assets/less/admin.less);
-.experiment_box {
-  margin-top: 30px;
-  min-height: 400px;
-  .exper_main {
-    width: 100%;
-    height: 100%;
-    position: relative;
-  }
-  .right_box {
-    margin-left: 330px; min-height: 400px;
-  }
-}
-
-.page_box {
-  text-align: right;
-}
-.add_btn_box {
-  padding-bottom: 15px;
-  text-align: right;
-}
-.mr20 {
-  margin-right: 20px;
-}
-
-.sel-box {
-  float: left;
-  margin-right: 30px;
-}
-
-.coursework_box {
-  min-height: 500px;
-  border: 1px solid @hnavcolor;
-  padding: 10px 0;
-  .coursework_name {
-    text-align: center;
-    margin: 0 50px;
-    padding: 20px 0;
-    font-size: 24px;
-  }
-  .edit {
-    width: 18px;
-    height: 18px;
-    display: inline-block;
-    background: url(../assets/img/icon_edit.png) center no-repeat;
-    vertical-align: top;
-    cursor: pointer;
-    margin-top: 5px;
-  }
-  .in-box {
-    text-align: center;
-    input {
-      font-size: 18px;
-      color: #333;
-      text-align: center;
-      line-height: 30px;
-    }
-  }
-}
-
-/*作业列表*/
-.course_list {
-  padding: 0 40px;
-  .title {
-    font-size: 16px;
-    color: @tabcolor;
-    margin: 8px 0;
-  }
-  .pic {
-    width: 400px;
-    height: 150px;
-    background: @background;
-    .borderRadius(5px,5px,5px,5px);
-    overflow: hidden;
-    margin: 8px 0;
-  }
-  .answer_box {
-    margin: 8px 0;
-    .s_radio {
-      background: url(../assets/img/course_radion.png) left center no-repeat;
-      padding-left: 24px;
-      display: inline-block;
-      margin-right: 20px;
-      cursor: pointer;
-    }
-    .s_radio_answer {
-      background: url(../assets/img/course_radioh.png) left center no-repeat;
-    }
-  }
-  li {
-    padding-left: 0px;
-    transition: all 0.1s ease-in-out;
-    -moz-transition: all 0.1s ease-in-out;
-    -webkit-transition: all 0.1s ease-in-out;
-    -o-transition: all 0.1s ease-in-out;
-    .li_radio {
-      opacity: 0;
-    }
-  }
-  .li_choose {
-    position: relative;
-    padding-left: 40px;
-    transition: all 0.2s ease-in-out;
-    -moz-transition: all 0.2s ease-in-out;
-    -webkit-transition: all 0.2s ease-in-out;
-    -o-transition: all 0.2s ease-in-out;
-    .li_radio {
-      width: 26px;
-      height: 26px;
-      display: block;
-      background: url(../assets/img/rad2.png) center no-repeat;
-      position: absolute;
-      left: 0px;
-      top:2px;
-      -webkit-background-size: 24px;
-      background-size: 24px;
-      opacity: 1;
-      transition: all 0.2s ease-in-out;
-      -moz-transition: all 0.2s ease-in-out;
-      -webkit-transition: all 0.2s ease-in-out;
-      -o-transition: all 0.2s ease-in-out;
-    }
-    .li_radio_h {
-      background: url(../assets/img/radh11.png) center no-repeat;
-      -webkit-background-size: 24px;
-      background-size: 24px;
-    }
-  }
-}
-
-/*弹出框 */
-.dialog_course_list {
-  padding: 0px;
-}
-.dialog-footer {
-  text-align: center;
-}
-.choseFooter{padding: 20px;}
-.choice_question{margin: 0 20px;}
-
-.noData_box{
-  text-align: center; padding:150px 0;
-  .mess{font-size:24px;color: @basecolor; padding: 30px  0;}
-}
-
-@media screen and (max-width: 1440px) {
-  .experiment_box {
-    .right_box {
-      margin-left: 290px;
-    }
-  }
-}
+@import url(../assets/less/coursework.less);
 </style>
