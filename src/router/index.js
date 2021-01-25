@@ -101,7 +101,7 @@ const routes = [
       },
       {
         path: '/teacher/courseManagement',//课程管理
-        name: 'courseManagement',
+        name: 'teacourseManagement',
         component: () => import(/* webpackChunkName: "about" */ '../views/teacher/courseManagement.vue')
       },
       {
@@ -119,6 +119,11 @@ const routes = [
       }
      
     ]
+  },
+  {
+    path: '/experiment',//页面登录
+    name: 'experiment',
+    component: () => import(/* webpackChunkName: "about" */ '../views/experiment.vue')
   },
   {
     path: '/about',

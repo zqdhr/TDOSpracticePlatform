@@ -15,7 +15,7 @@
                 <div class="p-ItsCourse">
                     所属课程：
                 </div>
-                <div class="btnbox"><a class="btnDefault">进入实验</a></div>
+                <div class="btnbox"><a class="btnDefault pointer" @click="startExperiment">进入实验</a></div>
             </div>
         </div>
         <div class="nav">
@@ -113,10 +113,18 @@ export default {
         }
     },
     methods:{
+        //点击详情，弹出实验详情框
         click_Detail(){
             let that = this;
             that.detailShow = true
             that.activeIndex = 1;
+        },
+        //点击进入实验
+        startExperiment(){
+            let that = this;
+            that.$router.push({path:'/experiment'}).catch((err) => {
+              console.log( err);
+           });
         }
     }
 }
