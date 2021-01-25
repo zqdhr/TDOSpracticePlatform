@@ -102,14 +102,7 @@ export default {
             cate:'内置课件',//课件分类默认内置课件
             type:'全部',//课件类型默认全部
             experimentList:[
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0,},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:1},
+               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0,}
             ],
             perPage:8, //8个实验一页
             curPage:1,//设备列表

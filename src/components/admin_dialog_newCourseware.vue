@@ -23,13 +23,14 @@
               :multiple="true"
               ref="upload"
               v-model="files"
-              extensions="xlsx,xls"
+              extensions=""
               :post-action="uploadUrl"
               :auto-upload="false"
               @input-file="inputFile"
               @input-filter="inputFilter"
               name="excel_file"
-              :headers="{ Authorization: jwt }"
+              :headers="{ 'Content-Type':'multipart/form-data'}"
+              :data="{file: files.name}"
             >
               <a class="a_upload pointer"><span>选择需要添加的课件</span></a>
             </file-upload>
@@ -75,7 +76,7 @@ export default {
       isnewFilterType: 0, //课件库选择 1代表本地课件库  2代表本地上传
 
       jwt: "",
-      uploadUrl: "",
+      uploadUrl: "http://192.168.1.167:8111/upload",
       files: [],
 
     };
@@ -110,8 +111,10 @@ export default {
     //本地上传确认上传
     confirmLocalUpload() {
       let that = this;
-
       that.isnewFilter= false
+      if (!this.$refs.upload.active) {
+        this.$refs.upload.active = true;
+      }
     },
   
     //弹窗关闭
@@ -140,10 +143,10 @@ export default {
           newFile.name.lastIndexOf(".") + 1
         );
         console.log(extension);
-        if (extension != "xlsx" && extension != "xls") {
-          this.$toast("只能上传后缀是.xlsx或xls的文件", 3000);
-          return prevent();
-        }
+        // if (extension != "xlsx" && extension != "xls") {
+        //   this.$toast("只能上传后缀是.xlsx或xls的文件", 3000);
+        //   return prevent();
+        // }
       }
     },
     //上传的回调函数，每次上传回调都不一样
@@ -154,11 +157,7 @@ export default {
       if (
         Boolean(newFile) !== Boolean(oldFile) ||
         oldFile.error !== newFile.error
-      ) {
-        if (!this.$refs.upload.active) {
-          this.$refs.upload.active = true;
-        }
-      }
+      )
 
       if (newFile && oldFile) {
         //add

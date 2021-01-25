@@ -85,7 +85,6 @@ export default {
             total:1,
             inplaceholder:'请输入课程名称',
             courseList:[
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述',time:'2020.9.12-2020.10.12',number:60,state:0},
             ],
             show_dialog_file:false,
             archiveManagementisSuccess:false,//归档是否成功

@@ -204,6 +204,9 @@ export default{
     props:{
         courseId:{
             default:''
+        },
+        course:{
+            default:''
         }
     },
     /*
@@ -231,6 +234,7 @@ export default{
             }
          }
          console.log(that.courseId)
+        console.log(that.course)
 
     },
     methods:{

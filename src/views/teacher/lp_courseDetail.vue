@@ -145,7 +145,8 @@ export default {
 
 
             showStudentList:false,//是否显示学生列表
-            courseId:'kdsfkld'
+            courseId:'kdsfkld',
+            course:'111'
             
         }
     },
@@ -175,6 +176,7 @@ export default {
                     that.chapterNumber = res.data.chapter_number
                     that.sectionNumber = res.data.section_number
                     that.time = res.data.time = res.data.start_at.replace('T',' ') +'-'+ res.data.end_at.replace('T',' ');
+                    that.course = res.data
                 }else{
                     that.$toast(res.message,3000)
                 }

@@ -88,11 +88,16 @@ export default {
        
         }
     },
+    props:{
+        course:{
+            default:''
+        }
+    },
     mounted(){
         let that = this;
         that.addChecked();
         console.log(that.chapters)
-        
+        console.log(that.course)
     },
     methods:{
         //章、杰添加子元素是否显示参数show

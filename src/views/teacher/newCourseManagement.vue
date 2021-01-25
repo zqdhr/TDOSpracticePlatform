@@ -57,11 +57,10 @@ export default {
             perPage: 10,//每页条数
             curPage:1, //当前页
             searchText:'',
-            totalCourse:'',
+            totalCourse:0,
             inplaceholder:'请输入课程名称',
             courseList:[
-                {courname:'原理篇',chapter:'10',section:'20',introduction:'内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述'}
-            ]
+                ]
        }
     },
     methods:{

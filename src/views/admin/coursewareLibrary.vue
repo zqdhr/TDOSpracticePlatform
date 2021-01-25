@@ -108,15 +108,17 @@ export default {
         return{
            inplaceholder:'请输入课件名',
             options:[
+                {value: '0',label: '内置课件'},{value: '1',label: '教师上传'}
             ],
             typeList:[
+                {value: '',label: '全部'},{value: '1',label: '文档'},{value: '0',label: '视频'}
             ],
              experimentList:[
             ],
           
             isDelete:false,
             isnewFilter:false,//新增课件选择
-            total:100,
+            total:1,
             perPage:8, //8个实验一页
             curPage:1,//设备列表
             cate:'',
@@ -164,7 +166,6 @@ export default {
         click_new(){
             let that = this;
             that.$refs.newdialog.click_new();
-
         },
         
         //底部分页
