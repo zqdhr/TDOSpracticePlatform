@@ -21,7 +21,7 @@
       </div>
 
       <div class="tablex_box list_box">
-       <div class="tablex_box imageReposittory_table">
+       <div class="tablex_box imageReposittory_table " :class="{'no_imageReposittory_table':Imagelibraries.length==0}">
         <!--镜像列表-->
         <el-table
           class="center-tab tab-userList"
@@ -95,6 +95,7 @@
                  <el-form-item label="镜像简介:">
                     <el-input v-model="Mirroring.introduction" type="textarea"></el-input>
                 </el-form-item>
+                <!--
                 <el-form-item label="">
                     <ul class="fileList_name">
                         <li v-for="(file) in files" :key="file.id">
@@ -120,6 +121,7 @@
                         </file-upload>
                     </div>
                 </el-form-item>
+                -->
           </el-form>
          
           </div>
@@ -130,13 +132,15 @@
     
       </div>
       </el-dialog>
+      <loading  @hideLoading="hideLoading" v-if="showLoading"></loading>
 
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
-import FileUpload from "vue-upload-component";
+//import FileUpload from "vue-upload-component";
 import {getImagequoteList,deleteImages} from '@/API/api';
+import loading from '@/components/loading.vue'
 export default {
   data() {
     return {
@@ -162,11 +166,13 @@ export default {
       },
       jwt:'',
       uploadUrl:'',
-      files:[]
+      files:[],
+      showLoading:false,
     };
   },
   components:{
-      FileUpload
+    loading
+      //FileUpload
   },
   computed: {
     ...mapState({
@@ -301,7 +307,13 @@ export default {
     confiremNew(){
       let that = this;
       that.show_Add = false
+      that.showLoading = true
     },
+    //隐藏loading
+    hideLoading(){
+       let that = this
+       that.showLoading = false;
+    }
  
    
   },
