@@ -99,8 +99,8 @@
                      </div>
                      <div class="d5 d13">
                          <div class="cell">
-                            <a class="btnDefault btn_py pointer" v-if="item.state==0">批阅</a>
-                            <a class="btnDefault btn_py pointer" v-if="item.state==1">查看详情</a>
+                            <a class="btnDefault btn_py pointer" v-if="item.state==0" @click="showDetail(1)">批阅</a>
+                            <a class="btnDefault btn_py pointer" v-if="item.state==1" @click="showDetail(2)">查看详情</a>
                          </div>
                      </div>
                   </li>
@@ -137,6 +137,54 @@
             </ul>
         </div>
        
+        </el-dialog>
+
+        <!--实验报告批阅-->
+        <el-dialog width='1100px' :visible.sync="isHomework" class="report_detail_dialog">
+            <div slot="title" class="dialog_header">xxxxx实验(作业)---王威龙提交</div>
+            <div class="reportMain course_list">
+                <ul class="choice_question">
+                    <li
+                        class="li_choose"
+                        v-for="(item, index) in all_courseList"
+                        :key="index"
+                    >
+                        <div class="title">{{ item.title }}<span class="colorRed">（本题分数：20分）</span></div>
+                        <div class="pic">
+                          <span><img  src="../../assets/pic/course.png"/></span>
+                        </div>
+                        <p class="answer_box" v-if="item.type == 1">
+                        <span
+                            class="s_radio"
+                            :class="{ s_radio_answer: iindex+1 == item.answer }"
+                            v-for="(iitem, iindex) in item.chose"
+                            :key="iindex"
+                        >
+                        {{iitem}} 
+                        </span>
+                        
+                        </p>
+                        <p class="answer_box Short-answer p_text" v-if="item.type == 2">作答：{{ item.answer }}</p>
+                        <p class="answer_box colorRed p_correct_text" v-if="item.type == 2">正确答案：{{ item.answer }}</p>
+                        <div class="score_box" v-if="item.type == 2">
+                            本题分数<div class="din">
+                                  <a class="abtn a_reduce pointer"></a>
+                                   <input type="text" v-model="score" placeholder="请输入本题分数"/>
+                                   <a class="abtn a_increase pointer"></a>
+                                   </div>
+                        </div>
+                        <!--选中的状态添加class   li_radio_h-->
+                        <span
+                        class="li_radio " :class="{'li_radio_correct':1==0,'li_radio_error':1==1}"
+                        ></span>
+                    </li>
+                    </ul>
+               
+            </div>
+            <div class="report_detail_btnbox" v-if="isReport_num==1">
+                
+                <a class="pointer btnDefault">确认</a>
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -187,7 +235,28 @@ export default {
 
         inplaceholder:'请输入学号或姓名',
         isUnsubmittedlist:false,//人员未提交名单显示
-        Unsubmittedlist:[{sno:'20200112',name:'猜一下'},{sno:'20200112',name:'猜一下'}]
+        Unsubmittedlist:[{sno:'20200112',name:'猜一下'},{sno:'20200112',name:'猜一下'}],
+        isHomework:false,
+        isReport_num:0,
+        //全部题目
+        all_courseList:[
+            {
+            id: "1",
+            title: "1.题目文本题目文本题目文本题目文本题目?",
+            type: 1,
+            chose: ["选项111", "选项222", "选项3333", "选项4444"],
+            pic: "",
+            answer: 2,
+            },
+            {
+            id: "2",
+            title: "1.题目文本题目文本题目文本题目文本题目?",
+            type: 2,
+            pic: "",
+            answer: "题目文本题目文本题目文本题目文本题目",
+            }, 
+        ],
+        score:6,//得分
       }
     },
     filters:{
@@ -252,10 +321,55 @@ export default {
         //选择节
         changeLevel3(val){
             console.log('选择节')
+        },
+         showDetail(num){
+           let that = this;
+           that.isHomework = true
+           that.isReport_num = num
         }
     }
 }
 </script>
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
+@import url(../../assets/less/coursework.less);
+.reportMain{padding:20px 20px 40px 20px;
+    border: 1px solid @border;
+    .borderRadius(5px,5px,5px,5px);
+    -moz-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
+    -webkit-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04);
+    box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
+    
+    .pic{background: #fff;}
+    
+}
+.report_detail_btnbox{
+   
+    a{vertical-align: middle; margin-left: 20px;}
+}
+
+.course_list
+  
+   { 
+    padding:10px 20px 20px 0;
+    .colorRed{color:#D82A2A;}
+     .li_choose{
+     padding-left: 30px;
+     .li_radio{width:18px;height: 18px;}
+    .li_radio_correct{background: url(../../assets/img/quest_correct.png) center no-repeat;}
+    .li_radio_error{background: url(../../assets/img/quest_error.png) center no-repeat;}
+    .s_radio_answer{background: url(../../assets/img/quest_checked.png)left center no-repeat}
+    }
+    .Short-answer{color: @basecolor;}
+ 
+    .score_box{
+        .din{display: inline-block; vertical-align: middle;}
+        input{width:80px;text-align: center; height: 30px;line-height: 30px;}
+        .abtn{display: inline-block;width:28px;height:28px;line-height:30px; font-size:16px;color:#000;text-align:center; vertical-align: top;
+        border:1px solid @border;background: #fff; margin: 0 8px; .borderRadius(5px,5px,5px,5px)}
+        .a_increase{background: url(../../assets/img/quest_add.png) center no-repeat; background-size:14px 14px; -webkit-background-size:14px 14px;}
+        .a_reduce{background: url(../../assets/img/quest_reduce.png) center no-repeat;background-size:14px 14px; -webkit-background-size:14px 14px;}
+    }
+}
+.report_detail_btnbox{text-align: center; padding-top: 20px;}
 </style>
