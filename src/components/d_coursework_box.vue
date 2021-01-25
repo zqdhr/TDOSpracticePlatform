@@ -54,7 +54,7 @@
                 v-for="(item, index) in courseList"
                 :key="index"
               >
-                <div class="title">{{ item.title }}</div>
+                <div class="title">{{ item.title }}<a class="btn-set"></a></div>
                 <div class="pic">
                   <span><img :src="item.pic" /></span>
                 </div>
