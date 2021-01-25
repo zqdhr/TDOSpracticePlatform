@@ -54,7 +54,7 @@
                     <span>{{(curPage - 1) * perPage + scope.$index + 1}}</span>
                 </template>
              </el-table-column>
-             <el-table-column prop="title" label="题目简介">
+             <el-table-column prop="title" label="题目详情">
                  <template slot-scope="scope">
                      <div class="">
                          <el-tooltip popper-class="quest_tooltip"  ref="tooltip" :content="scope.row.title" placement="top" effect="light">
@@ -270,7 +270,7 @@ import FileUpload from "vue-upload-component";
 export default {
     data(){
         return{
-            inplaceholder:'请输入题目标题',
+            inplaceholder:'请输入题目详情',
             customClass:'',//自定义分类
             i_customClass:'',//自定义分类,
             ii_customClass:'',//自定义分类
