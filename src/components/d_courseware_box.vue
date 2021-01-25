@@ -4,7 +4,7 @@
          <div class="exper_main">
             <courseNav></courseNav>
             <div class="right_box">
-                <div class="add_btn_box">
+                <div class="add_btn_box clearfix ">
                     <div class="sel-box">               
                          <el-select v-model="cate" placeholder="请选择课件分类" @change="selectCate">
                             <el-option
@@ -25,7 +25,8 @@
                             </el-option>
                         </el-select>               
                     </div>
-                    <a class="btnDefault pointer" @click="click_new">新增课件</a>
+                    <!--学生点击课程详情没有新增课件-->
+                    <a class="btnDefault pointer" @click="click_new" v-if="role!=3">新增课件</a>
                 </div>
                 <div class="list_box">
                     <ul class="list_ul clearfix">
@@ -109,6 +110,11 @@ export default {
             isDelete:false//是否删除弹出框是否显示
         }
     },
+    props:{
+        role:{
+            default:0, //默认是0传过来3表示是学生点击课程详情
+        }
+    },
     components:{
         courseNav,newdialog
     },
@@ -161,7 +167,7 @@ export default {
 
 .sel-box{float: left; margin-right: 30px;}
 /*列表*/
-.list_box{ overflow: hidden;
+.list_box{ overflow: hidden; min-height:450px;
     .list_ul{ margin-left: -10px; margin-right: -10px;
         li{width:25%;min-height: 40px;float: left; margin-bottom: 20px; }    
       

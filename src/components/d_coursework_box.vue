@@ -54,7 +54,11 @@
                 v-for="(item, index) in courseList"
                 :key="index"
               > 
-                <div class="title">{{ item.title }}<a class="btn-set pointer" @click="isSetTime=true"></a></div>
+                <div class="title">{{ item.title }}
+                   <span> (5分) </span>
+                    <a class="btn-set pointer" @click="isSetTime=true"></a>
+               
+                </div>
                 <div class="pic">
                   <span><img :src="item.pic" /></span>
                 </div>
@@ -255,7 +259,7 @@ export default {
       perPage:10,
       total:100,
       noData:true,//小节没有内容
-      isSetTime:true,//设置题目时间弹窗
+      isSetTime:false,//设置题目时间弹窗
     };
   },
   components: {

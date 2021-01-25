@@ -36,9 +36,9 @@
         <div class="experiment_container clearfix">
             <div class="left-noVNc boxsizing">
                 <div class="l-nav">
-                  <span claass="pointer">虚拟机1</span>
-                  <span claass="pointer">虚拟机2</span>
-                  <span claass="pointer">虚拟机3</span>
+                  <span claass="pointer " :class="{'active':virtualMachine==1}">虚拟机1</span>
+                  <span claass="pointer" :class="{'active':virtualMachine==2}">虚拟机2</span>
+                  <span claass="pointer" :class="{'active':virtualMachine==3}">虚拟机3</span>
                 </div>
             </div>
             <div class="right_main">
@@ -71,6 +71,7 @@ export default {
     data(){
         return{
             curIndex:1,
+            virtualMachine:0
         }
     },
     beforeCreate() {

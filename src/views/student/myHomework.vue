@@ -5,7 +5,7 @@
                 <div class="clearfix">
                     <div class="fl">
                        <div class="sel-box">
-                          <el-select v-model="className" placeholder="请选择班级" 
+                          <el-select v-model="className" placeholder="课程名称" 
                           @change="changeClass"
                           >
                                 <el-option
@@ -17,18 +17,7 @@
                             </el-select>
                          
                        </div>
-                       <div class="sel-box" >
-                          <el-select v-model="state" placeholder="请选择状态" 
-                          @change="changeState"
-                          >
-                                <el-option
-                                v-for="item in stateList"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>
-                       </div>
+                     
                        <div class="sel-box">
                           <el-select v-model="level1Name" placeholder="课程" 
                           @change="changeLevel1"
@@ -65,6 +54,18 @@
                                 </el-option>
                             </el-select>
                        </div>
+                       <div class="sel-box" >
+                          <el-select v-model="state" placeholder="请选择状态" 
+                          @change="changeState"
+                          >
+                                <el-option
+                                v-for="item in stateList"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                                </el-option>
+                            </el-select>
+                       </div>
                     </div>
                     <div class="fr">
                        <div class="d-serach"> 
@@ -73,33 +74,52 @@
                         </div>
                     </div>
                 </div>
-                <div class="mess">
-                    当前选择XXXX班级，共有<span>60</span>名学员，已提交<span>45</span>份，还剩<span>15</span>份未提交
-                    
-                    <a class="nosubmit" @click="isUnsubmittedlist=true"></a>
-                   
-                </div>
+              
             </div>
         </div>
         <div class="container">
            <div class="tea_list">
               <ul class="tab_box">
-                  <li v-for="(item,index) in jobList" :key="index">
-                     <div class="d1 d15">
-                        <div class="cell pnum">{{index+1 | catIndex}}</div>
+                  <li class="li-th">
+                      <div class="d1 d28">
+                        <div class="cell pname">实验名称</div>
                      </div>
-                     <div class="d2 d28">
-                        <div class="cell textline1">学号：{{item.sno}} {{item.name}}</div>
+                     <div class="d2 d15">
+                        <div class="cell textline1">截止时间</div>
                      </div>
-                     <div class="d3 d30">
-                        <div class="cell">提交时间：{{item.time}}</div>
+                     <div class="d3 d18">
+                        <div class="cell">分数</div>
                      </div>
                      <div class="d4 d14"> 
-                        <div class="cell">{{item.state==0?'待批阅':'已批阅'}}</div>
+                        <div class="cell">状态</div>
                      </div>
-                     <div class="d5 d13">
+                     <div class="d4 d14"> 
+                        <div class="cell">题目总数</div>
+                     </div>
+                     <div class="d5 d11">
                          <div class="cell">
-                            <a class="btnDefault btn_py pointer" v-if="item.state==0" @click="showDetail(1)">批阅</a>
+                           操作
+                         </div>
+                     </div>
+                  </li>
+                  <li class="li-tr" v-for="(item,index) in jobList" :key="index">
+                     <div class="d1 d28">
+                        <div class="cell pname">{{item.name}}</div>
+                     </div>
+                     <div class="d2 d15">
+                        <div class="cell textline1">{{item.time}}</div>
+                     </div>
+                     <div class="d3 d18">
+                        <div class="cell">{{item.state==0?'待老师批阅':'105分'}}</div>
+                     </div>
+                     <div class="d4 d14"> 
+                        <div class="cell">{{item.state==0?'已提交':'待提交'}}</div>
+                     </div>
+                      <div class="d4 d14"> 
+                        <div class="cell">{{item.num}}</div>
+                     </div>
+                     <div class="d5 d11">
+                         <div class="cell">
                             <a class="btnDefault btn_py pointer" v-if="item.state==1" @click="showDetail(2)">查看详情</a>
                          </div>
                      </div>
@@ -118,29 +138,8 @@
                </div>
            </div>
         </div>
-          
-        <!--未提交弹出框-->
-        <el-dialog :visible.sync="isUnsubmittedlist" width="500px">
-        <div slot="title" class="dialog_header">未提交人员（15人）</div>
-        <div class="unSubmitList">
-            <ul>
-                <li v-for="(item,index) in Unsubmittedlist" :key="index">
-                    <div class="d-col">
-                        <div class="d-sno">
-                            <p class="textline1">{{item.sno}}</p>
-                        </div>
-                        <div class="d-name">
-                            <p class="textline1">{{item.name}}</p>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
        
-        </el-dialog>
-
-        
-        <el-dialog width='1100px' :visible.sync="isHomework" class="report_detail_dialog">
+      <el-dialog width='1100px' :visible.sync="isHomework" class="report_detail_dialog">
             <div slot="title" class="dialog_header">xxxxx实验(作业)---王威龙提交</div>
             <div class="reportMain course_list">
                 <ul class="choice_question">
@@ -196,23 +195,19 @@ export default {
         perPage: 10,//用户列表每页条数
         curPage:1, 
         jobList:[
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'1'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'1'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'}
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'0',num:10},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'1',num:15},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'0',num:10},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'0',num:12},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'1',num:15},
+
         ],
         classList:[//班级选择列表
-            {label:'班级1',value:'1004'},{label:'班级2',value:'1005'}
+            {label:'课程1',value:'1004'},{label:'课程2',value:'1005'}
         ],
-        className:'',//选择的班级名称
+        className:'',//选择的课程名称
 
-        stateList:[{label:'待批阅',value:'0'},{label:'已批阅',value:'1'}],//作业状态list
+        stateList:[{label:'全部',value:'0'},{label:'已提交',value:'1'},{label:'未提交',value:'2'}],//作业状态list
         state:'',//作业选中状态
 
         level1List:[
@@ -233,12 +228,9 @@ export default {
         level3List:[],//小节列表
         level3Name:'',//小节名称
 
-        inplaceholder:'请输入学号或姓名',
-        isUnsubmittedlist:false,//人员未提交名单显示
-        Unsubmittedlist:[{sno:'20200112',name:'猜一下'},{sno:'20200112',name:'猜一下'}],
-        isHomework:false,
-        isReport_num:0,
-        //全部题目
+        inplaceholder:'请输入实验名称',
+        
+         //全部题目
         all_courseList:[
             {
             id: "1",
@@ -257,6 +249,9 @@ export default {
             }, 
         ],
         score:6,//得分
+     
+        isHomework:false,
+        isReport_num:0
       }
     },
     filters:{
@@ -322,7 +317,7 @@ export default {
         changeLevel3(val){
             console.log('选择节')
         },
-         showDetail(num){
+        showDetail(num){
            let that = this;
            that.isHomework = true
            that.isReport_num = num
@@ -333,6 +328,16 @@ export default {
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
 @import url(../../assets/less/coursework.less);
+
+.tea_list{
+    .li-th{background:@basecolor; .borderRadius(0px,0px,0px,0px);border:0 none;
+      >div{color: #fff;}
+    }
+    .li-tr{border:1px solid #dcdcdc; }
+    .d18{width: 18%;}
+    .d25{width:25%}
+    .d11{width:11%}
+}
 .reportMain{padding:20px 20px 40px 20px;
     border: 1px solid @border;
     .borderRadius(5px,5px,5px,5px);

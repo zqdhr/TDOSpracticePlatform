@@ -5,16 +5,16 @@
             <courseNav></courseNav>
             <div class="right_box">
                 <div class="add_btn_box">
-                    <a class="btnDefault pointer" @click="click_new">新增实验</a>
+                    <a class="btnDefault pointer" @click="click_new" v-if="role!=3">新增实验</a>
                 </div>
                 <div class="list_box">
-                    <ul class="list_ul clearfix">
+                    <ul class="list_ul clearfix " :class="{'student_list_ul':role==3}">
                         <li v-for="(item,index) in experimentList" :key="index">
                             <div class="info">
-                                <el-tooltip class="item" effect="dark" content="删除" placement="top">
+                                <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3">
                                    <a class="icon icon_close pointer"></a>
                                 </el-tooltip>
-                                <el-tooltip class="item" effect="dark" content="设置" placement="top">
+                                <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3">
                                    <a class="icon icon_set pointer"></a>
                                 </el-tooltip>
                                  <div class="pic">
@@ -63,6 +63,11 @@ export default {
             curPage:1//设备列表
         }
     },
+    props:{
+        role:{
+            default:0, //默认是0传过来3表示是学生点击课程详情
+        }
+    },
     components:{
         courseNav,newdialog
     },
@@ -102,6 +107,9 @@ export default {
         .icon{width: 20px;height: 20px;display: block; position:absolute;top:10px}
         .icon_close{background: url(../assets/img/n_close.png) center no-repeat;right:28px}
         .icon_set{background: url(../assets/img/n_set.png) center no-repeat;right:0px}
+    }
+    .student_list_ul{
+        .info{padding-top: 0px;}
     }
 }
 

@@ -121,9 +121,40 @@ const routes = [
     ]
   },
   {
-    path: '/experiment',//页面登录
+    path:'/student',//学生端
+    component: index,
+    redirect: '/student/myCourses',
+    children:[
+      {
+        path:'/student/myCourses',
+        name: 'myCourses',
+        component: () => import('../views/student/myCourses.vue'),
+      },
+      {  
+        path: '/student/courseDetail',//学生端课程详情
+        name: 'studentCouseDetail',
+        component: () => import('../views/student/lp_courseDetail.vue'),
+       
+      },
+      {  
+        path: '/student/myReport',//学生端我的报告
+        name: 'studentReport',
+        component: () => import('../views/student/myReport.vue'),
+       
+      },
+      {  
+        path: '/student/myHomework',//学生端我的作业
+        name: 'studentmyHomework',
+        component: () => import('../views/student/myHomework.vue'),
+       
+      }
+      
+    ]
+  },
+  {
+    path: '/experiment',//操作界面
     name: 'experiment',
-    component: () => import(/* webpackChunkName: "about" */ '../views/experiment.vue')
+    component: () => import('../views/experiment.vue')
   },
   {
     path: '/about',

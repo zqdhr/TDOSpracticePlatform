@@ -30,6 +30,12 @@ export default new Vuex.Store({
       { text: "作业管理", path: "/teacher/jobManagement"},
       { text: "实验报告管理", path: "/teacher/experimentalReport"},
       { text: "课堂管理", path: "/teacher/courseManagement" },
+    ],
+    stu_menus:[
+      {text:'我的课程',path: "/student"},
+      {text:'实验报告',path: "/student/myReport"},
+      {text:'我的作业',path: "/student/myHomework"},
+      {text:'我的笔记',path: "/student/myNotes"}
     ]
     
   
