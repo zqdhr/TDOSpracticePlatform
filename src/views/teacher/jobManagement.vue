@@ -149,7 +149,7 @@
                         v-for="(item, index) in all_courseList"
                         :key="index"
                     >
-                        <div class="title">{{ item.title }}<span>（本题分数：20分）</span></div>
+                        <div class="title">{{ item.title }}<span class="colorRed">（本题分数：20分）</span></div>
                         <div class="pic">
                           <span><img  src="../../assets/pic/course.png"/></span>
                         </div>
@@ -236,7 +236,7 @@ export default {
         inplaceholder:'请输入学号或姓名',
         isUnsubmittedlist:false,//人员未提交名单显示
         Unsubmittedlist:[{sno:'20200112',name:'猜一下'},{sno:'20200112',name:'猜一下'}],
-        isHomework:true,
+        isHomework:false,
         isReport_num:0,
         //全部题目
         all_courseList:[
