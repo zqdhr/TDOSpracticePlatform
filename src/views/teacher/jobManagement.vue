@@ -166,7 +166,7 @@
                         </p>
                         <p class="answer_box Short-answer p_text" v-if="item.type == 2">作答：{{ item.answer }}</p>
                         <p class="answer_box colorRed p_correct_text" v-if="item.type == 2">正确答案：{{ item.answer }}</p>
-                        <div class="score_box">
+                        <div class="score_box" v-if="item.type == 2">
                             本题分数<div class="din">
                                   <a class="abtn a_reduce pointer"></a>
                                    <input type="text" v-model="score" placeholder="请输入本题分数"/>
@@ -339,7 +339,7 @@ export default {
     -moz-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
     -webkit-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04);
     box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
-    .choice_question{margin: 0px;}
+    
     .pic{background: #fff;}
     
 }
