@@ -66,12 +66,12 @@ export default {
     methods:{
         getCourseList(){
           let that = this;
-          that.getAdminCourseList(10,0,'')
+          that.getAdminCourseList(10,1,'')
         },
         searchCourse(){
             let that = this;
             let search = that.searchText;
-            getAdminCourseList(10,0,search);
+            that.getAdminCourseList(10,1,search);
         },
         getAdminCourseList(per_page,page,search){
             let that = this;
