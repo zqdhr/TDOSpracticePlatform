@@ -53,8 +53,8 @@
                 :class="{ li_choose: isShow }"
                 v-for="(item, index) in courseList"
                 :key="index"
-              >
-                <div class="title">{{ item.title }}<a class="btn-set"></a></div>
+              > 
+                <div class="title">{{ item.title }}<a class="btn-set pointer" @click="isSetTime=true"></a></div>
                 <div class="pic">
                   <span><img :src="item.pic" /></span>
                 </div>
@@ -181,6 +181,17 @@
           </div>
         </div>
     </el-dialog>
+    <!--单题设置时间弹出-->
+    <el-dialog :visible.sync="isSetTime" width="500px">
+       <div slot="title" class="dialog_header">设置该题目分数</div>
+       <div class="setScope">
+         <el-input placeholder="请输入该题目的分数" ></el-input>
+       </div>
+       <div slot="footer" class="dialog-footer">
+           <a class="btnDefault" @click="isSetTime=false">确 认</a>
+        
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -244,6 +255,7 @@ export default {
       perPage:10,
       total:100,
       noData:true,//小节没有内容
+      isSetTime:true,//设置题目时间弹窗
     };
   },
   components: {
@@ -375,4 +387,5 @@ export default {
 <style lang="less" scoped>
 @import url(../assets/less/admin.less);
 @import url(../assets/less/coursework.less);
+.setScope{margin: 0 50px;}
 </style>
