@@ -10,16 +10,17 @@
         <div class="fr fr-info">
           欢迎你,<span>陈友谅(工号:0056)</span>
           <div class="hline"></div>
-          <a class="btnexit" @click="logOut">退出系统{{isShow}}</a>
+          <a class="btnexit" @click="logOut">退出系统</a>
         </div>
         <ul class="nav_ul">
           <li
             :class="{ cur: index == state.navindex }"
             v-for="(item, index) in menus"
             :key="index"
+            
           >
-            <a @click="linPath(item, index)" @mouseover="item.children?isShow=true:isShow=false" >{{ item.text }}</a>
-            <ul v-if="item.children && isShow" class="children-ul" @mouseleave="isShow=false">
+            <a @click="linPath(item, index)" >{{ item.text }}</a>
+            <ul v-if="item.children" class="children-ul" @mouseleave="isShow=false">
               <li v-for="(iitem, iindex) in item.children" :key="iindex" >
                 <a  @click="children_linPath(iitem, index)">{{ iitem.text }}</a>
               </li>
@@ -172,7 +173,9 @@ export default {
     text-align: center;
     > li { padding: 0 30px; display: inline-block; height: 75px; line-height: 75px; position: relative; }
     > li a { font-size: 18px; color: @hnavcolor; cursor: pointer; padding: 10px 8px; }
+    >li:after{content: ""; width: 71px; height: 3px; position: absolute; left: 50%; margin-left: -35px; bottom: 0px; background: #fff;}
     > li:hover a, > li.cur a { color: @basecolor; }
+  
     > li:hover:after,
     > li.cur:after { content: ""; width: 71px; height: 3px; position: absolute; left: 50%; margin-left: -35px; bottom: 0px; background: @basecolor; }
     .children-ul {
@@ -184,7 +187,7 @@ export default {
       border: 1px solid #dcdcdc;
       border-top: 0 none;
       padding-top: 5px;
-      /*display: none;*/
+      display: none;
       > li { height: 50px; line-height: 50px; }
       > li a { color: @hnavcolor; }
       > li a:hover { color: @basecolor; }
