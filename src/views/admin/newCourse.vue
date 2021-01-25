@@ -46,50 +46,50 @@
                         </el-form-item>
                     </el-form>
                 </div>
-                <div class="col_title">
-                    02编辑课程大纲
-                </div>
+<!--                <div class="col_title">-->
+<!--                    02编辑课程大纲-->
+<!--                </div>-->
                 <div class="addChapter">
-                     <ul class="chaper_ul">
-                        <li v-for="(item,index) in chapters" :key="index">
-                            <div class="din">
-                                <input type="text" maxlength="50" class="boxsizing" v-model="item.name" placeholder="请输入课程大纲"/>
-                                <a class="pointer btn_add" @click="addSection(index)"></a>
-                                <a class="pointer btn_del" @click="deleteChapter(index)"></a>
-                            </div>
-                            <div class="chapter_box">
-                                <div class="sectionBox "  v-for="(iitem,index1) in item.sections" :key="index1">
-                                    <div class="din">
-                                        <input class="input_section boxsizing" type="text" maxlength="50" v-model="iitem.name" placeholder="请输入课程节名称"/>
-                                        <a class="pointer btn_del" @click="deleteSection(index,index1)"></a>
-                                        <a class="pointer btn_add" @click="addSubSection(index,index1)"></a>
-                                        <div class="line1"></div>
-                                    </div>
-                                    
-                                    <div class="line2" :style="{'height': index1==0?36+'px':(52+newSubSection*52)+'px','top':index1==0?0+'px':(36+(index1-1)*52)+'px'}"></div>
-                                   
-                                    
-                                    <div class="subSectionBox">
-                                        <div class="sectionBox  sub_sectionBox"  v-for="(sub_iitem,sub_index) in iitem.small_sections" :key="sub_index">
-                                            <div class="din">
-                                                <input class="input_section boxsizing" type="text" maxlength="50" v-model="sub_iitem.name" placeholder="请输入小节名称"/>
-                                                <a class="pointer btn_del" @click="deleteSection(index,sub_index)"></a>
-                                                 <div class="line1"></div>
-                                            
-                                            </div>
-                                            <div class="line2" :style="{'height': sub_index==0?36+'px':(52)+'px','top':sub_index==0?0+'px':(36+(sub_index-1)*52)+'px'}"></div>
-                                            
-                                        </div>
-                                    </div>
-                                
-                                </div>
-                            </div>
-                        </li>
-                     </ul>
+<!--                     <ul class="chaper_ul">-->
+<!--                        <li v-for="(item,index) in chapters" :key="index">-->
+<!--                            <div class="din">-->
+<!--                                <input type="text" maxlength="50" class="boxsizing" v-model="item.name" placeholder="请输入课程大纲"/>-->
+<!--                                <a class="pointer btn_add" @click="addSection(index)"></a>-->
+<!--                                <a class="pointer btn_del" @click="deleteChapter(index)"></a>-->
+<!--                            </div>-->
+<!--                            <div class="chapter_box">-->
+<!--                                <div class="sectionBox "  v-for="(iitem,index1) in item.sections" :key="index1">-->
+<!--                                    <div class="din">-->
+<!--                                        <input class="input_section boxsizing" type="text" maxlength="50" v-model="iitem.name" placeholder="请输入课程节名称"/>-->
+<!--                                        <a class="pointer btn_del" @click="deleteSection(index,index1)"></a>-->
+<!--                                        <a class="pointer btn_add" @click="addSubSection(index,index1)"></a>-->
+<!--                                        <div class="line1"></div>-->
+<!--                                    </div>-->
+<!--                                    -->
+<!--                                    <div class="line2" :style="{'height': index1==0?36+'px':(52+newSubSection*52)+'px','top':index1==0?0+'px':(36+(index1-1)*52)+'px'}"></div>-->
+<!--                                   -->
+<!--                                    -->
+<!--                                    <div class="subSectionBox">-->
+<!--                                        <div class="sectionBox  sub_sectionBox"  v-for="(sub_iitem,sub_index) in iitem.small_sections" :key="sub_index">-->
+<!--                                            <div class="din">-->
+<!--                                                <input class="input_section boxsizing" type="text" maxlength="50" v-model="sub_iitem.name" placeholder="请输入小节名称"/>-->
+<!--                                                <a class="pointer btn_del" @click="deleteSection(index,sub_index)"></a>-->
+<!--                                                 <div class="line1"></div>-->
+<!--                                            -->
+<!--                                            </div>-->
+<!--                                            <div class="line2" :style="{'height': sub_index==0?36+'px':(52)+'px','top':sub_index==0?0+'px':(36+(sub_index-1)*52)+'px'}"></div>-->
+<!--                                            -->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                -->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </li>-->
+<!--                     </ul>-->
                      <div class="btnbox">
-                         <div class="d-addchapter">
-                              <a class="a-addChaper pointer" @click="addchapter"> + 新建大纲 </a>
-                         </div>
+<!--&lt;!&ndash;                         <div class="d-addchapter">&ndash;&gt;-->
+<!--&lt;!&ndash;                              <a class="a-addChaper pointer" @click="addchapter"> + 新建大纲 </a>&ndash;&gt;-->
+<!--&lt;!&ndash;                         </div>&ndash;&gt;-->
                          <div><a class="btnDefault pointer" @click="newCourses">新建课程</a></div>
                      </div>
                 </div>
