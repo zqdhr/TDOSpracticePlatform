@@ -74,8 +74,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="mess">
-                    当前选择{{chooseClassName}}，共有<span>60</span>名学员，已提交<span>45</span>份，还剩<span>15</span>份未提交
+                <div v-if="level3Name!=''" class="mess">
+                    当前选择{{chooseClassName}}，共有<span>{{shiyan.total}}</span>名学员，已提交<span>{{shiyan.tijiao}}</span>份，还剩<span>{{shiyan.weitijiao}}</span>份未提交
                     <a class="nosubmit" @click="isUnsubmittedlist=true"></a>
                 </div>
             </div>
@@ -214,7 +214,12 @@ export default {
         isReport:false,
         isReport_num:0,
         source:'',//实验报告分数
-        searchTx:''//搜索关键字
+        searchTx:'',//搜索关键字
+        shiyan:{
+            total:'0',
+            tijiao:'0',
+            weitijiao:'0'
+        }
       }
     },
     filters:{
