@@ -56,7 +56,7 @@ export default {
       let that = this;
       let num = sessionStorage.getItem('p_p-authority');
       //console.log(this.$route.meta.navindex)
-      num=3;
+ 
       if(num==2){
          that.menus = that.$store.state.ad_menus;
       
@@ -66,7 +66,7 @@ export default {
         
        
       }
-      if(num==3){
+      if(num==0){
          that.menus = that.$store.state.stu_menus;
       }
     

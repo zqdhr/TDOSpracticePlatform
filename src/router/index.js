@@ -189,7 +189,7 @@ router.beforeEach((to, from, next) => {
     let admin_username = sessionStorage.getItem('p_p-admin_userName');
     let teacher_username = sessionStorage.getItem('p_p-teacher_userName');
     let user_id =  sessionStorage.getItem('userId');
-
+    let student_username = sessionStorage.getItem('p_p-student_userName');
     if(!(user_id &&user_id!=null)){
       next('/login');
     }
@@ -207,6 +207,14 @@ router.beforeEach((to, from, next) => {
           next();
         }
     }
+    if(to.path.indexOf("student") != -1){
+      if (student_username === null || student_username === '') {
+        next('/login');
+      } else {
+        next();
+      }
+  }
+    
     next();
   }
 });

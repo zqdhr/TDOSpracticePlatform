@@ -90,6 +90,8 @@ export default {
                     if(role_id == 2){
                         //0,1 2学生，教师，管理员
                         window.sessionStorage.setItem('p_p-authority',0)
+                        window.sessionStorage.setItem('p_p-student_userName',that.userName)
+                        that.$router.push({path:'/student'})
                     }
                 }else{
                     that.$toast(res.message,3000)
