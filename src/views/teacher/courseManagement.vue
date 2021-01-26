@@ -37,6 +37,7 @@
                             <div class="d-icon"></div>
                             <p class="p_id textline1">学号：{{item.sno}}</p>
                             <p class="p_id p_name textline1">用户名称：{{item.username}}</p>
+                            <p class="p_id p_name textline1">实验名称：{{item.experName}}</p>
                             <div class="btnbox">
                                 <div class="course_mana_btnbox">
                                     <a class="pointer btn btn-see"><span>查看</span></a>
@@ -73,15 +74,15 @@ export default {
            className:'',//选择的班级名称
            inplaceholder:'请输入用户名称和学号',
             machineList:[
-                {sno:'20200115',username:'张三'},{sno:'20200115',username:'张三'},
-                {sno:'20200115',username:'张三'},{sno:'20200115',username:'张三'},
-                {sno:'20200115',username:'张三'},{sno:'20200115',username:'张三'},
-                {sno:'20200115',username:'张三'},{sno:'20200115',username:'张三'},
-                {sno:'20200115',username:'张三'},{sno:'20200115',username:'张三'},
-                {sno:'20200115',username:'张三'},{sno:'20200115',username:'张三'},
-                {sno:'20200115',username:'张三'},{sno:'20200115',username:'张三'},
-                {sno:'20200115',username:'张三'},{sno:'20200115',username:'张三'},
-                {sno:'20200115',username:'张三'},{sno:'20200115',username:'张三'},
+                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
+                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
+                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
+                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
+                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
+                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
+                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
+                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
+                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
                 
             ],
             perPage:24, //虚拟机每页
