@@ -174,6 +174,14 @@
            
             
             <el-form ref="form"  label-width="100px">
+              <el-form-item>
+                <span slot="label" class="s-label" >所属分类：</span >
+                <el-cascader
+                    v-model="category"
+                    :options="categoryOptions"
+                    @change="handleChange" clearable>
+                </el-cascader>
+              </el-form-item>
                 <el-form-item>
                 <span slot="label" class="s-label" >题目类型：</span >
                 <el-select v-model="choseQuestionType" placeholder="题目类型" @change="dialogselectType" >
@@ -313,7 +321,29 @@ export default {
             },
             choseQuestionType:'',//单个上传题目类型
             //新增题目类型
-            questOptions:[{value:'0',label:"选择题"},{value:'1',label:"简答题"}]
+            questOptions:[{value:'0',label:"选择题"},{value:'1',label:"简答题"}],
+            category:[],//实验所属分类
+            categoryOptions: [{
+              value: 'zhinan',
+              label: '指南',
+              children: [{
+                value: 'shejiyuanze',
+                label: '设计原则',
+                children: [{
+                  value: 'yizhi',
+                  label: '一致'
+                }, {
+                  value: 'fankui',
+                  label: '反馈'
+                }, {
+                  value: 'xiaolv',
+                  label: '效率'
+                }, {
+                  value: 'kekong',
+                  label: '可控'
+                }]
+              }]
+            }],
         }
     },
     components:{

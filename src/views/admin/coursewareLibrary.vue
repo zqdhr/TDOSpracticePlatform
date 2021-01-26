@@ -3,11 +3,26 @@
     <div class="container">
       <div class="pageTab clearfix">
         <div class="fl">
+            <div class="sel-box">
+                <el-select v-model="customClass" placeholder="自定义分类" @change="selectType" >
+                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+                </el-select>
+            </div>
+            <div class="sel-box" v-if="customClass!=''">
+                <el-select v-model="i_customClass" placeholder="自定义分类" @change="selectType1" >
+                <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+                </el-select>
+            </div>
 
+            <div class="sel-box" v-if="i_customClass!=''">
+                <el-select v-model="ii_customClass" placeholder="自定义分类" @change="selectType2" >
+                <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+                </el-select>
+            </div>
             <div class="sel-box">               
-                <el-select v-model="cate" placeholder="请选择课件分类" @change="selectCate">
+                <el-select v-model="cate" placeholder="请选择课件分类" @change="selectCourseWareType">
                     <el-option
-                    v-for="item in options"
+                    v-for="item in catoptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -15,7 +30,7 @@
                 </el-select>               
             </div>
             <div class="sel-box">               
-                <el-select v-model="type" placeholder="请选择课件类型" @change="selectType">
+                <el-select v-model="type" placeholder="请选择课件类型" @change="selectCate">
                     <el-option
                     v-for="item in typeList"
                     :key="item.value"
@@ -107,7 +122,7 @@ export default {
     data(){
         return{
            inplaceholder:'请输入课件名',
-            options:[
+            catoptions:[
                 {value: '0',label: '内置课件'},{value: '1',label: '教师上传'}
             ],
             typeList:[
@@ -123,7 +138,13 @@ export default {
             curPage:1,//设备列表
             cate:'',
             type:'',
-            searchText:''
+            searchText:'',
+             customClass:'',//自定义分类
+            i_customClass:'',//自定义分类,
+            ii_customClass:'',//自定义分类
+            options:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
+            options1:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
+            options2:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
         }
     },
     components:{
@@ -134,6 +155,18 @@ export default {
         this.type = this.typeList[0].value;//课件类型默认选中全部
     },
     methods:{
+         //自定义分类
+        selectType(val){
+
+        },
+        //自定义分类
+        selectType1(val){
+
+        },
+        //自定义分类
+        selectType2(val){
+
+        },
         //课件列表
         getCoursewareAll() {
             let that = this;
@@ -180,7 +213,7 @@ export default {
         },
 
         //选择课件类型
-         selectType(val){
+         selectCourseWareType(val){
              let that = this;
              that.getCourseAll(10,1,val,that.cate,that.searchText);
         },
@@ -193,7 +226,12 @@ export default {
         hidedialog(){
             let that = this;
             that.isnewFilter=false;
-        }
+        },
+
+        //新增题目所属分类
+        handleChange(val){
+        console.log(val)
+        },
        
 
 
@@ -206,4 +244,5 @@ export default {
 </script>
 <style lang="less" scoped>
 @import url(../../assets/less/admin.less);
+.sel-box{width:200px}
 </style>

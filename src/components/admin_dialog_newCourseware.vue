@@ -2,39 +2,57 @@
   <div>
     <!--新增课件选择-->
     <el-dialog
-      class="dialog_pagination"
+      class="dialog_pagination add_local_courseware"
       :visible.sync="isnewFilter"
       width="600px"
-     
+    
     >
       <!--本地上传-->
       <template >
         <div slot="title" class="dialog_header">本地上传</div>
-        <div class="confirm_dialog_body" style="padding: 60px 0 40px 0">
-          <ul class="fileList_name">
-            <li v-for="file in files" :key="file.id">
-              <span>{{ file.name }}</span>
-            </li>
-          </ul>
-          <div class="upload_person">
-            <file-upload
-              style="overflow: visible"
-              :maximum="1"
-              :multiple="true"
-              ref="upload"
-              v-model="files"
-              extensions=""
-              :post-action="uploadUrl"
-              :auto-upload="false"
-              @input-file="inputFile"
-              @input-filter="inputFilter"
-              name="excel_file"
-              :headers="{ 'Content-Type':'multipart/form-data'}"
-              :data="{file: files.name}"
-            >
-              <a class="a_upload pointer"><span>选择需要添加的课件</span></a>
-            </file-upload>
+        <div class="confirm_dialog_body" style="padding: 40px 0 20px 0">
+          <div class="classifyBox">
+            <el-form ref="form"  label-width="120px">
+              <el-form-item>
+                <span slot="label" class="s-label" ><span>*</span>所属分类：</span >
+                <el-cascader
+                    v-model="category"
+                    :options="categoryOptions"
+                    @change="handleChange" clearable>
+                </el-cascader>
+              </el-form-item>
+            </el-form>
+             <el-form ref="form"  label-width="120px">
+              <el-form-item>
+                <span slot="label" class="s-label" ><span>*</span>选择文件：</span >
+                      <ul class="fileList_name">
+                  <li v-for="file in files" :key="file.id">
+                    <span>{{ file.name }}</span>
+                  </li>
+                </ul>
+                <div class="upload_person">
+                  <file-upload
+                    style="overflow: visible"
+                    :maximum="1"
+                    :multiple="true"
+                    ref="upload"
+                    v-model="files"
+                    extensions=""
+                    :post-action="uploadUrl"
+                    :auto-upload="false"
+                    @input-file="inputFile"
+                    @input-filter="inputFilter"
+                    name="excel_file"
+                    :headers="{ 'Content-Type':'multipart/form-data'}"
+                    :data="{file: files.name}"
+                  >
+                    <a class="a_upload pointer"><span>选择需要添加的课件</span></a>
+                  </file-upload>
+                </div>
+              </el-form-item>
+            </el-form>
           </div>
+         
         </div>
         <div slot="footer" class="dialog-footer">
           <a class="btnDefault pointer" @click="confirmLocalUpload">确认上传</a>
@@ -78,6 +96,28 @@ export default {
       jwt: "",
       uploadUrl: "http://192.168.1.167:8111/upload",
       files: [],
+       category:[],//实验所属分类
+      categoryOptions: [{
+        value: 'zhinan',
+        label: '指南',
+        children: [{
+          value: 'shejiyuanze',
+          label: '设计原则',
+          children: [{
+            value: 'yizhi',
+            label: '一致'
+          }, {
+            value: 'fankui',
+            label: '反馈'
+          }, {
+            value: 'xiaolv',
+            label: '效率'
+          }, {
+            value: 'kekong',
+            label: '可控'
+          }]
+        }]
+      }],
 
     };
   },
@@ -133,7 +173,10 @@ export default {
       console.log("选择自定义分类");
     },
     //数组新增checked元素
-   
+    
+    handleChange(val){
+      console.log(val)
+    },
   
    
     //上传前的钩子函数
@@ -193,4 +236,6 @@ export default {
 <style lang="less" scoped>
 @import url(../assets/less/admin.less);
 .fileList_name{padding: 0 30px;}
+.classifyBox{width:500px;margin: 0 auto;;}
+.confirm_dialog_body .upload_person{text-align: left;}
 </style>
