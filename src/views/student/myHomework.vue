@@ -110,10 +110,10 @@
                         <div class="cell textline1">{{item.time}}</div>
                      </div>
                      <div class="d3 d18">
-                        <div class="cell">{{item.state==0?'待老师批阅':'105分'}}</div>
+                        <div class="cell">{{item.isReview==0?'待老师批阅':'105分'}}</div>
                      </div>
                      <div class="d4 d14"> 
-                        <div class="cell">{{item.state==0?'已提交':'待提交'}}</div>
+                        <div class="cell">{{item.state==1?'已提交':'待提交'}}</div>
                      </div>
                       <div class="d4 d11"> 
                         <div class="cell">{{item.num}}</div>
@@ -121,9 +121,10 @@
                      <div class="d5 d14">
                          <div class="cell">
                             <div class="cell"> 
-                            <a class="pointer tab_atn" @click="showDetail(2)">查看</a>
-                            <span class="space-line"></span>
-                            <a class="pointer tab_atn">提交</a>
+                            <a class="pointer tab_atn" @click="showDetail(item.state,item.isReview)">查看</a>
+                            <!--这两个属性只有在未提交的时候显示-->
+                            <span class="space-line" v-if="item.state!=1"></span>
+                            <a class="pointer tab_atn" v-if="item.state!=1">提交</a>
                          
                          </div>
                          </div>
@@ -144,8 +145,11 @@
            </div>
         </div>
        
-      <el-dialog width='1100px' :visible.sync="isHomework" class="report_detail_dialog homeWork">
-            <div slot="title" class="dialog_header">xxxxx实验(作业)---王威龙提交</div>
+      <el-dialog width='1100px' :visible.sync="isHomework" 
+          class="report_detail_dialog homeWork"
+          :class="{'dialog_submitted_noreview':curStatus==2 || curStatus==1}"
+    >
+            <div slot="title" class="dialog_header">xxxxx实验(作业)---共100分</div>
             <div class="reportMain course_list">
                 <ul class="choice_question">
                     <li
@@ -163,19 +167,20 @@
                             :class="{ s_radio_answer: iindex+1 == item.answer }"
                             v-for="(iitem, iindex) in item.chose"
                             :key="iindex"
+                            @click="choseanswer(index,iindex)"
                         >
                         {{iitem}} 
                         </span>
                         
                         </p>
-                        <p class="answer_box Short-answer p_text" v-if="item.type == 2">作答：{{ item.answer }}</p>
-                        <p class="answer_box colorRed p_correct_text" v-if="item.type == 2">正确答案：{{ item.answer }}</p>
-                        <div class="score_box" v-if="item.type == 2">
-                            本题分数<div class="din">
-                                  <a class="abtn a_reduce pointer"></a>
-                                   <input type="text" v-model="score" placeholder="请输入本题分数"/>
-                                   <a class="abtn a_increase pointer"></a>
-                                   </div>
+                       <div class="answer-in" v-if="item.type == 2 && curStatus==1"><el-input type="textarea" placeholder="请输入答案" :rows="3"  v-model="item.answer"/></div>
+
+                        <p class="answer_box Short-answer p_text" v-if="item.type == 2 && curStatus!=1">作答：{{ item.answer }}</p>
+
+                        <p class="answer_box colorRed p_correct_text" v-if="item.type == 2 && item.correctAnswer!=''">正确答案：{{ item.correctAnswer }}</p>
+
+                        <div class="score_box" v-if="item.type == 2 && item.correctAnswer!=''">
+                            本题得分：<span>10</span>
                         </div>
                         <!--选中的状态添加class   li_radio_h-->
                         <span
@@ -185,7 +190,7 @@
                     </ul>
                
             </div>
-            <div class="report_detail_btnbox" v-if="isReport_num==1">
+            <div class="report_detail_btnbox" v-if="curStatus==1">
                 
                 <a class="pointer btnDefault">确认</a>
             </div>
@@ -200,11 +205,11 @@ export default {
         perPage: 10,//用户列表每页条数
         curPage:1, 
         jobList:[
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'0',num:10},
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'1',num:15},
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'0',num:10},
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'0',num:12},
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'1',num:15},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:0,num:10,isReview:0},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:1,num:15,isReview:1},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:0,num:10,isReview:0},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:0,num:12,isReview:0},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:1,num:15,isReview:0},
 
         ],
         classList:[//班级选择列表
@@ -214,7 +219,6 @@ export default {
 
         stateList:[{label:'全部',value:'0'},{label:'已提交',value:'1'},{label:'未提交',value:'2'}],//作业状态list
         state:'',//作业选中状态
-
         level1List:[
             {label:'区块链的发展史',value:'1'},
             {label:'原理篇',value:'2',
@@ -236,27 +240,12 @@ export default {
         inplaceholder:'请输入实验名称',
         
          //全部题目
-        all_courseList:[
-            {
-            id: "1",
-            title: "1.题目文本题目文本题目文本题目文本题目?",
-            type: 1,
-            chose: ["选项111", "选项222", "选项3333", "选项4444"],
-            pic: "",
-            answer: 2,
-            },
-            {
-            id: "2",
-            title: "1.题目文本题目文本题目文本题目文本题目?",
-            type: 2,
-            pic: "",
-            answer: "题目文本题目文本题目文本题目文本题目",
-            }, 
-        ],
+        all_courseList:[],
         score:6,//得分
      
         isHomework:false,
-        isReport_num:0
+      
+        curStatus:0,//当前的作业状态
       }
     },
     filters:{
@@ -322,10 +311,45 @@ export default {
         changeLevel3(val){
             console.log('选择节')
         },
-        showDetail(num){
+        showDetail(state,isreview){
+           //state:0 未提交 state:1 已提交
+           //isreview:0 待老师批阅  1老师已批阅
            let that = this;
            that.isHomework = true
-           that.isReport_num = num
+           //老师已批阅
+           if(state==1 && isreview==1){
+              that.all_courseList = [
+                  {id: "1",title: "1.题目文本题目文本题目文本题目文本题目?", type: 1,chose: ["选项111", "选项222", "选项3333", "选项4444"],pic: "",answer: 2},
+                   {id: "2",title: "1.题目文本题目文本题目文本题目文本题目?",type: 2,pic: "",answer: "题目文本题目文本题目文本题目文本题目",correctAnswer:'你猜我答题对不对'}
+              ]
+              that.curStatus=3  //已提交已批阅
+           }
+           if(state==1 && isreview==0){
+              that.curStatus=2 //已提交待批阅
+              that.all_courseList = [
+                  {id: "1",title: "1.题目文本题目文本题目文本题目文本题目?", type: 1,chose: ["选项111", "选项222", "选项3333", "选项4444"],pic: "",answer: '2',correctAnswer:''},
+                  {id: "2",title: "1.题目文本题目文本题目文本题目文本题目?",type: 2,pic: "",answer: "ffffffff",correctAnswer:''}
+               ]
+           }
+           if(state==0){
+              that.curStatus=1 //已提交待批阅
+               that.all_courseList = [
+                  {id: "1",title: "1.题目文本题目文本题目文本题目文本题目?", type: 1,chose: ["选项111", "选项222", "选项3333", "选项4444"],pic: "",answer: '',correctAnswer:''},
+                  {id: "2",title: "1.题目文本题目文本题目文本题目文本题目?",type: 2,pic: "",answer: "",correctAnswer:''}
+               ]
+           }
+           //that.isReport_num = num
+        },
+        //未提交可以选中
+        choseanswer(index,iindex){
+            console.log('index'+index)
+            console.log('iindex'+iindex)
+            let that = this
+            if(that.curStatus!=1){
+                return false
+            }else{
+                that.$set(that.all_courseList[index],'answer',iindex+1)
+            }
         }
     }
 }
@@ -334,4 +358,28 @@ export default {
 @import url(../../assets/less/teacher.less);
 @import url(../../assets/less/coursework.less);
 @import url(../../assets/less/student.less);
+.course_list
+  
+   { 
+    padding:10px 20px 20px 0;
+    .colorRed{color:#D82A2A;}
+     .li_choose{
+     padding-left: 30px;
+     .li_radio{width:18px;height: 18px;}
+    .li_radio_correct{background: url(../../assets/img/quest_correct.png) center no-repeat;}
+    .li_radio_error{background: url(../../assets/img/quest_error.png) center no-repeat;}
+    .s_radio_answer{background: url(../../assets/img/quest_checked.png)left center no-repeat}
+    }
+    .Short-answer{color: @basecolor;}
+   }
+/*作业已提交未批阅 */
+.dialog_submitted_noreview{
+  .course_list{
+    .li_choose{
+        padding-left: 0px;
+        .li_radio{display: none;}
+    }
+  }  
+  .answer-in{padding:10px 0; background:inherit;}
+}
 </style>
