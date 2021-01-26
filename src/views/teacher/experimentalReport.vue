@@ -4,20 +4,7 @@
             <div class="pageTab">
                 <div class="clearfix">
                     <div class="fl">
-                       <div class="sel-box">
-                          <el-select v-model="className" placeholder="请选择班级" 
-                          @change="changeClass"
-                          >
-                                <el-option
-                                v-for="item in classList"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>
-                         
-                       </div>
-                       <div class="sel-box" >
+                             <div class="sel-box" >
                           <el-select v-model="state" placeholder="请选择状态" 
                           @change="changeState"
                           >
@@ -30,14 +17,28 @@
                             </el-select>
                        </div>
                        <div class="sel-box">
+                          <el-select v-model="className" value-key="id" placeholder="请选择班级" 
+                          @change="changeClass"
+                          >
+                                <el-option
+                                 v-for="item in classList"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item">
+                                </el-option>
+                            </el-select>
+                         
+                       </div>
+                  
+                       <div class="sel-box">
                           <el-select v-model="level1Name" placeholder="课程" 
                           @change="changeLevel1"
                           >
                                 <el-option
-                                v-for="item in level1List"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
+                                v-for="item in course"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
                                 </el-option>
                             </el-select>
                        </div>
@@ -47,9 +48,9 @@
                           >
                                 <el-option
                                 v-for="item in level2List"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
                                 </el-option>
                             </el-select>
                        </div>
@@ -59,22 +60,22 @@
                           >
                                 <el-option
                                 v-for="item in level3List"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
                                 </el-option>
                             </el-select>
                        </div>
                     </div>
                     <div class="fr">
                        <div class="d-serach"> 
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off" />
-                            <a class="searchBtn pointer"></a>
+                            <input :placeholder="inplaceholder"  v-model="searchTx" type="text" autocomplete="off" />
+                            <a class="searchBtn pointer" @click="doSearch"></a>
                         </div>
                     </div>
                 </div>
                 <div class="mess">
-                    当前选择XXXX班级，共有<span>60</span>名学员，已提交<span>45</span>份，还剩<span>15</span>份未提交
+                    当前选择{{chooseClassName}}，共有<span>60</span>名学员，已提交<span>45</span>份，还剩<span>15</span>份未提交
                     <a class="nosubmit" @click="isUnsubmittedlist=true"></a>
                 </div>
             </div>
@@ -110,7 +111,7 @@
                         :page-size="perPage"
                         @current-change="handleCurrentChange"
                         layout="prev, pager, next,jumper"
-                        :total="100"
+                        :total="60"
                     >
                     </el-pagination>
                </div>
@@ -151,13 +152,14 @@
                
             </div>
             <div class="report_detail_btnbox" v-if="isReport_num==1">
-                   <div class="din"><el-input placeholder="请输入分数" style="text-align:center"/></div>
-                   <a class="pointer btnDefault">确认</a>
+                   <div class="din"><el-input placeholder="请输入分数" v-model="source" style="text-align:center"/></div>
+                   <a class="pointer btnDefault" @click="Scoring">确认</a>
                 </div>
         </el-dialog>
     </div>
 </template>
 <script>
+import {searchClass,getAdminCourseByClassId} from "@/API/api";
 export default {
     data(){
       return{
@@ -177,11 +179,13 @@ export default {
             {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'}
         ],
         classList:[//班级选择列表
-            {label:'班级1',value:'1004'},{label:'班级2',value:'1005'}
+            
         ],
         className:'',//选择的班级名称
+        classId:'',//选择的班级id
+        chooseClassName:'',
 
-        stateList:[{label:'待批阅',value:'0'},{label:'已批阅',value:'1'}],//作业状态list
+        stateList:[{label:'全部',value:''},{label:'待批阅',value:'0'},{label:'已批阅',value:'1'}],//作业状态list
         state:'',//作业选中状态
 
         level1List:[
@@ -194,6 +198,8 @@ export default {
              ]
             }
         ],
+        course:[],//课程列表
+
         level1Name:'',//选中课程名称
 
         level2List:[],//章节列表
@@ -205,21 +211,27 @@ export default {
         inplaceholder:'请输入学号或姓名',
         isUnsubmittedlist:false,//人员未提交名单显示
         Unsubmittedlist:[{sno:'20200112',name:'猜一下'},{sno:'20200112',name:'猜一下'}],
-        isReport:true,
-        isReport_num:0
+        isReport:false,
+        isReport_num:0,
+        source:'',//实验报告分数
+        searchTx:''//搜索关键字
       }
     },
     filters:{
         catIndex: function (val) {
             let str = ''
             let value = val
-            if(value<9){
+            if(value<10){
                 str='0'+value
             }else{
                 str=value
             }
             return str
         }
+    },
+    created(){
+        this.getClassList()
+        
     },
     methods:{
         //底部分页
@@ -228,7 +240,18 @@ export default {
         },
         //选择班级 
         changeClass(val){
-          console.log('选择班级')
+            let that = this;
+            that.classId = val.id
+            that.chooseClassName = val.name
+            that.level1Name=''
+            that.level2List = []
+            that.level2Name=''
+            that.level3List = []
+            that.level3Name=''
+            that.getAdminCourseByClassId()
+            
+             console.log(val);  
+             console.log('选择班级'+that.className+that.classId)
         },
         //选择状态
         changeState(val){
@@ -237,20 +260,20 @@ export default {
         //选择课程
         changeLevel1(val){
             let that = this
-            let tmp = that.level1List
+            let tmp = that.course
             that.level2List = []
             that.level3List = []
             for(var i=0;i<tmp.length;i++){
-                if(val == tmp[i].value){
-                    if(tmp[i].children){
-                       that.level2List = tmp[i].children || [];
+                if(val == tmp[i].id){
+                    if(tmp[i].chapters){
+                       that.level2List = tmp[i].chapters || [];
                     }else{
                          that.level2List = []
                     }
                     
                 }
             }
-            
+             console.log('选择课程'+val)
         },
         //选择章节
         changeLevel2(val){
@@ -258,25 +281,81 @@ export default {
             let tmp = that.level2List
             that.level3List = []
             for(var i=0;i<tmp.length;i++){
-                if(val == tmp[i].value){
-                    if(tmp[i].children){
-                       that.level3List = tmp[i].children || [];
+                if(val == tmp[i].id){
+                    if(tmp[i].sections){
+                       that.level3List = tmp[i].sections || [];
                     }else{
                          that.level3List = []
                     }
                     
                 }
             }
+             console.log('选择章'+val)
         },
         //选择节
         changeLevel3(val){
-            console.log('选择节')
+            console.log('选择节'+val)
         },
         showDetail(num){
            let that = this;
            that.isReport = true
            that.isReport_num = num
+        },
+        //获取班级列表
+        getClassList(){
+            let that = this;
+            searchClass().then(res=> {
+                if(res.code==200){
+                    that.classList = res.data
+                    if(that.classList.length>0){
+                        that.className = that.classList[0]
+                        that.chooseClassName = that.classList[0].name
+                        that.classId = that.classList[0].id
+                        that.getAdminCourseByClassId()
+                    }
+              
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
+        //获取班级下的课程列表
+        getAdminCourseByClassId(){
+            let that = this;
+            let obj={};
+            obj.class_id = that.classId;
+            obj.page=1;
+            obj.perPage=100;
+             getAdminCourseByClassId(obj).then(res=> {
+                if(res.code==200){
+                    that.course = res.data.list
+                    
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })   
+        
+        },
+        //搜索
+        doSearch(){
+            let that = this;
+            if (that.searchTx=='') {
+                 return  that.$toast(that.inplaceholder,2000)
+            }
+        },
+        //打分
+        Scoring(){
+            let that = this;
+            if (that.source=='') {
+                 return  that.$toast('请输入分数',2000)
+            }
+            if (that.source>100) {
+                  return  that.$toast('分数最高为100',2000)
+            }
+            that.isReport = false
+            that.source=''
         }
+
     }
 }
 </script>

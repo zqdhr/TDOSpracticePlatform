@@ -104,6 +104,11 @@ var getImagequoteList = function(data){
 var deleteImages = function(data){
 	return axios.post('/deleteImages?imagesID='+data.imagesID)
 }
+//根据班级id获取课程
+var getAdminCourseByClassId = function(data){
+	return axios.get('get_admin_course_list_by_class_id?class_id='+data.class_id+'&page='+data.page+'&per_page='+data.perPage)
+}
+
 
 //管理员新增镜像
 var addImage = function(data){
@@ -119,7 +124,8 @@ var insertExperiment = function(data){
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
-	getImagequoteList,deleteImages,addImage,insertExperiment
+	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId
+
 }
 
 function getJson (data) {
