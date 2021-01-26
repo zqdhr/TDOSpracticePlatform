@@ -48,7 +48,7 @@
                 <el-scrollbar style="height:100%">
                     <div class="nav">
                         <a class="pointer" :class="{'active_index':curIndex==1}" @click="curIndex=1">实验步骤</a>
-                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" v-if="authority==0">实验报告</a>
+                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" >实验报告</a>
                     </div>
                     <div v-if="curIndex==1">
                         <h3 class="htitle">实验步骤说明</h3>
@@ -59,14 +59,18 @@
                            </li>
                         </ul>
                     </div>
-                    <template v-if="curIndex==2 && authority==0">
+                    <!--&& authority==0-->
+                    <template v-if="curIndex==2 ">
                     <h3 class="htitle">填写实验报告</h3>
                     <div class="labReport_box"  >
-                        
-                        <div class="pic"></div>
-                        <div class="from">
-                            <el-input v-model="reportText" type="textarea" rows="10" placeholder="实践报告输入"></el-input>
-                        </div>
+                        <quill-editor 
+                                v-model="yourContent" 
+                                ref="myQuillEditor"  
+                                :options="editorOption" 
+                                @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
+                            >
+                         </quill-editor>
+                         <div class="btnbox"><a class="btnDefault">确认上传</a></div>
                     </div>
                     </template>
                 </el-scrollbar>
@@ -76,6 +80,10 @@
 </template>
 <script>
 import RFB from '@novnc/novnc/core/rfb';
+import { quillEditor } from "vue-quill-editor"; //调用编辑器
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
 export default {
     data(){
         return{
@@ -84,6 +92,29 @@ export default {
             reportText:'',//实验报告输入内容
             authority:0,
             isOpen:false,//虚拟机是否开启
+            yourContent: "",
+            editorOption: {
+                placeholder: "实验报告输入",
+                modules:{
+                toolbar:[
+                        ['bold', 'italic', 'underline', 'strike'],    //加粗，斜体，下划线，删除线
+                        ['blockquote', 'code-block'],     //引用，代码块
+                        [{ 'header': 1 }, { 'header': 2 }],        // 标题，键值对的形式；1、2表示字体大小
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],     //列表
+                        [{ 'script': 'sub'}, { 'script': 'super' }],   // 上下标
+                        [{ 'indent': '-1'}, { 'indent': '+1' }],     // 缩进
+                        [{ 'direction': 'rtl' }],             // 文本方向
+                        [{ 'size': ['small', false, 'large', 'huge'] }], // 字体大小
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],     //几级标题
+                        [{ 'color': [] }, { 'background': [] }],     // 字体颜色，字体背景颜色
+                        [{ 'font': [] }],     //字体
+                        [{ 'align': [] }],    //对齐方式
+                        ['clean'],    //清除字体样式
+                        ['image','link']    //上传图片、上传视频'video'
+                        ]
+                    }
+            }
+           
         }
     },
     beforeCreate() {
@@ -93,6 +124,7 @@ export default {
     beforeDestroy(){
         document.body.removeAttribute("class","equipment-body");
     },
+    components:{quillEditor},
     created(){
         let that = this;
         that.authority = that.$route.query.authority?that.$Base64.decode(that.$route.query.authority):0;
@@ -150,11 +182,18 @@ export default {
             } else {
                 this.$router.go(-1)
             }
-        }
+        },
+        onEditorReady(editor) { // 准备编辑器
+        },
+        onEditorBlur(){}, // 失去焦点事件
+        onEditorFocus(){}, // 获得焦点事件
+        onEditorChange(){}, // 内容改变事件
 
-    }
+        }
 }
 </script>
 <style lang="less" scoped>
 @import url(../assets/less/operateExperiment.less);
+
+
 </style>

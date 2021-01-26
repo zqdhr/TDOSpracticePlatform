@@ -186,16 +186,16 @@
         <!--steps-->
         <div class="steps" v-if="curIndex==3">
             <div class="steps_main">
-                <el-form ref="form" label-width="80px">
-                <el-form-item v-for="(item,index) in steps" :key="index">
-                    <span slot="label" class="s-label">步骤{{index+1}}：</span>
-                    <el-input v-model="item.text" type="textarea"></el-input>
-                    <a class="adel pointer"></a>
-                </el-form-item>
-                </el-form>
+               <quill-editor 
+                      v-model="yourContent" 
+                      ref="myQuillEditor"  
+                      :options="editorOption" 
+                      @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
+                  >
+                </quill-editor>
             </div>
             <div class="btnbox">
-                <a class="btnDefault pointer" @click="newStep">新建步骤</a>
+                <!--<a class="btnDefault pointer" @click="newStep">新建步骤</a>-->
                 <a class="btnDefault pointer" @click="confirmStep">步骤确认</a>
             </div>
         </div>
@@ -254,6 +254,10 @@
 </template>
 <script>
 import FileUpload from "vue-upload-component";
+import { quillEditor } from "vue-quill-editor"; //调用编辑器
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
 export default {
   data() {
     return {
@@ -316,11 +320,37 @@ export default {
       total: 100,
       perPage: 8,
       curPage: 1,
-      steps:[{text:''}]//实验步骤
+      steps:[{text:''}],//实验步骤
+      yourContent:'',
+      editorOption:{}
     };
   },
   components: {
-    FileUpload,
+    FileUpload,quillEditor
+  },
+  created(){
+ 
+    this.editorOption={
+                placeholder: "实验报告输入",
+                modules:{
+                toolbar:[
+                        ['bold', 'italic', 'underline', 'strike'],    //加粗，斜体，下划线，删除线
+                        ['blockquote', 'code-block'],     //引用，代码块
+                        [{ 'header': 1 }, { 'header': 2 }],        // 标题，键值对的形式；1、2表示字体大小
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],     //列表
+                        [{ 'script': 'sub'}, { 'script': 'super' }],   // 上下标
+                        [{ 'indent': '-1'}, { 'indent': '+1' }],     // 缩进
+                        [{ 'direction': 'rtl' }],             // 文本方向
+                        [{ 'size': ['small', false, 'large', 'huge'] }], // 字体大小
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],     //几级标题
+                        [{ 'color': [] }, { 'background': [] }],     // 字体颜色，字体背景颜色
+                        [{ 'font': [] }],     //字体
+                        [{ 'align': [] }],    //对齐方式
+                        ['clean'],    //清除字体样式
+                        ['image','link']    //上传图片、上传视频'video'
+                        ]
+                    }
+            }
   },
   methods: {
     //实验所属分类选择
@@ -522,7 +552,7 @@ export default {
     }
     .adel{width:20px;height:20px;display:block;background: url(../assets/img/icon_del.png) center no-repeat; position:absolute; right:0px;top:50%;margin-top: -10px;}
     .btnbox{
-        text-align:center; padding-bottom: 40px;
+        text-align:center; padding-bottom: 40px; padding-top: 20px;
         a.btnDefault{width:160px;margin: 0 20px;}
     }
 }
