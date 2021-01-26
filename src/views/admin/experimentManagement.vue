@@ -8,7 +8,7 @@
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
             </el-select>
           </div>
-          <div class="sel-box" v-show="type == '学生' || type == 0">
+          <div class="sel-box" v-show="type == '学生' || type == 1">
             <el-select v-model="className" placeholder="请选择班级" @change="selectClass" >
               <el-option v-for="item in classList" :key="item.id" :label="item.name" :value="item.id" > </el-option>
             </el-select>
@@ -17,11 +17,12 @@
         <div class="fr">
           <a class="btnDefault pointer abtn" @click="click_Release(1,'')">一键释放</a>
           
-          
+          <!--
           <div class="d-serach"> 
             <input :placeholder="inplaceholder" type="text" autocomplete="off" />
             <a class="searchBtn pointer"></a>
           </div>
+          -->
         </div>
       </div>
 
@@ -84,8 +85,8 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-     options: [ { value: "0", label: "学生"}, { value: "1", label: "教师"} ],
-     type: "学生", //人员类型选择
+     options: [ { value: "0", label: "全部"},{ value: "1", label: "学生"}, { value: "2", label: "教师"} ],
+     type: "", //人员类型选择
       classList: [
         { id: "211", name: "10年03班" },
         { id: "212", name: "10年04班" },
@@ -117,6 +118,11 @@ export default {
     ...mapState({
       state: (state) => state,
     }),
+  },
+  created(){
+    let that = this;
+    that.type = that.options[0].value
+
   },
   methods: {
     //人员类别选择
@@ -160,7 +166,9 @@ export default {
       that.show_Release = true
       that.release_success = false
       if(num==1){
-        that.dialog_machine ='确定要一键释放所有内存吗？'
+    
+        that.type == 1?that.dialog_machine ='确定要一键释放所有学生内存吗？':that.type==2?that.dialog_machine ='确定要一键释放所有老师内存吗？':that.dialog_machine ='确定要一键释放所有内存吗？'
+        
       }else{
         that.dialog_machine ='确定要释放ID：'+id+'的虚拟机内存吗？'
       }

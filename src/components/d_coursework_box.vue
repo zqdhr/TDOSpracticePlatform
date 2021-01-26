@@ -115,11 +115,16 @@
       </div>
     </el-dialog>
     <!--题库选择弹出框-->
-    <el-dialog :visible.sync="showQuestionBank" width="1100px" class="dialog_pagination">
+    <el-dialog :visible.sync="showQuestionBank" width="1100px" class="dialog_pagination teacher_add_coursework">
       <div slot="title" class="dialog_header">新增题目（题目库选择）</div>
       <div class="course_list dialog_course_list">
         <div class="pageTab clearfix ">
         <div class="fl">
+          <div class="sel-box">
+            <el-select v-model="type" placeholder="添加自定义分类" @change="selectQuestionType" >
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+            </el-select>
+          </div>
           <div class="sel-box">
             <el-select v-model="type" placeholder="题目类型" @change="selectQuestionType" >
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
