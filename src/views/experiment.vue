@@ -112,7 +112,7 @@ export default {
                         ['clean'],    //清除字体样式
                         ['image','link']    //上传图片、上传视频'video'
                         ]
-                    }
+                }
             }
            
         }

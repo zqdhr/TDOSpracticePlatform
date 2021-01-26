@@ -114,7 +114,7 @@
                      </div>
                      <div class="d5 d25">
                          <div class="cell"> 
-                            <a class="pointer tab_atn" @click="showDetail(2)">查看</a>
+                            <a class="pointer tab_atn" @click="showDetail(item.state,item.isreview)">查看</a>
                             <span class="space-line"></span>
                             <a class="pointer tab_atn" v-if="item.state!=1">提交</a>
                             <span class="space-line" v-if="item.state!=1"></span>
@@ -141,25 +141,34 @@
         <!--实验报告批阅-->
         <el-dialog width='1100px' :visible.sync="isReport" class="report_detail_dialog">
             <div slot="title" class="dialog_header">xxxxx实验---王威龙提交</div>
-            <div class="reportMain">
-                <div class="ptext">
-                    <p>报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文 
-                        报告文本报告文本报告文本报告文本报告文本报告文本报告文本
-                        报告文本报告文本报告文本报告文本报告文本报告文 报告文本报告文本报告文本报告文本报告文本报告文本。</p>
-                </div>
-                <div class="pic">
-                    <img src=""/>
-                </div>
+            <p v-if="curStatus==2" class="p-score">
+                报告得分：85分
+            </p>
+            <div class="reportMain" v-if="curStatus!=1">
+                <div v-html="yourContent"></div>
                
             </div>
-            <div class="report_detail_btnbox" v-if="isReport_num==1">
-                   <div class="din"><el-input placeholder="请输入分数" style="text-align:center"/></div>
+            <div>
+                <quill-editor  v-if="curStatus==1"
+                    v-model="yourContent" 
+                    ref="myQuillEditor"  
+                    :options="editorOption" 
+                    @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
+                >
+                </quill-editor>
+            </div>
+            <div class="report_detail_btnbox" v-if="curStatus==1">
+                  
                    <a class="pointer btnDefault">确认</a>
                 </div>
         </el-dialog>
     </div>
 </template>
 <script>
+import { quillEditor } from "vue-quill-editor"; //调用编辑器
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
 export default {
     data(){
       return{
@@ -204,9 +213,32 @@ export default {
       
      
         isReport:false,
-        isReport_num:0
+        curStatus:0,//当前实验报告的状态
+        yourContent:'',//报告内容
+        editorOption: {
+            placeholder: "实验报告输入",
+            modules:{
+            toolbar:[
+                    ['bold', 'italic', 'underline', 'strike'],    //加粗，斜体，下划线，删除线
+                    ['blockquote', 'code-block'],     //引用，代码块
+                    [{ 'header': 1 }, { 'header': 2 }],        // 标题，键值对的形式；1、2表示字体大小
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],     //列表
+                    [{ 'script': 'sub'}, { 'script': 'super' }],   // 上下标
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],     // 缩进
+                    [{ 'direction': 'rtl' }],             // 文本方向
+                    [{ 'size': ['small', false, 'large', 'huge'] }], // 字体大小
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],     //几级标题
+                    [{ 'color': [] }, { 'background': [] }],     // 字体颜色，字体背景颜色
+                    [{ 'font': [] }],     //字体
+                    [{ 'align': [] }],    //对齐方式
+                    ['clean'],    //清除字体样式
+                    ['image','link']    //上传图片、上传视频'video'
+                    ]
+            }
+        }
       }
     },
+    components:{quillEditor},
     filters:{
         catIndex: function (val) {
             let str = ''
@@ -270,10 +302,22 @@ export default {
         changeLevel3(val){
             console.log('选择节')
         },
-        showDetail(num){
+        showDetail(state,isreview){
            let that = this;
            that.isReport = true
-           that.isReport_num = num
+           if(state==0){
+              that.curStatus = 1
+           }else{
+               
+               if(isreview==1){
+                    that.curStatus =2
+               }
+               else{
+                   that.curStatus = 0
+               }
+           }
+           that.yourContent = '实验报告描述，实验报告描述，实验报告描述'
+          
         }
     }
 }
@@ -281,4 +325,6 @@ export default {
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
 @import url(../../assets/less/student.less);
+.reportMain img{width:100%}
+.p-score{text-align: center; font-size:18px; padding-bottom: 20px;}
 </style>
