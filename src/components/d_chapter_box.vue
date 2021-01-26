@@ -23,7 +23,7 @@
                      <span class="s-state s-Not_saved" :class="{'s-saved':1==1}">未保存</span>
 
                     <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
-                      <a class="a_save pointer"></a>
+                      <a class="a_save pointer" @click="addChapters(item.id)"></a>
                     </el-tooltip>
                     <a class="icon_edit pointer" @click="edit(1,item.id,item.name)"></a>
                     <a class="a_arrow" @click="showSection(item,item.show)"></a>

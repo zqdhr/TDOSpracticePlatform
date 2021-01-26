@@ -58,7 +58,7 @@
                  <template slot-scope="scope">
                      <div class="">
                          <el-tooltip popper-class="quest_tooltip"  ref="tooltip" :content="scope.row.title" placement="top" effect="light">
-                             <span class="s-text textline1 pointer">{{ scope.row.title }}</span>
+                             <span class="s-text textline1 pointer">{{ scope.row.content }}</span>
                          </el-tooltip>
                     </div>
                  </template>
@@ -79,7 +79,7 @@
              <el-table-column prop="pictureAddress" label="图片地址">
                  <template slot-scope="scope">
                      <div class="">
-                        <span class="s-text textline1 pointer" @click="getPreview">{{scope.row.pictureAddress}}</span>
+                        <span class="s-text textline1 pointer" @click="getPreview">{{scope.row.picUrl}}</span>
                      </div>
                  </template>
                  
@@ -178,14 +178,14 @@
                 <span slot="label" class="s-label" >所属分类：</span >
                 <el-cascader
                     v-model="category"
-                    :options="categoryOptions"
-                    @change="handleChange" clearable>
+                    :options="categoryOptions">
+<!--                    @change="handleChange" clearable>-->
                 </el-cascader>
               </el-form-item>
                 <el-form-item>
                 <span slot="label" class="s-label" >题目类型：</span >
                 <el-select v-model="choseQuestionType" placeholder="题目类型" @change="dialogselectType" >
-                  <el-option v-for="item in questOptions" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+                  <el-option v-for="item in questOptions" :key="item.value" :label="item.label" :value="item.value"> </el-option>
                </el-select>
               </el-form-item>
               <el-form-item>
@@ -274,6 +274,7 @@
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import FileUpload from "vue-upload-component";
+import { getQuestionBackAll,deleteQuestionBackById} from "@/API/api";
 
 export default {
     data(){
@@ -287,12 +288,8 @@ export default {
             options2:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
             typeList:[{value:'0',label:'选择题'},{value:'1',label:'简答题'}],
             quest_type:'',
-            
             questionList:[
-                {serial_number:'001',title:'文本内容文本内容文本内容文本内容本内容文本内容文本内容文本内容文本内容文本内容本内容文本内容',answer:'B',pictureAddress:'C：AAAAAAAAAA>BBBBBBBBB>'},
-                {serial_number:'002',title:'文本内容文本内容文本内容文本内容本内容文本内容文本内容文本内容文本内容文本内容本内容文本内容',answer:'B',pictureAddress:'C：AAAAAAAAAA>BBBBBBBBB>'},
-                {serial_number:'002',title:'文本内容文本内容文本内容文本内容本内容文本内容文本内容文本内容文本内容文本内容本内容文本内容',answer:'文本内容文本内容文本内容文本内容本内容文本内容文本内容文本内容文本内容文本内容本内容文本内容',pictureAddress:'C：AAAAAAAAAA>BBBBBBBBB>'}
-            ],
+               ],
             multipleSelection:[],
             guidePic:null,
             total:100,//总共条数
@@ -349,12 +346,38 @@ export default {
     components:{
         ElImageViewer,FileUpload
     },
+    mounted() {
+        let that = this;
+        that.getQuestionBackAll();
+    },
     created(){
         let that = this;
         //默认显示选择题
         that.quest_type = that.typeList[0].value
     },
     methods:{
+        selectQuestionBackAll(type,content,category_id,perPage,page){
+            let that = this;
+            let obj = {};
+            obj.type = type;
+            obj.content = content;
+            obj.category_id = category_id;
+            obj.perPage = perPage;
+            obj.page = page;
+            getQuestionBackAll(obj).then(res=> {
+                if(res.code==200){
+                    that.total = res.data.total;
+                    that.questionList = res.data.list;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
+        getQuestionBackAll(){
+            let that = this;
+            that.selectQuestionBackAll('','','',10,1);
+        },
+
       //上传前的钩子函数
       inputFilter(newFile, oldFile, prevent) {
         if (newFile && !oldFile) {
@@ -550,6 +573,20 @@ export default {
             let that = this;
             that.showDel = !that.showDel;
             that.isDelete = false;
+            let obj = {};
+            let list = [];
+            for(let i =0;i<that.multipleSelection.length;i++){
+                list.push(that.multipleSelection[i].id)
+            }
+            obj.delete_id_list = list;
+            deleteQuestionBackById(JSON.stringify(obj)).then(res=> {
+                if(res.code==200){
+                    that.isDelete = false;
+                    that.selectQuestionBackAll('','','',10,1);
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
         },
         //批量上传确认
         confimBatchUpload(){
@@ -582,6 +619,9 @@ export default {
           let that = this
           this.$refs.upload.active = true;
           this.isNew = false;
+          console.log(that.choseQuestionType)
+            console.log(that.question.title)
+            console.log(that.question.options)
         }
         
     }
