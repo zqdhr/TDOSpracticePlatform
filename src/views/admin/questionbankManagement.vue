@@ -198,11 +198,13 @@
 
               <el-form-item v-if="choseQuestionType==0">
                 <span slot="label" class="s-label" >题目选项：</span >
+                <div class="din-options">
                 <el-input style="margin-bottom:12px" v-for="(item,index) in question.options" :key="index"
                  v-model="item.label"
                   type="text"
                 ></el-input>
-                  
+                </div>
+                <a class="btn_options pointer"></a>
                  
               </el-form-item>
               
@@ -311,9 +313,7 @@ export default {
               answer:'',
               options:[
                 {value:1,label:''},
-                {value:2,label:''},
-                {value:3,label:''},
-                {value:4,label:''},
+               
               ],
             },
             choseQuestionType:'',//单个上传题目类型
@@ -652,4 +652,7 @@ export default {
     transform:translate(0,-50%);-moz-transform:translate(0,-50%);-webkit-transform:translate(0,-50%);
     }
 }
+.din-options{display: inline-block; width:90%;}
+.btn_options{width:25px;height: 25px; display: inline-block; vertical-align: middle; margin-left: 12px;.borderRadius(5px,5px,5px,5px);
+background: url(../../assets/img/quest_add.png) center no-repeat; border:1px solid @hnavcolor }
 </style>
