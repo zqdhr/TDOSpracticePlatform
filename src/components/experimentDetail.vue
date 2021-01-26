@@ -122,7 +122,9 @@ export default {
         //点击进入实验
         startExperiment(){
             let that = this;
-            that.$router.push({path:'/experiment'}).catch((err) => {
+            //权限
+            let  level = sessionStorage.getItem('p_p-authority')
+            that.$router.push({path:'/experiment',query:{authority:this.$Base64.encode(level)}}).catch((err) => {
               console.log( err);
            });
         }

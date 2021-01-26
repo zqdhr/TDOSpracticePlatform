@@ -10,7 +10,7 @@
                 <div class="list_box">
                     <ul class="list_ul clearfix " :class="{'student_list_ul':role==3}">
                         <li v-for="(item,index) in experimentList" :key="index">
-                            <div class="info">
+                            <div class="info pointer"  @click="link_Detail">
                                 <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3">
                                    <a class="icon icon_close pointer"></a>
                                 </el-tooltip>
@@ -41,11 +41,13 @@
             </div>
          </div>
          <newdialog   ref="newdialog"></newdialog>
+         <experimentDetail ref="experimentDetail"></experimentDetail>
     </div>
 </template>
 <script>
 import courseNav from "@/components/left_courseNav.vue";
 import newdialog from "@/components/teacher_new_experiment.vue";
+import experimentDetail from '@/components/experimentDetail'
 export default {
     data(){
         return{
@@ -69,7 +71,7 @@ export default {
         }
     },
     components:{
-        courseNav,newdialog
+        courseNav,newdialog,experimentDetail
     },
     methods:{
          //底部分页
@@ -79,6 +81,13 @@ export default {
         click_new(){
             let that = this;
             that.$refs.newdialog.click_new();
+        },
+         //查看实验详情
+        link_Detail(){
+          let that = this;
+          that.isNewExperiment = true;
+          that.$refs.experimentDetail.click_Detail();
+
         },
     }
 }
