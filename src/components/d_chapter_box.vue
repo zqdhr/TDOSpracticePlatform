@@ -16,7 +16,15 @@
 
                             </span>
                         </div>
+                        
+                        
                     </div>
+                     <!--已保存添加s-saved-->
+                     <span class="s-state s-Not_saved" :class="{'s-saved':1==1}">未保存</span>
+
+                    <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
+                      <a class="a_save pointer"></a>
+                    </el-tooltip>
                     <a class="icon_edit pointer" @click="edit(1,item.id,item.name)"></a>
                     <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
@@ -182,7 +190,7 @@ export default{
                         {
                         id:'lfllff',
                         name:'标题内容标题内容标题内容标题内容',
-                        enclosure:'1,2,3,4',
+                        enclosure:[1,2,3,4],
                         section:[{
                             id:'section123',
                             name:'dgfdgfgfdgf',
@@ -191,7 +199,7 @@ export default{
                         {
                         id:'dfkldfklal',
                         name:'标题内容标题内容标题内容标题内容',
-                        enclosure:'1,2,3,4',
+                        enclosure:[1,2,3,4],
                         section:[{
                             id:'section123',
                             name:'dgfdgfgfdgf',
@@ -345,13 +353,14 @@ export default{
      .chapter_box{
         .chapter_li{ margin-top: 20px;}
         .li_focus{border:2px solid @basecolor;.borderRadius(10px,10px,10px,10px); overflow: hidden;}
-        .cha_title{background:#F5F5F7; font-size: 18px;line-height: 40px; padding: 7px 60px 7px 20px; position: relative;
+        .cha_title{background:#F5F5F7; font-size: 18px;line-height: 40px; padding: 7px 180px 7px 20px; position: relative;
            .s_name{color:@fontColor; background: url(../assets/img/d_chapter.png) left center no-repeat; padding: 5px 0 5px 35px; }
            .s_intro{color: @hnavcolor; padding-left: 20px;}
            .chapter_name_box{
                display: inline-block; width:60%; vertical-align: middle;
 
            }
+           .s-state{right:130px;position: absolute;}
         }
         .a_arrow{
            width:20px;height:20px;display: block;position: absolute;right:20px;top:50%;margin-top: -10px; 
