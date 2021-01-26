@@ -107,14 +107,18 @@
                         <div class="cell textline1">{{item.time}}</div>
                      </div>
                      <div class="d3 d18">
-                        <div class="cell">{{item.state==0?'待老师批阅':'105分'}}</div>
+                        <div class="cell">{{item.isreview==1?item.score:'待老师批阅'}}</div>
                      </div>
                      <div class="d4 d14"> 
-                        <div class="cell">{{item.state==0?'已提交':'待提交'}}</div>
+                        <div class="cell">{{item.state==1?'已提交':'待提交'}}</div>
                      </div>
                      <div class="d5 d25">
-                         <div class="cell">
-                            <a class="btnDefault btn_py pointer" v-if="item.state==1" @click="showDetail(2)">查看详情</a>
+                         <div class="cell"> 
+                            <a class="pointer tab_atn" @click="showDetail(2)">查看</a>
+                            <span class="space-line"></span>
+                            <a class="pointer tab_atn" v-if="item.state!=1">提交</a>
+                            <span class="space-line" v-if="item.state!=1"></span>
+                            <a class="pointer tab_atn">导出</a>
                          </div>
                      </div>
                   </li>
@@ -163,11 +167,11 @@ export default {
         perPage: 10,//用户列表每页条数
         curPage:1, 
         jobList:[
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'0'},
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'1'},
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'0'},
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'0'},
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:'1'},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:0,score:0,isreview:0}, 
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:1,score:70,isreview:1},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:0,score:0,isreview:0},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:1,score:85,isreview:1},
+            {name:'XXXXXXXX实验',time:'2020年9月6日',state:0,score:0,isreview:0},
 
         ],
         classList:[//班级选择列表
@@ -276,28 +280,5 @@ export default {
 </script>
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
-.tea_list{
-    .li-th{background:@basecolor; .borderRadius(0px,0px,0px,0px);border:0 none;
-      >div{color: #fff;}
-    }
-    .li-tr{border:1px solid #dcdcdc; }
-    .d18{width: 18%;}
-    .d25{width:25%}
-}
-.reportMain{padding:20px 20px 40px 20px;
-    border: 1px solid @border;
-    .borderRadius(5px,5px,5px,5px);
-    -moz-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
-    -webkit-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04);
-    box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
-    .ptext{font-size:18px; color:#333;}
-    .pic{width:100%; margin-top: 20px;}
-    .pic img{width:100%}
-    
-}.report_detail_btnbox{
-    text-align: center;padding-top:20px;
-    .din{width: 150px;display: inline-block; vertical-align:middle; text-align: center;}
-    input{text-align: center;}
-    a{vertical-align: middle; margin-left: 20px;}
-}
+@import url(../../assets/less/student.less);
 </style>

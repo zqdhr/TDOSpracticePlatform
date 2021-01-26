@@ -8,23 +8,23 @@
 
             <div class="operationBox">
             
-                <a class="a-opera pointer">
+                <a class="a-opera pointer" v-if="isOpen">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer">
+                <a class="a-opera pointer" v-if="isOpen">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
-                <a class="a-opera pointer">
+                <a class="a-opera pointer" @click="click_back" v-if="!isOpen">
                     <i><img src="../assets/img/exper_back.png"/></i>
                     <span>返回</span>
                 </a>
-                 <a class="a-opera pointer">
+                 <a class="a-opera pointer" v-if="isOpen">
                     <i><img src="../assets/img/exper_end.png"/></i>
                     <span>结束</span>
                 </a>
-                <a class="a-opera pointer">
+                <a class="a-opera pointer" v-if="isOpen">
                     <i><img src="../assets/img/exper_restart.png"/></i>
                     <span>重新开始</span>
                 </a>
@@ -48,7 +48,7 @@
                 <el-scrollbar style="height:100%">
                     <div class="nav">
                         <a class="pointer" :class="{'active_index':curIndex==1}" @click="curIndex=1">实验步骤</a>
-                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2">实验报告</a>
+                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" v-if="authority==0">实验报告</a>
                     </div>
                     <div v-if="curIndex==1">
                         <h3 class="htitle">实验步骤说明</h3>
@@ -59,7 +59,7 @@
                            </li>
                         </ul>
                     </div>
-                    <template v-if="curIndex==2">
+                    <template v-if="curIndex==2 && authority==0">
                     <h3 class="htitle">填写实验报告</h3>
                     <div class="labReport_box"  >
                         
@@ -82,6 +82,8 @@ export default {
             curIndex:1,
             virtualMachine:0,
             reportText:'',//实验报告输入内容
+            authority:0,
+            isOpen:false,//虚拟机是否开启
         }
     },
     beforeCreate() {
@@ -90,6 +92,12 @@ export default {
     },
     beforeDestroy(){
         document.body.removeAttribute("class","equipment-body");
+    },
+    created(){
+        let that = this;
+        that.authority = that.$route.query.authority?that.$Base64.decode(that.$route.query.authority):0;
+
+       
     },
     methods:{
         // vnc连接断开的回调函数
@@ -123,6 +131,26 @@ export default {
             this.rfb = rfb;
             
         },
+
+        //头部点击返回
+        click_back(){
+            let that = this;
+             if (window.history.length <= 1) {
+                 if(that.authority==0){
+                    this.$router.push({path:'/student'})
+                 }
+                  if(that.authority==1){
+                    this.$router.push({path:'/teacher'})
+                 }
+                  if(that.authority==2){
+                    this.$router.push({path:'/admin'})
+                 }
+                
+                return false
+            } else {
+                this.$router.go(-1)
+            }
+        }
 
     }
 }

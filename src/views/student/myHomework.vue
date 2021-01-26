@@ -93,10 +93,10 @@
                      <div class="d4 d14"> 
                         <div class="cell">状态</div>
                      </div>
-                     <div class="d4 d14"> 
+                     <div class="d4 d11"> 
                         <div class="cell">题目总数</div>
                      </div>
-                     <div class="d5 d11">
+                     <div class="d5 d14">
                          <div class="cell">
                            操作
                          </div>
@@ -115,12 +115,17 @@
                      <div class="d4 d14"> 
                         <div class="cell">{{item.state==0?'已提交':'待提交'}}</div>
                      </div>
-                      <div class="d4 d14"> 
+                      <div class="d4 d11"> 
                         <div class="cell">{{item.num}}</div>
                      </div>
-                     <div class="d5 d11">
+                     <div class="d5 d14">
                          <div class="cell">
-                            <a class="btnDefault btn_py pointer" v-if="item.state==1" @click="showDetail(2)">查看详情</a>
+                            <div class="cell"> 
+                            <a class="pointer tab_atn" @click="showDetail(2)">查看</a>
+                            <span class="space-line"></span>
+                            <a class="pointer tab_atn">提交</a>
+                         
+                         </div>
                          </div>
                      </div>
                   </li>
@@ -139,7 +144,7 @@
            </div>
         </div>
        
-      <el-dialog width='1100px' :visible.sync="isHomework" class="report_detail_dialog">
+      <el-dialog width='1100px' :visible.sync="isHomework" class="report_detail_dialog homeWork">
             <div slot="title" class="dialog_header">xxxxx实验(作业)---王威龙提交</div>
             <div class="reportMain course_list">
                 <ul class="choice_question">
@@ -328,53 +333,5 @@ export default {
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
 @import url(../../assets/less/coursework.less);
-
-.tea_list{
-    .li-th{background:@basecolor; .borderRadius(0px,0px,0px,0px);border:0 none;
-      >div{color: #fff;}
-    }
-    .li-tr{border:1px solid #dcdcdc; }
-    .d18{width: 18%;}
-    .d25{width:25%}
-    .d11{width:11%}
-}
-.reportMain{padding:20px 20px 40px 20px;
-    border: 1px solid @border;
-    .borderRadius(5px,5px,5px,5px);
-    -moz-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
-    -webkit-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04);
-    box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
-    
-    .pic{background: #fff;}
-    
-}
-.report_detail_btnbox{
-   
-    a{vertical-align: middle; margin-left: 20px;}
-}
-
-.course_list
-  
-   { 
-    padding:10px 20px 20px 0;
-    .colorRed{color:#D82A2A;}
-     .li_choose{
-     padding-left: 30px;
-     .li_radio{width:18px;height: 18px;}
-    .li_radio_correct{background: url(../../assets/img/quest_correct.png) center no-repeat;}
-    .li_radio_error{background: url(../../assets/img/quest_error.png) center no-repeat;}
-    .s_radio_answer{background: url(../../assets/img/quest_checked.png)left center no-repeat}
-    }
-    .Short-answer{color: @basecolor;}
- 
-    .score_box{
-        .din{display: inline-block; vertical-align: middle;}
-        input{width:80px;text-align: center; height: 30px;line-height: 30px;}
-        .abtn{display: inline-block;width:28px;height:28px;line-height:30px; font-size:16px;color:#000;text-align:center; vertical-align: top;
-        border:1px solid @border;background: #fff; margin: 0 8px; .borderRadius(5px,5px,5px,5px)}
-        .a_increase{background: url(../../assets/img/quest_add.png) center no-repeat; background-size:14px 14px; -webkit-background-size:14px 14px;}
-        .a_reduce{background: url(../../assets/img/quest_reduce.png) center no-repeat;background-size:14px 14px; -webkit-background-size:14px 14px;}
-    }
-}
-.report_detail_btnbox{text-align: center; padding-top: 20px;}
+@import url(../../assets/less/student.less);
 </style>

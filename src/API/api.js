@@ -121,11 +121,20 @@ var insertExperiment = function(data){
 	return axios.post('/insertExperiment', data,{headers: {'Content-Type':'application/json'}})
 }
 
+//管理员查询所有的题库
+var getQuestionBackAll = function(data){
+	return axios.get('/getQuestionBackAll?type='+data.type+'&content='+data.content+'&category_id='+data.category_id+'&perPage='+data.perPage+'&page='+data.page)
+}
+
+//管理员删除所选题目
+var deleteQuestionBackById = function(data){
+	return axios.post('/deleteQuestionBackById', data,{headers: {'Content-Type':'application/json'}})
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
-	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId
-
+	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById
 }
 
 function getJson (data) {

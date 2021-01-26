@@ -101,7 +101,7 @@ export default {
         //查看详情
         linkDetail(){
             let that = this;
-            that.$router.push({path:'student/courseDetail'})
+            that.$router.push({path:'/student/courseDetail'})
         }
     }
 }
