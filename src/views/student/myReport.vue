@@ -302,6 +302,13 @@ export default {
         changeLevel3(val){
             console.log('选择节')
         },
+        onEditorReady(editor) { // 准备编辑器
+        },
+        onEditorBlur(){}, // 失去焦点事件
+        onEditorFocus(){}, // 获得焦点事件
+        onEditorChange(){}, // 内容改变事件
+
+        
         showDetail(state,isreview){
            let that = this;
            that.isReport = true
