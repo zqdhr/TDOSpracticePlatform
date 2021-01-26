@@ -26,6 +26,14 @@
           <div class="fromBox">
             <el-form ref="form" :model="form" label-width="120px">
               <el-form-item>
+                <span slot="label" class="s-label" ><span>*</span>所属分类：</span >
+                <el-cascader
+                   v-model="category"
+                   :options="categoryOptions"
+                   @change="handleChange" clearable>
+                </el-cascader>
+              </el-form-item>
+              <el-form-item>
                 <span slot="label" class="s-label" ><span>*</span>实验名称：</span >
                 <el-input v-model="form.name" maxlength="20"></el-input>
               </el-form-item>
@@ -258,7 +266,32 @@ export default {
         report: "",
         task: "",
         cover: "",
+        
+        
+        
       },
+      category:[],//实验所属分类
+      categoryOptions: [{
+        value: 'zhinan',
+        label: '指南',
+        children: [{
+          value: 'shejiyuanze',
+          label: '设计原则',
+          children: [{
+            value: 'yizhi',
+            label: '一致'
+          }, {
+            value: 'fankui',
+            label: '反馈'
+          }, {
+            value: 'xiaolv',
+            label: '效率'
+          }, {
+            value: 'kekong',
+            label: '可控'
+          }]
+        }]
+      }],
       inplaceholder: "请输入实验名称",
       isNew_experiment: false,
       uploadUrl: "",
@@ -290,6 +323,10 @@ export default {
     FileUpload,
   },
   methods: {
+    //实验所属分类选择
+    handleChange(value) {
+      console.log(value);
+    },
     //选择实验类型
     selectType(val) {
       console.log(val);

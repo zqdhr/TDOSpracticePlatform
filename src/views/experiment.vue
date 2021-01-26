@@ -48,6 +48,7 @@
                         <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2">实验报告</a>
                     </div>
                     <div v-if="curIndex==1">
+                        <h3 class="htitle">实验步骤说明</h3>
                         <ul class="step-ul">
                            <li>
                                <p class="pt">1、实验步骤</p>
@@ -55,12 +56,16 @@
                            </li>
                         </ul>
                     </div>
-                    <div class="labReport_box"  v-if="curIndex==2">
+                    <template v-if="curIndex==2">
+                    <h3 class="htitle">填写实验报告</h3>
+                    <div class="labReport_box"  >
+                        
                         <div class="pic"></div>
                         <div class="from">
                             <el-input v-model="input" type="textarea" rows="10" placeholder="实践报告输入"></el-input>
                         </div>
                     </div>
+                    </template>
                 </el-scrollbar>
             </div>
         </div>
