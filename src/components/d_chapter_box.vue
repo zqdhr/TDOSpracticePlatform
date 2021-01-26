@@ -25,7 +25,13 @@
                      <span class="s_name">章节{{index+1}}：</span>
                      <div class="din">
                          <input type="text" placeholder="请输入章节" v-model="item.name"/>
+                         <!--已保存添加s-saved-->
+                         <span class="s-state s-Not_saved" :class="{'s-saved':1==1}">未保存</span>
                      </div>
+                      
+                      <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
+                        <a class="a_save pointer"></a>
+                      </el-tooltip>
                      <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该章吗？'"></a>
                      <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
@@ -50,7 +56,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                 <a class="icon_edit pointer" @click="edit(2,iitem.id,iitem.name)"></a>
+                                <a class="icon_edit pointer" @click="edit(2,iitem.id,iitem.name)"></a>
                                 <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>
                             </div>
                             </template>>
@@ -110,9 +116,11 @@
         <div class="add-btn-box">
             <a class="btnDefault add-btn pointer" @click="click_newChapter">+ 新建章节</a>
         </div>
+        <!--
         <div class="add-btn-box last-btn-box">
             <a class="btnDefault add-btn pointer" @click="addChapters">确认上传</a>
         </div>
+        -->
 
          <!--删除弹出框-->
         <el-dialog :visible.sync="isDelete" width="600px">
@@ -327,6 +335,13 @@ export default{
 /*备课课程详情*/
 .detail_main{
     /*章节列表*/
+     .a_save{width:20px;height: 20px;display: block;background: url(../assets/img/chapter_save.png) center no-repeat; 
+       position:absolute;top:50%;margin-top: -10px;right:86px;
+       background-size: 20px 20px; -webkit-background-size: 20px 20px;
+     }
+     .s-state{width:19%;display: inline-block; vertical-align:middle; text-align:right; font-size:16px;}
+     .s-Not_saved{color:#e33737}
+     .s-saved{color:#24c41c;}
      .chapter_box{
         .chapter_li{ margin-top: 20px;}
         .li_focus{border:2px solid @basecolor;.borderRadius(10px,10px,10px,10px); overflow: hidden;}
@@ -352,11 +367,11 @@ export default{
         .a_delete{
              width:20px;height:20px;display: block;position: absolute;top:50%;margin-top: -10px;
             background: url(../assets/img/icon_del.png)  center no-repeat;cursor: pointer; right:56px}
-        .din{display: inline-block; width: 80%;
-          input{font-size: 18px;color: #6666; width: 100%; background: 0 none;color:#333; line-height: 40px;}
+        .din{display: inline-block; width: 88%;
+          input{font-size: 18px;color: #6666; width:90%; background: 0 none;color:#333; line-height: 40px;}
         }
 
-        .new_cha_title{padding-right:90px;}
+        .new_cha_title{padding-right:180px;}
 
   
 
