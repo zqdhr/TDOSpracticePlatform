@@ -410,6 +410,7 @@ export default {
     confirmNewExperiment(){
         let that = this;
         that.isNew_experiment = false
+        console.log(that.form.name)
     }
 
     

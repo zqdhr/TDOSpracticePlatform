@@ -93,7 +93,7 @@ export default {
            console.log(`当前页: ${val}`);
             let that = this;
             let search = that.searchText;
-            getAdminCourseList(10,val-1,search);
+            that.getAdminCourseList(10,val,search);
         },
 
         //点击备课跳转详情

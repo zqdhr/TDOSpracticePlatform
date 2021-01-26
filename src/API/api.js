@@ -105,10 +105,21 @@ var deleteImages = function(data){
 	return axios.post('/deleteImages?imagesID='+data.imagesID)
 }
 
+//管理员新增镜像
+var addImage = function(data){
+	return axios.get('/addImage?imageName='+data.imageName+'&introduction='+data.introduction)
+}
+
+
+//管理员新增实验
+var insertExperiment = function(data){
+	return axios.post('/insertExperiment', data,{headers: {'Content-Type':'application/json'}})
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
-	getImagequoteList,deleteImages
+	getImagequoteList,deleteImages,addImage,insertExperiment
 }
 
 function getJson (data) {

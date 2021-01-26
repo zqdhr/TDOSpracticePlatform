@@ -38,7 +38,7 @@
             <template slot-scope="scope">
               <span>{{
                 scope.row.type == 0
-                  ? "KVM"
+                  ? "Docker"
                   : "Docker"
               }}</span>
             </template>
@@ -139,7 +139,7 @@
 <script>
 import { mapState } from "vuex";
 //import FileUpload from "vue-upload-component";
-import {getImagequoteList,deleteImages} from '@/API/api';
+import {getImagequoteList,deleteImages,addImage} from '@/API/api';
 import loading from '@/components/loading.vue'
 export default {
   data() {
@@ -230,17 +230,18 @@ export default {
         let obj = {};
         let list = [];
         for(let i =0;i<that.multipleSelection.length;i++){
-            list.push(that.multipleSelection[i].id)
+            list.push(that.multipleSelection[i].imageid)
         }
         obj.imagesID = list;
         deleteImages(obj).then(res=> {
             if(res.code==200){
-                console.log("111")
+                that.isDelete = false;
+                that.getImagequoteList();
             }else{
                 this.$toast(res.message,2000)
             }
         })
-        console.log('确认删除镜像'+obj)
+        console.log('确认删除镜像'+that.multipleSelection[0].imageid)
     },
 
      //上传前的钩子函数
@@ -303,11 +304,21 @@ export default {
       this.$refs.upload.active = true;
     },
     
-    //虚拟机释放确认
+    //镜像确认上传
     confiremNew(){
       let that = this;
       that.show_Add = false
       that.showLoading = true
+      let obj = {};
+      obj.imageName = that.Mirroring.name;
+      obj.introduction = that.Mirroring.introduction;
+        addImage(obj).then(res=> {
+            if(res.code==200){
+                that.getImagequoteList();
+            }else{
+                this.$toast(res.message,2000)
+            }
+        })
     },
     //隐藏loading
     hideLoading(){

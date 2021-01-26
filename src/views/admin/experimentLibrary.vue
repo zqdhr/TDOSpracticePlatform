@@ -106,14 +106,7 @@ export default {
             perPage:10,//每页页数
             curPage:1,//当前页
             experimentList:[
-               {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'},
-               {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'},
-               {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'},
-               {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'},
-               {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'},
-               {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'},
-               {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'},
-               {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'},
+               {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'}
             ],
             isDelete:false,//删除实验弹出框
             isNewExperiment:false,
