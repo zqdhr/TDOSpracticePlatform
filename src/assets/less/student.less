@@ -33,4 +33,22 @@
 .space-line{width:1px; height: 15px; background: #dcdcdc; display: inline-block; vertical-align: middle; margin: 0 8px;}
 
 /*我的笔记*/
-.notes_list{}
+.notes_list{
+    border:2px solid @basecolor;background:#fff;.borderRadius(5px,5px,5px,5px); overflow: hidden;
+    .tab-pagination{padding:30px 60px;}
+}
+.ul-notes{
+    padding: 0 60px;
+    >li{border-bottom:2px solid @linecoloe; padding: 15px 0;}
+    .link-courseware{text-align: right; padding-top:6px;
+      a{color: @basecolor;cursor: pointer; font-size: 18px;}
+    }
+    .name-box{
+        padding-bottom: 8px;
+        >div{display: inline-block; vertical-align: middle;}
+        .d-name{max-width:60%;color: @basecolor; font-size: 20px; }
+        .d-time{font-size:16px;color:#666; vertical-align: top; margin-top:6px; padding-left: 20px;}
+    }
+    .intro{font-size: 18px;}
+    
+}

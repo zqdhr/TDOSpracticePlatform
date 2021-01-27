@@ -70,7 +70,19 @@
         </div>
         <div class="container">
            <div class="notes_list">
-              <ul></ul>
+              <ul class="ul-notes">
+                 <li v-for="(item,index) in notesList" :key="index">
+                    <div class="name-box">
+                        <div class="d-name textline1">{{item.name}}</div>
+                        <div class="d-time">{{item.time}}</div>
+                    </div>
+                    <p class="intro">{{item.text}}</p> 
+                    <div class="link-courseware">
+                        <a class="pointer" v-if="item.courseType==1">--&lt;{{item.coursewarename}}&gt;--&lt;第{{item.coursepage}}页&gt;</a>
+                        <a class="pointer" v-if="item.courseType==2">--&lt;{{item.coursewarename}}&gt;--&lt;观看时间：{{item.coursepage}}&gt;</a>
+                    </div>
+                 </li>
+              </ul>
               <div class="tab-pagination">
                     <el-pagination
                         background
@@ -124,6 +136,25 @@ export default {
         level3Name:'',//小节名称
 
         inplaceholder:'请输入笔记标题',
+
+        notesList:[
+            {id:'2055ddd',name:'<笔记标题笔记标题笔记标题>',time:'2020-09-15 16:32:45',
+             text:'过程记录的比较会统一汇聚在课程的我的笔记栏目中，在这里可以通过章节进行过滤查询所记录的笔记。'+
+            '在课程学习过程记录的比较会统一汇聚在课程的汇聚在课程的汇聚汇聚在课 我的笔记栏目中，在这里可以通过章节进行过滤查询所记录的笔记。'+
+            '在课程学习过程记录的比较会统一汇聚在课程的我的笔记栏目中，在这里可以通过章汇聚在课程的汇聚在课程的 节进行过滤查询所记录的笔记。',
+            courseType:1,
+            coursewarename:'XXXXXXXXXXXX课件.pdf',
+            coursepage:'6'
+            },
+             {id:'2055ddd',name:'<笔记标题笔记标题笔记标题>',time:'2020-09-15 16:32:45',
+             text:'过程记录的比较会统一汇聚在课程的我的笔记栏目中，在这里可以通过章节进行过滤查询所记录的笔记。'+
+            '在课程学习过程记录的比较会统一汇聚在课程的汇聚在课程的汇聚汇聚在课 我的笔记栏目中，在这里可以通过章节进行过滤查询所记录的笔记。'+
+            '在课程学习过程记录的比较会统一汇聚在课程的我的笔记栏目中，在这里可以通过章汇聚在课程的汇聚在课程的 节进行过滤查询所记录的笔记。',
+            courseType:2,
+            coursewarename:'XXXXXXXXXXXX.mp3',
+            coursepage:'20.00'
+            }
+        ]
       
      
       
