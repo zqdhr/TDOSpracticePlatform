@@ -147,6 +147,12 @@ const routes = [
         name: 'studentmyHomework',
         component: () => import('../views/student/myHomework.vue'),
        
+      },
+      {  
+        path: '/student/myNotes',//学生端我的作业
+        name: 'studentmyNotes',
+        component: () => import('../views/student/myNotes.vue'),
+       
       }
       
     ]

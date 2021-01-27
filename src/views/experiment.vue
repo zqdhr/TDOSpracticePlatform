@@ -48,7 +48,7 @@
                 <el-scrollbar style="height:100%">
                     <div class="nav">
                         <a class="pointer" :class="{'active_index':curIndex==1}" @click="curIndex=1">实验步骤</a>
-                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" >实验报告</a>
+                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" v-if="authority==0">实验报告</a>
                     </div>
                     <div v-if="curIndex==1">
                         <h3 class="htitle">实验步骤说明</h3>
@@ -60,7 +60,7 @@
                         </ul>
                     </div>
                     <!--&& authority==0-->
-                    <template v-if="curIndex==2 ">
+                    <template v-if="curIndex==2 &&  authority==0">
                     <h3 class="htitle">填写实验报告</h3>
                     <div class="labReport_box"  >
                         <quill-editor 
@@ -118,7 +118,7 @@ export default {
         }
     },
     beforeCreate() {
-        console.log('123456')
+      
        document.getElementsByTagName("body")[0].className="equipment-body";
     },
     beforeDestroy(){
