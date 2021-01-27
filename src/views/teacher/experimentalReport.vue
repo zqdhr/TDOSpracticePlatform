@@ -74,7 +74,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mess">
+                <div class="mess" v-if="level3Name!=''">
                     当前选择{{chooseClassName}}，共有<span>60</span>名学员，已提交<span>45</span>份，还剩<span>15</span>份未提交
                     <a class="nosubmit" @click="isUnsubmittedlist=true"></a>
                 </div>
