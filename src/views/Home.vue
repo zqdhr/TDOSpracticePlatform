@@ -25,7 +25,7 @@
       </video-player>
     </div>
        <div>
-     <pdf ref="pdf"  :src="url" v-if="url" @loaded="loadPdfHandler" :page="currentPage"
+     <pdf ref="pdf" :src="url" v-if="url" @loaded="loadPdfHandler" :page="currentPage"
          @num-pages="pageCount=$event" 
          @page-loaded="currentPage=$event" 
      > </pdf>
@@ -87,8 +87,8 @@ export default {
         sources: [
           {
             type: "video/mp4", // 类型
-            //src: require("../assets/video.mp4"), // url地址
-            src:'http://192.168.1.167:8080/data/GH015432.MP4'
+            src: require("../assets/video.mp4"), // url地址
+            //src:'http://192.168.1.167:8080/data/GH015432.MP4'
           },
         ],
         poster: "", // 封面地址
@@ -191,7 +191,7 @@ export default {
 
     // 当前播放位置发生变化时触发。
     onPlayerTimeupdate(player) {
-      //console.log(player)
+      console.log(player)
     },
 
     //媒体的readyState为HAVE_FUTURE_DATA或更高

@@ -348,6 +348,18 @@ button:focus{border:0 none;outline: none;}
   font-size: 50px;
 }
 
+.el-dialog{
+  top:50%;
+  margin:0 !important;
+  left:50%;
+  -ms-transform:translate(-50%,-50%);
+  -webkit-transform:translate(-50%,-50%);
+  -moz-transform:translate(-50%,-50%);
+  transform:translate(-50%,-50%);
+  .borderRadius(5px,5px,5px,5px);
+  .el-dialog__header{.borderRadius(5px,5px,0,0)}
+}
+
 /*实验详情弹出的表格表头*/
 .detail_table{th{
   background:@bgf0f0f0; color: @tabcolor;}
@@ -388,6 +400,12 @@ button:focus{border:0 none;outline: none;}
     
   }
 }
+
+/*记录笔记弹窗*/
+.dialog_record{
+  .el-dialog__body{padding: 0 20px;}
+}
+
 @media screen and (max-width:1600px){
   .content_el-scrollbar{
     height:24%;

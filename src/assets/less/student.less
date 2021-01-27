@@ -39,7 +39,9 @@
 }
 .ul-notes{
     padding: 0 60px;
-    >li{border-bottom:2px solid @linecoloe; padding: 15px 0;}
+    >li{border-bottom:2px solid @linecoloe; padding: 15px 0; position: relative;}
+    .check{width:25px;height: 25px; display:block; position: absolute; background: url(../img/check_n.png) center no-repeat; left:-40px;top:16px}
+    .checkh{background: url(../img/check_h.png) center no-repeat;}
     .link-courseware{text-align: right; padding-top:6px;
       a{color: @basecolor;cursor: pointer; font-size: 18px;}
     }
@@ -51,4 +53,6 @@
     }
     .intro{font-size: 18px;}
     
+    
 }
+
