@@ -314,6 +314,9 @@ export default {
             return str
         }
     },
+    created() {
+        this.url = pdf.createLoadingTask(this.url)
+    },
     
     methods:{
         //底部分页
