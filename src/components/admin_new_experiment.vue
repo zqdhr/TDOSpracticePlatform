@@ -8,16 +8,16 @@
       <div slot="title" class="dialog_header">新增实验</div>
       <div class="newdialog_body">
         <div class="new_nav">
-          <a class="pointer" :class="{ active: curIndex == 1 }"
+          <a class="pointer" @click="curIndex=1" :class="{ active: curIndex == 1 }"
             ><span class="num">1</span> 基本资料</a
           >
-          <a class="pointer" :class="{ active: curIndex == 2 }"
+          <a class="pointer" @click="curIndex=2" :class="{ active: curIndex == 2 }"
             ><span class="num">2</span> 选择虚拟机</a
           >
-          <a class="pointer" :class="{ active: curIndex == 3 }"
+          <a class="pointer" @click="curIndex=3" :class="{ active: curIndex == 3 }"
             ><span class="num">3</span> 实验步骤</a
           >
-          <a class="pointer" :class="{ active: curIndex == 4 }"
+          <a class="pointer" @click="curIndex=4" :class="{ active: curIndex == 4 }"
             ><span class="num">4</span> 完成发布</a
           >
         </div>
@@ -50,8 +50,11 @@
                 <el-input
                   v-model="form.introduction"
                   type="textarea"
+                  :rows=3
+                   resize="none" 
                 ></el-input>
               </el-form-item>
+              <!--
               <el-form-item>
                 <span slot="label" class="s-label" ><span>*</span>实验建议：</span >
                 <el-input v-model="form.advice" type="textarea"></el-input>
@@ -64,6 +67,7 @@
                 <span slot="label" class="s-label" ><span>*</span>实验任务：</span >
                 <el-input v-model="form.task" type="textarea"></el-input>
               </el-form-item>
+              -->
               <el-form-item>
                 <span slot="label" class="s-label" ><span>*</span>实验封面：</span >
                 <div class="upload_box clearfix">
@@ -106,7 +110,7 @@
             </el-form>
           </div>
           <div class="btnBox">
-            <a class="btnDefault pointer" @click="confirm_baseInfo">保存</a>
+            <a class="btnDefault pointer" @click="confirm_baseInfo">确认</a>
           </div>
         </div>
         <!--选择虚拟机-->

@@ -191,7 +191,7 @@ export default {
 .add_btn_box{padding-bottom:15px; text-align:right;}
 
 /*列表*/
-.list_box{ overflow: hidden;
+.list_box{ overflow: hidden; min-height:500px;
     .list_ul{ margin-left: -10px; margin-right: -10px;
         li{width:25%;min-height: 40px;float: left; margin-bottom: 20px; }    
         .pic{width:100%; margin-bottom: 10px;
