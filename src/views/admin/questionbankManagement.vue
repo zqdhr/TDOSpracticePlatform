@@ -1,115 +1,186 @@
 <template>
-    <div class="pp_main boxsizing">
+  <div class="pp_main boxsizing">
     <div class="container">
       <div class="pageTab clearfix">
         <div class="fl">
           <div class="sel-box">
-            <el-select v-model="customClass" placeholder="自定义分类" @change="selectType" >
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+            <el-select
+              v-model="customClass"
+              value-key="id"
+              placeholder="自定义分类"
+              @change="selectType"
+            >
+              <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.name"
+                :value="item"
+              >
+              </el-option>
             </el-select>
           </div>
-          <div class="sel-box" v-if="customClass!=''">
-            <el-select v-model="i_customClass" placeholder="自定义分类" @change="selectType1" >
-              <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+          <div class="sel-box" v-if="options1.length > 0">
+            <el-select
+              v-model="i_customClass"
+              value-key="id"
+              placeholder="自定义分类"
+              @change="selectType1"
+            >
+              <el-option
+                v-for="item in options1"
+                :key="item.id"
+                :label="item.name"
+                :value="item"
+              >
+              </el-option>
             </el-select>
           </div>
 
-           <div class="sel-box" v-if="i_customClass!=''">
-            <el-select v-model="ii_customClass" placeholder="自定义分类" @change="selectType2" >
-              <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+          <div class="sel-box">
+            <el-select
+              v-model="quest_type"
+              placeholder="题目类型"
+              @change="selectQuestType"
+            >
+              <el-option
+                v-for="item in typeList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
             </el-select>
           </div>
-
-          <div class="sel-box" >
-            <el-select v-model="quest_type" placeholder="题目类型" @change="selectQuestType" >
-              <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value" > </el-option>
-            </el-select>
-          </div>
-          
         </div>
         <div class="fr">
           <a class="btnDefault pointer abtn" @click="delList">删除题目</a>
-          <a class="btnDefault pointer abtn" @click="isNew=true;files=[];isNewType=0">新增题目</a>
-          
-          
-          <div class="d-serach"> 
-            <input :placeholder="inplaceholder" type="text" autocomplete="off" />
+          <a
+            class="btnDefault pointer abtn"
+            @click="
+              isNew = true;
+              files = [];
+              isNewType = 0;
+            "
+            >新增题目</a
+          >
+
+          <div class="d-serach">
+            <input
+              :placeholder="inplaceholder"
+              type="text"
+              autocomplete="off"
+            />
             <a class="searchBtn pointer"></a>
           </div>
         </div>
       </div>
-       
-       <div class="table_box table_box_questionBank">
-           <el-table
-        
+
+      <div class="table_box table_box_questionBank">
+        <el-table
           class="center-tab tab-userList"
           :data="questionList"
           style="width: 100%"
           @selection-change="handleSelectionChange"
-          >
-            <el-table-column type="selection" width="55" v-if="showDel">
-             </el-table-column>
-             <el-table-column prop="serial_number" label="题目序号" width="150">
-                <template slot-scope="scope">
-                    <span>{{(curPage - 1) * perPage + scope.$index + 1}}</span>
-                </template>
-             </el-table-column>
-             <el-table-column prop="title" label="题目详情">
-                 <template slot-scope="scope">
-                     <div class="">
-                         <el-tooltip popper-class="quest_tooltip"  ref="tooltip" :content="scope.row.title" placement="top" effect="light">
-                             <span class="s-text textline1 pointer">{{ scope.row.content }}</span>
-                         </el-tooltip>
-                    </div>
-                 </template>
-                 
-             </el-table-column>
-              <el-table-column prop="answer" label="题目答案">
-                 <template slot-scope="scope">
-                     <div class="">
-                         <!--根据题目类型，确定答案是否需要放上去提示完全-->
-                         <el-tooltip popper-class="quest_tooltip" ref="tooltip" :content="scope.row.title" placement="top" effect="light" v-if="quest_type!=0" show-overflow-tooltip="false">
-                             <span class="s-text textline1 pointer">{{ scope.row.answer }}</span>
-                         </el-tooltip>
-                         <span class="s-text textline1" v-if="quest_type==0">{{ scope.row.answer }}</span>
-                     </div>
-                 </template>
-                 
-             </el-table-column>
-             <el-table-column prop="pictureAddress" label="图片地址">
-                 <template slot-scope="scope">
-                     <div class="">
-                        <span class="s-text textline1 pointer" @click="getPreview">{{scope.row.picUrl}}</span>
-                     </div>
-                 </template>
-                 
-             </el-table-column>
-           </el-table>
-           
-       </div>
+        >
+          <el-table-column type="selection" width="55" v-if="showDel">
+          </el-table-column>
+          <el-table-column prop="serial_number" label="题目序号" width="150">
+            <template slot-scope="scope">
+              <span>{{ (curPage - 1) * perPage + scope.$index + 1 }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="title" label="题目详情">
+            <template slot-scope="scope">
+              <div class="">
+                <el-tooltip
+                  popper-class="quest_tooltip"
+                  ref="tooltip"
+                  :content="scope.row.content"
+                  placement="top"
+                  effect="light"
+                >
+                  <span class="s-text textline1 pointer">{{
+                    scope.row.content
+                  }}</span>
+                </el-tooltip>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="answer" label="题目答案">
+            <template slot-scope="scope">
+              <div class="">
+                <!--根据题目类型，确定答案是否需要放上去提示完全-->
+                <el-tooltip
+                  popper-class="quest_tooltip"
+                  ref="tooltip"
+                  :content="scope.row.choice"
+                  placement="top"
+                  effect="light"
+                  v-if="quest_type == 0"
+                  show-overflow-tooltip="false"
+                >
+                  <span class="s-text textline1 pointer">{{
+                    scope.row.answer
+                  }}</span>
+                </el-tooltip>
 
-       <div class="tab-pagination">
-          <el-pagination
-            background
-            :current-page="curPage"
-            :page-size="perPage"
-            @current-change="handleCurrentChange"
-            layout="prev, pager, next,jumper"
-            :total="total"
-          >
-          </el-pagination>
-        </div>
+                <el-tooltip
+                  popper-class="quest_tooltip"
+                  ref="tooltip"
+                  :content="scope.row.answer"
+                  placement="top"
+                  effect="light"
+                  v-if="quest_type != 0"
+                  show-overflow-tooltip="false"
+                >
+                  <span class="s-text textline1 pointer">{{
+                    scope.row.answer
+                  }}</span>
+                </el-tooltip>
+                <span class="s-text textline1" v-if="quest_type == 0">{{
+                  scope.row.answer
+                }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="pictureAddress" label="图片地址">
+            <template slot-scope="scope">
+              <div class="" v-if="scope.row.picUrl.length > 0">
+                <span class="s-text textline1 pointer" @click="getPreview(scope.row.picUrl)">{{
+                  scope.row.picUrl
+                }}</span>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
-
+      <div class="tab-pagination">
+        <el-pagination
+          background
+          :current-page="curPage"
+          :page-size="perPage"
+          @current-change="handleCurrentChange"
+          layout="prev, pager, next,jumper"
+          :total="total"
+        >
+        </el-pagination>
+      </div>
     </div>
-    <el-image-viewer v-if="showViewer"  :on-close="showViewerClose" :url-list="[guidePic]"></el-image-viewer>
+    <el-image-viewer
+      v-if="showViewer"
+      :on-close="showViewerClose"
+      :url-list="[guidePic]"
+    ></el-image-viewer>
 
     <!--删除题目-->
     <el-dialog :visible.sync="isDelete" width="600px">
       <div slot="title" class="dialog_header">请注意!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
-          <span class="span_icon icon_waring">确定要删除当前选中的题目吗？</span>
+          <span class="span_icon icon_waring"
+            >确定要删除当前选中的题目吗？</span
+          >
         </p>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -119,17 +190,17 @@
     </el-dialog>
 
     <!--新增题目-->
-      <el-dialog
+    <el-dialog
       class="dialog_pagination"
       :visible.sync="isNew"
-       width="600px"
-      :class="{'newCourseware_dialog':isNewType==0}"
-    > 
-      <template v-if="isNewType==0">
+      width="600px"
+      :class="{ newCourseware_dialog: isNewType == 0 }"
+    >
+      <template v-if="isNewType == 0">
         <div slot="title" class="dialog_header">新增题目</div>
         <div class="confirm_dialog_body"></div>
         <div slot="footer" class="dialog-footer">
-          <a class="btnDefault" @click="isNewType=1">批量上传</a>
+          <a class="btnDefault" @click="isNewType = 1">批量上传</a>
           <a class="btnDefault" @click="singleUpload">单个上传</a>
           <p class="dialog-mess">（点击此处下载“<a>批量上传</a>”模板）</p>
         </div>
@@ -166,69 +237,86 @@
         </div>
       </template>
 
-      <template  v-if="isNewType == 2">
-      <div slot="title" class="dialog_header">单个上传</div>
-    
-      <div class="baseInfo">
+      <template v-if="isNewType == 2">
+        <div slot="title" class="dialog_header">单个上传</div>
+
+        <div class="baseInfo">
           <div class="fromBox">
-           
-            
-            <el-form ref="form"  label-width="100px">
+            <el-form ref="form" label-width="90px">
               <el-form-item>
-                <span slot="label" class="s-label" >所属分类：</span >
-                <el-cascader
-                    v-model="category"
-                    :options="categoryOptions">
-<!--                    @change="handleChange" clearable>-->
+                <span slot="label" class="s-label">所属分类：</span>
+                <el-cascader v-model="category" :options="categoryOptions">
+                  <!--                    @change="handleChange" clearable>-->
                 </el-cascader>
               </el-form-item>
-                <el-form-item>
-                <span slot="label" class="s-label" >题目类型：</span >
-                <el-select v-model="choseQuestionType" placeholder="题目类型" @change="dialogselectType" >
-                  <el-option v-for="item in questOptions" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-               </el-select>
+              <el-form-item>
+                <span slot="label" class="s-label">题目类型：</span>
+                <el-select
+                  v-model="choseQuestionType"
+                  placeholder="题目类型"
+                  @change="dialogselectType"
+                >
+                  <el-option
+                    v-for="item in questOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
               </el-form-item>
               <el-form-item>
-                <span slot="label" class="s-label" >题目详情：</span >
-                <el-input
-                  v-model="question.title"
-                  type="textarea"
-                ></el-input>
+                <span slot="label" class="s-label">题目详情：</span>
+                <el-input v-model="question.title" type="textarea" resize="none"></el-input>
               </el-form-item>
 
-              <el-form-item v-if="choseQuestionType==0">
-                <span slot="label" class="s-label" >题目选项：</span >
-                <div class="din-options">
-                <el-input style="margin-bottom:12px" v-for="(item,index) in question.options" :key="index"
-                 v-model="item.label"
-                  type="text"
-                ></el-input>
+              <el-form-item v-if="choseQuestionType == 0">
+                <span slot="label" class="s-label">题目选项：</span>
+                <div class="din-options" v-for="(item, index) in question.options"      :key="index">
+                  <el-input
+                    style="margin-bottom: 12px;width:90%"
+                    
+               
+                    v-model="item.label"
+                    type="text" 
+                  ></el-input>
+                  <a class="btn_options pointer" :class="{'btn_options_add':index+1==question.options.length}"></a>
                 </div>
-                <a class="btn_options pointer"></a>
-                 
-              </el-form-item>
-              
-              <el-form-item v-if="choseQuestionType==0">
-                <span slot="label" class="s-label" >题目答案：</span >
-                <el-select v-model="question.answer" placeholder="题目答案" @change="dialogselectType" >
-                  <el-option v-for="item in question.options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
-               </el-select>
+                
               </el-form-item>
 
-              <el-form-item v-if="choseQuestionType==1">
-                <span slot="label" class="s-label" >题目答案：</span >
-                <el-input
+              <el-form-item v-if="choseQuestionType == 0">
+                <span slot="label" class="s-label">题目答案：</span>
+                <el-select
                   v-model="question.answer"
-                  type="textarea"
-                ></el-input>
+                  placeholder="题目答案"
+                  @change="dialogselectType"
+                >
+                  <el-option
+                    v-for="item in question.options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
               </el-form-item>
-              
+
+              <el-form-item v-if="choseQuestionType == 1">
+                <span slot="label" class="s-label">题目答案：</span>
+                <el-input v-model="question.answer" type="textarea"></el-input>
+              </el-form-item>
+
               <el-form-item>
-                <span slot="label" class="s-label" >题目图片：</span >
+                <span slot="label" class="s-label">题目图片：</span>
                 <div class="upload_box clearfix">
                   <div class="left_pic">
                     <div class="picbox">
-                      <div class="" v-for="(file, index) in files1" :key="index">
+                      <div
+                        class=""
+                        v-for="(file, index) in files1"
+                        :key="index"
+                      >
                         <img
                           class="td-image-thumb"
                           v-if="file.thumb"
@@ -268,134 +356,179 @@
             <a class="btnDefault pointer" @click="saveTilte">保存</a>
           </div>
         </div>
-        </template>
-      </el-dialog>
-
-</div>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 <script>
-import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+import ElImageViewer from "element-ui/packages/image/src/image-viewer";
 import FileUpload from "vue-upload-component";
-import { getQuestionBackAll,deleteQuestionBackById} from "@/API/api";
+import {
+  getQuestionBackAll,
+  deleteQuestionBackById,
+  findParentCategory,
+  findChildCategory,
+} from "@/API/api";
 
 export default {
-    data(){
-        return{
-            inplaceholder:'请输入题目详情',
-            customClass:'',//自定义分类
-            i_customClass:'',//自定义分类,
-            ii_customClass:'',//自定义分类
-            options:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
-            options1:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
-            options2:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
-            typeList:[{value:'0',label:'选择题'},{value:'1',label:'简答题'}],
-            quest_type:'',
-            questionList:[
-               ],
-            multipleSelection:[],
-            guidePic:null,
-            total:100,//总共条数
-            perPage:15,//每页页数
-            curPage:1,//当前页
-            showViewer:false, //图片预览
-            showDel:false,
-            isDelete:false,
-            isNew:false, //新增题目
-            isNewType:0,//题目新增方式，1批量上传 2单个上传
-            jwt: "",
-            uploadUrl: "",
-            files: [], //题目批量上传
-            files1:[],//上传的图片列表
-            
-            //新建题目命名
-            question:{
-              title:'',
-              answer:'',
-              options:[
-                {value:1,label:''},
-               
-              ],
-            },
-            choseQuestionType:'',//单个上传题目类型
-            //新增题目类型
-            questOptions:[{value:'0',label:"选择题"},{value:'1',label:"简答题"}],
-            category:[],//实验所属分类
-            categoryOptions: [{
-              value: 'zhinan',
-              label: '指南',
-              children: [{
-                value: 'shejiyuanze',
-                label: '设计原则',
-                children: [{
-                  value: 'yizhi',
-                  label: '一致'
-                }, {
-                  value: 'fankui',
-                  label: '反馈'
-                }, {
-                  value: 'xiaolv',
-                  label: '效率'
-                }, {
-                  value: 'kekong',
-                  label: '可控'
-                }]
-              }]
-            }],
-        }
-    },
-    components:{
-        ElImageViewer,FileUpload
-    },
-    mounted() {
-        let that = this;
-        that.getQuestionBackAll();
-    },
-    created(){
-        let that = this;
-        //默认显示选择题
-        that.quest_type = that.typeList[0].value
-    },
-    methods:{
-        selectQuestionBackAll(type,content,category_id,perPage,page){
-            let that = this;
-            let obj = {};
-            obj.type = type;
-            obj.content = content;
-            obj.category_id = category_id;
-            obj.perPage = perPage;
-            obj.page = page;
-            getQuestionBackAll(obj).then(res=> {
-                if(res.code==200){
-                    that.total = res.data.total;
-                    that.questionList = res.data.list;
-                }else{
-                    this.$toast(res.message,2000)
-                }
-            })
-        },
-        getQuestionBackAll(){
-            let that = this;
-            that.selectQuestionBackAll('','','',10,1);
-        },
+  data() {
+    return {
+      inplaceholder: "请输入题目详情",
+      customClass: {}, //父类
+      i_customClass: {}, //子类
+      options: [],
+      options1: [],
+      typeList: [
+        { value: "0", label: "选择题" },
+        { value: "1", label: "简答题" },
+      ],
+      quest_type: "",
+      questionList: [],
+      multipleSelection: [],
+      guidePic: null,
+      total: 100, //总共条数
+      perPage: 15, //每页页数
+      curPage: 1, //当前页
+      showViewer: false, //图片预览
+      showDel: false,
+      isDelete: false,
+      isNew: false, //新增题目
+      isNewType: 0, //题目新增方式，1批量上传 2单个上传
+      jwt: "",
+      uploadUrl: "",
+      files: [], //题目批量上传
+      files1: [], //上传的图片列表
 
-      //上传前的钩子函数
-      inputFilter(newFile, oldFile, prevent) {
-        if (newFile && !oldFile) {
-          const extension = newFile.name.substring(
-            newFile.name.lastIndexOf(".") + 1
-          );
-         
-          if (extension != "xlsx" && extension != "xls") {
-            this.$toast("只能上传后缀是.xlsx或xls的文件", 3000);
-            return prevent();
-          }
-        }
+      //新建题目命名
+      question: {
+        title: "",
+        answer: "",
+        options: [
+          { value: 1, label: "" },
+          { value: 1, label: "" }
+        ],
       },
-      //上传的回调函数，每次上传回调都不一样
-      inputFile(newFile, oldFile) {
-        let that = this;
-        console.log("123");
-         /*
+      choseQuestionType: "", //单个上传题目类型
+      //新增题目类型
+      questOptions: [
+        { value: "0", label: "选择题" },
+        { value: "1", label: "简答题" },
+      ],
+      category: [], //实验所属分类
+      categoryOptions: [
+        {
+          value: "zhinan",
+          label: "指南",
+          children: [
+            {
+              value: "shejiyuanze",
+              label: "设计原则",
+            },
+            {
+              value: "shejiyuas",
+              label: "哈哈",
+            },
+          ],
+        },
+      ],
+    };
+  },
+  components: {
+    ElImageViewer,
+    FileUpload,
+  },
+  mounted() {
+    let that = this;
+    that.getQuestionBackAll();
+  },
+  created() {
+    let that = this;
+    //默认显示选择题
+    that.quest_type = that.typeList[0].value;
+    that.findParentCategory();
+  },
+  methods: {
+    //获取父类
+    findParentCategory() {
+      let that = this;
+      findParentCategory().then((res) => {
+        // alert(JSON.stringify(res));
+        console.log(res);
+        if (res.code == 200) {
+          that.options = res.data;
+          // that.customClass = that.options[0];
+          // that.findChildCategory(that.customClass.id);
+        } else {
+          this.$toast(res.message, 2000);
+        }
+      });
+    },
+    findChildCategory(val) {
+      let that = this;
+      let obj = {};
+      obj.parent_category_id = val.id;
+      findChildCategory(obj).then((res) => {
+        // alert(JSON.stringify(res));
+        if (res.code == 200) {
+          that.options1 = res.data;
+          // if (that.options1.length > 0) {
+          //   that.i_customClass = that.options1[0];
+          // }
+        } else {
+          this.$toast(res.message, 2000);
+        }
+      });
+    },
+    selectQuestionBackAll(content) {
+      let that = this;
+      let obj = {};
+      obj.type = that.quest_type;
+      obj.content = content;
+      if (JSON.stringify(that.i_customClass) != "{}") {
+        obj.category_id = that.i_customClass.id;
+      } else if (JSON.stringify(that.customClass) != "{}") {
+        obj.category_id = that.customClass.id;
+      } else {
+        obj.category_id = "";
+      }
+
+      obj.perPage = that.perPage;
+      obj.page = that.curPage;
+
+      // alert(JSON.stringify(obj));
+      getQuestionBackAll(obj).then((res) => {
+        console.log(JSON.stringify(res));
+        if (res.code == 200) {
+          that.total = res.data.total;
+          that.questionList = res.data.list;
+        } else {
+          this.$toast(res.message, 2000);
+        }
+      });
+    },
+    getQuestionBackAll() {
+      let that = this;
+      that.selectQuestionBackAll("");
+    },
+
+    //上传前的钩子函数
+    inputFilter(newFile, oldFile, prevent) {
+      if (newFile && !oldFile) {
+        const extension = newFile.name.substring(
+          newFile.name.lastIndexOf(".") + 1
+        );
+
+        if (extension != "xlsx" && extension != "xls") {
+          this.$toast("只能上传后缀是.xlsx或xls的文件", 3000);
+          return prevent();
+        }
+      }
+    },
+    //上传的回调函数，每次上传回调都不一样
+    inputFile(newFile, oldFile) {
+      let that = this;
+      console.log("123");
+      /*
         if (
           Boolean(newFile) !== Boolean(oldFile) ||
           oldFile.error !== newFile.error
@@ -405,36 +538,34 @@ export default {
           }
         }
          */
-        if (newFile && oldFile) {
-          //add
-          if (newFile && oldFile && !newFile.active && oldFile.active) {
-            //console.log('response', newFile.response)
-            let response = newFile.response;
-            console.log(this.files);
-            if (response.code == 200) {
-              this.$message.success("文件上传成功");
-                  that.isNew = false;
-     
-            } else {
-              this.$message.error("文件上传失败");
-
-            }
-            if (newFile.xhr) {
-              //  Get the response status code
-              console.log("status", newFile.xhr.status);
-            }
+      if (newFile && oldFile) {
+        //add
+        if (newFile && oldFile && !newFile.active && oldFile.active) {
+          //console.log('response', newFile.response)
+          let response = newFile.response;
+          console.log(this.files);
+          if (response.code == 200) {
+            this.$message.success("文件上传成功");
+            that.isNew = false;
+          } else {
+            this.$message.error("文件上传失败");
+          }
+          if (newFile.xhr) {
+            //  Get the response status code
+            console.log("status", newFile.xhr.status);
           }
         }
-        if (newFile && oldFile) {
-          // update
-          console.log("update", newFile);
-        }
-        if (!newFile && oldFile) {
-          // remove
-          console.log("remove", oldFile);
-        }
-      },
-          //上传前的钩子函数
+      }
+      if (newFile && oldFile) {
+        // update
+        console.log("update", newFile);
+      }
+      if (!newFile && oldFile) {
+        // remove
+        console.log("remove", oldFile);
+      }
+    },
+    //上传前的钩子函数
     inputFilter1(newFile, oldFile, prevent) {
       const isLt10M = newFile.size / 1024 / 1024 < 10;
       if (newFile && !oldFile) {
@@ -497,7 +628,6 @@ export default {
           console.log(this.files);
           if (response.code == 200) {
             this.$message.success("文件上传成功");
-          
           } else {
             this.$message.error("文件上传失败");
           }
@@ -516,91 +646,97 @@ export default {
         console.log("remove", oldFile);
       }
     },
-        //自定义分类
-        selectType(val){
+    //父类
+    selectType(val) {
+      let that = this;
+      that.i_customClass = {};
+      that.findChildCategory(val);
+      that.selectQuestionBackAll("");
+    },
+    //子类
+    selectType1(val) {
+      let that = this;
+      that.selectQuestionBackAll("");
+    },
+    //题目类型选择
+    selectQuestType(val) {
+      // that.quest_type
+      let that = this;
+      that.quest_type = val;
+      that.selectQuestionBackAll("");
+    },
+    //底部分页
+    handleCurrentChange(val) {
+      let that = this;
 
-        },
-        //自定义分类
-        selectType1(val){
+      console.log(`当前页: ${val}`);
+    },
+    //点击单个上传
+    singleUpload() {
+      let that = this;
+      that.isNewType = 2;
+      that.choseQuestionType = that.questOptions[0].value;
+    },
+    //点击图片
+    getPreview(val) {
+      // alert(val);
+      this.showViewer = true;
+      this.guidePic = val;
+        // "https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg";
+      this.guidePic
+        ? (this.showViewer = true)
+        : this.$message.info("当前没有可预览的图片");
+    },
+    //图片预览关闭
+    showViewerClose() {
+      console.log("ok");
+      this.showViewer = false;
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      console.log(val);
+    },
+    //删除题目
+    delList() {
+      let that = this;
 
-        },
-        //自定义分类
-        selectType2(val){
-
-        },
-        //题目类型选择
-        selectQuestType(val){
-           
-        },
-         //底部分页
-        handleCurrentChange(val) {
-        let that = this;
-       
-        console.log(`当前页: ${val}`);
-        },
-        //点击单个上传
-        singleUpload(){
-          let that = this;
-          that.isNewType = 2;
-          that.choseQuestionType = that.questOptions[0].value
-        },
-        getPreview(){
-            this.showViewer = true;
-            this.guidePic = 'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
-            this.guidePic ? this.showViewer = true: this.$message.info('当前没有可预览的图片')
-        },
-        //图片预览关闭
-        showViewerClose(){
-            console.log('ok')
-            this.showViewer = false;
-        },
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
-            console.log(val);
-         },
-        //删除题目
-        delList(){
-            let that = this;
-           
-            if (that.multipleSelection.length <= 0) {
-                that.showDel = !that.showDel;
-            } else {
-                that.isDelete = true;
-            }
-        },
-        //确认删除
-        confirmDelete(){
-            let that = this;
-            that.showDel = !that.showDel;
-            that.isDelete = false;
-            let obj = {};
-            let list = [];
-            for(let i =0;i<that.multipleSelection.length;i++){
-                list.push(that.multipleSelection[i].id)
-            }
-            obj.delete_id_list = list;
-            deleteQuestionBackById(JSON.stringify(obj)).then(res=> {
-                if(res.code==200){
-                    that.isDelete = false;
-                    that.selectQuestionBackAll('','','',10,1);
-                }else{
-                    this.$toast(res.message,2000)
-                }
-            })
-        },
-        //批量上传确认
-        confimBatchUpload(){
-          let that = this;
-          this.$refs.upload.active = true;
-        
-       
-        },
-        //弹出框内，选择题目类型
-        dialogselectType(val){
-           console.log(val)
-           let that = this;
-           that.files1 = [];
-           /*
+      if (that.multipleSelection.length <= 0) {
+        that.showDel = !that.showDel;
+      } else {
+        that.isDelete = true;
+      }
+    },
+    //确认删除
+    confirmDelete() {
+      let that = this;
+      that.showDel = !that.showDel;
+      that.isDelete = false;
+      let obj = {};
+      let list = [];
+      for (let i = 0; i < that.multipleSelection.length; i++) {
+        list.push(that.multipleSelection[i].id);
+      }
+      obj.delete_id_list = list;
+      deleteQuestionBackById(JSON.stringify(obj)).then((res) => {
+        if (res.code == 200) {
+          that.isDelete = false;
+          that.selectQuestionBackAll("");
+        } else {
+          this.$toast(res.message, 2000);
+        }
+      });
+    },
+    //批量上传确认
+    confimBatchUpload() {
+      let that = this;
+      this.$refs.upload.active = true;
+    },
+    //弹出框内，选择题目类型
+    dialogselectType(val) {
+      console.log(val);
+      let that = this;
+      that.files1 = [];
+      /*
            let obj ={
               title:'',
               answer:'',
@@ -613,46 +749,93 @@ export default {
             }
           that.question = obj
           */
-        },
-        //新增题目保存
-        saveTilte(){
-          let that = this
-          this.$refs.upload.active = true;
-          this.isNew = false;
-          console.log(that.choseQuestionType)
-            console.log(that.question.title)
-            console.log(that.question.options)
-        }
-        
-    }
-}
+    },
+    //新增题目保存
+    saveTilte() {
+      let that = this;
+      this.$refs.upload.active = true;
+      this.isNew = false;
+      console.log(that.choseQuestionType);
+      console.log(that.question.title);
+      console.log(that.question.options);
+    },
+  },
+};
 </script>
 <style lang="less" scoped>
 @import url(../../assets/less/admin.less);
-.table_box_questionBank{min-height: 500px;}
-.s-text{display: block;}
-.dialog-mess{
-  text-align: center; padding-top:10px; color:@hnavcolor;
-  a{cursor: pointer; color: @basecolor;}
+.table_box_questionBank {
+  min-height: 500px;
 }
-.fileList_name{
-  li{
-    text-align: center; padding-bottom:5px;
+.s-text {
+  display: block;
+}
+.dialog-mess {
+  text-align: center;
+  padding-top: 10px;
+  color: @hnavcolor;
+  a {
+    cursor: pointer;
+    color: @basecolor;
+  }
+}
+.fileList_name {
+  li {
+    text-align: center;
+    padding-bottom: 5px;
   }
 }
 /*新增题目样式 */
-.baseInfo{margin: 0 30px; padding-top:30px}
-.btnBox{text-align: center; padding-bottom: 20px;}
-.left_pic{display: inline-block;}
-.bupload_btn_box{display: inline-block; vertical-align: bottom; margin-left:10px; margin-bottom: 10px;} 
-.picbox{width: 300px;height: 200px;border:1px solid @border; overflow: hidden; position: relative;
-  img{
-    width:100%;position:absolute;
-    top:50%;
-    transform:translate(0,-50%);-moz-transform:translate(0,-50%);-webkit-transform:translate(0,-50%);
-    }
+.baseInfo {
+  margin: 0 50px;
+  padding-top: 30px;
 }
-.din-options{display: inline-block; width:90%;}
-.btn_options{width:25px;height: 25px; display: inline-block; vertical-align: middle; margin-left: 12px;.borderRadius(5px,5px,5px,5px);
-background: url(../../assets/img/quest_add.png) center no-repeat; border:1px solid @hnavcolor }
+.btnBox {
+  text-align: center;
+  padding-bottom: 20px;
+}
+.left_pic {
+  display: inline-block;
+}
+.bupload_btn_box {
+  display: inline-block;
+  vertical-align: bottom;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+.picbox {
+  width: 300px;
+  height: 200px;
+  border: 1px solid @border;
+  overflow: hidden;
+  position: relative;
+  img {
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    -moz-transform: translate(0, -50%);
+    -webkit-transform: translate(0, -50%);
+  }
+}
+.din-options {
+  display: inline-block;
+  width:100%;
+}
+.btn_options {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 12px;
+  .borderRadius(5px,5px,5px,5px);
+  background: url(../../assets/img/question_reduce.png) center no-repeat;
+  background-size: 20px 2px; -webkit-background-size: 20px 2px;
+ 
+}
+.btn_options_add{
+   
+   background: url(../../assets/img/question_add.png) center no-repeat;
+   background-size: 20px; -webkit-background-size: 20px;
+}
 </style>
