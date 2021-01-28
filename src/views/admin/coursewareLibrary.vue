@@ -184,6 +184,7 @@ export default {
             getCoursewareAll(obj).then((res) => {
                 if (res.code == 200) {
                     that.experimentList = res.data.list;
+                    console.log(that.experimentList)
                     that.total = res.data.total
                 } else {
                     that.$toast(res.message, 3000);

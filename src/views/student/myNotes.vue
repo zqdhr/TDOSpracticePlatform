@@ -159,9 +159,11 @@
                                 @page-loaded="currentPage=$event" 
                             > </pdf>
                             <div class="pdf_info">
-                                <a  @click="changePdfPage(0)" class="pointer" :class="{grey: currentPage==1}">Preview</a>
-                                <a  @click="changePdfPage(1)" class="pointer" :class="{grey: currentPage==pageCount}">Next</a>
-                                <a class="pointer" @click="isRecordNotes=true">记录笔记</a>
+                                <div class="btn_box">
+                                <a  @click="changePdfPage(0)" class="pointer preve" :class="{grey: currentPage==1}"></a>
+                                <a  @click="changePdfPage(1)" class="pointer next" :class="{grey: currentPage==pageCount}"></a>
+                                </div>
+                                <a class="pointer pdf_btnrecord" @click="isRecordNotes=true"></a>
                                 <p>{{currentPage}} / {{pageCount}}</p>
                             </div>
                         </div>
@@ -429,7 +431,10 @@ export default {
             })
           
           }else{
-              that.loadPdfHandler()
+              that.$nextTick(function(){
+                  that.url = "/Vue.pdf"
+                 that.loadPdfHandler()
+              })
           }
           
         },

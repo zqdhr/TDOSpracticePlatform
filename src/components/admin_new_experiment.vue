@@ -576,7 +576,9 @@ export default {
         })
 
 
-    }
+    },
+      onEditorBlur(){}, // 失去焦点事件
+      onEditorFocus(){}, // 获得焦点事件
 
     
   },
