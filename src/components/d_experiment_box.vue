@@ -99,17 +99,11 @@
 import courseNav from "@/components/left_courseNav.vue";
 import newdialog from "@/components/teacher_new_experiment.vue";
 import experimentDetail from '@/components/experimentDetail'
+import {getCoursewareByCourseId,getCoursewareByChapterId,getCoursewareBySectionId} from '@/API/api';
 export default {
     data(){
         return{
             experimentList:[
-               {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-               {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-               {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-               {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-               {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-               {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-               {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
                {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
             ],
             perPage:8, //8个实验一页

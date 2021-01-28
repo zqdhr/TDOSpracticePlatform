@@ -108,8 +108,7 @@ export default {
 
             showStudentList:false,//是否显示学生列表
 
-            courseId:'',
-            course:'11'
+            courseId:''
         }
     },
     components:{chapter,experiment,courseware,coursework},
@@ -117,7 +116,6 @@ export default {
         let that = this;
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
         that.courseId = this.$route.query.courserId
-       that.course = 1
     },
     mounted(){
         let that = this;
@@ -128,8 +126,6 @@ export default {
             let that = this;
             let obj = {};
             obj.course_id = this.$route.query.courserId
-
-            console.log(that.courseId)
             getCourseById(obj).then(res=> {
                 if(res.code==200){
                     that.coursrName = res.data.name;
@@ -143,6 +139,7 @@ export default {
                     that.numbers = res.data.numbers == null ? 0 : res.data.numbers
                     that.introduction = res.data.introduction;
                     that.course = res.data
+                    console.log(that.course)
                 }else{
                     this.$toast(res.message,2000)
                 }

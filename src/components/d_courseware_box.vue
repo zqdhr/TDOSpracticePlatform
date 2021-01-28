@@ -2,7 +2,7 @@
 <template>
     <div class="experiment_box">
          <div class="exper_main">
-            <courseNav></courseNav>
+            <courseNav @getData = "getData"></courseNav>
             <div class="right_box">
                 <div class="add_btn_box clearfix ">
                     <div class="sel-box">               
@@ -16,7 +16,7 @@
                         </el-select>               
                     </div>
                      <div class="sel-box">               
-                         <el-select v-model="type" placeholder="请选择课件类型" @click="selectType">
+                         <el-select v-model="type" placeholder="请选择课件类型" @change="selectType">
                             <el-option
                             v-for="item in typeList"
                             :key="item.value"
@@ -61,7 +61,7 @@
                         :page-size="perPage"
                         @current-change="handleCurrentChange"
                         layout="prev, pager, next,jumper"
-                        :total="150"
+                        :total="total"
                     >
                     </el-pagination>
                 </div>
@@ -90,24 +90,29 @@
 </template>
 <script>
 import courseNav from "@/components/left_courseNav.vue";
-import newdialog from '@/components/dialog_newCourseware'
+import newdialog from '@/components/dialog_newCourseware';
+import {getCoursewareByCourseId,getCoursewareByChapterId,getCoursewareBySectionId} from '@/API/api';
 export default {
     data(){
         return{
             options:[
-                {value: '1',label: '内置课件'},{value: '2',label: '教师上传'}
+                {value: '0',label: '内置课件'},{value: '1',label: '教师上传'}
             ],
             typeList:[
-                {value: '1',label: '全部'},{value: '2',label: '文档'},{value: '3',label: '视频'}
+                {value: '',label: '全部'},{value: '0',label: '文档'},{value: '1',label: '视频'}
             ],
             cate:'内置课件',//课件分类默认内置课件
             type:'全部',//课件类型默认全部
             experimentList:[
-               {id:'52dddz',name:'xxxxx.mp4',size:'2.3G',duration:'00:16:34',type:0,}
             ],
             perPage:8, //8个实验一页
             curPage:1,//设备列表
-            isDelete:false//是否删除弹出框是否显示
+            isDelete:false,//是否删除弹出框是否显示
+            total:1,
+            kind:0,
+            typeware:'',
+            cindex:'',
+            sindex:''
         }
     },
     props:{
@@ -122,20 +127,109 @@ export default {
         this.cate = this.options[0].value;//默认选中内置课件
         this.type = this.typeList[0].value;//课件类型默认选中全部
     },
+    mounted(){
+        let that = this;
+        that.getAllCoursewareByCourseId();
+    },
     methods:{
+        getCoursewareByCourseId(perPage,page,kind,type){
+            let that = this;
+            let obj = {};
+            obj.courseId = this.$route.query.courserId
+            obj.kind = kind;
+            obj.type = type;
+            obj.perPage = perPage;
+            obj.page = page;
+            getCoursewareByCourseId(obj).then(res=> {
+                if(res.code==200){
+                    that.total = res.data.total;
+                    that.experimentList = res.data.list;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
+        getAllCoursewareByCourseId(){
+            let that = this;
+            that.getCoursewareByCourseId(10,1,0,'');
+        },
+        getCoursewareByChapterId(chapterId,kind,type,perPage,page){
+            let that = this;
+            let obj = {};
+            obj.chapterId = chapterId
+            obj.kind = kind;
+            obj.type = type;
+            obj.perPage = perPage;
+            obj.page = page;
+            getCoursewareByChapterId(obj).then(res=> {
+                if(res.code==200){
+                    that.total = res.data.total;
+                    that.experimentList = res.data.list;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
+        getCoursewareBySectionId (sectionId,kind,type,perPage,page){
+            let that = this;
+            let obj = {};
+            obj.sectionId = sectionId
+            obj.kind = kind;
+            obj.type = type;
+            obj.perPage = perPage;
+            obj.page = page;
+            getCoursewareBySectionId(obj).then(res=> {
+                if(res.code==200){
+                    that.total = res.data.total;
+                    that.experimentList = res.data.list;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
+        getData(data){
+            let that = this;
+            console.log(data.cindex)
+            console.log(data.sindex)
+            that.cindex = data.cindex;
+            that.sindex = data.sindex;
+            if(data.sindex == ""){
+                that.getCoursewareByChapterId(data.cindex,0,'',10,1)
+            }else{
+                that.getCoursewareBySectionId(data.sindex,0,'',10,1)
+            }
+        },
          //底部分页
         handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+            console.log(`当前页: ${val}`);
         },
 
         //选择分类
         selectCate(val){
             console.log(val)
+            let that = this;
+            that.kind = val
+            if(that.sindex == "" && that.cindex == ""){
+                that.getCoursewareByCourseId(10,1,val,that.typeware);
+            }else if (that.sindex == "" && that.cindex != ""){
+                that.getCoursewareByChapterId(that.cindex,val,that.typeware,10,1)
+            }else{
+                that.getCoursewareByChapterId(that.sindex,val,that.typeware,10,1)
+            }
         },
 
         //选择课件类型
          selectType(val){
             console.log(val)
+             let that = this;
+            that.typeware = val;
+             if(that.sindex == "" && that.cindex == ""){
+                 that.getCoursewareByCourseId(10,1,that.kind,val);
+             }else if (that.sindex == "" && that.cindex != ""){
+                 that.getCoursewareByChapterId(that.cindex,that.kind,val,10,1)
+             }else{
+                 that.getCoursewareByChapterId(that.sindex,that.kind,val,10,1)
+             }
         },
 
         //是否删除

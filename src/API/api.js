@@ -70,11 +70,6 @@ var modifyCourseStatus = function(data){
 	return axios.post('/modify_course_status?user_id='+data.user_id+'&course_id='+data.course_id+'&start='+data.start+'&end='+data.end+'&class_id='+data.class_id)
 }
 
-//通过id获取课程
-var getCoursewareBySectionId = function(data){
-	return axios.get('/getCoursewareBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page)
-}
-
 //查询管理员没有发布的课程
 var getAdminUnpublishedCourseList = function(data){
 	return axios.get('/get_admin_unpublished_course_list?user_id='+data.user_id+'&per_page='+data.per_page+'&page='+data.page+'&name='+data.name)
@@ -89,6 +84,51 @@ var getExpirCourseList = function(data){
 var insertCourse = function(data){
 	return axios.post('/insert_course', data,{headers: {'Content-Type':'application/json'}})
 }
+
+//管理员新增课程章
+var insertCourseChapterCompleted = function(data){
+	return axios.post('/insert_course_chapter_completed', data,{headers: {'Content-Type':'application/json'}})
+}
+
+//管理员查询课程章下的课件
+var getCoursewareByChapterId = function(data){
+	return axios.get('/getCoursewareByChapterId?chapterId='+data.chapterId+'&perPage='+data.perPage+'&page='+data.page)
+}
+
+//管理员查询课程节下的课件
+var getCoursewareBySectionId = function(data){
+	return axios.get('/getCoursewareBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page)
+}
+
+//管理员查询课程章下的作业
+var getAssignmentByChapterId = function(data){
+	return axios.get('/getAssignmentByChapterId?chapterId='+data.chapterId+'&perPage='+data.perPage+'&page='+data.page)
+}
+
+//管理员查询课程下的所有课件
+var getCoursewareByCourseId = function(data){
+	return axios.get('/getCoursewareByCourseId?courseId='+data.courseId+'&kind='+data.kind+'&type='+data.type+'&perPage='+data.perPage+'&page='+data.page)
+}
+
+//管理员查询课程节下的作业
+var getAssignmentBySectionId = function(data){
+	return axios.get('/getAssignmentBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page)
+}
+
+//管理员查询父级分类
+var findParentCategory = function(data){
+	return axios.get('/findParentCategory',data)
+}
+
+//管理员查询子级分类
+var findChildCategory = function(data){
+	return axios.get('/findChildCategory?parent_category_id='+data.parent_category_id)
+}
+
+// //管理员查询课程下的所有实验
+// var findChildCategory = function(data){
+// 	return axios.get('/findChildCategory?parent_category_id='+data.parent_category_id)
+// }
 
 //管理员查询课件库所有的课件
 var getCoursewareAll = function(data){
@@ -143,11 +183,27 @@ var findExperiment = function(data){
 	return axios.get('/findExperiment?category_id='+data.category_id+'&name='+data.name)
 }
 
+//教师获取作业列表
+var getStudentJobList = function (data) {
+	return axios.get('/getAssignmentAll?classId=' + data.classId + '&page=' + data.page + '&perPage=' + data.perPage+ '&name=' + data.name+ '&courseId=' + data.courseId+ '&status=' + data.status+ '&chapterId=' + data.chapterId+ '&sectionId=' + data.sectionId)
+}
+
+//教师获取作业详情
+var getStudentJobDetail = function (data) {
+	return axios.get('/getStudentAnswerByAssignmentUserId?userId=' + data.userId + '&page=' + data.page + '&perPage=' + data.perPage+ '&assignmentId=' + data.assignmentId)
+}
+
+//教师批改作业
+var submitCorrectJob = function (data) {
+	return axios.post('/addStudentScore', data, { headers: { 'Content-Type': 'application/json' } })
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
-	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById,findParentCategory,findChildCategory,
-	findExperiment
+	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById,insertCourseChapterCompleted,
+	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory,
+	getStudentJobList,getStudentJobDetail,submitCorrectJob
 }
 
 function getJson (data) {

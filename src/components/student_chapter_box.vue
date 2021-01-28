@@ -48,7 +48,7 @@
                             <!--小节-->
                             <el-collapse-transition>
                             <ul class="section_ul i_section_ul" v-if="iitem.show">
-                                <li class="section_li" v-for="(i_item,i_index) in iitem.smallSections" :key="i_index" :class="{'new_section_li':!i_item.id}">
+                                <li class="section_li" v-for="(i_item,i_index) in iitem.small_sections" :key="i_index" :class="{'new_section_li':!i_item.id}">
                                     <div class="sec_name textline1">
                                         <p class="textline1">第{{i_index+1}}小节：{{i_item.name}}</p>
                                     </div>
@@ -89,7 +89,7 @@ export default{
                         id:'lfllff',
                         name:'标题内容标题内容标题内容标题内容',
                         enclosure:[1,2,3,4],
-                        smallSections:[{
+                        small_sections:[{
                             id:'section123',
                             name:'dgfdgfgfdgf',
                         }]
@@ -98,7 +98,7 @@ export default{
                         id:'dfkldfklal',
                         name:'标题内容标题内容标题内容标题内容',
                         enclosure:[1,2,3,4],
-                        smallSections:[{
+                        small_sections:[{
                             id:'section123',
                             name:'dgfdgfgfdgf',
                         }]

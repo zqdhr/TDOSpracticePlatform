@@ -8,16 +8,16 @@
       <div slot="title" class="dialog_header">新增实验</div>
       <div class="newdialog_body">
         <div class="new_nav">
-          <a class="pointer" :class="{ active: curIndex == 1 }"
+          <a class="pointer" @click="curIndex=1" :class="{ active: curIndex == 1 }"
             ><span class="num">1</span> 基本资料</a
           >
-          <a class="pointer" :class="{ active: curIndex == 2 }"
+          <a class="pointer" @click="curIndex=2" :class="{ active: curIndex == 2 }"
             ><span class="num">2</span> 选择虚拟机</a
           >
-          <a class="pointer" :class="{ active: curIndex == 3 }"
+          <a class="pointer" @click="curIndex=3" :class="{ active: curIndex == 3 }"
             ><span class="num">3</span> 实验步骤</a
           >
-          <a class="pointer" :class="{ active: curIndex == 4 }"
+          <a class="pointer" @click="curIndex=4" :class="{ active: curIndex == 4 }"
             ><span class="num">4</span> 完成发布</a
           >
         </div>
@@ -50,8 +50,11 @@
                 <el-input
                   v-model="form.introduction"
                   type="textarea"
+                  :rows=3
+                   resize="none" 
                 ></el-input>
               </el-form-item>
+              <!--
               <el-form-item>
                 <span slot="label" class="s-label" ><span>*</span>实验建议：</span >
                 <el-input v-model="form.advice" type="textarea"></el-input>
@@ -64,6 +67,7 @@
                 <span slot="label" class="s-label" ><span>*</span>实验任务：</span >
                 <el-input v-model="form.task" type="textarea"></el-input>
               </el-form-item>
+              -->
               <el-form-item>
                 <span slot="label" class="s-label" ><span>*</span>实验封面：</span >
                 <div class="upload_box clearfix">
@@ -106,7 +110,7 @@
             </el-form>
           </div>
           <div class="btnBox">
-            <a class="btnDefault pointer" @click="confirm_baseInfo">保存</a>
+            <a class="btnDefault pointer" @click="confirm_baseInfo">确认</a>
           </div>
         </div>
         <!--选择虚拟机-->
@@ -186,10 +190,10 @@
         <!--steps-->
         <div class="steps" v-if="curIndex==3">
             <div class="steps_main">
-               <quill-editor 
-                      v-model="yourContent" 
-                      ref="myQuillEditor"  
-                      :options="editorOption" 
+               <quill-editor
+                      v-model="yourContent"
+                      ref="myQuillEditor"
+                      :options="editorOption"
                       @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
                   >
                 </quill-editor>
@@ -258,6 +262,7 @@ import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
+import {findParentCategory,findChildCategory} from '@/API/api';
 export default {
   data() {
     return {
@@ -280,20 +285,7 @@ export default {
         label: '指南',
         children: [{
           value: 'shejiyuanze',
-          label: '设计原则',
-          children: [{
-            value: 'yizhi',
-            label: '一致'
-          }, {
-            value: 'fankui',
-            label: '反馈'
-          }, {
-            value: 'xiaolv',
-            label: '效率'
-          }, {
-            value: 'kekong',
-            label: '可控'
-          }]
+          label: '设计原则'
         }]
       }],
       inplaceholder: "请输入实验名称",
@@ -329,7 +321,7 @@ export default {
     FileUpload,quillEditor
   },
   created(){
- 
+
     this.editorOption={
                 placeholder: "实验报告输入",
                 modules:{
@@ -352,7 +344,23 @@ export default {
                     }
             }
   },
+    mounted(){
+        let that = this;
+        that.findParentCategory();
+    },
   methods: {
+      //查询分类
+      findParentCategory(){
+          let that = this;
+          findParentCategory().then(res=> {
+              if(res.code==200){
+                  that.total = res.data.name;
+              }else{
+                  this.$toast(res.message,2000)
+              }
+          })
+      },
+
     //实验所属分类选择
     handleChange(value) {
       console.log(value);
@@ -478,6 +486,10 @@ export default {
         let that = this;
         that.isNew_experiment = false
         console.log(that.form.name)
+        console.log(that.form.duration)
+        console.log(that.form.introduction)
+        console.log(that.yourContent)
+
     }
 
     
