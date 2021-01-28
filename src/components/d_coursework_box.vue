@@ -5,7 +5,7 @@
       <courseNav @getData = "getData"></courseNav>
       <div class="right_box">
         <!--小节下面有作业-->
-  
+        <noData v-if="sindex==''"></noData>
         <div class="add_btn_box" v-if="!noData">
           <div class="sel-box">
             <el-select
@@ -114,6 +114,18 @@
         >
       </div>
     </el-dialog>
+
+    <!--新增作业弹窗-->
+    <el-dialog :visible.sync="isnewJobName" width="500px" class="dialog_newJobName">
+       <div slot="title" class="dialog_header">请设置作业名称</div>
+       <div class="setScope">
+           <el-input placeholder="输入作业名称"></el-input>
+       </div>
+       <div slot="footer" class="dialog-footer" >
+           <a class="btnDefault" @click="isnewJobName=false">确 认</a>
+       
+      </div>
+    </el-dialog>
     <!--题库选择弹出框-->
     <el-dialog :visible.sync="showQuestionBank" width="1100px" class="dialog_pagination teacher_add_coursework">
       <div slot="title" class="dialog_header">新增题目（题目库选择）</div>
@@ -210,6 +222,7 @@
 </template>
 <script>
 import courseNav from "@/components/left_courseNav.vue";
+import noData from "@/components/noData.vue";
 import {findParentCategory,findChildCategory,getQuestionBackAll} from '@/API/api';
 export default {
   data() {
@@ -247,11 +260,12 @@ export default {
       noData:true,//小节没有内容
       isSetTime:false,//设置题目时间弹窗
       sindex:'',
-      totalAllCourse:''
+      totalAllCourse:'',
+      isnewJobName:true
     };
   },
   components: {
-    courseNav,
+    courseNav,noData
   },
   created() {
     let that = this;
@@ -432,4 +446,10 @@ export default {
 @import url(../assets/less/admin.less);
 @import url(../assets/less/coursework.less);
 .setScope{margin: 0 50px;}
+
+</style>
+<style lang="less">
+.dialog_newJobName{
+  .el-dialog__footer{padding-top: 0px;}
+}
 </style>
