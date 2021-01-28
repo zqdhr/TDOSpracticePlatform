@@ -22,7 +22,9 @@
             <div class="nav-cel"><a class="pointer" :class="{'active':activeIndex==1}" @click="activeIndex=1">基本信息</a></div>
             <div class="nav-cel"><a class="pointer" :class="{'active':activeIndex==2}" @click="activeIndex=2">虚拟机引用</a></div>
             <div class="nav-cel"><a class="pointer" :class="{'active':activeIndex==3}" @click="activeIndex=3">报告要求</a></div>
+            <!--
             <div class="nav-cel"><a class="pointer" :class="{'active':activeIndex==4}" @click="activeIndex=4">实验任务</a></div>
+            -->
         </div>
 
         <div class="info_main" v-if="activeIndex==1">
