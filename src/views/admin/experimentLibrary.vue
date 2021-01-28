@@ -27,7 +27,7 @@
           
           <div class="d-serach"> 
             <input :placeholder="inplaceholder" type="text"  v-model="searchTx" autocomplete="off" />
-            <a class="searchBtn pointer"></a>
+            <a class="searchBtn pointer" @click="findExperiment"></a>
           </div>
         </div>
       </div>
@@ -46,13 +46,13 @@
                             </el-tooltip>
                             -->
                             <div class="pic">
-                                <div class="pic_box"><img src="../../assets/pic/course.png"/><div class="trans"></div></div>
+                                <div class="pic_box"><img :src="item.pic_url"/><div class="trans"></div></div>
                             </div>
                             <p class="p-text textline1">{{item.name}}</p>
                              <p class="p-text textline1">虚拟机{{item.num}}台</p>
-                            <p class="p-text textline1">实验时长：{{item.duration}}</p>
+                            <p class="p-text textline1">实验时长：{{item.duration}}分钟</p>
                              <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                                <a class="icon icon_close pointer" @click.stop="isDelete=true"></a>
+                                <a class="icon icon_close pointer" @click.stop="deleteExper(item.id)"></a>
                             </el-tooltip>
                            
                         </div>
@@ -90,7 +90,7 @@
 </div>
 </template>
 <script>
-import { findParentCategory,findChildCategory,findExperiment } from "@/API/api";
+import { findParentCategory,findChildCategory,findExperiment,deleteExperiment } from "@/API/api";
 import newExperiment from '@/components/admin_new_experiment'
 import experimentDetail from '@/components/experimentDetail'
 export default {
@@ -112,7 +112,8 @@ export default {
             isDelete:false,//删除实验弹出框
             isNewExperiment:false,
             cateId:'',//查询的分类ID
-            searchTx:''//搜索的关键字
+            searchTx:'',//搜索的关键字
+            deleteExperId:'',//需要删除的实验ID
         }
     },
     created(){
@@ -148,11 +149,30 @@ export default {
        
         console.log(`当前页: ${val}`);
         },
-
+        //删除前获取实验id
+        deleteExper(experId){
+          let that = this
+          that.deleteExperId = experId
+          that.isDelete=true
+          
+        },
         //实验确认删除
         confirmDeleteExper(){
-            let that = this;
-            that.isDelete = false;
+          let that = this
+          let obj={}
+          obj.id=that.deleteExperId 
+          deleteExperiment(obj).then(res=> {
+                if(res.code==200){
+                   that.isDelete = false
+                   console.log(res.data)
+                   that.findExperiment()
+                         
+                }else{
+                   console.log(res.message)
+                    that.$toast(res.message,3000)
+                }
+            })
+           
         },
         //点击新增实验
         click_new(){
@@ -170,7 +190,8 @@ export default {
         },
         //输入关键字查询列表
         doSearch(){
-          
+          let that  =this
+          that.findExperiment()
 
         },
         //获取一级分类
@@ -205,18 +226,23 @@ export default {
           let obj={}
           obj.category_id = that.cateId
           obj.name= that.searchTx
-          // obj.perPage =that.perPage
-          // obj.page = that.curPage
+          obj.perPage =that.perPage
+          obj.page = 1
           findExperiment(obj).then(res=> {
                 if(res.code==200){
                    console.log(res.data)
+                   that.experimentList  =res.data.list
+                   that.total = res.data.size
                          
                 }else{
                     that.$toast(res.message,3000)
                 }
             })
 
-        }
+        },
+
+
+
         
     }
 }

@@ -30,6 +30,7 @@
                 <el-cascader
                    v-model="category"
                    :options="categoryOptions"
+                   :props="{value: 'id', label: 'name',children: 'cates'}"
                    @change="handleChange" clearable>
                 </el-cascader>
               </el-form-item>
@@ -39,11 +40,16 @@
               </el-form-item>
               <el-form-item>
                 <span slot="label" class="s-label" ><span>*</span>实验时长：</span >
-                <el-input
-                  class="el-input-duration"
-                  v-model="form.duration"
-                ></el-input>
-                <span> 小时</span>
+                   <div class="dselect">
+                        <el-select v-model="form.duration" placeholder="请选择" style="width:50%">
+                            <el-option
+                            v-for="item in timeOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
               </el-form-item>
               <el-form-item>
                 <span slot="label" class="s-label" ><span>*</span>实验描述：</span >
@@ -109,9 +115,9 @@
               </el-form-item>
             </el-form>
           </div>
-          <div class="btnBox">
+          <!-- <div class="btnBox">
             <a class="btnDefault pointer" @click="confirm_baseInfo">确认</a>
-          </div>
+          </div> -->
         </div>
         <!--选择虚拟机-->
         <div class="virtualMachineList" v-if="curIndex == 2">
@@ -170,7 +176,7 @@
           </div>
           <div slot="footer">
             <div class="footer_box clearfix">
-              <a class="btnDefault fl pointer" @click="curIndex=3">确认选择</a>
+              <!-- <a class="btnDefault fl pointer" @click="curIndex=3">确认选择</a> -->
 
               <div class="tab-pagination fr">
                 <el-pagination
@@ -200,7 +206,7 @@
             </div>
             <div class="btnbox">
                 <!--<a class="btnDefault pointer" @click="newStep">新建步骤</a>-->
-                <a class="btnDefault pointer" @click="confirmStep">步骤确认</a>
+                <!-- <a class="btnDefault pointer" @click="confirmStep">步骤确认</a> -->
             </div>
         </div>
 
@@ -210,39 +216,38 @@
                  <div class="d-confirm">
                     <div class="d-cel clearfix">
                         <label>实验名称：</label>
-                        <div>模拟生成一条真实的链</div>
+                        <div>{{form.name}}</div>
                     </div>
                     <div class="d-cel clearfix">
                         <label>实验时长：</label>
-                        <div>1.5小时</div>
+                        <div>{{form.duration}}</div>
                     </div>
                     <div class="d-cel clearfix">
                         <label>实验描述：</label>
-                        <div>文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本 文本</div>
+                        <div>{{form.introduction}}</div>
                     </div>
-                    <div class="d-cel clearfix">
+                    <!-- <div class="d-cel clearfix">
                         <label>实验建议：</label>
                         <div>文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本 文本</div>
-                    </div>
-                    <div class="d-cel clearfix">
+                    </div> -->
+                    <!-- <div class="d-cel clearfix">
                         <label>实验报告：</label>
                         <div>文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本 文本</div>
-                    </div>
-                    <div class="d-cel clearfix">
+                    </div> -->
+                    <!-- <div class="d-cel clearfix">
                         <label>实验任务：</label>
                         <div>文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本 文本</div>
-                    </div>
+                    </div> -->
                     <div class="d-cel clearfix">
                         <label>实验封面：</label>
                         <div>
-                            <div class="d-cover"><img src="../assets/pic/course.png"/></div>
+                            <div class="d-cover"><img :src="form.cover"/></div>
                         </div>
                     </div>
                     <div class="d-cel clearfix">
                         <label>实验步骤：</label>
                         <div class="step-div">
-                            <p>步骤1：好好做实验</p>
-                            <p>步骤2：好好做实验</p>
+                            <p v-html="yourContent"></p>
                         </div>
                     </div>
                  </div>
@@ -262,10 +267,33 @@ import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
-import {findParentCategory,findChildCategory} from '@/API/api';
+import {findParentCategory,findChildCategory,insertExperiment} from '@/API/api';
 export default {
   data() {
     return {
+        timeOptions: [{
+                value: '30',
+                label: '30分钟'
+                }, {
+                value: '45',
+                label: '45分钟'
+                }, {
+                value: '60',
+                label: '60分钟'
+                }, {
+                value: '75',
+                label: '75分钟'
+                }, {
+                value: '90',
+                label: '90分钟'
+                },{
+                value: '105',
+                label: '105分钟'
+                },{
+                value: '120',
+                label: '120分钟'
+                }      
+            ],  
       curIndex:1,
       form: {
         name: "",
@@ -274,20 +302,15 @@ export default {
         advice: "",
         report: "",
         task: "",
-        cover: "",
+        cover: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=700937755,1450414253&fm=11&gp=0.jpg",
+        cateId:''
         
         
         
       },
+ 
       category:[],//实验所属分类
-      categoryOptions: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则'
-        }]
-      }],
+      categoryOptions: [],
       inplaceholder: "请输入实验名称",
       isNew_experiment: false,
       uploadUrl: "",
@@ -354,7 +377,11 @@ export default {
           let that = this;
           findParentCategory().then(res=> {
               if(res.code==200){
-                  that.total = res.data.name;
+                  that.categoryOptions = res.data;
+                  for (let index = 0; index < that.categoryOptions.length; index++) {
+                    that.findChildCategory(that.categoryOptions[index].id)
+                    
+                  }
               }else{
                   this.$toast(res.message,2000)
               }
@@ -363,8 +390,32 @@ export default {
 
     //实验所属分类选择
     handleChange(value) {
-      console.log(value);
+       let that = this
+       console.log(value.length==1?value[0]:value[1]);
+       that.form.cateId = value.length==1?value[0]:value[1]
     },
+    //根据一级分类id查询二级分类
+        findChildCategory(cateId){
+          let that = this
+          let obj={}
+          obj.parent_category_id = cateId
+          findChildCategory(obj).then(res=> {
+                if(res.code==200){                  
+               let catesons = res.data      
+                   if(catesons.length>0){ 
+                  for(let i = 0; i <  that.categoryOptions.length; i++) {                    
+                    if(that.categoryOptions[i].id === cateId) {                    
+                        that.$set(that.categoryOptions[i], 'cates', catesons) // right
+                       break;
+                     }
+                    }     
+                  }       
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+
+        },
     //选择实验类型
     selectType(val) {
       console.log(val);
@@ -484,11 +535,46 @@ export default {
     //确认新增实验
     confirmNewExperiment(){
         let that = this;
-        that.isNew_experiment = false
-        console.log(that.form.name)
-        console.log(that.form.duration)
-        console.log(that.form.introduction)
-        console.log(that.yourContent)
+        let obj={}
+       
+        if(that.form.name ==''){
+              return  that.$toast('请输入实验名称',2000)
+        }
+        if (that.form.cateId=='') {
+          return that.$toast('请选择所属分类',2000)      
+        }
+        if (that.form.duration=='') {
+          return that.$toast('请选择实验时长',2000)      
+        }
+        if (that.form.introduction=='') {
+          return that.$toast('请输入实验描述',2000)      
+        }
+        if (that.yourContent=='') {
+          return that.$toast('请输入实验步骤',2000)      
+        }
+        obj.name = that.form.name
+        obj.pic_url = that.form.cover
+        obj.step = that.yourContent
+        obj.duration = that.form.duration
+        obj.category_id = that.form.cateId
+        obj.introduce = that.form.introduction
+        console.log(obj)
+
+        insertExperiment(obj).then(res=>{
+           if(res.code==200){                  
+                that.isNew_experiment = false
+                that.$parent.findExperiment()
+                that.form.name= ''
+                that.yourContent= ''
+                that.form.duration= ''
+                that.form.cateId= ''
+                that.form.introduction =''
+            }else{
+              console.log(res.message)
+              that.$toast(res.message,3000)
+            }
+        })
+
 
     }
 
