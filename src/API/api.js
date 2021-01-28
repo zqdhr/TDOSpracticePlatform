@@ -171,11 +171,27 @@ var deleteQuestionBackById = function(data){
 	return axios.post('/deleteQuestionBackById', data,{headers: {'Content-Type':'application/json'}})
 }
 
+//教师获取作业列表
+var getStudentJobList = function (data) {
+	return axios.get('/getAssignmentAll?classId=' + data.classId + '&page=' + data.page + '&perPage=' + data.perPage+ '&name=' + data.name+ '&courseId=' + data.courseId+ '&status=' + data.status+ '&chapterId=' + data.chapterId+ '&sectionId=' + data.sectionId)
+}
+
+//教师获取作业详情
+var getStudentJobDetail = function (data) {
+	return axios.get('/getStudentAnswerByAssignmentUserId?userId=' + data.userId + '&page=' + data.page + '&perPage=' + data.perPage+ '&assignmentId=' + data.assignmentId)
+}
+
+//教师批改作业
+var submitCorrectJob = function (data) {
+	return axios.post('/addStudentScore', data, { headers: { 'Content-Type': 'application/json' } })
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
 	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById,insertCourseChapterCompleted,
-	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory
+	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory,
+	getStudentJobList,getStudentJobDetail,submitCorrectJob
 }
 
 function getJson (data) {
