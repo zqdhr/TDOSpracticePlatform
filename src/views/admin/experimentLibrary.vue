@@ -5,20 +5,20 @@
         <div class="fl">
           <div class="sel-box">
             <el-select v-model="customClass" placeholder="自定义分类" @change="selectType" >
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+              <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id" > </el-option>
             </el-select>
           </div>
-          <div class="sel-box" v-if="customClass!=''">
+          <div class="sel-box" v-if="  options1.length>0">
             <el-select v-model="i_customClass" placeholder="自定义分类" @change="selectType1" >
-              <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+              <el-option v-for="item in options1" :key="item.id" :label="item.name" :value="item.id" > </el-option>
             </el-select>
           </div>
 
-           <div class="sel-box" v-if="i_customClass!=''">
+           <!-- <div class="sel-box" v-if="i_customClass!=''">
             <el-select v-model="ii_customClass" placeholder="自定义分类" @change="selectType2" >
               <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value" > </el-option>
             </el-select>
-          </div>
+          </div> -->
           
         </div>
         <div class="fr">
@@ -26,7 +26,7 @@
           
           
           <div class="d-serach"> 
-            <input :placeholder="inplaceholder" type="text" autocomplete="off" />
+            <input :placeholder="inplaceholder" type="text"  v-model="searchTx" autocomplete="off" />
             <a class="searchBtn pointer"></a>
           </div>
         </div>
@@ -90,6 +90,7 @@
 </div>
 </template>
 <script>
+import { findParentCategory,findChildCategory,findExperiment } from "@/API/api";
 import newExperiment from '@/components/admin_new_experiment'
 import experimentDetail from '@/components/experimentDetail'
 export default {
@@ -100,7 +101,7 @@ export default {
             i_customClass:'',//自定义分类,
             ii_customClass:'',//自定义分类
             options:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
-            options1:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
+            options1:[],
             options2:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
             total:100,//总共条数
             perPage:10,//每页页数
@@ -110,17 +111,31 @@ export default {
             ],
             isDelete:false,//删除实验弹出框
             isNewExperiment:false,
+            cateId:'',//查询的分类ID
+            searchTx:''//搜索的关键字
         }
+    },
+    created(){
+        this.findParentCategory()
+        this.findExperiment()
     },
     components:{newExperiment,experimentDetail},
     methods:{
 
         //自定义分类
         selectType(val){
+          let that = this
+          that.cateId  =val
+          that.findChildCategory(val)
+          that.findExperiment()
+          console.log(that.customClass)
 
         },
         //自定义分类
         selectType1(val){
+          let that = this
+          that.cateId = val
+          that.findExperiment()
 
         },
         //自定义分类
@@ -153,6 +168,55 @@ export default {
           that.$refs.experimentDetail.click_Detail();
 
         },
+        //输入关键字查询列表
+        doSearch(){
+          
+
+        },
+        //获取一级分类
+        findParentCategory(){
+          let that = this
+          findParentCategory().then(res=> {
+                if(res.code==200){                
+                   that.options = res.data
+             
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
+        //根据一级分类id查询二级分类
+        findChildCategory(cateId){
+          let that = this
+          let obj={}
+          obj.parent_category_id = cateId
+          findChildCategory(obj).then(res=> {
+                if(res.code==200){                  
+                   that.options1 = res.data           
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+
+        },
+        //查询实验列表
+        findExperiment(){
+          let that  = this
+          let obj={}
+          obj.category_id = that.cateId
+          obj.name= that.searchTx
+          // obj.perPage =that.perPage
+          // obj.page = that.curPage
+          findExperiment(obj).then(res=> {
+                if(res.code==200){
+                   console.log(res.data)
+                         
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+
+        }
         
     }
 }

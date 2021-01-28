@@ -130,11 +130,24 @@ var getQuestionBackAll = function(data){
 var deleteQuestionBackById = function(data){
 	return axios.post('/deleteQuestionBackById', data,{headers: {'Content-Type':'application/json'}})
 }
+//查询实验库一级分类
+var findParentCategory = function(){
+	return axios.get('/findParentCategory')
+}
+//查询实验库二级分类
+var findChildCategory =function(data){
+	return axios.get('/findChildCategory?parent_category_id='+data.parent_category_id)
+}
+//查询实验库列表 +'&perPage='+data.perPage+'&page='+data.page
+var findExperiment = function(data){
+	return axios.get('/findExperiment?category_id='+data.category_id+'&name='+data.name)
+}
 
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
-	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById
+	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById,findParentCategory,findChildCategory,
+	findExperiment
 }
 
 function getJson (data) {
