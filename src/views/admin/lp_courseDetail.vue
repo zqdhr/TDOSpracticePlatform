@@ -53,7 +53,7 @@
                
                 
                 <!--课程实验-->
-                <experiment v-if="navindex==1"></experiment>
+                <experiment :role="role" v-if="navindex==1"></experiment>
                 
                 <!--课程课件-->
                 <courseware v-if="navindex==2"></courseware>
@@ -108,7 +108,8 @@ export default {
 
             showStudentList:false,//是否显示学生列表
 
-            courseId:''
+            courseId:'',
+            role:1,//代表管理员端
         }
     },
     components:{chapter,experiment,courseware,coursework},
