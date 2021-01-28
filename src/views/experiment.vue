@@ -33,22 +33,28 @@
             </div>
             
         </div>
-        <div class="experiment_container clearfix">
-            <div class="left-noVNc boxsizing">
-                <div class="l-nav">
-                  <span claass="pointer " :class="{'active':virtualMachine==1}">虚拟机1</span>
-                  <span claass="pointer" :class="{'active':virtualMachine==2}">虚拟机2</span>
-                  <span claass="pointer" :class="{'active':virtualMachine==3}">虚拟机3</span>
+        <div class="experiment_container clearfix boxsizing">
+            <div class="left-noVNc boxsizing " :class="{'changeWidth':isHide}">
+                <div class="l-nav" >
+                  <span class="pointer " :class="{'active':virtualMachine==1}">虚拟机1</span>
+                  <span class="pointer" :class="{'active':virtualMachine==2}">虚拟机2</span>
+                  <span class="pointer" :class="{'active':virtualMachine==3}">虚拟机3</span>
+                  <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
-                <div class="operation_box" id="screen">
+                <div class="operation_box" id="screen" v-if="1==0">
                     <a class="btn-open pointer" @click="connectVnc()">点击开启全部虚拟机</a>
+                   
+                </div>
+                <div class="operation_box">
+                     <iframe src="http://192.168.1.228:2222/ssh/host/192.168.1.228/5001" frameborder="0"></iframe>
                 </div>
             </div>
-            <div class="right_main">
+            <div class="right_main" :class="{'changeWidth':isHide}">
                 <el-scrollbar style="height:100%">
                     <div class="nav">
                         <a class="pointer" :class="{'active_index':curIndex==1}" @click="curIndex=1">实验步骤</a>
                         <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" v-if="authority==0">实验报告</a>
+                        <!--<a class="icon_jm pointer" @click="isHide=!isHide"></a>-->
                     </div>
                     <div v-if="curIndex==1">
                         <h3 class="htitle">实验步骤说明</h3>
@@ -87,6 +93,7 @@ import 'quill/dist/quill.bubble.css';
 export default {
     data(){
         return{
+            isHide:false,//右侧栏是否显示
             curIndex:1,
             virtualMachine:0,
             reportText:'',//实验报告输入内容
@@ -150,7 +157,7 @@ export default {
         //连接vnc的函数      
         connectVnc () {
             const PASSWORD = '';
-            const url='ws://ip/端口'
+            const url='wx/ip/端口'
             let rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
                 credentials: {password: PASSWORD }
