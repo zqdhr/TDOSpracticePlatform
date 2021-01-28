@@ -11,7 +11,7 @@
                     <el-collapse-transition>
                         <ul class="children_ul" v-show="item.show">
                             <li v-for="(iitem,iindex) in item.sections" :key="iindex" class="pointer">
-                                <div class=" children_name" :class="{'arrow_up':iitem.show}" @click="showSubsection(index,iitem,iitem.show,item.id,iitem.id)">
+                                <div class=" children_name" :class="{'arrow_up':iitem.id ==sectionId}" @click="showSubsection(index,iitem,iitem.show,item.id,iitem.id)">
                                     <p class="textline1">{{iitem.name}}({{iitem.num}})</p>
                                 </div>
                                <el-collapse-transition>
@@ -40,7 +40,7 @@ export default {
         return{
             courseName:'《节点的模拟运行课程》',
             courseId:'36a81315-c928-430f-940a-af913743621b',
-            
+            sectionId:'',//当前选中的节id
             chapters: [
             ]
            
@@ -108,6 +108,7 @@ export default {
         showSubsection(index,obj,show,cid,sid){
             let that = this;
             let temp =that.chapters[index].sections
+            that.sectionId = sid
             
             that.$set(obj,'show',!show)
             this.$emit('getData', {cindex:cid,sindex:sid})
@@ -134,11 +135,12 @@ export default {
      
         .children_name{
             font-size: 16px;color:@tabcolor;padding: 0 20px 0 30px;line-height: 50px;border-bottom:1px solid @border;
-            background: url(../assets/img/n_arrow_d.png) right 20px center no-repeat;
+           // background: url(../assets/img/n_arrow_d.png) right 20px center no-repeat;
             overflow: hidden;
         }
         .arrow_up{
-            background: url(../assets/img/n_arrow_d_u.png) right 20px center no-repeat;
+           // background: url(../assets/img/n_arrow_d_u.png) right 20px center no-repeat;
+           color: @basecolor;
         }
         >li:last-child{
             .children_name{
