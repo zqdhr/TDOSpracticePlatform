@@ -9,10 +9,10 @@
                         <span class="s_name">章节{{index+1}}：{{item.name}}</span>
                     </div>
                      <div class="sec_enclosure">
-                        <div v-if="item.enclosure">附件包含：
+                        <div>附件包含：
                             <span
                             v-for="(file,file_index) in item.enclosure" :key="file_index" class="icon"
-                            :class="{'s-video':file==1,'s-pdf':file==2,'s-exper':file==3,'s-job':file==4}">
+                            :class="{'s-video':file==0,'s-pdf':file==1,'s-exper':file==2,'s-job':file==2}">
 
                             </span>
                         </div>
@@ -23,9 +23,9 @@
                      <span class="s-state s-Not_saved" :class="{'s-saved':1==1}">未保存</span>
 
                     <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
-                      <a class="a_save pointer" @click="addChapters(item.id)"></a>
+                      <a class="a_save pointer" @click="addChapters(index)"></a>
                     </el-tooltip>
-                    <a class="icon_edit pointer" @click="edit(1,item.id,item.name)"></a>
+                    <a class="icon_edit pointer" @click="edit(1,item.id,item.name,index,iindex,i_index)"></a>
                     <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
                 <!--新建章节样式-->
@@ -38,7 +38,7 @@
                      </div>
                       
                       <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
-                        <a class="a_save pointer"></a>
+                        <a class="a_save pointer" @click="addNewChapters(index)"></a>
                       </el-tooltip>
                      <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该章吗？'"></a>
                      <a class="a_arrow" @click="showSection(item,item.show)"></a>
@@ -55,16 +55,16 @@
                                     <p class="textline1">第{{iindex+1}}节：{{iitem.name}}</p>
 
                                 </div>
-                                <div class="sec_enclosure">
+                                <div class="sec_enclosure" >
                                     <div>附件包含：
                                         <span
-                                        v-for="(i_file_item,i_file_index) in iitem.enclosure" :key="i_file_index" class="icon"
-                                        :class="{'s-video':i_file_item==1,'s-pdf':i_file_item==2,'s-exper':i_file_item==3,'s-job':i_file_item==4}">
+                                        v-for="(i_file_item,i_file_index) in iitem.secEnclosure" :key="i_file_index" class="icon"
+                                        :class="{'s-video':i_file_item==0,'s-pdf':i_file_item==1,'s-exper':i_file_item==2,'s-job':i_file_item==3}">
 
                                         </span>
                                     </div>
                                 </div>
-                                <a class="icon_edit pointer" @click="edit(2,iitem.id,iitem.name)"></a>
+                                <a class="icon_edit pointer" @click="edit(2,iitem.id,iitem.name,index,iindex,i_index)"></a>
                                 <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>
                             </div>
                             </template>>
@@ -83,11 +83,11 @@
                             <!--小节-->
                             <el-collapse-transition>
                             <ul class="section_ul i_section_ul" v-if="iitem.show">
-                                <li class="section_li" v-for="(i_item,i_index) in iitem.smallSections" :key="i_index" :class="{'new_section_li':!i_item.id}">
+                                <li class="section_li" v-for="(i_item,i_index) in iitem.small_sections" :key="i_index" :class="{'new_section_li':!i_item.id}">
                                      <template v-if="i_item.id">
                                         <div class="sec_name textline1">
                                             <p class="textline1">第{{i_index+1}}小节：{{i_item.name}}</p>
-                                              <a class="icon_edit pointer" @click="edit(3,i_item.id,i_item.name)"></a>
+                                              <a class="icon_edit pointer" @click="edit(3,i_item.id,i_item.name,index,iindex,i_index)"></a>
                                         </div>
                                     </template>>
                                     <template v-if="!i_item.id">
@@ -169,7 +169,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <button class="btnDefault" @click="isEdit = false">取消</button>
-        <button class="btnDefault" @click="isEdit = false">确认修改</button>
+        <button class="btnDefault" @click="modify">确认修改</button>
       </span>
     </el-dialog>
 
@@ -177,36 +177,11 @@
 
 </template>
 <script>
-import {getCourseById,getCoursewareBySectionId} from '@/API/api';
+import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,getCoursewareByChapterId,getAssignmentBySectionId} from '@/API/api';
 export default{
     data(){
         return{
           chapters:[
-                {
-                    id:'xjkc2211',
-                    name:'标题内容标题内容标题内容',
-                    introduction:'简介内容简介内容简介内容简介内容简介内容简介内容简介内容简介内容',
-                    sections:[
-                        {
-                        id:'lfllff',
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:[1,2,3,4],
-                        section:[{
-                            id:'section123',
-                            name:'dgfdgfgfdgf',
-                        }]
-                        },
-                        {
-                        id:'dfkldfklal',
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:[1,2,3,4],
-                        section:[{
-                            id:'section123',
-                            name:'dgfdgfgfdgf',
-                        }]
-                        }
-                    ]
-                }
             ],
             isDelete:false,
             deleteMess:'',
@@ -215,13 +190,20 @@ export default{
             editValue:'',
             editId:'',
             isEdit:false,
+            small_sections:[{
+                id:'section123',
+                name:'dgfdgfgfdgf',
+            }],
+            index:'',
+            iindex:'',
+            i_index:'',
+            num:'',
+            order:1,
+            test:''
         }
     },
     props:{
         courseId:{
-            default:''
-        },
-        course:{
             default:''
         }
     },
@@ -249,9 +231,6 @@ export default{
                  this.$set(that.chapters[i].sections[j], 'show', false);
             }
          }
-         console.log(that.courseId)
-        console.log(that.course)
-
     },
     methods:{
         getCourseById(){
@@ -260,13 +239,68 @@ export default{
             obj.course_id = that.courseId;
             getCourseById(obj).then(res=> {
                 if(res.code==200){
+                    res.data.chapters.sort(this.compare1('order'))
                     that.chapters = res.data.chapters
+                    // for(let i =0;i<res.data.chapters.length;i++){
+                    //     that.getCoursewareByChapterId(res.data.chapters[i].id,i)
+                    //     for(let j = 0 ;j<res.data.chapters[i].sections.length;j++){
+                    //         that.getCoursewareBySectionId(res.data.chapters[i].sections[j].id,i,j)
+                    //         // that.getAssignmentBySectionId(res.data.chapters[i].sections[j].id,i,j)
+                    //     }
+                    // }
+
+
                 }else{
                     that.$toast(res.message,3000)
                 }
             })
         },
 
+        // getCoursewareByChapterId(chapterId,index){
+        //     let that = this;
+        //     let obj = {};
+        //     obj.chapterId = chapterId;
+        //     obj.perPage = 10;
+        //     obj.page = 1;
+        //     getCoursewareByChapterId(obj).then(res=> {
+        //         if(res.code==200){
+        //             for(let i =0;i<res.data.list.length;i++){
+        //                 that.$set(that.chapters[index], "enclosure", res.data.list[i].kind);
+        //             }
+        //         }else{
+        //             that.$toast(res.message,3000)
+        //         }
+        //     })
+        // },
+        //
+        // getCoursewareBySectionId(sectionId,cIndex,sIndex){
+        //     let that = this;
+        //     let obj = {};
+        //     obj.sectionId = sectionId;
+        //     obj.perPage = 10;
+        //     obj.page = 1;
+        //     getCoursewareBySectionId(obj).then(res=> {
+        //         if(res.code==200){
+        //             for(let i =0;i<res.data.list.length;i++){
+        //                 console.log(that.chapters[cIndex].sections[sIndex])
+        //                 that.$set(that.chapters[cIndex].sections[sIndex], "secEnclosure", res.data.list[i].kind);
+        //             }
+        //         }else{
+        //             that.$toast(res.message,3000)
+        //         }
+        //     })
+        //},
+
+
+
+        //升序
+        compare1(attr) {
+            return function(a,b){
+                var val1 = a[attr];
+                var val2 = b[attr];
+                return val1 - val2;
+            }
+        },
 
          //显示章节
         showSection(item,show){
@@ -274,7 +308,6 @@ export default{
             let tmp = that.chapters
             for(var i = 0;i<tmp.length;i++){
                that.$set(that.chapters[i],'show',false)
-               
             }
 
             that.$set(item,'show',!show)   
@@ -289,7 +322,7 @@ export default{
         click_section(index,obj){
            let that = this;
            let tmp = that.chapters[index].sections.length;
-           that.chapters[index].sections.push({name:'',order:tmp,show:false,smallSections:[]})
+           that.chapters[index].sections.push({name:'',order:tmp,show:false,small_sections:[]})
         },
         /*显示小节 */
         showSection_children(index,item,show){
@@ -307,19 +340,52 @@ export default{
         /*新建小节 */
         click_new_section(index,iindex,item){
           let that = this;
-            let tmp = that.chapters[index].sections[iindex].smallSections.length;
-           that.chapters[index].sections[iindex].smallSections.push({name:'',order:tmp,show:false})
+            let tmp = that.chapters[index].sections[iindex].small_sections.length;
+           that.chapters[index].sections[iindex].small_sections.push({name:'',order:tmp,show:false})
         },
-        addChapters(){
+        addChapters(index){
             let that = this;
-            console.log(that.chapters)
+            let obj = {};
+            console.log(index)
+            obj.course_id = that.courseId
+            obj.chapter = that.chapters[index];
+            console.log(obj)
+            insertCourseChapterCompleted(JSON.stringify(obj)).then(res=> {
+                if(res.code==200){
+                    that.getCourseById();
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
+        addNewChapters(index){
+            let that = this;
+            console.log(index)
+            console.log(that.chapters[index])
+            let obj = {};
+            console.log(index)
+            obj.course_id = that.courseId
+            obj.chapter = that.chapters[index];
+            console.log(obj)
+            insertCourseChapterCompleted(JSON.stringify(obj)).then(res=> {
+                if(res.code==200){
+                    that.getCourseById();
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
         },
         //点击编辑
-        edit(num,id,text){
+        edit(num,id,text,index,iindex,i_index){
             let that = this;
             that.isEdit = true;
             that.editValue = text;
             that.editId = id
+            that.index = index
+            that.iindex = iindex
+            that.i_index = i_index
+            that.num = num
+            console.log(index)
             //章
            if(num==1){
               that.editTitle = "章修改"
@@ -335,6 +401,26 @@ export default{
               that.editTitle = "小节修改"
               console.log(text)
            }
+        },
+        modify(){
+            let that = this;
+            console.log(that.num)
+            //章
+            if(that.num==1){
+                console.log(that.editValue)
+                that.chapters[that.index].name = that.editValue;
+            }
+            //节
+            if(that.num==2){
+                console.log(that.editValue)
+                that.chapters[that.index].sections[that.iindex].name = that.editValue;
+            }
+            //小节
+            if(that.num==3){
+                console.log(that.editValue)
+                that.chapters[that.index].sections[that.iindex].small_sections[that.i_index].name = that.editValue;
+            }
+            that.isEdit = false;
         }
     }
 }

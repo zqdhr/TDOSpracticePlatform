@@ -186,10 +186,10 @@
         <!--steps-->
         <div class="steps" v-if="curIndex==3">
             <div class="steps_main">
-               <quill-editor 
-                      v-model="yourContent" 
-                      ref="myQuillEditor"  
-                      :options="editorOption" 
+               <quill-editor
+                      v-model="yourContent"
+                      ref="myQuillEditor"
+                      :options="editorOption"
                       @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
                   >
                 </quill-editor>
@@ -258,6 +258,7 @@ import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
+import {findParentCategory,findChildCategory} from '@/API/api';
 export default {
   data() {
     return {
@@ -280,20 +281,7 @@ export default {
         label: '指南',
         children: [{
           value: 'shejiyuanze',
-          label: '设计原则',
-          children: [{
-            value: 'yizhi',
-            label: '一致'
-          }, {
-            value: 'fankui',
-            label: '反馈'
-          }, {
-            value: 'xiaolv',
-            label: '效率'
-          }, {
-            value: 'kekong',
-            label: '可控'
-          }]
+          label: '设计原则'
         }]
       }],
       inplaceholder: "请输入实验名称",
@@ -329,7 +317,7 @@ export default {
     FileUpload,quillEditor
   },
   created(){
- 
+
     this.editorOption={
                 placeholder: "实验报告输入",
                 modules:{
@@ -352,7 +340,23 @@ export default {
                     }
             }
   },
+    mounted(){
+        let that = this;
+        that.findParentCategory();
+    },
   methods: {
+      //查询分类
+      findParentCategory(){
+          let that = this;
+          findParentCategory().then(res=> {
+              if(res.code==200){
+                  that.total = res.data.name;
+              }else{
+                  this.$toast(res.message,2000)
+              }
+          })
+      },
+
     //实验所属分类选择
     handleChange(value) {
       console.log(value);
@@ -478,6 +482,10 @@ export default {
         let that = this;
         that.isNew_experiment = false
         console.log(that.form.name)
+        console.log(that.form.duration)
+        console.log(that.form.introduction)
+        console.log(that.yourContent)
+
     }
 
     

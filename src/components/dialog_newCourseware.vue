@@ -168,6 +168,7 @@
 <script>
 import FileUpload from "vue-upload-component";
 import toastVue from "./toast/toast.vue";
+import {getCoursewareAll} from '@/API/api';
 export default {
   data() {
     return {
@@ -189,56 +190,7 @@ export default {
           size: "2.3G",
           duration: "00:16:34",
           type: 0,
-        },
-        {
-          id: "521dddz",
-          name: "xxxxx.mp4",
-          size: "2.3G",
-          duration: "00:16:34",
-          type: 1,
-        },
-        {
-          id: "524dddz",
-          name: "xxxxx.mp4",
-          size: "2.3G",
-          duration: "00:16:34",
-          type: 1,
-        },
-        {
-          id: "526dddz",
-          name: "xxxxx.mp4",
-          size: "2.3G",
-          duration: "00:16:34",
-          type: 0,
-        },
-        {
-          id: "528dddz",
-          name: "xxxxx.mp4",
-          size: "2.3G",
-          duration: "00:16:34",
-          type: 0,
-        },
-        {
-          id: "529dddz",
-          name: "xxxxx.mp4",
-          size: "2.3G",
-          duration: "00:16:34",
-          type: 0,
-        },
-        {
-          id: "567dddz",
-          name: "xxxxx.mp4",
-          size: "2.3G",
-          duration: "00:16:34",
-          type: 1,
-        },
-        {
-          id: "52dddz",
-          name: "xxxxx.mp4",
-          size: "2.3G",
-          duration: "00:16:34",
-          type: 1,
-        },
+        }
       ],
       total: 100,
       perPage: 8, //8个实验一页
@@ -268,7 +220,34 @@ export default {
     this.cate = this.options[0].value; //默认选中内置课件
     this.type = this.typeList[0].value; //课件类型默认选中全部
   },
+  mounted() {
+    let that = this;
+    that.getCoursewareAll();
+  },
   methods: {
+    //课件列表
+    getCoursewareAll() {
+      let that = this;
+      that.getCourseAll(10,1,'','','');
+    },
+
+    getCourseAll(per_page,page,kind,type,name){
+      let that = this;
+      let obj = {};
+      obj.per_page = per_page;
+      obj.page = page;
+      obj.kind = kind;
+      obj.type = type;
+      obj.name = name;
+      getCoursewareAll(obj).then((res) => {
+        if (res.code == 200) {
+          that.all_experimentList = res.data.list;
+          that.total = res.data.total
+        } else {
+          that.$toast(res.message, 3000);
+        }
+      });
+    },
     //点击新建课件
     click_new() {
       let that = this;
