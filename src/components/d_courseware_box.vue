@@ -26,7 +26,7 @@
                         </el-select>               
                     </div>
                     <!--学生点击课程详情没有新增课件-->
-                    <a class="btnDefault pointer" @click="click_new" v-if="role!=3">新增课件</a>
+                    <a class="btnDefault pointer" @click="click_new" v-if="sindex != '' || cindex !=''">新增课件</a>
                 </div>
                 <div class="list_box">
                     <ul class="list_ul clearfix">

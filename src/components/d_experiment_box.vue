@@ -2,10 +2,10 @@
 <template>
     <div class="experiment_box">
          <div class="exper_main">
-            <courseNav></courseNav>
+            <courseNav @getData = "getData"></courseNav>
             <div class="right_box">
                 <div class="add_btn_box">
-                    <a class="btnDefault pointer" @click="click_new" v-if="role!=3">新增实验</a>
+                    <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''">新增实验</a>
                 </div>
                 <div class="list_box">
                     <ul class="list_ul clearfix " :class="{'student_list_ul':role==3}">
@@ -132,7 +132,7 @@ export default {
                 },{
                 value: '120分钟',
                 label: '120分钟'
-                }      
+                }
             ],
              pickerOptions: {
                 disabledDate(time) {
@@ -140,6 +140,7 @@ export default {
                 },
             } ,
             endTime:'',
+            sindex:''
         }
     },
     props:{
@@ -169,6 +170,12 @@ export default {
           that.isNewExperiment = true;
           that.$refs.experimentDetail.click_Detail();
 
+        },
+        getData(data){
+            let that = this;
+            console.log(data.cindex)
+            console.log(data.sindex)
+            that.sindex = data.sindex;
         },
     }
 }

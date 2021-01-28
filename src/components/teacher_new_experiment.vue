@@ -21,8 +21,23 @@
                 <el-option
                   v-for="item in customClass"
                   :key="item.value"
-                  :label="item.label"
+                  :label="item.name"
                   :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </div>
+            <div class="sel-box" v-if="customType!=''">
+              <el-select
+                      v-model="i_customType"
+                      placeholder="自定义分类"
+                      @change="i_selectCustomType"
+              >
+                <el-option
+                        v-for="item in i_customClass"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.value"
                 >
                 </el-option>
               </el-select>
@@ -95,22 +110,15 @@
 <script>
 
 import toastVue from "./toast/toast.vue";
+import {findParentCategory,findChildCategory,findAllByCategoryId} from '@/API/api';
 export default {
   data() {
     return {
       inplaceholder: "请输入实验名",
         all_experimentList:[
-              {id:'52ddda',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52ddd1',name:'ccccc实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52ddd2',name:'vvvvv实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52ddd3',name:'bbbbb实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52ddd4',name:'nnnnn实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52ddd5',name:'sssss实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52ddd6',name:'zzzzz实验',duration:'45分钟',endtime:'15:40'},
-              {id:'52ddd7',name:'mmmmm实验',duration:'45分钟',endtime:'15:40'},
           ],
      
-      total: 100,
+      total: 1,
       perPage: 8, //8个实验一页
       curPage: 1, //设备列表
 
@@ -118,11 +126,17 @@ export default {
         { value: "1", label: "场景篇" },
         { value: "2", label: "原理篇" },
       ], //自定义分类
+      i_customClass: [
+        { value: "1", label: "场景篇" },
+        { value: "2", label: "原理篇" },
+      ], //自定义分类
       customType: "",
+      i_customType: "",
       isnewFilter: false,
       isnewFilterType: 0, //实验库选择 1代表本地实验库  2代表本地上传
 
       chooseList: [], //实验被选择列表
+      parent_id:''
     };
   },
   components: {
@@ -131,7 +145,38 @@ export default {
   created() {
 
   },
+  mounted(){
+    let that = this;
+    that.findParentCategory();
+  },
   methods: {
+    //自定义父级分类
+    findParentCategory(){
+      let that = this;
+      findParentCategory().then(res=> {
+        if(res.code==200){
+          that.customClass = res.data;
+          for(let i =0;i<res.data.length;i++){
+            that.$set(that.customClass[i],'value',i)
+          }
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
+      let obj = {}
+      obj.category_id = '';
+      obj.name = '';
+      obj.perPage = 10;
+      obj.page = 1;
+      findAllByCategoryId(obj).then(res=> {
+        if(res.code==200){
+          that.total = res.data.total
+          that.all_experimentList = res.data.list;
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
+    },
     //点击选择实验
     click_new() {
       let that = this;
@@ -170,7 +215,35 @@ export default {
 
     //弹窗自定义分类
     selectCustomType(val) {
+      let that = this;
       console.log("选择自定义分类");
+      that.parent_id = that.customClass[val].id
+
+      let obj = {}
+      obj.parent_category_id = that.parent_id
+      findChildCategory(obj).then(res=> {
+        if(res.code==200){
+          that.i_customClass = res.data;
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
+      let objC = {};
+      objC.category_id = that.customClass[val].id
+      findAllByCategoryId(objC).then(res=> {
+        if(res.code==200){
+          that.all_experimentList = res.data.list;
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
+    },
+    //弹窗自定义分类
+    i_selectCustomType(val) {
+      let that = this;
+      console.log("选择自定义分类");
+      // console.log("aa"+obj.parent_category_id)
+
     },
     //数组新增checked元素
     array_addChecked(array) {

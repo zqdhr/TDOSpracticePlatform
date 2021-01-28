@@ -2,7 +2,7 @@
 <template>
   <div class="experiment_box">
     <div class="exper_main">
-      <courseNav></courseNav>
+      <courseNav @getData = "getData"></courseNav>
       <div class="right_box">
         <!--小节下面有作业-->
   
@@ -88,7 +88,7 @@
         </div>
         
         <!--小节作业不存在-->
-        <div class="noData_box" v-if="noData">
+        <div class="noData_box" v-if="sindex != '' &&   noData">
             <p class="mess">当前小节下暂无作业，请点击下方新增作业按钮。</p>
             <div><a class="btnDefault pointer"  @click="noData=false">新增作业</a></div>
         </div>
@@ -121,8 +121,13 @@
         <div class="pageTab clearfix ">
         <div class="fl">
           <div class="sel-box">
-            <el-select v-model="type" placeholder="添加自定义分类" @change="selectQuestionType" >
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+            <el-select v-model="customType" placeholder="添加自定义分类" @change="selectQuestionType" >
+              <el-option v-for="item in customClass" :key="item.value" :label="item.name" :value="item.value" > </el-option>
+            </el-select>
+          </div>
+          <div class="sel-box" v-if="customType!=''">
+            <el-select v-model="i_customType" placeholder="添加自定义分类" @change="selectQuestionType" >
+              <el-option v-for="item in i_customClass" :key="item.value" :label="item.name" :value="item.value" > </el-option>
             </el-select>
           </div>
           <div class="sel-box">
@@ -184,7 +189,7 @@
               :page-size="perPage"
               @current-change="handleCurrentChange"
               layout="prev, pager, next,jumper"
-              :total="total"
+              :total="totalAllCourse"
             >
             </el-pagination>
           </div>
@@ -205,14 +210,21 @@
 </template>
 <script>
 import courseNav from "@/components/left_courseNav.vue";
+import {findParentCategory,findChildCategory,getQuestionBackAll} from '@/API/api';
 export default {
   data() {
     return {
+      //自定义分类
+      customClass: [
+      ],
+      i_customClass: [
+      ],
       options: [
         { value: "1", label: "选择题" },
         { value: "2", label: "简答题" },
       ],
-
+      customType:'',
+      i_customType:'',
       cate: "选择题", //课件分类默认内置课件
       showQuestionBank: false, //题库是否显示(弹出框)
       dialogWidth: 0,
@@ -221,39 +233,9 @@ export default {
         name: "",
       },
       courseList: [
-        {
-          id: "1",
-          title: "1.题目文本题目文本题目文本题目文本题目?",
-          type: 1,
-          chose: ["选项111", "选项222", "选项3333", "选项4444"],
-          pic: "",
-          answer: 2,
-        },
-        {
-          id: "2",
-          title: "1.题目文本题目文本题目文本题目文本题目?",
-          type: 2,
-          pic: "",
-          answer: "题目文本题目文本题目文本题目文本题目",
-        },
       ],
       //全部题目
       all_courseList:[
-         {
-          id: "1",
-          title: "1.题目文本题目文本题目文本题目文本题目?",
-          type: 1,
-          chose: ["选项111", "选项222", "选项3333", "选项4444"],
-          pic: "",
-          answer: 2,
-        },
-        {
-          id: "2",
-          title: "1.题目文本题目文本题目文本题目文本题目?",
-          type: 2,
-          pic: "",
-          answer: "题目文本题目文本题目文本题目文本题目",
-        }, 
       ],
       isShow: false,
       deleteList: [], //选中需要删除的题目列表
@@ -262,9 +244,10 @@ export default {
       type:'',//题目类型
       curPage:1,
       perPage:10,
-      total:100,
       noData:true,//小节没有内容
       isSetTime:false,//设置题目时间弹窗
+      sindex:'',
+      totalAllCourse:''
     };
   },
   components: {
@@ -285,6 +268,39 @@ export default {
     };
   },
   methods: {
+    //查题库
+    getQuestionBackAll(){
+      let that = this;
+      let obj = {};
+      obj.type = '';
+      obj.content = '';
+      obj.category_id = '';
+      obj.perPage = 10;
+      obj.page = 1;
+      getQuestionBackAll(obj).then(res=> {
+        if(res.code==200){
+          console.log(res.data.list)
+          that.totalAllCourse = res.data.total;
+          that.all_courseList = res.data.list;
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
+    },
+    //自定义父级分类
+    findParentCategory(){
+      let that = this;
+      findParentCategory().then(res=> {
+        if(res.code==200){
+          that.customClass = res.data;
+          for(let i =0;i<res.data.length;i++){
+            that.$set(that.customClass[i],'value',i)
+          }
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
+    },
     //分页
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
@@ -376,6 +392,17 @@ export default {
     selectQuestionType(val){
        let that = this;
        console.log('选择题类型'+val)
+      that.parent_id = that.customClass[val].id
+
+      let obj = {}
+      obj.parent_category_id = that.parent_id
+      findChildCategory(obj).then(res=> {
+        if(res.code==200){
+          that.i_customClass = res.data;
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
     },
     //删除确认
     confirmDeleteCourseWork() {
@@ -389,6 +416,14 @@ export default {
       that.showQuestionBank = true;
       that.addState(that.all_courseList);
       that.deleteList = [];
+      that.getQuestionBackAll();
+      that.findParentCategory();
+    },
+    getData(data){
+      let that = this;
+      console.log(data.cindex)
+      console.log(data.sindex)
+      that.sindex = data.sindex;
     },
   },
 };

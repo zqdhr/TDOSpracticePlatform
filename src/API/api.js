@@ -130,6 +130,17 @@ var findChildCategory = function(data){
 // 	return axios.get('/findChildCategory?parent_category_id='+data.parent_category_id)
 // }
 
+
+//管理员查询分类下的实验
+var findAllByCategoryId = function(data){
+	return axios.get('/findExperiment?category_id='+data.category_id+'&name='+data.name+'&perPage='+data.perPage+'&page='+data.page)
+}
+//
+// //管理员查询分类下的实验
+// var findAllByCategoryId = function(data){
+// 	return axios.get('/findAllByCategoryId?category_id='+data.category_id)
+// }
+
 //管理员查询课件库所有的课件
 var getCoursewareAll = function(data){
 	return axios.get('/getCoursewareAll?perPage='+data.per_page+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name)
@@ -166,6 +177,11 @@ var getQuestionBackAll = function(data){
 	return axios.get('/getQuestionBackAll?type='+data.type+'&content='+data.content+'&category_id='+data.category_id+'&perPage='+data.perPage+'&page='+data.page)
 }
 
+//管理员查询课程节下的题目
+var getStudentAnswerBySectionId = function(data){
+	return axios.get('/getStudentAnswerBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page)
+}
+
 //管理员删除所选题目
 var deleteQuestionBackById = function(data){
 	return axios.post('/deleteQuestionBackById', data,{headers: {'Content-Type':'application/json'}})
@@ -191,7 +207,7 @@ export{
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
 	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById,insertCourseChapterCompleted,
 	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory,
-	getStudentJobList,getStudentJobDetail,submitCorrectJob
+	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId
 }
 
 function getJson (data) {
