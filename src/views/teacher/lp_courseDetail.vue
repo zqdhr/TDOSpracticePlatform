@@ -88,7 +88,7 @@
                 <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="showStudentList && navindex==2"></studentList>
                 
                 <!--课程实验-->
-                <experiment v-if="navindex==3"></experiment>
+                <experiment v-if="navindex==3" ></experiment>
                 
                 <!--课程课件-->
                 <courseware v-if="navindex==4"></courseware>

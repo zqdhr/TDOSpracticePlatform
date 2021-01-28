@@ -12,9 +12,9 @@
                         <li v-for="(item,index) in experimentList" :key="index">
                             <div class="info pointer"  @click="link_Detail">
                                 <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3">
-                                   <a class="icon icon_close pointer" @click.stop="isDelete=true"></a>
+                                   <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="isDelete=true"></a>
                                 </el-tooltip>
-                                <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3">
+                                <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3 && role!=1">
                                    <a class="icon icon_set pointer" @click.stop="isSet=true"></a>
                                 </el-tooltip>
                                  <div class="pic">
@@ -73,6 +73,12 @@
                             :value="item.value">
                             </el-option>
                         </el-select>
+                    </div>
+                </div>
+                 <div class="set-col">
+                    <p class="ptitle">报告要求：</p>
+                    <div class="dselect">
+                        <el-input type="textarea" :rows="5" resize="none"/>
                     </div>
                 </div>
                  <div class="set-col">
@@ -173,8 +179,8 @@ export default {
         },
         getData(data){
             let that = this;
-            console.log(data.cindex)
-            console.log(data.sindex)
+            //console.log(data.cindex)
+            //console.log(data.sindex)
             that.sindex = data.sindex;
         },
     }
@@ -203,14 +209,15 @@ export default {
         .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px;}
         .icon{width: 20px;height: 20px;display: block; position:absolute;top:10px}
         .icon_close{background: url(../assets/img/n_close.png) center no-repeat;right:28px}
-        .icon_set{background: url(../assets/img/n_set.png) center no-repeat;right:0px}
+        .icon_set{background: url(../assets/img/n_set.png) center no-repeat;right:5px}
+        .admin_icon_close{right: 15px;}
     }
     .student_list_ul{
         .info{padding-top: 0px;}
     }
 }
 
-.setform{margin: 0 60px;
+.setform{margin: 0 30px;
   .ptitle{font-size: 16px; padding:10px 0;}
 }
 .dselect{width:100%;}
