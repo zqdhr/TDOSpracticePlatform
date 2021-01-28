@@ -84,6 +84,9 @@
                 ></span>
               </li>
             </ul>
+            <div class="add_btn_box">
+              <a class="btnDefault pointer">确认</a>
+            </div>
           </div>
         </div>
         
@@ -446,7 +449,7 @@ export default {
 @import url(../assets/less/admin.less);
 @import url(../assets/less/coursework.less);
 .setScope{margin: 0 50px;}
-
+.add_btn_box{text-align: center;}
 </style>
 <style lang="less">
 .dialog_newJobName{
