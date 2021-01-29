@@ -29,7 +29,7 @@
                                 :multiple="true"
                                 ref="upload"
                                 v-model="files"
-                               extensions="jpg,gif,png,webp"
+                                extensions="jpg,gif,png,webp"
                                 :post-action="uploadUrl"
                                 :auto-upload="false"
                                 @input-file="inputFile"
@@ -236,38 +236,28 @@ export default {
      //上传的回调函数，每次上传回调都不一样
     inputFile(newFile, oldFile) {
         let that = this;
-       
-        // if ( Boolean(newFile) !== Boolean(oldFile) ||oldFile.error !== newFile.error) {
-        //     if (!this.$refs.upload.active) {
-        //     this.$refs.upload.active = true;
-        //     }
-        // }
+         /*
+         if ( Boolean(newFile) !== Boolean(oldFile) ||oldFile.error !== newFile.error) {
+             if (!this.$refs.upload.active) {
+            this.$refs.upload.active = true;
+            }
+        }
+        */
    
-        if (newFile && oldFile) {
-            //add
+        if (newFile && oldFile) {   
             if (newFile && oldFile && !newFile.active && oldFile.active) {
             //console.log('response', newFile.response)
             let response = newFile.response;
             console.log(this.files)
-            if (response.code == 200) {
-                that.upload(that.files[0].file)
-            } else {
-                this.$message.error("文件上传失败");
-            }
+            that.upload(that.files[0].file)
+     
             if (newFile.xhr) {
                 //  Get the response status code
                 console.log("status", newFile.xhr.status);
             }
             }
         }
-        if (newFile && oldFile) {
-            // update
-            console.log("update", newFile);
-        }
-        if (!newFile && oldFile) {
-            // remove
-            console.log("remove", oldFile);
-        }
+
 
         },
         //上传图片
@@ -278,6 +268,7 @@ export default {
             obj.append('file',file)
             upload(obj).then(res=>{
                 if (res.code==200) {
+                    console.log(123)
                     this.$message.success("文件上传成功");
                 }else {
                     that.$toast(res.message,3000)
@@ -372,7 +363,7 @@ export default {
             obj.introduction = that.course.intro
             obj.pic_url = "1122"
             obj.chapters = that.chapters;
-            console.log(that.chapters)
+            this.$refs.upload.active = true;
             insertCourse(JSON.stringify(obj)).then((res) => {
                 if (res.code == 200) {
                     that.isNewCourses = true;
