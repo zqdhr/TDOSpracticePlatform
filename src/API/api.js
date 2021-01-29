@@ -232,10 +232,6 @@ var submitCorrectJob = function (data) {
 var deleteExperiment =function(data){
 	return axios.post('/deleteExperiment?id='+data.id)
 }
-//查看实验详情
-var findAllByType  =function(data){
-	return axios.get('/findAllByType?id='+data.id+'&type=0&perPage=1&page=1')
-}
 
 //查询课程下的实验
 var findAllByType =function(data){
