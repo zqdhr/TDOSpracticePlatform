@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     navindex:0,
     uploadUrl:'http://192.168.1.138:8111/upload_excel',
-    imageBaseUrl:'http://192.168.1.228:8080',
+    pic_Url:'http://192.168.1.228:8080',
     ad_menus: [
       { text: "统计分析", path: "/admin" },
       { text: "课程管理", path: "/admin/courseManagement" },

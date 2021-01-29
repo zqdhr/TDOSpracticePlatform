@@ -183,7 +183,8 @@ export default {
             isNewCoursesSuccess:false, //课程新建成功
 
             newSubSection:0, //定义一个变量
-            newSubSection_last:0
+            newSubSection_last:0,
+            picUrl:''
 
         }
     },
@@ -249,7 +250,6 @@ export default {
             //console.log('response', newFile.response)
             let response = newFile.response;
             console.log(this.files)
-            that.upload(that.files[0].file)
      
             if (newFile.xhr) {
                 //  Get the response status code
@@ -268,8 +268,22 @@ export default {
             obj.append('file',file)
             upload(obj).then(res=>{
                 if (res.code==200) {
-                    console.log(123)
-                    this.$message.success("文件上传成功");
+                    that.picUrl = res.data.name;
+                    let obj = {};
+                    obj.owner_id = sessionStorage.getItem("userId");
+                    obj.name = that.course.name;
+                    obj.introduction = that.course.intro
+                    obj.pic_url = that.picUrl;
+                    obj.chapters = that.chapters;
+                    this.$refs.upload.active = true;
+                    insertCourse(JSON.stringify(obj)).then((res) => {
+                        if (res.code == 200) {
+                            // this.$message.success("新建成功");
+                        } else {
+                            that.$toast(res.message, 3000);
+                        }
+                    });
+
                 }else {
                     that.$toast(res.message,3000)
                 }
@@ -357,20 +371,7 @@ export default {
             if(that.course.intro ==''){
                 return  that.$toast('请输入课程详情',2000)
             }
-            let obj = {};
-            obj.owner_id = sessionStorage.getItem("userId");
-            obj.name = that.course.name;
-            obj.introduction = that.course.intro
-            obj.pic_url = "1122"
-            obj.chapters = that.chapters;
-            this.$refs.upload.active = true;
-            insertCourse(JSON.stringify(obj)).then((res) => {
-                if (res.code == 200) {
-                    that.isNewCourses = true;
-                } else {
-                    that.$toast(res.message, 3000);
-                }
-            });
+            that.isNewCourses = true;
         },
         //此方法是用来写新建课程的接口的
         uploadCourses(){
@@ -379,6 +380,9 @@ export default {
              
             //上传成功后 isNewCoursesSuccess=true即可显示创建课程成功弹窗
             that.isNewCoursesSuccess=true;
+
+            that.upload(that.files[0].file)
+
         },
         //新建成功后跳转课程管理页面
         confirmSuccess(){

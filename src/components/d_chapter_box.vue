@@ -241,13 +241,14 @@ export default{
                 if(res.code==200){
                     res.data.chapters.sort(this.compare1('order'))
                     that.chapters = res.data.chapters
-                    // for(let i =0;i<res.data.chapters.length;i++){
-                    //     that.getCoursewareByChapterId(res.data.chapters[i].id,i)
-                    //     for(let j = 0 ;j<res.data.chapters[i].sections.length;j++){
-                    //         that.getCoursewareBySectionId(res.data.chapters[i].sections[j].id,i,j)
-                    //         // that.getAssignmentBySectionId(res.data.chapters[i].sections[j].id,i,j)
-                    //     }
-                    // }
+                    for(let i =0;i<res.data.chapters.length;i++){
+                        res.data.chapters[i].sections.sort(this.compare1('order'))
+                        that.chapters[i].sections = res.data.chapters[i].sections
+                        for(let j = 0 ;j<res.data.chapters[i].sections.length;j++){
+                            res.data.chapters[i].sections[j].small_sections.sort(this.compare1('order'))
+                            that.chapters[i].sections[j].small_sections = res.data.chapters[i].sections[j].small_sections
+                        }
+                    }
 
 
                 }else{
@@ -356,7 +357,6 @@ export default{
            let tmp = that.chapters[index].sections;
            console.log(tmp)
            for(var i =0;i<tmp.length;i++){
-
                that.$set(that.chapters[index].sections[i],'show',false)
            }
            that.$set(item,'show',!show)

@@ -237,7 +237,7 @@ export default {
                    console.log(res.data)
                    that.experimentList  =res.data.list
                    for (let index = 0; index <  that.experimentList.length; index++) {
-                    that.experimentList[index].pic_url = that.$store.state.imageBaseUrl+ that.experimentList[index].pic_url
+                    that.experimentList[index].pic_url = that.$store.state.pic_Url+ that.experimentList[index].pic_url
                   
                    }
                    that.total = res.data.total

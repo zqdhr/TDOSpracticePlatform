@@ -137,18 +137,17 @@
                     scope.row.answer
                   }}</span>
                 </el-tooltip>
-                <span class="s-text textline1" v-if="quest_type == 0">{{
-                  scope.row.answer
-                }}</span>
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="pictureAddress" label="图片地址">
+          <el-table-column prop="pictureAddress" label="题目图片">
             <template slot-scope="scope">
               <div class="" v-if="scope.row.picUrl.length > 0">
-                <span class="s-text textline1 pointer" @click="getPreview(scope.row.picUrl)">{{
-                  scope.row.picUrl
-                }}</span>
+                <span
+                  class="s-text textline1 pointer"
+                  @click="getPreview(scope.row.picUrl)"
+                  >点击查看</span
+                >
               </div>
             </template>
           </el-table-column>
@@ -245,8 +244,13 @@
             <el-form ref="form" label-width="90px">
               <el-form-item>
                 <span slot="label" class="s-label">所属分类：</span>
-                <el-cascader v-model="category" :options="categoryOptions">
-                  <!--                    @change="handleChange" clearable>-->
+                <el-cascader
+                  v-model="category"
+                  :options="categoryOptions"
+                  :props="{ value: 'id', label: 'name', children: 'cates' }"
+                  @change="handleChange"
+                  clearable
+                >
                 </el-cascader>
               </el-form-item>
               <el-form-item>
@@ -267,31 +271,38 @@
               </el-form-item>
               <el-form-item>
                 <span slot="label" class="s-label">题目详情：</span>
-                <el-input v-model="question.title" type="textarea" resize="none"></el-input>
+                <el-input
+                  v-model="question.title"
+                  type="textarea"
+                  resize="none"
+                ></el-input>
               </el-form-item>
 
               <el-form-item v-if="choseQuestionType == 0">
                 <span slot="label" class="s-label">题目选项：</span>
-                <div class="din-options" v-for="(item, index) in question.options"      :key="index">
+                <div
+                  class="din-options"
+                  v-for="(item, index) in question.options"
+                  :key="index"
+                >
                   <el-input
-                    style="margin-bottom: 12px;width:90%"
-                    
-               
+                    style="margin-bottom: 12px; width: 90%"
                     v-model="item.label"
-                    type="text" 
+                    type="text"
                   ></el-input>
-                  <a class="btn_options pointer" :class="{'btn_options_add':index+1==question.options.length}"></a>
+                  <a
+                    @click="editChoice(index)"
+                    class="btn_options pointer"
+                    :class="{
+                      btn_options_add: index + 1 == question.options.length,
+                    }"
+                  ></a>
                 </div>
-                
               </el-form-item>
 
               <el-form-item v-if="choseQuestionType == 0">
                 <span slot="label" class="s-label">题目答案：</span>
-                <el-select
-                  v-model="question.answer"
-                  placeholder="题目答案"
-                  @change="dialogselectType"
-                >
+                <el-select v-model="question.answer" placeholder="题目答案">
                   <el-option
                     v-for="item in question.options"
                     :key="item.value"
@@ -368,6 +379,8 @@ import {
   deleteQuestionBackById,
   findParentCategory,
   findChildCategory,
+  adminSubmitQuestions,
+  upload,
 } from "@/API/api";
 
 export default {
@@ -386,7 +399,7 @@ export default {
       questionList: [],
       multipleSelection: [],
       guidePic: null,
-      total: 100, //总共条数
+      total: 0, //总共条数
       perPage: 15, //每页页数
       curPage: 1, //当前页
       showViewer: false, //图片预览
@@ -405,7 +418,7 @@ export default {
         answer: "",
         options: [
           { value: 1, label: "" },
-          { value: 1, label: "" }
+          { value: 2, label: "" },
         ],
       },
       choseQuestionType: "", //单个上传题目类型
@@ -415,22 +428,10 @@ export default {
         { value: "1", label: "简答题" },
       ],
       category: [], //实验所属分类
-      categoryOptions: [
-        {
-          value: "zhinan",
-          label: "指南",
-          children: [
-            {
-              value: "shejiyuanze",
-              label: "设计原则",
-            },
-            {
-              value: "shejiyuas",
-              label: "哈哈",
-            },
-          ],
-        },
-      ],
+      categoryOptions: [],
+      addCategoryID: "",
+      addCategoryItem: {}, //分类对象
+      pic_upload_url: "",
     };
   },
   components: {
@@ -448,6 +449,23 @@ export default {
     that.findParentCategory();
   },
   methods: {
+    //新增删减题目选项
+    editChoice(val) {
+      let that = this;
+
+      if (val == that.question.options.length - 1 && val < 3) {
+        //新增
+        that.question.options.push({ value: val + 1, label: "" });
+      } else if (that.question.options.length > 2 && val < 3) {
+        //删除
+        that.question.options.splice(val, 1);
+      }
+      //重置value
+      for (let i = 0; i < that.question.options.length; i++) {
+        let aa = that.question.options[i];
+        aa.value = i + 1;
+      }
+    },
     //获取父类
     findParentCategory() {
       let that = this;
@@ -456,8 +474,14 @@ export default {
         console.log(res);
         if (res.code == 200) {
           that.options = res.data;
+          that.categoryOptions = res.data;
+
           // that.customClass = that.options[0];
           // that.findChildCategory(that.customClass.id);
+
+          for (let index = 0; index < that.categoryOptions.length; index++) {
+            that.findChildCategory1(that.categoryOptions[index].id);
+          }
         } else {
           this.$toast(res.message, 2000);
         }
@@ -474,6 +498,37 @@ export default {
           // if (that.options1.length > 0) {
           //   that.i_customClass = that.options1[0];
           // }
+        } else {
+          this.$toast(res.message, 2000);
+        }
+      });
+    },
+
+    //实验所属分类选择
+    handleChange(value) {
+      let that = this;
+      //  console.log(value.length==1?value[0]:value[1]);
+      that.addCategoryItem = value;
+      that.addCategoryID = value.length == 1 ? value[0] : value[1];
+    },
+
+    findChildCategory1(cateId) {
+      let that = this;
+      let obj = {};
+      obj.parent_category_id = cateId;
+      findChildCategory(obj).then((res) => {
+        // alert(JSON.stringify(res));
+        if (res.code == 200) {
+          let catesons = res.data;
+          if (catesons.length > 0) {
+            for (let i = 0; i < that.options.length; i++) {
+              if (that.options[i].id === cateId) {
+                that.$set(that.categoryOptions[i], "cates", catesons); // right
+                break;
+              }
+            }
+            // alert(that.categoryOptions)
+          }
         } else {
           this.$toast(res.message, 2000);
         }
@@ -645,6 +700,27 @@ export default {
         // remove
         console.log("remove", oldFile);
       }
+
+      //上传图片
+      that.upload(that.files1[0].file);
+    },
+    //上传图片
+    upload(file) {
+      let that = this;
+      let obj = new FormData();
+      obj.append("type", 0);
+      obj.append("file", file);
+
+      // alert(that.$store.state.picUrl);
+
+      upload(obj).then((res) => {
+        if (res.code == 200) {
+          //  alert(JSON.stringify(res))
+          that.pic_upload_url = res.data.name;
+        } else {
+          that.$toast(res.message, 3000);
+        }
+      });
     },
     //父类
     selectType(val) {
@@ -676,16 +752,19 @@ export default {
       let that = this;
       that.isNewType = 2;
       that.choseQuestionType = that.questOptions[0].value;
+      that.files1 = [];
+      that.pic_upload_url = "";
     },
     //点击图片
     getPreview(val) {
-      // alert(val);
-      this.showViewer = true;
-      this.guidePic = val;
-        // "https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg";
-      this.guidePic
-        ? (this.showViewer = true)
-        : this.$message.info("当前没有可预览的图片");
+
+      let that = this;
+      that.showViewer = true;
+      that.guidePic =that.$store.state.pic_Url+val;
+      // "https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg";
+      that.guidePic
+        ? (that.showViewer = true)
+        : that.$message.info("当前没有可预览的图片");
     },
     //图片预览关闭
     showViewerClose() {
@@ -735,7 +814,84 @@ export default {
     dialogselectType(val) {
       console.log(val);
       let that = this;
-      that.files1 = [];
+      // that.files1 = [];
+      that.question.answer = "";
+    },
+    //新增题目保存
+    saveTilte() {
+      let that = this;
+
+
+      // this.$refs.upload.active = true;
+      // this.isNew = false;
+
+      let obj = {};
+      obj.type = that.choseQuestionType;
+      if (that.addCategoryID == "") {
+        return that.$toast("请选择所属分类", 3000);
+      }
+      if (that.question.title == "") {
+        return that.$toast("请输入题目详情", 3000);
+      }
+      obj.content = that.question.title;
+
+      if (that.choseQuestionType == 0) {
+        let tmpArr = [];
+        for (let i = 0; i < that.question.options.length; i++) {
+          let aa = that.question.options[i];
+          if (aa.label == "") {
+            return that.$toast("题目选项答案存在空", 3000);
+          }
+          tmpArr.push(aa.label);
+        }
+        obj.choice = JSON.stringify(tmpArr);
+      } else {
+        obj.choice = "";
+      }
+      if (that.question.answer == "") {
+        return that.$toast("请输入题目答案", 3000);
+      }
+      obj.answer = that.question.answer;
+      if (that.choseQuestionType == 0) {
+        //选择题答案处理下
+        let tmp = that.question.options[that.question.answer - 1];
+        obj.answer = tmp.label;
+      }
+      obj.pic_url = that.pic_upload_url;
+
+      if (that.addCategoryItem.length == 1) {
+        // obj.model_id = that.addCategoryItem[0];
+        // obj.category_id = "";
+        obj.model_id = "";
+        obj.category_id = that.addCategoryItem[0];
+      } else {
+        obj.model_id = "";
+        obj.category_id = that.addCategoryItem[1];
+      }
+
+      console.log(JSON.stringify(obj));
+
+      adminSubmitQuestions(obj).then((res) => {
+        console.log(JSON.stringify(res));
+        if (res.code == 200) {
+          that.files1 = [];
+          that.pic_upload_url = "";
+          let obj = {
+            title: "",
+            answer: "",
+            options: [
+              { value: 1, label: "" },
+              { value: 2, label: "" },
+            ],
+          };
+          that.question = obj;
+          this.isNew = false;
+          that.$toast("题目新增成功", 3000);
+          that.selectQuestionBackAll("");
+        } else {
+          that.$toast(res.message, 3000);
+        }
+      });
       /*
            let obj ={
               title:'',
@@ -743,21 +899,10 @@ export default {
               options:[
                 {value:1,label:''},
                 {value:2,label:''},
-                {value:3,label:''},
-                {value:4,label:''},
               ],
             }
           that.question = obj
           */
-    },
-    //新增题目保存
-    saveTilte() {
-      let that = this;
-      this.$refs.upload.active = true;
-      this.isNew = false;
-      console.log(that.choseQuestionType);
-      console.log(that.question.title);
-      console.log(that.question.options);
     },
   },
 };
@@ -820,7 +965,7 @@ export default {
 }
 .din-options {
   display: inline-block;
-  width:100%;
+  width: 100%;
 }
 .btn_options {
   width: 20px;
@@ -830,12 +975,12 @@ export default {
   margin-left: 12px;
   .borderRadius(5px,5px,5px,5px);
   background: url(../../assets/img/question_reduce.png) center no-repeat;
-  background-size: 20px 2px; -webkit-background-size: 20px 2px;
- 
+  background-size: 20px 2px;
+  -webkit-background-size: 20px 2px;
 }
-.btn_options_add{
-   
-   background: url(../../assets/img/question_add.png) center no-repeat;
-   background-size: 20px; -webkit-background-size: 20px;
+.btn_options_add {
+  background: url(../../assets/img/question_add.png) center no-repeat;
+  background-size: 20px;
+  -webkit-background-size: 20px;
 }
 </style>
