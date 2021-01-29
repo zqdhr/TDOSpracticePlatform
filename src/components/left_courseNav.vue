@@ -61,7 +61,7 @@ export default {
         getCourseById(){
             let that = this;
             let obj = {};
-            obj.course_id = this.$route.query.courserId
+            obj.course_id = this.$route.query.courseId
             getCourseById(obj).then(res=> {
                 if(res.code==200){
                     that.courseName = res.data.name;

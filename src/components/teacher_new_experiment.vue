@@ -51,8 +51,9 @@
                 :placeholder="inplaceholder"
                 type="text"
                 autocomplete="off"
+                v-model="searchTx"
               />
-              <a class="searchBtn pointer"></a>
+              <a class="searchBtn pointer" @click="search"></a>
             </div>
           </div>
         </div>
@@ -110,7 +111,7 @@
 <script>
 
 import toastVue from "./toast/toast.vue";
-import {findParentCategory,findChildCategory,findAllByCategoryId} from '@/API/api';
+import {findParentCategory,findChildCategory,findAllByCategoryId,bindExperiments} from '@/API/api';
 export default {
   data() {
     return {
@@ -119,6 +120,7 @@ export default {
           ],
      
       total: 1,
+      searchTx:'',
       perPage: 8, //8个实验一页
       curPage: 1, //设备列表
 
@@ -141,13 +143,12 @@ export default {
   },
   components: {
   },
-  props: {},
   created() {
-
   },
   mounted(){
     let that = this;
     that.findParentCategory();
+
   },
   methods: {
     //自定义父级分类
@@ -177,12 +178,30 @@ export default {
         }
       })
     },
+    //新增时搜索实验名
+    search(){
+      let that = this;
+      let obj = {}
+      obj.category_id = that.parent_id;
+      obj.name = that.searchTx;
+      obj.perPage = 10;
+      obj.page = 1;
+      findAllByCategoryId(obj).then(res=> {
+        if(res.code==200){
+          that.total = res.data.total
+          that.all_experimentList = res.data.list;
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
+    },
     //点击选择实验
-    click_new() {
+    click_new(sid) {
       let that = this;
       that.isnewFilter = true;
       that.chooseList = [];
       that.isnewFilterType = 1;
+      that.sindex = sid;
       that.array_addChecked(that.all_experimentList);
     },
   
@@ -199,8 +218,26 @@ export default {
     },
     //实验库选择确认选择
     confirmChoose() {
+
       let that = this;
-      that.isnewFilter = false;
+      console.log(that.sid)
+      console.log(that.chooseList)
+      let obj = {};
+      let id = [];
+      for(let i = 0;i<that.chooseList.length;i++){
+        id.push(that.chooseList[i].id)
+      }
+      obj.experiment_id = id
+      obj.section_id = that.sindex;
+      console.log(obj)
+      bindExperiments(JSON.stringify(obj)).then(res=> {
+        if(res.code==200){
+          that.isnewFilter = false;
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
+
     },
     //弹窗关闭
     closeDialog() {
@@ -216,7 +253,7 @@ export default {
     //弹窗自定义分类
     selectCustomType(val) {
       let that = this;
-      console.log("选择自定义分类");
+      console.log("选择自定义分类1");
       that.parent_id = that.customClass[val].id
 
       let obj = {}
@@ -224,12 +261,18 @@ export default {
       findChildCategory(obj).then(res=> {
         if(res.code==200){
           that.i_customClass = res.data;
+          for(let i =0;i<res.data.length;i++){
+            that.$set(that.i_customClass[i],'value',i)
+          }
         }else{
           this.$toast(res.message,2000)
         }
       })
       let objC = {};
       objC.category_id = that.customClass[val].id
+      objC.name = that.searchTx
+      objC.perPage = 10;
+      objC.page = 1;
       findAllByCategoryId(objC).then(res=> {
         if(res.code==200){
           that.all_experimentList = res.data.list;
@@ -241,8 +284,21 @@ export default {
     //弹窗自定义分类
     i_selectCustomType(val) {
       let that = this;
-      console.log("选择自定义分类");
-      // console.log("aa"+obj.parent_category_id)
+      console.log("选择自定义分类2");
+      console.log(that.i_customClass[val].id)
+      that.parent_id = that.i_customClass[val].id;
+      let objC = {};
+      objC.category_id = that.i_customClass[val].id
+      objC.name = that.searchTx
+      objC.perPage = 10;
+      objC.page = 1;
+      findAllByCategoryId(objC).then(res=> {
+        if(res.code==200){
+          that.all_experimentList = res.data.list;
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
 
     },
     //数组新增checked元素

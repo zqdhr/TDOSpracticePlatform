@@ -145,7 +145,7 @@ export default {
 
 
             showStudentList:false,//是否显示学生列表
-            courseId:'kdsfkld',
+            courseId:'',
             course:'111'
             
         }
@@ -154,7 +154,7 @@ export default {
     created(){
         let that = this;
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
-       
+        that.courseId = that.$route.query.courseId
     },
     mounted(){
         let that = this;
@@ -164,7 +164,7 @@ export default {
     },
     methods:{
         getCourseById(){
-            let course_id = this.$route.query.course_id
+            let course_id = this.$route.query.courseId
             let that = this;
             let obj = {};
             obj.course_id = course_id;
@@ -175,7 +175,11 @@ export default {
                     that.numbers = res.data.numbers==null?that.numbers = 0:res.data.numbers
                     that.chapterNumber = res.data.chapter_number
                     that.sectionNumber = res.data.section_number
-                    that.time = res.data.time = res.data.start_at.replace('T',' ') +'-'+ res.data.end_at.replace('T',' ');
+                    if(res.data.start_at !='' && res.data.end_at != '' && res.data.start_at !=null && res.data.end_at != null){
+                        that.time = res.data.time = res.data.start_at.replace('T',' ') +'-'+ res.data.end_at.replace('T',' ');
+                    }else{
+                        that.time = '';
+                    }
                     that.course = res.data
                 }else{
                     that.$toast(res.message,3000)
@@ -183,15 +187,19 @@ export default {
             })
         },
         modifyCourseTime(){
-            let course_id = this.$route.query.course_id
             let that = this;
             let obj = {};
             obj.user_id = sessionStorage.getItem('userId');
-            obj.course_id = course_id;
+            obj.course_id = that.$route.query.courseId;
+
+            that.startTime=that.startTime.getFullYear() + '-' + (that.startTime.getMonth() + 1) + '-' + that.startTime.getDate();
+            console.log(that.startTime)
             obj.start = that.startTime;
+            that.endTime=that.endTime.getFullYear() + '-' + (that.endTime.getMonth() + 1) + '-' + that.endTime.getDate();
             obj.end = that.endTime;
             obj.class_id = '';
-            modifyCourseStatus(obj).then(res=> {
+            console.log(JSON.stringify(obj))
+            modifyCourseStatus(JSON.stringify(obj)).then(res=> {
                 if(res.code==200){
                     alert("1")
                 }else{

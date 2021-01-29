@@ -160,7 +160,7 @@ export default {
         linkDetail(id){
             let that = this
             that.$store.commit("updateNavindex", 1);
-            that.$router.push({path:'/admin/courseDetail',query:{courserId:id}}).catch((err)=>{
+            that.$router.push({path:'/admin/courseDetail',query:{courseId:id}}).catch((err)=>{
                 console.log(err)
             })
         },

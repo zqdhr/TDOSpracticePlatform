@@ -27,6 +27,7 @@
    </div>
 </template>
 <script>
+import {searchClass,searchClassCount} from '@/API/api';
 export default{
     data(){
         return{
@@ -44,13 +45,37 @@ export default{
         for(var i=0;i<that.classList.length;i++){
             that.$set(that.classList[i], 'checked', 0)
         }
+        that.searchClass();
     },
     methods:{
+        //班级列表
+        searchClass(){
+            let that = this;
+            searchClass().then(res=> {
+                if(res.code==200){
+                    that.classList = res.data
+                    for(let i =0;i<res.data.length;i++){
+                        let objCount = {}
+                        objCount.classId= res.data[i].id
+                        searchClassCount(objCount).then(res1=> {
+                            if(res.code==200){
+                                that.$set(that.classList[i], "number", res1.data);
+                            }else{
+                                that.$toast(res.message,3000)
+                            }
+                        })
+                    }
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
                 //班级选择
         checkClass(obj,checked){
             let that = this;
             that.$set(obj,'checked',!checked)
             let tmp = JSON.parse(JSON.stringify(that.checkedList))
+            alert(obj+"111"+checked)
             if(checked==0){
              that.checkedList.push(obj)
             }else{
@@ -62,6 +87,7 @@ export default{
               that.checkedList = tmp;
               
             }
+            console.log(that.checkedList)
         },
 
         //班级选择确认

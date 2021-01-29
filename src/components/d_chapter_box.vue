@@ -40,7 +40,7 @@
                       <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
                         <a class="a_save pointer" @click="addNewChapters(index)"></a>
                       </el-tooltip>
-                     <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该章吗？'"></a>
+                     <a class=" a_delete" @click="deleteChapter(index)"></a>
                      <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
 
@@ -76,7 +76,7 @@
                                         <input placeholder="请输入节名称" v-model="iitem.name"/>
                                     </div>
                                 </div>
-                                <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该节吗？'"></a>
+                                <a class=" a_delete" @click="deleteSection(index,iindex)"></a>
                                 <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>
                             </div>
                             </template>
@@ -96,7 +96,7 @@
                                                 <div class="din">
                                                     <input placeholder="请输入小节名称" v-model="i_item.name"/>
                                                 </div>
-                                                <a class=" a_delete" @click="isDelete=true;deleteMess='确定要删除该小节吗？'"></a>
+                                                <a class=" a_delete" @click="deleteSection(index,i_index)"></a>
                                             </div>
                                     </template>
 
@@ -135,11 +135,11 @@
         <div slot="title" class="dialog_header">请注意!</div>
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
-            <span class="span_icon icon_waring">{{deleteMess}}</span>
+            <span class="span_icon icon_waring">确认删除此章（小节）吗？</span>
             </p>
         </div>
         <div slot="footer" class="dialog-footer">
-            <a class="btnDefault" @click="isDelete=false">确 认</a>
+            <a class="btnDefault" @click="deleteChapterOrSection">确 认</a>
             <a
             class="btnDefault"
             @click="isDelete = false;"
@@ -291,7 +291,32 @@ export default{
         //     })
         //},
 
+        //删除
+        deleteChapter(num){
+            let that = this;
+            that.chaptersNum = num;
+            that.isDelete=true;
+            that.chaptersOrsectio=1;
 
+        },
+        //删除小节
+        deleteSection(num,num1){
+            let that = this;
+            that.chaptersNum = num;
+            that.sectionNum=num1;
+            that.isDelete=true;
+            that.chaptersOrsectio=2;
+        },
+        //判断是删除章还是节
+        deleteChapterOrSection(){
+            let that=this;
+            if (that.chaptersOrsectio==1) {
+                that.chapters.splice(that.chaptersNum,1)
+            } else {
+                that.chapters[that.chaptersNum].sections.splice(that.sectionNum,1)
+            }
+            that.isDelete = false;
+        },
 
         //升序
         compare1(attr) {
