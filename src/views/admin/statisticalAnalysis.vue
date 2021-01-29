@@ -146,7 +146,7 @@ export default {
           experimentData:[//运行实验每页8条
             {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
           ],
-          totalExper:'',
+          totalExper:1,
           ex_Page:1,//实验当前页
           cpuUse:'',
           memoryUse:'',

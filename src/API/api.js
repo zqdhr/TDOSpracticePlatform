@@ -242,6 +242,10 @@ var upload = function(data){
 	return axios.post('/upload',data, { headers: { 'Content-Type': 'multipart/form-data' } })
 }
 
+//管理员添加题库
+var adminSubmitQuestions = function (data) {
+	return axios.post('/addQuestionBack', data, { headers: { 'Content-Type': 'application/json' } })
+}
 
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
@@ -249,7 +253,7 @@ export{
 	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById,insertCourseChapterCompleted,
 	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory,
 	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
-	findAllByType,getRunContainerList,
+	findAllByType,getRunContainerList,adminSubmitQuestions,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload
 }
 
