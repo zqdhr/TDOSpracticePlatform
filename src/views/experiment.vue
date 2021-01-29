@@ -46,7 +46,14 @@
                    
                 </div>
                 <div class="operation_box">
-                     <iframe src="http://192.168.1.228:2222/ssh/host/192.168.1.228/5001" frameborder="0"></iframe>
+                    <!--
+                    <iframe src="https://www.baidu.com/"/>
+                    -->
+                    <!--
+                     <iframe src="http://192.168.1.228:2222/ssh/host/192.168.1.228/5001?username=''&userpassword=''" frameborder="0" ></iframe>
+
+                     -->
+                    
                 </div>
             </div>
             <div class="right_main" :class="{'changeWidth':isHide}">

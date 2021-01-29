@@ -40,7 +40,7 @@
                 </div>
             </div>
          </div>
-         <newdialog   ref="newdialog"></newdialog>
+         <newdialog   ref="newdialog" ></newdialog>
          <experimentDetail ref="experimentDetail"></experimentDetail>
         
          <!--是否删除-->
@@ -225,6 +225,13 @@ export default {
             //console.log(data.cindex)
             //console.log(data.sindex)
             that.sindex = data.sindex;
+            if(data.sindex != "" && that.cindex == ''){
+                that.findAllByType(data.sindex,3,10,1)
+            }else if(data.sindex == "" && that.cindex != ''){
+                that.findAllByType(data.cindex,2,10,1)
+            }else if(data.sindex == "" && that.cindex == ''){
+                that.findAllByType(that.$route.query.courseId,1,10,1)
+            }
         },
     }
 }
