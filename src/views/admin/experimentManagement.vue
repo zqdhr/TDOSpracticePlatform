@@ -8,7 +8,7 @@
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
             </el-select>
           </div>
-          <div class="sel-box" v-show="type == '学生' || type == 1">
+          <div class="sel-box" v-show="type == '学生' || type == 2">
             <el-select v-model="className" placeholder="请选择班级" @change="selectClass" >
               <el-option v-for="item in classList" :key="item.id" :label="item.name" :value="item.id" > </el-option>
             </el-select>
@@ -33,8 +33,9 @@
                  <div class="info-box ">
                    
                      <div class="d-icon"></div>
-                      <p class="p_id textline1">ID：{{item.id}}</p>
-                      <p class="p_id textline1">用户：{{item.username}}</p>
+                      <p class="p_id textline1">ID：{{item.container_id}}</p>
+                      <p class="p_id textline1">用户：{{item.user_name}}</p>
+                     <p class="p_id textline1">实验名称：{{item.name}}</p>
                      <div class="btnbox">
                          <a class="btnDefault machbtn pointer" @click="click_Release(2,item.id)"><span>释放内存</span></a>
                      </div>
@@ -49,7 +50,7 @@
             :page-size="perPage"
             @current-change="handleCurrentChange"
             layout="prev, pager, next,jumper"
-            :total="150"
+            :total="total"
           >
           </el-pagination>
         </div>
@@ -82,10 +83,11 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import {getRunContainerList,searchClass,stopRunContainerList} from '@/API/api';
 export default {
   data() {
     return {
-     options: [ { value: "0", label: "全部"},{ value: "1", label: "学生"}, { value: "2", label: "教师"} ],
+     options: [ { value: "0", label: "全部"},{ value: "1", label: "教师"}, { value: "2", label: "学生"} ],
      type: "", //人员类型选择
       classList: [
         { id: "211", name: "10年03班" },
@@ -94,17 +96,8 @@ export default {
       className: "", //选择的班级
       inplaceholder: "请输入虚拟机id",
       machineList:[
-        {id:'X2D5986D6F5G4H4',username:'张三'},{id:'X2D5986D6F5G4H4',username:'张三'},
-        {id:'X2D5986D6F5G4H4',username:'张三'},{id:'X2D5986D6F5G4H4',username:'张三'},
-        {id:'X2D5986D6F5G4H4',username:'张三'},{id:'X2D5986D6F5G4H4',username:'张三'},
-        {id:'X2D5986D6F5G4H4',username:'张三'},{id:'X2D5986D6F5G4H4',username:'张三'},
-        {id:'X2D5986D6F5G4H4',username:'张三'},{id:'X2D5986D6F5G4H4',username:'张三'},
-        {id:'X2D5986D6F5G4H4',username:'张三'},{id:'X2D5986D6F5G4H4',username:'张三'},
-        {id:'X2D5986D6F5G4H4',username:'张三'},{id:'X2D5986D6F5G4H4',username:'张三'},
-        {id:'X2D5986D6F5G4H4',username:'张三'},{id:'X2D5986D6F5G4H4',username:'张三'},
-        {id:'X2D5986D6F5G4H4',username:'张三'},{id:'X2D5986D6F5G4H4',username:'张三'},
-        
       ],//设备列表
+      total:1,
       showDel: false, //删除多选是否显示
       perPage:24, //虚拟机每页
       curPage:1,
@@ -124,22 +117,63 @@ export default {
     that.type = that.options[0].value
 
   },
+    mounted(){
+        let that = this;
+        that.getAllRunContainer();
+        that.searchClass();
+    },
   methods: {
+      getRunContainerList(type,classId,page,perPage){
+          let that = this;
+          let obj = {};
+          obj.type = type;
+          obj.classId = classId;
+          obj.page = page;
+          obj.perPage = perPage;
+          getRunContainerList(obj).then(res=> {
+              if(res.code==200){
+                  that.total = res.data.total;
+                  that.machineList = res.data.list;
+              }else{
+                  this.$toast(res.message,2000)
+              }
+          })
+      },
+      getAllRunContainer(){
+        let that = this;
+        that.getRunContainerList(0,'',1,10);
+      },
+      //班级列表
+      searchClass() {
+          let that = this;
+          searchClass().then((res) => {
+              if (res.code == 200) {
+                  that.classList = res.data;
+              } else {
+                  that.$toast(res.message, 3000);
+              }
+          });
+      },
     //人员类别选择
     selectType(val) {
       //表示选择的是学生
       let that = this;
       that.className = "";
-      if (val == 0) {
-        console.log('学生')
-      }
       if (val == 1) {
         console.log('老师')
+        that.getRunContainerList(1,'',1,10);
+      }
+      if (val == 2) {
+        console.log('学生')
+        that.getRunContainerList(2,'',1,10);
       }
      
     },
     //班级选择事件
-    selectClass() {},
+    selectClass(val) {
+        let that = this;
+        that.getRunContainerList(2,val,1,10);
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
       console.log(val);
@@ -177,7 +211,14 @@ export default {
     //虚拟机释放确认
     confiremRelease(){
       let that = this;
-      that.release_success = true
+    stopRunContainerList().then((res) => {
+        if (res.code == 200) {
+            that.release_success = true
+        } else {
+            that.$toast(res.message, 3000);
+        }
+    });
+
     },
     //释放成功确认
     successConfirm(){

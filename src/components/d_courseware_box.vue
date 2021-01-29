@@ -99,7 +99,7 @@ export default {
                 {value: '0',label: '内置课件'},{value: '1',label: '教师上传'}
             ],
             typeList:[
-                {value: '',label: '全部'},{value: '0',label: '文档'},{value: '1',label: '视频'}
+                {value: '',label: '全部'},{value: '0',label: '视频'},{value: '1',label: '文档'}
             ],
             cate:'内置课件',//课件分类默认内置课件
             type:'全部',//课件类型默认全部
@@ -135,7 +135,7 @@ export default {
         getCoursewareByCourseId(perPage,page,kind,type){
             let that = this;
             let obj = {};
-            obj.courseId = this.$route.query.courserId
+            obj.courseId = that.$route.query.courserId
             obj.kind = kind;
             obj.type = type;
             obj.perPage = perPage;

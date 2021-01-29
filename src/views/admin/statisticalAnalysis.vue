@@ -99,7 +99,7 @@
                       :data="experimentData"
                       style="width: 100%;">
                       <el-table-column
-                          prop="experName"
+                          prop="name"
                           label="实验名称"
                           >
                       </el-table-column>
@@ -109,26 +109,16 @@
                         >
                       </el-table-column>
                      <el-table-column
-                          prop="curDuration"
+                          prop="count"
                           label="实验人数"
                         >
-                      </el-table-column>
-                      
-                      <el-table-column
-                          prop="courname"
-                          label="所属课程"
-                          width='320'
-                      >
-                          <template slot-scope="scope">
-                             <div class="textline1">{{scope.row.courname}}</div>
-                          </template>
                       </el-table-column>
                       </el-table>
                      <div class="pagination-box">
                       <el-pagination
                         background
                         layout="prev, next"
-                        :total="100"
+                        :total="totalExper"
                         :current-page.sync="ex_Page"
                         @current-change="handleCurrentChange">
                       </el-pagination>
@@ -141,7 +131,7 @@
 </template>
 
 <script>
-import {hardware,online,onlineUsers} from '@/API/api';
+import {hardware,online,onlineUsers,getRunExperiment} from '@/API/api';
 export default {
     data(){
       return{
@@ -156,6 +146,7 @@ export default {
           experimentData:[//运行实验每页8条
             {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
           ],
+          totalExper:'',
           ex_Page:1,//实验当前页
           cpuUse:'',
           memoryUse:'',
@@ -196,6 +187,11 @@ export default {
             let that = this;
             that.searchUserOnline(10,0);
         },
+        /*实验人数列表*/
+        runExperiment(){
+            let that = this;
+            that.getRunExperiment(10,0);
+        },
         searchUserOnline(per_page,page){
             let that = this;
             let obj = {};
@@ -219,6 +215,20 @@ export default {
                 }
             })
         },
+        getRunExperiment(per_page,page){
+            let that = this;
+            let obj = {};
+            obj.perPage = per_page;
+            obj.page = page;
+            getRunExperiment(obj).then(res=> {
+                if(res.code==200){
+                    that.totalExper = res.data.total;
+                    that.experimentData = res.data.list;
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
       handleCurrentChange(val){
         let that = this;
 
@@ -235,6 +245,7 @@ export default {
         that.hardware();
         that.onlineCount();
         that.onlineUsers();
+        that.runExperiment();
     },
 }
 </script>

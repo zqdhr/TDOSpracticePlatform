@@ -119,7 +119,7 @@
     </el-dialog>
 
     <!--新增作业弹窗-->
-    <el-dialog :visible.sync="isnewJobName" width="500px" class="dialog_newJobName">
+    <el-dialog :visible.sync="isnewJobName" width="500px" class="dialog_newJobName" v-if="sindex != ''">
        <div slot="title" class="dialog_header">请设置作业名称</div>
        <div class="setScope">
            <el-input placeholder="输入作业名称"></el-input>

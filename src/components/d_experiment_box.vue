@@ -104,13 +104,12 @@
 <script>
 import courseNav from "@/components/left_courseNav.vue";
 import newdialog from "@/components/teacher_new_experiment.vue";
-import experimentDetail from '@/components/experimentDetail'
-import {getCoursewareByCourseId,getCoursewareByChapterId,getCoursewareBySectionId} from '@/API/api';
+import experimentDetail from '@/components/experimentDetail';
+import {findParentCategory,findChildCategory,findAllByCategoryId,findAllByType} from '@/API/api';
 export default {
     data(){
         return{
             experimentList:[
-               {id:'52dddz',name:'xxxxx实验',duration:'45分钟',endtime:'15:40'},
             ],
             perPage:8, //8个实验一页
             curPage:1,//设备列表
@@ -157,18 +156,62 @@ export default {
     created(){
         let that = this;
         that.time = that.timeOptions[1].value
+        that.sid = 1
     },
     components:{
         courseNav,newdialog,experimentDetail
     },
+    mounted(){
+        let that = this;
+        that.getAllExperiment();
+    },
     methods:{
+        findAllByCategoryId(category_id,name,perPage,page){
+            let that = this;
+            let obj = {}
+            obj.category_id = category_id;
+            obj.name = name;
+            obj.perPage = perPage;
+            obj.page = page;
+            findAllByCategoryId(obj).then(res=> {
+                if(res.code==200){
+                    that.total = res.data.total
+                    that.experimentList = res.data.list;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
+        findAllByType(id,type,perPage,page){
+            let that = this;
+            let obj = {}
+            obj.id = id;
+            obj.type = type;
+            obj.perPage = perPage;
+            obj.page = page;
+            findAllByType(obj).then(res=> {
+                if(res.code==200){
+                    that.total = res.data.total
+                    that.experimentList  = res.data.list;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
+        getAllExperiment(){
+            let that = this;
+            let id = that.$route.query.courseId
+            that.findAllByType(id,1,10,1);
+        },
          //底部分页
         handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
         },
         click_new(){
             let that = this;
-            that.$refs.newdialog.click_new();
+            that.sid = that.sindex;
+            alert(that.sid)
+            that.$refs.newdialog.click_new(that.sid);
         },
          //查看实验详情
         link_Detail(){
@@ -182,6 +225,13 @@ export default {
             //console.log(data.cindex)
             //console.log(data.sindex)
             that.sindex = data.sindex;
+            if(data.sindex != "" && that.cindex == ''){
+                that.findAllByType(data.sindex,3,10,1)
+            }else if(data.sindex == "" && that.cindex != ''){
+                that.findAllByType(data.cindex,2,10,1)
+            }else if(data.sindex == "" && that.cindex == ''){
+                that.findAllByType(that.$route.query.courseId,1,10,1)
+            }
         },
     }
 }

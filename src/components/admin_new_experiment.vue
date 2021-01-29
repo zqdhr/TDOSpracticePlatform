@@ -168,9 +168,9 @@
                 </template>
               </el-table-column>
               <el-table-column prop="size" label="容量"> </el-table-column>
-              <el-table-column prop="Introduction" label="简介" width="280">
+              <el-table-column prop="introduction" label="简介" width="280">
               </el-table-column>
-              <el-table-column prop="applicationNumber" label="被引用次数">
+              <el-table-column prop="quotecount" label="被引用次数">
               </el-table-column>
             </el-table>
           </div>
@@ -267,7 +267,7 @@ import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
-import {findParentCategory,findChildCategory,insertExperiment} from '@/API/api';
+import {findParentCategory,findChildCategory,insertExperiment,getImagequoteList} from '@/API/api';
 export default {
   data() {
     return {
@@ -332,7 +332,7 @@ export default {
         { id: "ddddoogk", name: "c7_k_2c4g50g_bigdate_linux", type: 1, size: "2.5GB", Introduction: "简介文本简介文本简介文本简介文本 简介文本简介文本简介文本", applicationNumber: "6", },
         { id: "ddddoogk", name: "c7_k_2c4g50g_bigdate_linux", type: 0, size: "2.5GB", Introduction: "简介文本简介文本简介文本简介文本 简介文本简介文本简介文本", applicationNumber: "6", },
       ],
-      total: 100,
+      total: 0,
       perPage: 8,
       curPage: 1,
       steps:[{text:''}],//实验步骤
@@ -370,6 +370,7 @@ export default {
     mounted(){
         let that = this;
         that.findParentCategory();
+        that.getImagequoteList()
     },
   methods: {
       //查询分类
@@ -416,6 +417,24 @@ export default {
             })
 
         },
+        //查询所有镜像
+      getImagequoteList(){
+          let that = this;
+          let obj = {};
+          obj.kind = 0;
+          obj.imageName = '';
+          obj.page = 1;
+          obj.perPage = 10;
+          getImagequoteList(obj).then(res=> {
+              if(res.code==200){
+                  console.log(res.data)
+                  that.Imagelibraries = res.data.list;
+                  that.total = res.data.total
+              }else{
+                  this.$toast(res.message,2000)
+              }
+          })
+      },
     //选择实验类型
     selectType(val) {
       console.log(val);

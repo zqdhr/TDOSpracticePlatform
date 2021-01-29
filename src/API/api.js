@@ -40,6 +40,17 @@ var searchClass = function(data){
 	return axios.get('/search_class', getJson(data))
 }
 
+//班级人数
+var searchClassCount = function(data){
+	return axios.get('/getClassCountByClassId?classId='+data.classId)
+}
+
+//管理员端正在进行的实验
+var getRunExperiment = function(data){
+	return axios.get('/getRunExperiment?page='+data.page+'&perPage='+data.perPage)
+}
+
+
 //删除用户
 var deleteUser = function(params){
 	return axios.delete('/delete_user', {data:params})
@@ -67,7 +78,7 @@ var getCourseById = function(data){
 
 //通过id获取课程
 var modifyCourseStatus = function(data){
-	return axios.post('/modify_course_status?user_id='+data.user_id+'&course_id='+data.course_id+'&start='+data.start+'&end='+data.end+'&class_id='+data.class_id)
+	return axios.post('/modify_course_status',data,{headers: {'Content-Type':'application/json'}})
 }
 
 //查询管理员没有发布的课程
@@ -133,13 +144,8 @@ var findChildCategory = function(data){
 
 //管理员查询分类下的实验
 var findAllByCategoryId = function(data){
-	return axios.get('/findExperiment?category_id='+data.category_id+'&name='+data.name+'&perPage='+data.perPage+'&page='+data.page)
+	return axios.get('/findExperimentByCategory?category_id='+data.category_id+'&name='+data.name+'&perPage='+data.perPage+'&page='+data.page)
 }
-//
-// //管理员查询分类下的实验
-// var findAllByCategoryId = function(data){
-// 	return axios.get('/findAllByCategoryId?category_id='+data.category_id)
-// }
 
 //管理员查询课件库所有的课件
 var getCoursewareAll = function(data){
@@ -155,6 +161,22 @@ var getImagequoteList = function(data){
 var deleteImages = function(data){
 	return axios.post('/deleteImages?imagesID='+data.imagesID)
 }
+
+//管理员查询运行试验管理
+var getRunContainerList = function(data){
+	return axios.get('/getRunContainerList?type='+data.type+'&classId='+data.classId+'&page='+data.page+'&perPage='+data.perPage)
+}
+
+//管理员一键释放所有虚拟机
+var stopRunContainerList = function(data){
+	return axios.post('/stopRunContainerList',getJson(data))
+}
+
+//管理员一键释放所有虚拟机
+var bindExperiments = function(data){
+	return axios.post('/bindExperiments',data,{headers: {'Content-Type':'application/json'}})
+}
+
 //根据班级id获取课程
 var getAdminCourseByClassId = function(data){
 	return axios.get('get_admin_course_list_by_class_id?class_id='+data.class_id+'&page='+data.page+'&per_page='+data.perPage)
@@ -187,7 +209,7 @@ var deleteQuestionBackById = function(data){
 	return axios.post('/deleteQuestionBackById', data,{headers: {'Content-Type':'application/json'}})
 }
 
-//查询实验库列表 
+//查询实验库列表
 var findExperiment = function(data){
 	return axios.get('/findExperimentByCategory?category_id='+data.category_id+'&name='+data.name+'&perPage='+data.perPage+'&page='+data.page)
 }
@@ -209,14 +231,22 @@ var submitCorrectJob = function (data) {
 //管理员删除实验
 var deleteExperiment =function(data){
 	return axios.post('/deleteExperiment?id='+data.id)
-} 
+}
+
+//查询课程下的实验
+var findAllByType =function(data){
+	return axios.get('/findAllByType?id='+data.id+ '&type=' + data.type+ '&perPage=' + data.perPage+ '&page=' + data.page)
+}
+
 
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
 	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById,insertCourseChapterCompleted,
 	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory,
-	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment
+	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
+	findAllByType,getRunContainerList,
+	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment
 }
 
 function getJson (data) {

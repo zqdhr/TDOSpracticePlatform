@@ -116,7 +116,7 @@ export default {
     created(){
         let that = this;
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
-        that.courseId = this.$route.query.courserId
+        that.courseId = that.$route.query.courseId
     },
     mounted(){
         let that = this;
@@ -126,7 +126,7 @@ export default {
         getCourseById(){
             let that = this;
             let obj = {};
-            obj.course_id = this.$route.query.courserId
+            obj.course_id = this.$route.query.courseId
             getCourseById(obj).then(res=> {
                 if(res.code==200){
                     that.coursrName = res.data.name;
