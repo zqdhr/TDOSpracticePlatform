@@ -40,7 +40,7 @@
                 </div>
             </div>
          </div>
-         <newdialog   ref="newdialog"></newdialog>
+         <newdialog   ref="newdialog" ></newdialog>
          <experimentDetail ref="experimentDetail"></experimentDetail>
         
          <!--是否删除-->
