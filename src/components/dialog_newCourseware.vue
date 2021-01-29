@@ -210,6 +210,8 @@ export default {
       uploadUrl: "",
       files: [],
       chooseList: [], //课件被选择列表
+      sindex:'',
+      cindex:''
     };
   },
   components: {
@@ -249,12 +251,14 @@ export default {
       });
     },
     //点击新建课件
-    click_new() {
+    click_new(cid,sid) {
       let that = this;
       that.files = [];
       that.isnewFilterType = 0;
       that.isnewFilter = true;
       that.chooseList = [];
+      that.sindex = sid
+      that.cindex = cid
     },
     //点击课件库选择
     choseLibray() {
@@ -280,7 +284,24 @@ export default {
     //课件库选择确认选择
     confirmChoose() {
       let that = this;
-      that.isnewFilter = false
+      console.log(that.sindex)
+      console.log(that.chooseList)
+      // let obj = {};
+      // let id = [];
+      // for(let i = 0;i<that.chooseList.length;i++){
+      //   id.push(that.chooseList[i].id)
+      // }
+      // obj.experiment_id = id
+      // obj.section_id = that.sindex;
+      // console.log(obj)
+      // bindExperiments(JSON.stringify(obj)).then(res=> {
+      //   if(res.code==200){
+      //     that.isnewFilter = false;
+      //     this.reload();
+      //   }else{
+      //     this.$toast(res.message,2000)
+      //   }
+      // })
     },
     //弹窗关闭
     closeDialog() {

@@ -157,7 +157,7 @@
 
 <script>
 import FileUpload from "vue-upload-component";
-import { insertCourse} from "@/API/api";
+import { insertCourse,upload} from "@/API/api";
 export default {
     data(){
         return{
@@ -237,11 +237,11 @@ export default {
     inputFile(newFile, oldFile) {
         let that = this;
        
-        if ( Boolean(newFile) !== Boolean(oldFile) ||oldFile.error !== newFile.error) {
-            if (!this.$refs.upload.active) {
-            this.$refs.upload.active = true;
-            }
-        }
+        // if ( Boolean(newFile) !== Boolean(oldFile) ||oldFile.error !== newFile.error) {
+        //     if (!this.$refs.upload.active) {
+        //     this.$refs.upload.active = true;
+        //     }
+        // }
    
         if (newFile && oldFile) {
             //add
@@ -250,9 +250,7 @@ export default {
             let response = newFile.response;
             console.log(this.files)
             if (response.code == 200) {
-                this.$message.success("文件上传成功");
-                that.searchUser(2, "", "", 1, 10);
-                
+                that.upload(that.files[0].file)
             } else {
                 this.$message.error("文件上传失败");
             }
@@ -270,6 +268,22 @@ export default {
             // remove
             console.log("remove", oldFile);
         }
+
+        },
+        //上传图片
+        upload(file){
+            let that =this
+            let obj= new FormData()
+            obj.append('type',0)
+            obj.append('file',file)
+            upload(obj).then(res=>{
+                if (res.code==200) {
+                    this.$message.success("文件上传成功");
+                }else {
+                    that.$toast(res.message,3000)
+                }
+            })
+
         },
          //添加章节
         addchapter(){

@@ -135,7 +135,7 @@ export default {
         getCoursewareByCourseId(perPage,page,kind,type){
             let that = this;
             let obj = {};
-            obj.courseId = that.$route.query.courserId
+            obj.courseId = that.$route.query.courseId
             obj.kind = kind;
             obj.type = type;
             obj.perPage = perPage;
@@ -244,7 +244,7 @@ export default {
         },
          click_new(){
             let that = this;
-            that.$refs.newdialog.click_new();
+            that.$refs.newdialog.click_new(that.cindex,that.sindex);
         },
     }
 }
