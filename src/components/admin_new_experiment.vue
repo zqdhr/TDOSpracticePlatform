@@ -164,7 +164,7 @@
               </el-table-column>
               <el-table-column prop="type" label="镜像类型">
                 <template slot-scope="scope">
-                  <span>{{ scope.row.type == 0 ? "KVM" : "Docker" }}</span>
+                  <span>{{ scope.row.type == 1 ? "KVM" : "Docker" }}</span>
                 </template>
               </el-table-column>
               <el-table-column prop="size" label="容量"> </el-table-column>
@@ -253,12 +253,27 @@
                  </div>
              </div>
              <div class="btnbox">
-                <a class="btnDefault pointer" @click="confirmNewExperiment">确认新增</a>
+                <a class="btnDefault pointer" @click="confirmNewExperimentBef">确认新增</a>
             </div>
+           
         </div>
 
       </div>
     </el-dialog>
+       <!--点击新建实验按钮前确认弹框-->
+           <el-dialog :visible.sync="innerVisible" width="600px">
+              <div slot="title" class="dialog_header"></div>
+              <div class="confirm_dialog_body">
+              <p class="dialog_mess">
+              <!--成功span的class为icon_success-->
+              <span class="span_icon icon_success">确认新建名为：{{form.name}}的实验？</span>
+              </p>
+              </div>
+              <div slot="footer" class="dialog-footer">
+                <a class="btnDefault" @click="confirmNewExperiment">确 认</a>
+                <a class="btnDefault" @click="innerVisible = false">取 消</a>
+              </div>
+            </el-dialog>
   </div>
 </template>
 <script>
@@ -295,6 +310,7 @@ export default {
                 }      
             ],  
       curIndex:1,
+      innerVisible:false,
       form: {
         name: "",
         duration: "",
@@ -318,10 +334,10 @@ export default {
       jwt: "",
       files: [],
       options: [
-        { value: "0", label: "KVM" },
-        { value: "1", label: "Docker" },
+        // { value: "1", label: "KVM" },
+        { value: "0", label: "Docker" },
       ],
-      type: "", //镜像类型
+      type: "0", //镜像类型
       //新增镜像
       Imagelibraries: [
         { id: "ddddoogk", name: "c7_k_2c4g50g_bigdate_linux", type: 0, size: "2.5GB", Introduction: "简介文本简介文本简介文本简介文本 简介文本简介文本简介文本", applicationNumber: "6", },
@@ -422,7 +438,7 @@ export default {
       getImagequoteList(){
           let that = this;
           let obj = {};
-          obj.kind = 0;
+          obj.kind = that.type;
           obj.imageName = '';
           obj.page = 1;
           obj.perPage = 10;
@@ -517,7 +533,7 @@ export default {
           console.log(this.files);
           if (response.code == 200) {
             this.$message.success("文件上传成功");
-            that.searchUser(2, "", "", 1, 10);
+  
           } else {
             this.$message.error("文件上传失败");
           }
@@ -535,8 +551,6 @@ export default {
         // remove
         console.log("remove", oldFile);
       }
-      that.upload(that.files[0].file)
-
     },
     //基本资料确认
     confirm_baseInfo() {
@@ -559,29 +573,11 @@ export default {
         let that = this
         that.curIndex = 4;
     },
-    //上传图片
-    upload(file){
-      let that =this
-      let obj= new FormData()
-      obj.append('type',0)
-      obj.append('file',file)
-      upload(obj).then(res=>{
-        if (res.code==200) {
-          console.log(res.data)
-          that.form.cover=res.data.name          
-        }else {
-            that.$toast(res.message,3000)
-        }
-      })
-
-    },
-    //确认新增实验
-    confirmNewExperiment(){
+    //新增前确认
+    confirmNewExperimentBef(){
         let that = this;
-        let obj={}
-       
         if(that.form.name ==''){
-              return  that.$toast('请输入实验名称',2000)
+          return  that.$toast('请输入实验名称',2000)
         }
         if (that.form.cateId=='') {
           return that.$toast('请选择所属分类',2000)      
@@ -592,7 +588,7 @@ export default {
         if (that.form.introduction=='') {
           return that.$toast('请输入实验描述',2000)      
         }
-        if (that.form.cover=='') {
+        if (that.files.length==0) {
           return that.$toast('请上传实验封面',2000)      
         }
         if (that.yourContent=='') {
@@ -601,6 +597,33 @@ export default {
         if (that.form.images.length==0) {
           return that.$toast('请至少选择一台虚拟机',2000)      
         }
+        that.innerVisible = true
+    },
+    //确认新增实验
+    confirmNewExperiment(){
+        let that = this;
+        let imageUpload= new FormData()
+        imageUpload.append('type',0)
+        imageUpload.append('file',that.files[0].file)
+        upload(imageUpload).then(res=>{
+          if (res.code==200) {
+            console.log(res.data)
+            that.form.cover=res.data.name  
+            that.commitExprement()      
+          }else {
+            that.$toast(res.message,3000)
+         }
+      })
+
+        
+
+
+
+    },
+    //新增实验
+    commitExprement(){
+        let that = this
+        let obj={}
         obj.name = that.form.name
         obj.pic_url = that.form.cover
         obj.step = that.yourContent
@@ -609,11 +632,11 @@ export default {
         obj.introduce = that.form.introduction
         obj.images =that.form.images
         console.log(obj)
-
+        
         insertExperiment(obj).then(res=>{
            if(res.code==200){                  
                 that.isNew_experiment = false
-                that.$parent.findExperiment()
+                that.$parent.findExperiment(1)
                 that.form.name= ''
                 that.yourContent= ''
                 that.form.duration= ''
@@ -621,13 +644,12 @@ export default {
                 that.form.introduction =''
                 that.form.images=[]
                 that.form.cover=''
+                that.innerVisible = false
             }else{
               console.log(res.message)
               that.$toast(res.message,3000)
             }
         })
-
-
     },
       onEditorBlur(){}, // 失去焦点事件
       onEditorFocus(){}, // 获得焦点事件
