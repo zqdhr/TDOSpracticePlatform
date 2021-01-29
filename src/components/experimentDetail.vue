@@ -144,6 +144,9 @@ export default {
             let that = this
             let obj = {}
             obj.id = experId
+            obj.type = 0
+            obj.perPage=1
+            obj.page=1
             findAllByType(obj).then(res=>{
                 if (res.code==200) {
                     console.log(res.data)

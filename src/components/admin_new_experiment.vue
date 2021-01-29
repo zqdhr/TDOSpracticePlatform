@@ -241,7 +241,7 @@
                     <div class="d-cel clearfix">
                         <label>实验封面：</label>
                         <div>
-                            <div class="d-cover"><img :src="form.cover"/></div>
+                            <div class="d-cover"><img :src="files.length>0?files[0].thumb:''"/></div>
                         </div>
                     </div>
                     <div class="d-cel clearfix">
@@ -267,7 +267,7 @@ import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
-import {findParentCategory,findChildCategory,insertExperiment,getImagequoteList} from '@/API/api';
+import {findParentCategory,findChildCategory,insertExperiment,getImagequoteList,upload} from '@/API/api';
 export default {
   data() {
     return {
@@ -302,8 +302,9 @@ export default {
         advice: "",
         report: "",
         task: "",
-        cover: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=700937755,1450414253&fm=11&gp=0.jpg",
-        cateId:''
+        cover: "/data2/pic/45cf2cd8-d9ce-4803-b80a-d836e6e68550-5.png",
+        cateId:'',
+        images:[]
         
         
         
@@ -445,8 +446,13 @@ export default {
     },
     /*tab选择 */
     handleSelectionChange(val) {
+      let that = this
       this.multipleSelection = val;
-      console.log(val);
+      that.form.images=[]
+      for (let index = 0; index < val.length; index++) {
+        that.form.images.push(val[index].id)
+          }
+      console.log( that.form.images);
     },
     //上传前的钩子函数
     inputFilter(newFile, oldFile, prevent) {
@@ -529,6 +535,8 @@ export default {
         // remove
         console.log("remove", oldFile);
       }
+      that.upload(that.files[0].file)
+
     },
     //基本资料确认
     confirm_baseInfo() {
@@ -551,6 +559,22 @@ export default {
         let that = this
         that.curIndex = 4;
     },
+    //上传图片
+    upload(file){
+      let that =this
+      let obj= new FormData()
+      obj.append('type',0)
+      obj.append('file',file)
+      upload(obj).then(res=>{
+        if (res.code==200) {
+          console.log(res.data)
+          that.form.cover=res.data.name          
+        }else {
+            that.$toast(res.message,3000)
+        }
+      })
+
+    },
     //确认新增实验
     confirmNewExperiment(){
         let that = this;
@@ -568,8 +592,14 @@ export default {
         if (that.form.introduction=='') {
           return that.$toast('请输入实验描述',2000)      
         }
+        if (that.form.cover=='') {
+          return that.$toast('请上传实验封面',2000)      
+        }
         if (that.yourContent=='') {
           return that.$toast('请输入实验步骤',2000)      
+        }
+        if (that.form.images.length==0) {
+          return that.$toast('请至少选择一台虚拟机',2000)      
         }
         obj.name = that.form.name
         obj.pic_url = that.form.cover
@@ -577,6 +607,7 @@ export default {
         obj.duration = that.form.duration
         obj.category_id = that.form.cateId
         obj.introduce = that.form.introduction
+        obj.images =that.form.images
         console.log(obj)
 
         insertExperiment(obj).then(res=>{
@@ -588,6 +619,8 @@ export default {
                 that.form.duration= ''
                 that.form.cateId= ''
                 that.form.introduction =''
+                that.form.images=[]
+                that.form.cover=''
             }else{
               console.log(res.message)
               that.$toast(res.message,3000)

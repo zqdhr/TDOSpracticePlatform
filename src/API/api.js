@@ -237,6 +237,10 @@ var deleteExperiment =function(data){
 var findAllByType =function(data){
 	return axios.get('/findAllByType?id='+data.id+ '&type=' + data.type+ '&perPage=' + data.perPage+ '&page=' + data.page)
 }
+//上传文件
+var upload = function(data){
+	return axios.post('/upload',data, { headers: { 'Content-Type': 'multipart/form-data' } })
+}
 
 
 export{
@@ -246,7 +250,7 @@ export{
 	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory,
 	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
 	findAllByType,getRunContainerList,
-	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment
+	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload
 }
 
 function getJson (data) {
