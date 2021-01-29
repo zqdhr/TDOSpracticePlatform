@@ -38,7 +38,7 @@
             <div class="list_box">
                 <ul class="list_ul clearfix">
                     <li v-for="(item,index) in experimentList" :key="index">
-                        <div class="info boxShadow pointer" @click="link_Detail">
+                        <div class="info boxShadow pointer" @click="link_Detail(item.id)">
                            
                             <!--
                             <el-tooltip class="item" effect="dark" content="设置" placement="top">
@@ -103,17 +103,18 @@ export default {
             options:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
             options1:[],
             options2:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
-            total:100,//总共条数
-            perPage:10,//每页页数
+            total:0,//总共条数
+            perPage:15,//每页页数
             curPage:1,//当前页
             experimentList:[
-               {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'}
+              //  {id:'52dddz',name:'模拟启动一条真实链',duration:'45分钟',num:'1'}
             ],
             isDelete:false,//删除实验弹出框
             isNewExperiment:false,
             cateId:'',//查询的分类ID
             searchTx:'',//搜索的关键字
             deleteExperId:'',//需要删除的实验ID
+            experId:'',//获取详情点击的id
         }
     },
     created(){
@@ -127,6 +128,7 @@ export default {
         selectType(val){
           let that = this
           that.cateId  =val
+          that.i_customClass = ''
           that.findChildCategory(val)
           that.findExperiment()
           console.log(that.customClass)
@@ -182,10 +184,11 @@ export default {
 
         },
         //查看实验详情
-        link_Detail(){
+        link_Detail(experId){
           let that = this;
           that.isNewExperiment = true;
-          that.$refs.experimentDetail.click_Detail();
+          that.experId = experId
+          that.$refs.experimentDetail.click_Detail(experId);
 
         },
         //输入关键字查询列表

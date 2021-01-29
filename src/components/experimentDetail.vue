@@ -9,9 +9,9 @@
     <div slot="title" class="dialog_header">实验详情</div>
     <div class="experDetail_main">
         <div class="top clearfix">
-            <div class="pic"><img src=""/></div>
+            <div class="pic"><img :src="experiment.pic_url"/></div>
             <div class="rightInfo">
-                <p class="p-name textline1">模拟部署一条真实的链</p>
+                <p class="p-name textline1">{{experiment.name}}</p>
                 <div class="p-ItsCourse">
                     所属课程：
                 </div>
@@ -28,16 +28,16 @@
         </div>
 
         <div class="info_main" v-if="activeIndex==1">
-            <div><p>实验时长：45:00</p></div>
+            <div><p>实验时长：{{experiment.duration}}分钟</p></div>
             <div><p>引用虚机：3台虚拟机</p></div>
             <div>
                 <p class="pt">实验简介：</p>
-                <p>介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本</p>
+                <p>{{experiment.introduce}}</p>
             </div>
-            <div>
+            <!-- <div>
                 <p class="pt">实验建议：</p>
                 <p>介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本</p>
-            </div>
+            </div> -->
         </div>
 
          <div class="info_main" v-if="activeIndex==2">
@@ -96,6 +96,7 @@
   </div>   
 </template>
 <script>
+import { findAllByType } from "@/API/api";
 export default {
     data(){
         return{
@@ -111,15 +112,23 @@ export default {
                 {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:1,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'},
                 {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:0,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'}
             ],
+            experiment:{}//实验详情
 
         }
     },
+    props:{
+        id:{
+            default:0
+        }
+    },
+
     methods:{
         //点击详情，弹出实验详情框
-        click_Detail(){
+        click_Detail(experId){
             let that = this;
             that.detailShow = true
             that.activeIndex = 1;
+            that.findAllByType(experId)
         },
         //点击进入实验
         startExperiment(){
@@ -129,6 +138,20 @@ export default {
             that.$router.push({path:'/experiment',query:{authority:this.$Base64.encode(level)}}).catch((err) => {
               console.log( err);
            });
+        },
+        //获取实验详情
+        findAllByType(experId){
+            let that = this
+            let obj = {}
+            obj.id = experId
+            findAllByType(obj).then(res=>{
+                if (res.code==200) {
+                    console.log(res.data)
+                    that.experiment = res.data
+                }else {
+                    that.$toast(res.message,3000)
+                }
+            })
         }
     }
 }

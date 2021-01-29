@@ -210,13 +210,18 @@ var submitCorrectJob = function (data) {
 var deleteExperiment =function(data){
 	return axios.post('/deleteExperiment?id='+data.id)
 } 
+//查看实验详情
+var findAllByType  =function(data){
+	return axios.get('/findAllByType?id='+data.id+'&type=0&perPage=1&page=1')
+}
 
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
 	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById,insertCourseChapterCompleted,
 	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory,
-	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment
+	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
+	findAllByType
 }
 
 function getJson (data) {
