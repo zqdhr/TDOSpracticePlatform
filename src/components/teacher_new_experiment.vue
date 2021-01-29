@@ -111,7 +111,7 @@
 <script>
 
 import toastVue from "./toast/toast.vue";
-import {findParentCategory,findChildCategory,findAllByCategoryId,bindExperiments} from '@/API/api';
+import {findParentCategory,findChildCategory,findAllByCategoryId,bindExperiments,findAllByType} from '@/API/api';
 export default {
   data() {
     return {
