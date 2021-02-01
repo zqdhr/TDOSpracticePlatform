@@ -8,7 +8,7 @@
 
             <div class="operationBox">
             
-                <a class="a-opera pointer" v-if="isOpen">
+                <a class="a-opera pointer"  @click="click_screenshots">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
@@ -45,23 +45,28 @@
                     <a class="btn-open pointer" @click="connectVnc()">点击开启全部虚拟机</a>
                    
                 </div>
-                <div class="operation_box">
-                    <!--
-                    <iframe src="https://www.baidu.com/"/>
-           
-                    -->
+                <div  class="operation_box" ref="imageWrapper" id="imageWrapper">
+                    <xterm></xterm>
+                </div>
+        
+                <!--
+                <div class="operation_box" ref="imageWrapper" id="imageWrapper">
+              
+                  
                      <iframe src="http://192.168.1.228:2222/ssh/host/192.168.1.228/5001?username=''&userpassword=''" frameborder="0" ></iframe>
     
 
                 
                     
                 </div>
+                -->
+              
             </div>
             <div class="right_main" :class="{'changeWidth':isHide}">
                 <el-scrollbar style="height:100%">
                     <div class="nav">
                         <a class="pointer" :class="{'active_index':curIndex==1}" @click="curIndex=1">实验步骤</a>
-                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" v-if="authority==0">实验报告</a>
+                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2">实验报告</a>
                         <!--<a class="icon_jm pointer" @click="isHide=!isHide"></a>-->
                     </div>
                     <div v-if="curIndex==1">
@@ -74,7 +79,7 @@
                         </ul>
                     </div>
                     <!--&& authority==0-->
-                    <template v-if="curIndex==2 &&  authority==0">
+                    <template v-if="curIndex==2">
                     <h3 class="htitle">填写实验报告</h3>
                     <div class="labReport_box"  >
                         <quill-editor 
@@ -94,13 +99,23 @@
 </template>
 <script>
 import RFB from '@novnc/novnc/core/rfb';
+
+
 import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
+
+ import html2canvas from 'html2canvas';
+
+ import xterm from '@/components/Xterminal.vue'
+
+
+
 export default {
     data(){
         return{
+            dataURL: '',
             isHide:false,//右侧栏是否显示
             curIndex:1,
             virtualMachine:0,
@@ -128,7 +143,11 @@ export default {
                         ['image','link']    //上传图片、上传视频'video'
                         ]
                 }
-            }
+            },
+            loading:false,
+
+             term: null,
+   
            
         }
     },
@@ -139,7 +158,7 @@ export default {
     beforeDestroy(){
         document.body.removeAttribute("class","equipment-body");
     },
-    components:{quillEditor},
+    components:{quillEditor,xterm},
     created(){
         let that = this;
         that.authority = that.$route.query.authority?that.$Base64.decode(that.$route.query.authority):0;
@@ -197,6 +216,49 @@ export default {
             } else {
                 this.$router.go(-1)
             }
+        },
+        //一键截屏
+        click_screenshots(){
+           let that = this;
+           that.makeImg()
+           
+        },
+        // 将dom转成canvas
+        makeImg() {
+            var that = this
+            var opts = {
+                logging: true, // 启用日志记录以进行调试 (发现加上对去白边有帮助)
+                allowTaint: true, // 否允许跨源图像污染画布
+                backgroundColor: null, // 解决生成的图片有白边
+                useCORS: true, // 如果截图的内容里有图片,解决文件跨域问题
+                scale:2,
+                height: document.getElementById('imageWrapper').offsetHeight,
+                width:document.getElementById('imageWrapper').offsetWidth,
+                windowHeight: document.getElementById('imageWrapper').scrollHeight,
+                //windowWidth: document.getElementById('imageWrapper').scrollWidth,
+                x:0,
+                scrollX: 0,    //设置这两个scrollX/Y即可
+			scrollY: 0,
+             
+               
+            }
+            console.log(document.getElementById('imageWrapper').offsetWidth)
+            // eslint-disable-next-line no-undef
+            html2canvas(that.$refs.imageWrapper, opts).then((canvas) => {
+                var url = canvas.toDataURL('image/png')
+                that.dataURL = url
+                that.yourContent = '<p><img src="'+that.dataURL+'"/></p>'
+            })
+        },
+        // http图片转成base64，防止解决不了的图片跨域问题
+        getBase64Image(img) {
+        var canvas = document.createElement('canvas')
+        canvas.width = img.width
+        canvas.height = img.height
+        var ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0, img.width, img.height)
+        var dataURL = canvas.toDataURL('image/png') // 可选其他值 image/jpeg
+        return dataURL
         },
         onEditorReady(editor) { // 准备编辑器
         },

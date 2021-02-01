@@ -74,7 +74,7 @@
             
             <div>
                 <p class="pt">实验报告需求：</p>
-                <p>介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本</p>
+                <p></p>
             </div>
             
         </div>
@@ -151,6 +151,7 @@ export default {
                 if (res.code==200) {
                     console.log(res.data)
                     that.experiment = res.data
+                    that.experiment.pic_url = that.$store.state.pic_Url+that.experiment.pic_url
                 }else {
                     that.$toast(res.message,3000)
                 }

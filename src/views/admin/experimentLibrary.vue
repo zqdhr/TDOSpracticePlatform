@@ -27,7 +27,7 @@
           
           <div class="d-serach"> 
             <input :placeholder="inplaceholder" type="text"  v-model="searchTx" autocomplete="off" />
-            <a class="searchBtn pointer" @click="findExperiment"></a>
+            <a class="searchBtn pointer" @click="findExperiment(1)"></a>
           </div>
         </div>
       </div>
@@ -119,7 +119,7 @@ export default {
     },
     created(){
         this.findParentCategory()
-        this.findExperiment()
+        this.findExperiment(1)
     },
     components:{newExperiment,experimentDetail},
     methods:{
@@ -130,7 +130,7 @@ export default {
           that.cateId  =val
           that.i_customClass = ''
           that.findChildCategory(val)
-          that.findExperiment()
+          that.findExperiment(1)
           console.log(that.customClass)
 
         },
@@ -138,7 +138,7 @@ export default {
         selectType1(val){
           let that = this
           that.cateId = val
-          that.findExperiment()
+          that.findExperiment(1)
 
         },
         //自定义分类
@@ -148,7 +148,7 @@ export default {
          //底部分页
         handleCurrentChange(val) {
         let that = this;
-       
+        that.findExperiment(val)
         console.log(`当前页: ${val}`);
         },
         //删除前获取实验id
@@ -167,7 +167,7 @@ export default {
                 if(res.code==200){
                    that.isDelete = false
                    console.log(res.data)
-                   that.findExperiment()
+                   that.findExperiment(1)
                 }else{
                    console.log(res.message)
                     that.$toast(res.message,3000)
@@ -193,7 +193,7 @@ export default {
         //输入关键字查询列表
         doSearch(){
           let that  =this
-          that.findExperiment()
+          that.findExperiment(1)
 
         },
         //获取一级分类
@@ -223,25 +223,30 @@ export default {
 
         },
         //查询实验列表
-        findExperiment(){
+        findExperiment(page){
           let that  = this
+          that.curPage=page
           let obj={}
           obj.category_id = that.cateId
           obj.name= that.searchTx
           obj.perPage =that.perPage
-          obj.page = 1
+          obj.page = page
           findExperiment(obj).then(res=> {
                 if(res.code==200){
                    console.log(res.data)
                    that.experimentList  =res.data.list
-                   that.total = res.data.size
+                   for (let index = 0; index <  that.experimentList.length; index++) {
+                    that.experimentList[index].pic_url = that.$store.state.pic_Url+ that.experimentList[index].pic_url
+
+                   }
+                   that.total = res.data.total
                          
                 }else{
                     that.$toast(res.message,3000)
                 }
             })
-
         },
+
 
 
 
