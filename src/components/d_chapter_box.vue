@@ -653,6 +653,7 @@ export default{
             .din input{font-size: 16px;}
             .a_delete{right:0px}
             .icon_edit{right:20px}
+            .a_delete_exist{right:50px}
         }
         .new_section_li{
             margin-right: 0px;
