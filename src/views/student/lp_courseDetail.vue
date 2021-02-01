@@ -112,8 +112,9 @@ export default {
     created(){
         let that = this;
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
-        that.courseId = this.$route.query.courserId
-       that.course = 1
+        that.courseId = this.$route.query.courseId
+        that.course = 1;
+      
     },
     mounted(){
         let that = this;

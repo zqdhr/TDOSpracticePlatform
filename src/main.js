@@ -14,6 +14,9 @@ Vue.use(toastRegistry)
 Vue.prototype.$Base64 = Base64;
 Vue.config.productionTip = false
 
+import Directives from './util/directives'
+Vue.use(Directives)
+
 new Vue({
   router,
   store,

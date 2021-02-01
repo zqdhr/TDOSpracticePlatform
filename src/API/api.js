@@ -267,6 +267,11 @@ var addCourseware = function (data) {
 	return axios.post('/addCourseware', data, { headers: { 'Content-Type': 'application/json' } })
 }
 
+//学生获取课程
+var student_getCourseList =function(data){
+	return axios.get('/get_course_list?user_id='+data.user_id+ '&per_page=' + data.per_page+ '&page=' + data.page+'&start=' + data.start+'&end=' + data.end+'&name=' + data.name)
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -274,7 +279,7 @@ export{
 	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory,
 	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
 	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,
-	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload
+	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList
 }
 
 function getJson (data) {
