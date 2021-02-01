@@ -15,11 +15,14 @@
             <el-form ref="form"  label-width="120px">
               <el-form-item>
                 <span slot="label" class="s-label" ><span>*</span>所属分类：</span >
-                <el-cascader
-                    v-model="category"
-                    :options="categoryOptions"
-                    @change="handleChange" clearable>
-                </el-cascader>
+                    <el-cascader
+                            v-model="category"
+                            :options="categoryOptions"
+                            :props="{ value: 'id', label: 'name', children: 'cates' }"
+                            @change="handleChange"
+                            clearable
+                    >
+                    </el-cascader>
               </el-form-item>
             </el-form>
              <el-form ref="form"  label-width="120px">
@@ -64,6 +67,7 @@
 <script>
 import FileUpload from "vue-upload-component";
 import toastVue from "./toast/toast.vue";
+import { findParentCategory,findChildCategory,upload,addCourseware} from "@/API/api";
 export default {
   data() {
     return {
@@ -89,36 +93,19 @@ export default {
         { value: "1", label: "场景篇" },
         { value: "2", label: "原理篇" },
       ], //自定义分类
+      picUrl:'',
       customType: "",
       isnewFilter: false,
       isnewFilterType: 0, //课件库选择 1代表本地课件库  2代表本地上传
 
       jwt: "",
-      uploadUrl: "http://192.168.1.167:8111/upload",
+      uploadUrl: "",
       files: [],
-       category:[],//实验所属分类
-      categoryOptions: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则',
-          children: [{
-            value: 'yizhi',
-            label: '一致'
-          }, {
-            value: 'fankui',
-            label: '反馈'
-          }, {
-            value: 'xiaolv',
-            label: '效率'
-          }, {
-            value: 'kekong',
-            label: '可控'
-          }]
-        }]
-      }],
-
+      category: [], //实验所属分类
+      categoryOptions: [],
+      extension:'',
+      size:'',
+      time:''
     };
   },
   components: {
@@ -128,8 +115,50 @@ export default {
   created() {
     this.cate = this.options[0].value; //默认选中内置课件
     this.type = this.typeList[0].value; //课件类型默认选中全部
+    this.findParentCategory()
   },
   methods: {
+
+    //自定义分类
+    selectType(val){
+      let that = this;
+      that.i_customClass = {};
+      that.findChildCategory(val);
+
+    },
+
+    //获取一级分类
+    findParentCategory(){
+      let that = this
+      findParentCategory().then(res=> {
+        if(res.code==200){
+          that.options = res.data;
+          that.categoryOptions = res.data;
+
+        }else{
+          that.$toast(res.message,3000)
+        }
+      })
+    },
+    //根据一级分类id查询二级分类
+    findChildCategory(val){
+      let that = this;
+      let obj = {};
+      obj.parent_category_id = val.id;
+      findChildCategory(obj).then((res) => {
+        // alert(JSON.stringify(res));
+        if (res.code == 200) {
+          that.options1 = res.data;
+          // if (that.options1.length > 0) {
+          //   that.i_customClass = that.options1[0];
+          // }
+        } else {
+          this.$toast(res.message, 2000);
+        }
+      });
+
+    },
+
     //点击新建课件
     click_new() {
       let that = this;
@@ -144,16 +173,13 @@ export default {
       console.log(val);
     },
 
-    //选择课件类型
-    selectType(val) {
-      console.log(val);
-    },
     //本地上传确认上传
     confirmLocalUpload() {
       let that = this;
       that.isnewFilter= false
+      console.log("111")
       if (!this.$refs.upload.active) {
-        this.$refs.upload.active = true;
+        that.upload(that.files[0].file)
       }
     },
   
@@ -175,60 +201,92 @@ export default {
     //数组新增checked元素
     
     handleChange(val){
-      console.log(val)
+      let that = this;
+      //  console.log(value.length==1?value[0]:value[1]);
+      that.addCategoryItem = val;
+      that.addCategoryID = val.length == 1 ? val[0] : val[1];
     },
   
    
     //上传前的钩子函数
     inputFilter(newFile, oldFile, prevent) {
+      let that = this;
       if (newFile && !oldFile) {
         const extension = newFile.name.substring(
           newFile.name.lastIndexOf(".") + 1
         );
-        console.log(extension);
-        // if (extension != "xlsx" && extension != "xls") {
-        //   this.$toast("只能上传后缀是.xlsx或xls的文件", 3000);
-        //   return prevent();
-        // }
+        that.extension = extension;
+        if (extension != "pdf" && extension != "mp4") {
+          this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
+          return prevent();
+        }
       }
     },
     //上传的回调函数，每次上传回调都不一样
     inputFile(newFile, oldFile) {
       let that = this;
-      console.log("123");
-
-      if (
-        Boolean(newFile) !== Boolean(oldFile) ||
-        oldFile.error !== newFile.error
-      )
+      /*
+      if ( Boolean(newFile) !== Boolean(oldFile) ||oldFile.error !== newFile.error) {
+          if (!this.$refs.upload.active) {
+         this.$refs.upload.active = true;
+         }
+     }
+     */
 
       if (newFile && oldFile) {
-        //add
         if (newFile && oldFile && !newFile.active && oldFile.active) {
           //console.log('response', newFile.response)
           let response = newFile.response;
-          console.log(this.files);
-          if (response.code == 200) {
-            this.$message.success("文件上传成功");
-            that.searchUser(2, "", "", 1, 10);
-          } else {
-            this.$message.error("文件上传失败");
-          }
+          alert(this.files)
+
           if (newFile.xhr) {
             //  Get the response status code
             console.log("status", newFile.xhr.status);
           }
         }
       }
-      if (newFile && oldFile) {
-        // update
-        console.log("update", newFile);
-      }
-      if (!newFile && oldFile) {
-        // remove
-        console.log("remove", oldFile);
-      }
+
+
     },
+
+    //上传图片
+    upload(file){
+      let that =this
+      let obj= new FormData()
+      obj.append('type',0)
+      obj.append('file',file)
+      alert(that.files[0].file.name)
+      upload(obj).then(res=>{
+        if (res.code==200) {
+          that.picUrl = res.data.name;
+          that.size = res.data.size;
+          that.time = res.data.time;
+          let obj = {};
+          obj.name = that.files[0].file.name;
+          obj.type = 0;
+          obj.kind = that.extension == 'pdf' ?1 : 0
+          obj.url = that.picUrl;
+          obj.duration = that.time;
+          obj.size = that.size;
+          obj.category_id = that.addCategoryID;
+          this.$refs.upload.active = true;
+          addCourseware(JSON.stringify(obj)).then((res) => {
+            if (res.code == 200) {
+              alert("新建成功");
+              window.location.reload();
+            } else {
+              that.$toast(res.message, 3000);
+            }
+          });
+
+        }else {
+          that.$toast(res.message,3000)
+        }
+      })
+
+    },
+
+
   },
 };
 </script>

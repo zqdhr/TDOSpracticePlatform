@@ -12,7 +12,7 @@
                         <li v-for="(item,index) in experimentList" :key="index">
                             <div class="info pointer"  @click="link_Detail">
                                 <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3">
-                                   <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="isDelete=true"></a>
+                                   <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="getDelete(item.id)"></a>
                                 </el-tooltip>
                                 <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3 && role!=1">
                                    <a class="icon icon_set pointer" @click.stop="isSet=true"></a>
@@ -34,7 +34,7 @@
                         :page-size="perPage"
                         @current-change="handleCurrentChange"
                         layout="prev, pager, next,jumper"
-                        :total="150"
+                        :total="total"
                     >
                     </el-pagination>
                 </div>
@@ -52,7 +52,7 @@
                 </p>
             </div>
             <div slot="footer" class="dialog-footer">
-                <a class="btnDefault">确 认</a>
+                <a class="btnDefault" @click="deleteExperiment()">确 认</a>
                 <a class="btnDefault" @click="isDelete = false">取 消</a>
             </div>
         </el-dialog>
@@ -105,7 +105,7 @@
 import courseNav from "@/components/left_courseNav.vue";
 import newdialog from "@/components/teacher_new_experiment.vue";
 import experimentDetail from '@/components/experimentDetail';
-import {findParentCategory,findChildCategory,findAllByCategoryId,findAllByType} from '@/API/api';
+import {findParentCategory,findChildCategory,findAllByCategoryId,findAllByType,deleteExperiment} from '@/API/api';
 export default {
     data(){
         return{
@@ -145,7 +145,9 @@ export default {
                 },
             } ,
             endTime:'',
-            sindex:''
+            sindex:'',
+            experimentId:'',
+            total:1
         }
     },
     props:{
@@ -203,6 +205,26 @@ export default {
             let id = that.$route.query.courseId
             that.findAllByType(id,1,10,1);
         },
+        getDelete(id){
+          let that = this
+          that.isDelete = true;
+          that.experimentId = id;
+        },
+        //删除实验
+        deleteExperiment(){
+            let that = this
+            alert(that.experimentId)
+            let obj = {};
+            obj.id = that.experimentId;
+            deleteExperiment(obj).then(res=> {
+                if(res.code==200){
+                    that.isDelete = false;
+                    that.getAllExperiment();
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
          //底部分页
         handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
@@ -225,7 +247,9 @@ export default {
             //console.log(data.cindex)
             //console.log(data.sindex)
             that.sindex = data.sindex;
-            if(data.sindex != "" && that.cindex == ''){
+            that.cindex = data.cindex;
+            alert(that.sindex)
+            if(data.sindex != "" && that.cindex != ''){
                 that.findAllByType(data.sindex,3,10,1)
             }else if(data.sindex == "" && that.cindex != ''){
                 that.findAllByType(data.cindex,2,10,1)

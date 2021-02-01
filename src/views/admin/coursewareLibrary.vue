@@ -4,19 +4,13 @@
       <div class="pageTab clearfix">
         <div class="fl">
             <div class="sel-box">
-                <el-select v-model="customClass" placeholder="自定义分类" @change="selectType" >
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+                <el-select v-model="customType" placeholder="自定义分类" @change="selectType" >
+                <el-option v-for="item in customClass" :key="item.value" :label="item.name" :value="item.value" > </el-option>
                 </el-select>
             </div>
-            <div class="sel-box" v-if="customClass!=''">
-                <el-select v-model="i_customClass" placeholder="自定义分类" @change="selectType1" >
-                <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value" > </el-option>
-                </el-select>
-            </div>
-
-            <div class="sel-box" v-if="i_customClass!=''">
-                <el-select v-model="ii_customClass" placeholder="自定义分类" @change="selectType2" >
-                <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+            <div class="sel-box" v-if="customType!=''">
+                <el-select v-model="i_customType" placeholder="自定义分类" >
+                <el-option v-for="item in i_customClass" :key="item.value" :label="item.name" :value="item.value" > </el-option>
                 </el-select>
             </div>
             <div class="sel-box">               
@@ -61,7 +55,7 @@
                     <li v-for="(item,index) in experimentList" :key="index">
                         <div class="info padt20 boxShadow">
                             <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                                <a class="icon icon_close pointer" @click="isDelete=true"></a>
+                                <a class="icon icon_close pointer" @click="isDeleteWare(item.id)"></a>
                             </el-tooltip>
                             <!--
                             <el-tooltip class="item" effect="dark" content="设置" placement="top">
@@ -116,7 +110,7 @@
 </div>
 </template>
 <script>
-import { getCoursewareAll} from "@/API/api";
+import { getCoursewareAll,findParentCategory,findChildCategory} from "@/API/api";
 import newdialog from '@/components/admin_dialog_newCourseware'
 export default {
     data(){
@@ -130,7 +124,7 @@ export default {
             ],
              experimentList:[
             ],
-          
+            coueseWareId:'',
             isDelete:false,
             isnewFilter:false,//新增课件选择
             total:1,
@@ -138,10 +132,19 @@ export default {
             curPage:1,//设备列表
             cate:'',
             type:'',
+            kind:0,
+            category_id:'',
             searchText:'',
-             customClass:'',//自定义分类
-            i_customClass:'',//自定义分类,
-            ii_customClass:'',//自定义分类
+            customClass: [
+                { value: "1", label: "场景篇" },
+                { value: "2", label: "原理篇" },
+            ], //自定义分类
+            i_customClass: [
+                { value: "1", label: "场景篇" },
+                { value: "2", label: "原理篇" },
+            ], //自定义分类
+            customType: "",
+            i_customType: "",
             options:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
             options1:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
             options2:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
@@ -155,25 +158,49 @@ export default {
         this.type = this.typeList[0].value;//课件类型默认选中全部
     },
     methods:{
+
+        //自定义父级分类
+        findParentCategory(){
+            let that = this;
+            findParentCategory().then(res=> {
+                if(res.code==200){
+                    that.customClass = res.data;
+                    for(let i =0;i<res.data.length;i++){
+                        that.$set(that.customClass[i],'value',i)
+                    }
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
          //自定义分类
         selectType(val){
+            let that = this;
+            console.log("选择自定义分类1"+val);
+            console.log(that.customClass[0])
+            that.parent_id = that.customClass[val].id
 
-        },
-        //自定义分类
-        selectType1(val){
-
-        },
-        //自定义分类
-        selectType2(val){
-
+            let obj = {}
+            obj.parent_category_id = that.parent_id
+            findChildCategory(obj).then(res=> {
+                if(res.code==200){
+                    that.i_customClass = res.data;
+                    for(let i =0;i<res.data.length;i++){
+                        that.$set(that.i_customClass[i],'value',i)
+                    }
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+            that.getCourseAll(10,1,that.kind,that.type,that.searchText,val);
         },
         //课件列表
         getCoursewareAll() {
             let that = this;
-            that.getCourseAll(10,1,'',0,'');
+            that.getCourseAll(10,1,'',0,'','');
         },
 
-        getCourseAll(per_page,page,kind,type,name){
+        getCourseAll(per_page,page,kind,type,name,category_id){
             let that = this;
             let obj = {};
             obj.per_page = per_page;
@@ -181,11 +208,15 @@ export default {
             obj.kind = kind;
             obj.type = type;
             obj.name = name;
+            obj.category_id = category_id;
             getCoursewareAll(obj).then((res) => {
                 if (res.code == 200) {
+                    for(let i = 0;i<res.data.list.length;i++){
+                        res.data.list[i].size = (res.data.list[i].size/(1024 * 1024 * 1024)).toFixed(2) + "GB"
+                    }
                     that.experimentList = res.data.list;
-                    console.log(that.experimentList)
                     that.total = res.data.total
+
                 } else {
                     that.$toast(res.message, 3000);
                 }
@@ -194,7 +225,7 @@ export default {
 
         searchCourse(){
             let that = this;
-            that.getCourseAll(10,1,that.type,that.cate,that.searchText);
+            that.getCourseAll(10,1,that.type,that.cate,that.searchText,that.category_id);
         },
 
         click_new(){
@@ -218,6 +249,11 @@ export default {
              let that = this;
              that.getCourseAll(10,1,val,that.cate,that.searchText);
         },
+        isDeleteWare(id){
+          let that = this;
+          that.coueseWareId = id;
+          that.isDelete = true;
+        },
         //删除课件库确认
         confirmDeleteCourseWare(){
             let that = this;
@@ -240,6 +276,7 @@ export default {
     mounted() {
         let that = this;
         that.getCoursewareAll();
+        that.findParentCategory();
     },
 }
 </script>

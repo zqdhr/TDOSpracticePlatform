@@ -149,7 +149,7 @@ var findAllByCategoryId = function(data){
 
 //管理员查询课件库所有的课件
 var getCoursewareAll = function(data){
-	return axios.get('/getCoursewareAll?perPage='+data.per_page+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name)
+	return axios.get('/getCoursewareAll?perPage='+data.per_page+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name+'&category_id='+data.category_id)
 }
 
 //管理员查询所有的镜像
@@ -247,13 +247,33 @@ var adminSubmitQuestions = function (data) {
 	return axios.post('/addQuestionBack', data, { headers: { 'Content-Type': 'application/json' } })
 }
 
+//管理员课程添加节
+var addSection = function (data) {
+	return axios.post('/add_section', data, { headers: { 'Content-Type': 'application/json' } })
+}
+
+//管理员章节添加课件
+var addChapterSectionCourseware = function (data) {
+	return axios.post('/addChapterSectionCourseware', data, { headers: { 'Content-Type': 'application/json' } })
+}
+
+//管理员课件库删除课件
+var deleteCoursewareById = function (data) {
+	return axios.post('/deleteCoursewareById', data, { headers: { 'Content-Type': 'application/json' } })
+}
+
+//管理员课件库新增课件
+var addCourseware = function (data) {
+	return axios.post('/addCourseware', data, { headers: { 'Content-Type': 'application/json' } })
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
 	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById,insertCourseChapterCompleted,
 	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory,
 	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
-	findAllByType,getRunContainerList,adminSubmitQuestions,
+	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload
 }
 

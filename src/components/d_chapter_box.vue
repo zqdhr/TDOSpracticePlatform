@@ -20,10 +20,10 @@
                         
                     </div>
                      <!--已保存添加s-saved-->
-                     <span class="s-state s-Not_saved" :class="{'s-saved':1==1}">未保存</span>
+                     <span class="s-state s-Not_saved" :class="{'s-saved':1==1}" v-if="item.id == ''">未保存</span>
 
                     <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
-                      <a class="a_save pointer" @click="addChapters(index)"></a>
+                      <a class="a_save pointer" @click="addChapters(index)"  v-if="item.id == ''"></a>
                     </el-tooltip>
                     <a class="icon_edit pointer" @click="edit(1,item.id,item.name,index,iindex,i_index)"></a>
                     <a class="a_arrow" @click="showSection(item,item.show)"></a>
@@ -173,11 +173,36 @@
       </span>
     </el-dialog>
 
+<!--新建弹出框-->
+        <el-dialog
+
+                :visible.sync="isAdd"
+                width="600px"
+                class="personDialog"
+
+        >
+            <div slot="title" class="dialog_header">{{addTitle}}</div>
+
+            <div class="editMain" >
+                <el-form ref="form" label-width="60px">
+                    <el-form-item label="名称">
+                        <el-input v-model="addValue"></el-input>
+                    </el-form-item>
+
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+        <button class="btnDefault" @click="isAdd = false">取消</button>
+        <button class="btnDefault" @click="addChaptersOrSections">确认添加</button>
+      </span>
+        </el-dialog>
+
+
     </div>
 
 </template>
 <script>
-import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,getCoursewareByChapterId,getAssignmentBySectionId} from '@/API/api';
+import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,getCoursewareByChapterId,getAssignmentBySectionId,addSection} from '@/API/api';
 export default{
     data(){
         return{
@@ -188,8 +213,11 @@ export default{
             course_Id:'',
             editTitle:'章修改',
             editValue:'',
+            addTitle:'',
+            addValue:'',
             editId:'',
             isEdit:false,
+            isAdd:false,
             small_sections:[{
                 id:'section123',
                 name:'dgfdgfgfdgf',
@@ -242,9 +270,11 @@ export default{
                     res.data.chapters.sort(this.compare1('order'))
                     that.chapters = res.data.chapters
                     for(let i =0;i<res.data.chapters.length;i++){
+                        res.data.chapters[i].status = 1
                         res.data.chapters[i].sections.sort(this.compare1('order'))
                         that.chapters[i].sections = res.data.chapters[i].sections
                         for(let j = 0 ;j<res.data.chapters[i].sections.length;j++){
+                            res.data.chapters[i].sections[j].status = 1
                             res.data.chapters[i].sections[j].small_sections.sort(this.compare1('order'))
                             that.chapters[i].sections[j].small_sections = res.data.chapters[i].sections[j].small_sections
                         }
@@ -347,8 +377,31 @@ export default{
         //新建节
         click_section(index,obj){
            let that = this;
+           that.index = index;
            let tmp = that.chapters[index].sections.length;
-           that.chapters[index].sections.push({name:'',order:tmp,show:false,small_sections:[]})
+           if(obj.status==1){
+               console.log('已有')
+               that.addTitle = "新建节"
+               that.isAdd = true;
+           }else{
+              that.chapters[index].sections.push({name:'',order:tmp,show:false,small_sections:[]})
+           }
+        },
+        addChaptersOrSections(){
+            let that = this
+            let obj ={};
+            obj.section_name = that.addValue;
+            obj.chapter_id = that.chapters[that.index].id;
+            obj.course_id = this.$route.query.courseId;
+            addSection(JSON.stringify(obj)).then(res=> {
+                if(res.code==200){
+                    that.isAdd = false;
+                    that.getCourseById();
+                }else{
+                    that.$toast(res.message,3000)
+                }
+
+            })
         },
         /*显示小节 */
         showSection_children(index,item,show){
@@ -366,7 +419,13 @@ export default{
         click_new_section(index,iindex,item){
           let that = this;
             let tmp = that.chapters[index].sections[iindex].small_sections.length;
-           that.chapters[index].sections[iindex].small_sections.push({name:'',order:tmp,show:false})
+            if(item.status==1){
+                console.log('已有')
+                that.addTitle = "新建小节"
+                that.isAdd = true;
+            }else{
+                that.chapters[index].sections[iindex].small_sections.push({name:'',order:tmp,show:false})
+            }
         },
         addChapters(index){
             let that = this;

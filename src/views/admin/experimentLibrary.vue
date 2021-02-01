@@ -168,7 +168,6 @@ export default {
                    that.isDelete = false
                    console.log(res.data)
                    that.findExperiment()
-                         
                 }else{
                    console.log(res.message)
                     that.$toast(res.message,3000)

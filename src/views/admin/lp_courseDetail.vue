@@ -94,7 +94,7 @@ export default {
                {name:'题库'}
             ],
 
-           picurl:require('../../assets/pic/course.png'),
+           picurl:null,
            
             startTime:'',//课程开始时间
             endTime:'',//课程结束时间
@@ -129,6 +129,7 @@ export default {
             obj.course_id = this.$route.query.courseId
             getCourseById(obj).then(res=> {
                 if(res.code==200){
+                    that.picurl = that.$store.state.pic_Url+ res.data.pic_url;
                     that.coursrName = res.data.name;
                     that.chapter_number = res.data.chapter_number
                     that.section_number = res.data.section_number;

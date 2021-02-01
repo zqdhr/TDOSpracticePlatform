@@ -34,7 +34,7 @@
             <div class="tea_list">
                <ul class="tab_box courseList_ul lp_courseList_ul">
                     <li v-for="(item,index) in courseList" :key="index">
-                        <div class="pic"></div>
+                        <div class="pic"><img :src="item.pic_url"></div>
                         <div class="course-info boxsizing">
                             <div class="info_box">
                                 <div class="cell-info boxsizing">
@@ -111,6 +111,7 @@ export default {
                 if(res.code==200){
                     that.courseList = res.data.list;
                     for(let i = 0;i<res.data.list.length;i++){
+                        res.data.list[i].pic_url = that.$store.state.pic_Url+ res.data.list[i].pic_url;
                         res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
                         if(res.data.list[i].start_at !=null && res.data.list[i].end_at !=null) {
                             res.data.list[i].time = res.data.list[i].start_at.replace('T', ' ') + '-' + res.data.list[i].end_at.replace('T', ' ');

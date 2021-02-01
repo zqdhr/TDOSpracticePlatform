@@ -80,7 +80,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="phoneNumber" label="号码"> </el-table-column>
-          <el-table-column prop="identificationNumber" label="邮箱">
+          <el-table-column prop="identificationNumber" label="身份证号">
           </el-table-column>
           <el-table-column prop="" label="操作">
             <template slot-scope="scope">
@@ -116,7 +116,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="phoneNumber" label="号码"> </el-table-column>
-          <el-table-column prop="identificationNumber" label="邮箱">
+          <el-table-column prop="identificationNumber" label="身份证号">
           </el-table-column>
           <el-table-column prop="" label="操作">
             <template slot-scope="scope">
@@ -152,7 +152,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="phoneNumber" label="号码"> </el-table-column>
-          <el-table-column prop="identificationNumber" label="邮箱">
+          <el-table-column prop="identificationNumber" label="身份证号">
           </el-table-column>
           <el-table-column prop="" label="操作">
             <template slot-scope="scope">
@@ -435,7 +435,7 @@ export default {
       let obj = {};
       obj.user_id = that.userInfo.id;
       obj.name = that.userInfo.name;
-      obj.gender = that.userInfo.gender;
+      obj.gender = that.userInfo.gender == '男'?0:1;
       obj.identification_number = that.userInfo.identificationNumber;
       obj.phone = that.userInfo.phoneNumber;
       let a = that.curPage

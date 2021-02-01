@@ -168,7 +168,7 @@
 <script>
 import FileUpload from "vue-upload-component";
 import toastVue from "./toast/toast.vue";
-import {getCoursewareAll} from '@/API/api';
+import {getCoursewareAll,addChapterSectionCourseware} from '@/API/api';
 export default {
   data() {
     return {
@@ -286,15 +286,15 @@ export default {
       let that = this;
       console.log(that.sindex)
       console.log(that.chooseList)
-      // let obj = {};
-      // let id = [];
+      let obj = {};
+      let id = [];
+      alert("接口有问题")
       // for(let i = 0;i<that.chooseList.length;i++){
       //   id.push(that.chooseList[i].id)
       // }
       // obj.experiment_id = id
       // obj.section_id = that.sindex;
-      // console.log(obj)
-      // bindExperiments(JSON.stringify(obj)).then(res=> {
+      // addChapterSectionCourseware(JSON.stringify(obj)).then(res=> {
       //   if(res.code==200){
       //     that.isnewFilter = false;
       //     this.reload();
