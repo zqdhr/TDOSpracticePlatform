@@ -55,7 +55,7 @@
                     <li v-for="(item,index) in experimentList" :key="index">
                         <div class="info padt20 boxShadow">
                             <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                                <a class="icon icon_close pointer" @click="isDeleteWare(item.id)"></a>
+                                <a class="icon icon_close pointer" @click.stop="isDeleteWare(item.id)"></a>
                             </el-tooltip>
                             <!--
                             <el-tooltip class="item" effect="dark" content="设置" placement="top">
@@ -283,4 +283,5 @@ export default {
 <style lang="less" scoped>
 @import url(../../assets/less/admin.less);
 .sel-box{width:200px}
+.list_box .list_ul .p-name{padding: 12px 10px;}
 </style>

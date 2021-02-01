@@ -114,6 +114,8 @@ export default {
             
           
             document.body.style.backgroundImage = this.bodyBgImage
+            document.body.style.backgroundSize = 'cover'
+         
            
             
         },

@@ -234,7 +234,7 @@ export default {
                 scale:2,
                 height: document.getElementById('imageWrapper').offsetHeight,
                 width:document.getElementById('imageWrapper').offsetWidth,
-                windowHeight: document.getElementById('imageWrapper').scrollHeight,
+                //windowHeight: document.getElementById('imageWrapper').scrollHeight,
                 //windowWidth: document.getElementById('imageWrapper').scrollWidth,
                 x:0,
                 scrollX: 0,    //设置这两个scrollX/Y即可

@@ -28,7 +28,8 @@
                 </div>
               
             </div>
-
+            <noData :noDataType="noDataType" :dataMess="dataMess"></noData>
+            <template>
             <div class="tea_list">
                <ul class="tab_box courseList_ul lp_courseList_ul">
                     <li v-for="(item,index) in courseList" :key="index">
@@ -67,17 +68,19 @@
                 </el-pagination>
             </div>
 
+            
+            </template>
+
         </div>
        
     </div>
 </template>
 <script>
+import noData from '@/components/noData.vue'
 export default {
     data(){
         return{
-           perPage: 10,//每页条数
-            curPage:1, //当前页
-            total:1,
+           
             inplaceholder:'请输入课程名称',
             courseList:[
               {name:'课程名称课程名称课程名称课程名称课程名称',introduction:'描述内容描述内容描述内容描述内容',chapter_number:10,section_number:20,time:'2020.9.12-2020.10.12',numbers:20}
@@ -88,22 +91,42 @@ export default {
           
             },
 
-        value2: ''
+            value2: '',
+            noDataType:1,  //没有数据展示的样式
+            dataMess:'当前暂无课程列表',
+            perPage: 10,//每页条数
+            curPage:1, //当前页
+            total:1,
         }
+    },
+    components:{noData},
+    created(){
+        let that = this;
     },
     methods:{
           //底部分页
         handleCurrentChange(val) {
             let that = this;
             that.getAdminCourseList(sessionStorage.getItem("userId"),10,val,that.searchText);
-             console.log(`当前页: ${val}`);
+            console.log(`当前页: ${val}`);
         },
         //查看详情
         linkDetail(){
             let that = this;
             that.$router.push({path:'/student/courseDetail'})
+        },
+        //获取我的课程列表
+        getDataList(){
+            let that = this;
+            let obj = {}
+            obj.user_id =''
+            obj.per_page = 
+            obj.page = ''
+            obj.start=''
+            obj.end = ''
         }
     }
+
 }
 </script>
 <style lang="less" scoped>
