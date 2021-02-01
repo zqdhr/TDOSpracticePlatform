@@ -25,6 +25,7 @@
                     <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
                       <a class="a_save pointer" @click="addChapters(index)"  v-if="item.id == ''"></a>
                     </el-tooltip>
+                    <a class=" a_delete a_delete_exist" @click="deleteChapter(index)" v-if="item.lastNum == 0"></a>
                     <a class="icon_edit pointer" @click="edit(1,item.id,item.name,index,iindex,i_index)"></a>
                     <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
@@ -40,7 +41,7 @@
                       <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
                         <a class="a_save pointer" @click="addNewChapters(index)"></a>
                       </el-tooltip>
-                     <a class=" a_delete" @click="deleteChapter(index)"></a>
+                     <a class=" a_delete " @click="deleteChapter(index)"></a>
                      <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
 
@@ -64,6 +65,8 @@
                                         </span>
                                     </div>
                                 </div>
+
+                                <a class=" a_delete a_delete_exist" @click="deleteSection(index,iindex)" v-if="iitem.lastNum == 0"></a>
                                 <a class="icon_edit pointer" @click="edit(2,iitem.id,iitem.name,index,iindex,i_index)"></a>
                                 <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>
                             </div>
@@ -87,6 +90,7 @@
                                      <template v-if="i_item.id">
                                         <div class="sec_name textline1">
                                             <p class="textline1">第{{i_index+1}}小节：{{i_item.name}}</p>
+                                            <a class=" a_delete a_delete_exist" @click="deleteSmallSection(index,iindex,i_index)" ></a>
                                               <a class="icon_edit pointer" @click="edit(3,i_item.id,i_item.name,index,iindex,i_index)"></a>
                                         </div>
                                     </template>>
@@ -96,7 +100,7 @@
                                                 <div class="din">
                                                     <input placeholder="请输入小节名称" v-model="i_item.name"/>
                                                 </div>
-                                                <a class=" a_delete" @click="deleteSection(index,i_index)"></a>
+                                                <a class=" a_delete a_delete_exist" @click="deleteSmallSection(index,iindex,i_index)" v-if="i_item.lastNum == 0"></a>
                                             </div>
                                     </template>
 
@@ -202,7 +206,7 @@
 
 </template>
 <script>
-import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,getCoursewareByChapterId,getAssignmentBySectionId,addSection} from '@/API/api';
+import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,getCoursewareByChapterId,getAssignmentBySectionId,addSection,addSmallSection} from '@/API/api';
 export default{
     data(){
         return{
@@ -227,7 +231,9 @@ export default{
             i_index:'',
             num:'',
             order:1,
-            test:''
+            test:'',
+            smallSectionNum:'',
+            lastNum:''
         }
     },
     props:{
@@ -270,13 +276,28 @@ export default{
                     res.data.chapters.sort(this.compare1('order'))
                     that.chapters = res.data.chapters
                     for(let i =0;i<res.data.chapters.length;i++){
+                        if(i == res.data.chapters.length-1){
+                            that.$set(res.data.chapters[i], 'lastNum', 0)
+                        }
                         res.data.chapters[i].status = 1
                         res.data.chapters[i].sections.sort(this.compare1('order'))
                         that.chapters[i].sections = res.data.chapters[i].sections
                         for(let j = 0 ;j<res.data.chapters[i].sections.length;j++){
+                            if(j == res.data.chapters[i].sections.length - 1){
+                                that.$set(res.data.chapters[i].sections[j], 'lastNum', 0)
+                            }
                             res.data.chapters[i].sections[j].status = 1
                             res.data.chapters[i].sections[j].small_sections.sort(this.compare1('order'))
                             that.chapters[i].sections[j].small_sections = res.data.chapters[i].sections[j].small_sections
+                            if(res.data.chapters[i].sections[j].small_sections.length >0){
+                                for(let k = 0 ;k<res.data.chapters[i].sections[j].small_sections.length;k++){
+                                    if(k == res.data.chapters[i].sections[j].small_sections.length - 1){
+                                        console.log(res.data.chapters[i].sections[j].small_sections[k])
+                                        console.log("asa"+k)
+                                        that.$set(res.data.chapters[i].sections[j].small_sections[k], 'lastNum', 0)
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -287,42 +308,7 @@ export default{
             })
         },
 
-        // getCoursewareByChapterId(chapterId,index){
-        //     let that = this;
-        //     let obj = {};
-        //     obj.chapterId = chapterId;
-        //     obj.perPage = 10;
-        //     obj.page = 1;
-        //     getCoursewareByChapterId(obj).then(res=> {
-        //         if(res.code==200){
-        //             for(let i =0;i<res.data.list.length;i++){
-        //                 that.$set(that.chapters[index], "enclosure", res.data.list[i].kind);
-        //             }
-        //         }else{
-        //             that.$toast(res.message,3000)
-        //         }
-        //     })
-        // },
-        //
-        // getCoursewareBySectionId(sectionId,cIndex,sIndex){
-        //     let that = this;
-        //     let obj = {};
-        //     obj.sectionId = sectionId;
-        //     obj.perPage = 10;
-        //     obj.page = 1;
-        //     getCoursewareBySectionId(obj).then(res=> {
-        //         if(res.code==200){
-        //             for(let i =0;i<res.data.list.length;i++){
-        //                 console.log(that.chapters[cIndex].sections[sIndex])
-        //                 that.$set(that.chapters[cIndex].sections[sIndex], "secEnclosure", res.data.list[i].kind);
-        //             }
-        //         }else{
-        //             that.$toast(res.message,3000)
-        //         }
-        //     })
-        //},
-
-        //删除
+        //删除章
         deleteChapter(num){
             let that = this;
             that.chaptersNum = num;
@@ -330,7 +316,7 @@ export default{
             that.chaptersOrsectio=1;
 
         },
-        //删除小节
+        //删除节
         deleteSection(num,num1){
             let that = this;
             that.chaptersNum = num;
@@ -338,13 +324,24 @@ export default{
             that.isDelete=true;
             that.chaptersOrsectio=2;
         },
+        //删除小节
+        deleteSmallSection(num,num1,num2){
+            let that = this;
+            that.chaptersNum = num;
+            that.sectionNum=num1;
+            that.smallSectionNum=num2;
+            that.isDelete=true;
+            that.chaptersOrsectio=3;
+        },
         //判断是删除章还是节
         deleteChapterOrSection(){
             let that=this;
             if (that.chaptersOrsectio==1) {
                 that.chapters.splice(that.chaptersNum,1)
-            } else {
+            } else if(that.chaptersOrsectio==2){
                 that.chapters[that.chaptersNum].sections.splice(that.sectionNum,1)
+            }else{
+                that.chapters[that.chaptersNum].sections[that.sectionNum].small_sections.splice(that.sectionNum,1)
             }
             that.isDelete = false;
         },
@@ -387,21 +384,46 @@ export default{
               that.chapters[index].sections.push({name:'',order:tmp,show:false,small_sections:[]})
            }
         },
+        //确认添加章或节
         addChaptersOrSections(){
             let that = this
             let obj ={};
-            obj.section_name = that.addValue;
-            obj.chapter_id = that.chapters[that.index].id;
-            obj.course_id = this.$route.query.courseId;
-            addSection(JSON.stringify(obj)).then(res=> {
-                if(res.code==200){
-                    that.isAdd = false;
-                    that.getCourseById();
-                }else{
-                    that.$toast(res.message,3000)
-                }
+            if(that.index !== '' && that.iindex === ''){
+                alert("111")
+                obj.section_name = that.addValue;
+                obj.chapter_id = that.chapters[that.index].id;
+                obj.course_id = this.$route.query.courseId;
+                addSection(JSON.stringify(obj)).then(res=> {
+                    that.index = '';
+                    that.addValue = '';
+                    if(res.code==200){
+                        that.isAdd = false;
+                        that.getCourseById();
+                    }else{
+                        that.$toast(res.message,3000)
+                    }
 
-            })
+                })
+            }else{
+                alert("22")
+                obj.small_section_name = that.addValue;
+                obj.chapter_id = that.chapters[that.index].id;
+                obj.section_id = that.chapters[that.index].sections[that.iindex].id;
+                obj.course_id = this.$route.query.courseId;
+                addSmallSection(JSON.stringify(obj)).then(res=> {
+                    that.index = '';
+                    that.iindex = '';
+                    that.addValue = '';
+                    if(res.code==200){
+                        that.isAdd = false;
+                        that.getCourseById();
+                    }else{
+                        that.$toast(res.message,3000)
+                    }
+
+                })
+            }
+
         },
         /*显示小节 */
         showSection_children(index,item,show){
@@ -418,6 +440,8 @@ export default{
         /*新建小节 */
         click_new_section(index,iindex,item){
           let that = this;
+          that.index = index
+          that.iindex = iindex;
             let tmp = that.chapters[index].sections[iindex].small_sections.length;
             if(item.status==1){
                 console.log('已有')
@@ -546,6 +570,7 @@ export default{
         .a_delete{
              width:20px;height:20px;display: block;position: absolute;top:50%;margin-top: -10px;
             background: url(../assets/img/icon_del.png)  center no-repeat;cursor: pointer; right:56px}
+         .a_delete_exist{right:84px}
         .din{display: inline-block; width: 88%;
           input{font-size: 18px;color: #6666; width:90%; background: 0 none;color:#333; line-height: 40px;}
         }
@@ -579,6 +604,7 @@ export default{
     .section_box{
 
          .a_delete{right:30px}
+        .a_delete_exist{right:86px}
         .add-btn{padding: 0 20px;}
     }
     .d-section_name{

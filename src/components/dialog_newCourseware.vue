@@ -241,6 +241,7 @@ export default {
       obj.kind = kind;
       obj.type = type;
       obj.name = name;
+      obj.name = name;
       getCoursewareAll(obj).then((res) => {
         if (res.code == 200) {
           that.all_experimentList = res.data.list;
@@ -288,20 +289,19 @@ export default {
       console.log(that.chooseList)
       let obj = {};
       let id = [];
-      alert("接口有问题")
-      // for(let i = 0;i<that.chooseList.length;i++){
-      //   id.push(that.chooseList[i].id)
-      // }
-      // obj.experiment_id = id
-      // obj.section_id = that.sindex;
-      // addChapterSectionCourseware(JSON.stringify(obj)).then(res=> {
-      //   if(res.code==200){
-      //     that.isnewFilter = false;
-      //     this.reload();
-      //   }else{
-      //     this.$toast(res.message,2000)
-      //   }
-      // })
+      for(let i = 0;i<that.chooseList.length;i++){
+        id.push(that.chooseList[i].id)
+      }
+      obj.experiment_id = id
+      obj.section_id = that.sindex;
+      addChapterSectionCourseware(JSON.stringify(obj)).then(res=> {
+        if(res.code==200){
+          that.isnewFilter = false;
+          this.reload();
+        }else{
+          this.$toast(res.message,2000)
+        }
+      })
     },
     //弹窗关闭
     closeDialog() {

@@ -101,7 +101,7 @@ export default {
             let that = this
             that.$store.commit("updateNavindex", 1);
             that.$router.push({path:'/teacher/couseDetail',
-                query:{back:this.$Base64.encode(1), course_id: id}
+                query:{back:this.$Base64.encode(1), courseId: id}
             }).catch((err)=>{
                 console.log(err)
             })

@@ -213,7 +213,6 @@ export default {
         //删除实验
         deleteExperiment(){
             let that = this
-            alert(that.experimentId)
             let obj = {};
             obj.id = that.experimentId;
             deleteExperiment(obj).then(res=> {
@@ -232,7 +231,6 @@ export default {
         click_new(){
             let that = this;
             that.sid = that.sindex;
-            alert(that.sid)
             that.$refs.newdialog.click_new(that.sid);
         },
          //查看实验详情
@@ -248,7 +246,6 @@ export default {
             //console.log(data.sindex)
             that.sindex = data.sindex;
             that.cindex = data.cindex;
-            alert(that.sindex)
             if(data.sindex != "" && that.cindex != ''){
                 that.findAllByType(data.sindex,3,10,1)
             }else if(data.sindex == "" && that.cindex != ''){

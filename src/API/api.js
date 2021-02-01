@@ -252,6 +252,12 @@ var addSection = function (data) {
 	return axios.post('/add_section', data, { headers: { 'Content-Type': 'application/json' } })
 }
 
+//管理员课程添加小节
+var addSmallSection = function (data) {
+	return axios.post('/add_small_section', data, { headers: { 'Content-Type': 'application/json' } })
+}
+
+
 //管理员章节添加课件
 var addChapterSectionCourseware = function (data) {
 	return axios.post('/addChapterSectionCourseware', data, { headers: { 'Content-Type': 'application/json' } })
@@ -278,7 +284,7 @@ export{
 	getImagequoteList,deleteImages,addImage,insertExperiment,getAdminCourseByClassId,getQuestionBackAll,deleteQuestionBackById,insertCourseChapterCompleted,
 	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory,
 	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
-	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,
+	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,addSmallSection,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList
 }
 

@@ -189,7 +189,7 @@ export default {
         modifyCourseTime(){
             let that = this;
             let obj = {};
-            obj.user_id = sessionStorage.getItem('userId');
+            obj.owner_id = sessionStorage.getItem('userId');
             obj.course_id = that.$route.query.courseId;
 
             that.startTime=that.startTime.getFullYear() + '-' + (that.startTime.getMonth() + 1) + '-' + that.startTime.getDate();
@@ -197,7 +197,7 @@ export default {
             obj.start = that.startTime;
             that.endTime=that.endTime.getFullYear() + '-' + (that.endTime.getMonth() + 1) + '-' + that.endTime.getDate();
             obj.end = that.endTime;
-            obj.class_id = '';
+            obj.user_id_list = [];
             console.log(JSON.stringify(obj))
             modifyCourseStatus(JSON.stringify(obj)).then(res=> {
                 if(res.code==200){
