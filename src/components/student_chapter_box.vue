@@ -18,7 +18,7 @@
                             <span class="icon s-video" v-if="item.chapter_has_video"></span>
                         </div>
                     </div> 
-                    <a class="a_arrow" @click="showSection(item,item.show)"></a>
+                    <a class="a_arrow" @click="showSection(item,item.show)" v-if="item.sections && item.sections.length>0"></a>
                 </div>
 
 
@@ -43,7 +43,7 @@
                                     </div>
                                 </div>
                               
-                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>
+                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)" v-if="iitem.small_sections && iitem.small_sections.length>0"></a>
                             </div>
                     
                             <!--小节-->
@@ -190,9 +190,9 @@ export default{
     /*章节列表*/
    
      .chapter_box{
-          min-height: 300px;
-        .chapter_li{ margin-top: 20px; padding-bottom:20px;}
-        .li_focus{border:2px solid @basecolor;.borderRadius(10px,10px,10px,10px); overflow: hidden;}
+          min-height: 300px; margin-top: 20px;
+        .chapter_li{padding-bottom:20px; }
+        .li_focus{border:2px solid @basecolor;.borderRadius(10px,10px,10px,10px); overflow: hidden;margin-bottom: 20px;}
         .cha_title{background:#F5F5F7; font-size: 18px;line-height: 40px; padding: 7px 60px 7px 20px; position: relative;
            .s_name{color:@fontColor; background: url(../assets/img/d_chapter.png) left center no-repeat; padding: 5px 0 5px 35px; }
            .s_intro{color: @hnavcolor; padding-left: 20px;}
