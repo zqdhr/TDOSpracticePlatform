@@ -121,8 +121,8 @@
            <el-input placeholder="输入作业名称" v-model="homework.name"></el-input>
            <div class="set_endtime_box">
                <el-date-picker
-                v-model="homework.endTime"  value-format="yyyy-MM-dd"  :picker-options="pickerOptions"
-                type="date"
+               type="datetime"
+                v-model="homework.endTime"    :picker-options="pickerOptions"
                 style="width:100%"
                 placeholder="选择日期">
               </el-date-picker>
