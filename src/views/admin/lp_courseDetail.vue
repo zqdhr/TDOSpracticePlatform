@@ -116,7 +116,12 @@ export default {
     created(){
         let that = this;
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
-        that.courseId = that.$route.query.courseId
+        that.courseId = that.$route.query.courseId;
+        that.navindex = that.$store.state.adminNavindex;
+    },
+   beforeDestroy(){
+        let that = this;
+        that.$store.commit("updateAdminNavindex",0);
     },
     mounted(){
         let that = this;
@@ -187,6 +192,7 @@ export default {
         linkDetails(item,num){
           let that = this;
           that.navindex = num;
+          that.$store.commit("updateAdminNavindex",num);
           that.showStudentList = false
         },
        

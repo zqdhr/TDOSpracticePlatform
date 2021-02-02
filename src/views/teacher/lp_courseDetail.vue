@@ -82,10 +82,9 @@
                 </div>
                 
                 <!--班级列表-->
-                <classList v-if="navindex==2 && !showStudentList" @sureCheckClass="sureCheckClass" ></classList>
+                <classList v-if="navindex==2" @sureCheckClass="sureCheckClass" ></classList>
 
-                <!--学生列表-->
-                <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="showStudentList && navindex==2"></studentList>
+        
                 
                 <!--课程实验-->
                 <experiment v-if="navindex==3" ></experiment>
@@ -104,7 +103,7 @@
 </template>
 <script>
 import classList from "@/components/d_classList_box.vue";//学生信息-班级列表
-import studentList from "@/components/d_studentList_box.vue";//学生信息-学生列表
+
 import chapter from "@/components/d_chapter_box.vue";//课程大纲
 import experiment from "@/components/d_experiment_box.vue";//课程实验
 import courseware from "@/components/d_courseware_box.vue";//课程课件
@@ -150,12 +149,17 @@ export default {
             
         }
     },
-    components:{classList,studentList,chapter,experiment,courseware,coursework},
+    components:{classList,chapter,experiment,courseware,coursework},
     created(){
         let that = this;
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
-        that.courseId = that.$route.query.courseId
+        that.courseId = that.$route.query.courseId;
+        that.navindex = that.$store.state.teacherNavindex;
     },
+    beforeDestroy(){
+        let that = this;
+        that.$store.commit("updateTeacherNavindex",0);
+    }, 
     mounted(){
         let that = this;
         that.getCourseById();
@@ -255,22 +259,12 @@ export default {
         linkDetails(item,num){
           let that = this;
           that.navindex = num;
+          that.$store.commit("updateTeacherNavindex",num);
           that.showStudentList = false
         },
        
 
-        //学生选择确认
-        sureStudent(){
-          let that = this;
-          that.showStudentList = false
-          console.log('选择学生确认')
-          
-        },
-        //学生列表返回班级列表
-        backClass(){
-          this.showStudentList = false;
        
-        },
         //班级选择确认
         sureCheckClass(){
             this.showStudentList = true

@@ -6,6 +6,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     navindex:0,
+    
+    teacherNavindex:0, //老师端学生tab切换
+    adminNavindex:0, //老师端学生tab切换
+    studentNavindex:0, //老师端学生tab切换
+
     uploadUrl:'http://192.168.1.138:8111/upload_excel',
     pic_Url:'http://192.168.1.228:8080',
     ad_menus: [
@@ -44,7 +49,17 @@ export default new Vuex.Store({
   mutations: {
     updateNavindex(state, value) {
       state.navindex = value
-    }
+    },
+    updateTeacherNavindex(state, value) {
+      state.teacherNavindex = value
+    },
+    updateAdminNavindex(state, value) {
+      state.adminNavindex = value
+    },
+    updateStudentNavindex(state, value) {
+      state.studentNavindex = value
+    },
+    
   },
   actions: {
   },

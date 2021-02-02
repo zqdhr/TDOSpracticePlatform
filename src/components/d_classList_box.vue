@@ -1,4 +1,6 @@
 <template>
+   <div>
+   <template v-if="!isStudent">
    <div class="classList_box">
         <div class="classList_div">
             <div class="classList_intro">
@@ -22,12 +24,19 @@
         </div>
         <!--已开课班级列表不可编辑-->
         <div class="btnbox">
-            <a class="btnDefault pointer" @click="sureCheckClass">确认选择</a>
+            <a class="btnDefault pointer" @click="sureCheckClass" >确认选择</a>
         </div>
+   </div>
+   </template>
+ 
+    <!--学生列表-->
+    <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="isStudent"></studentList>
+
    </div>
 </template>
 <script>
 import {searchClass,searchClassCount} from '@/API/api';
+import studentList from "@/components/d_studentList_box.vue";//学生信息-学生列表
 export default{
     data(){
         return{
@@ -36,18 +45,28 @@ export default{
                 {id:'20100104',name:'四年级六班',number:60}, {id:'20100105',name:'四年级六班',number:60}, {id:'20100106',name:'四年级六班',number:60}
             ],
             checkedList:[],//选中的班级列表
+
+            isStudent:false,
         }
     },
+    components:{studentList},
     mounted(){
         let that = this;
         
         //班级列表添加班级是否被选中状态参数，checked 0未选中 1全部选中 2部分选中
-        for(var i=0;i<that.classList.length;i++){
-            that.$set(that.classList[i], 'checked', 0)
-        }
+        
         that.searchClass();
     },
     methods:{
+        
+        //班级列表添加选中的状态
+        addParamcheck(array){
+         let that = this;
+          for(var i=0;i<array.length;i++){
+              that.$set(array[i], 'checked', 0)
+           }
+        },
+
         //班级列表
         searchClass(){
             let that = this;
@@ -60,6 +79,7 @@ export default{
                         searchClassCount(objCount).then(res1=> {
                             if(res.code==200){
                                 that.$set(that.classList[i], "number", res1.data);
+                                that.$set(that.classList[i], 'checked', 0)
                             }else{
                                 that.$toast(res.message,3000)
                             }
@@ -70,10 +90,12 @@ export default{
                 }
             })
         },
-                //班级选择
+       
+       //班级选择
         checkClass(obj,checked){
             let that = this;
             that.$set(obj,'checked',!checked)
+         
             let tmp = JSON.parse(JSON.stringify(that.checkedList))
             alert(obj+"111"+checked)
             if(checked==0){
@@ -87,16 +109,31 @@ export default{
               that.checkedList = tmp;
               
             }
-            console.log(that.checkedList)
+        
+        },
+         //学生选择确认
+        sureStudent(){
+          let that = this;
+          this.isStudent = false;
+          console.log('选择学生确认')
+          
+        },
+        //学生列表返回班级列表
+        backClass(){
+          this.isStudent = false;
+       
         },
 
         //班级选择确认
         sureCheckClass(){
             let that = this;
+           
+            
             if(that.checkedList.length==0){
                 return that.$toast('请先选择班级',2000)
             }
-            that.$emit('sureCheckClass')
+            that.isStudent = true;
+            //that.$emit('sureCheckClass')
         },
     }
 }
