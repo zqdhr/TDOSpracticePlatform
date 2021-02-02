@@ -11,10 +11,10 @@
                         <div class="login-from">
                             <h3 class="htitle">欢迎登陆实链通</h3>
                             <div class="din din-user">
-                                <input placeholder="请输入账号" v-model="userName" autocomplete="off"/>
+                                <input placeholder="请输入账号" v-model="userName" autocomplete="off" @keyup.enter="pp_login"/>
                             </div>
                             <div class="din din-paw">
-                                <input type="password" placeholder="请输入密码" v-model="password" autocomplete="off"/>
+                                <input type="password" placeholder="请输入密码" v-model="password" autocomplete="off" @keyup.enter="pp_login"/>
                             </div>
                              <p class="p-forget">
                                 <router-link to=""></router-link>

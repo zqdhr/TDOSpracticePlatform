@@ -132,9 +132,9 @@
        <div class="setScope">
            <el-input placeholder="输入作业名称"></el-input>
        </div>
+       
        <div slot="footer" class="dialog-footer" >
            <a class="btnDefault" @click="isnewJobName=false ; noData=false">确 认</a>
-       
       </div>
     </el-dialog>
     <!--题库选择弹出框-->
