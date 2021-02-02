@@ -20,7 +20,7 @@
                     </div>
                     <div class="fr">
                        <div class="d-serach"> 
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="searchContent"  @keyup.enter="doSearch(1)"/>
+                            <input :placeholder="inplaceholder" type="text" v-emoji autocomplete="off" v-model="searchContent"  @keyup.enter="doSearch(1)"/>
                             <a class="searchBtn pointer" @click="doSearch(1)"></a>
                         </div>
                     </div>

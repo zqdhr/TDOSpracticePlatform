@@ -85,7 +85,7 @@
                     </div>
                     <div class="fr">
                        <div class="d-serach"> 
-                            <input :placeholder="inplaceholder"  v-model="searchTx" type="text" autocomplete="off"  @keyup.enter="doSearch"/>
+                            <input :placeholder="inplaceholder"  v-emoji v-model="searchTx" type="text" autocomplete="off"  @keyup.enter="doSearch"/>
                             <a class="searchBtn pointer" @click="doSearch"></a>
                         </div>
                     </div>
