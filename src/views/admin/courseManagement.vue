@@ -53,6 +53,7 @@
                                 </div>
                             </div>
                         </div>
+                        <a class="icon_delete pointer" @click="isDelete=true" v-if="item.status==0"></a>
                     </li>
                </ul>
               
@@ -70,6 +71,21 @@
             </div>
 
         </div>
+
+         <!--删除人员弹出框-->
+       <el-dialog :visible.sync="isDelete" width="560px">
+      <div slot="title" class="dialog_header">请注意!</div>
+      <div class="confirm_dialog_body">
+        <p class="dialog_mess">
+          <span class="span_icon icon_waring">确定要删除当前课程吗？</span>
+        </p>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        
+        <a class="btnDefault" @click="isDelete = false">取 消</a>
+        <a class="btnDefault" @click="confirmDeleterCourse">确 认</a>
+      </div>
+    </el-dialog>
        
     </div>
 </template>
@@ -87,7 +103,8 @@ export default {
             ],
             coursetypeList:[{value:0,label:'我的课程'},{value:1,label:'归档课程'}],
             coursetype:'我的课程',
-            searchText:''
+            searchText:'',
+            isDelete:false
        }
     },
     created(){
@@ -171,7 +188,13 @@ export default {
             that.$router.push({path:'/admin/newCourse',query:{back:this.$Base64.encode(2)}}).catch((err)=>{
                 console.log(err)
             })
+        },
+
+        //课程确认删除    
+        confirmDeleterCourse(){
+            let that = this;
         }
+            
     },
     mounted() {
         let that = this;
@@ -182,5 +205,6 @@ export default {
 
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
-
+.lp_courseList_ul li{position:relative;}
+.icon_delete{width:20px;height: 20px;display: block; background: url(../../assets/img/blue_close.png) center no-repeat; position: absolute; right:20px;top:20px}
 </style>

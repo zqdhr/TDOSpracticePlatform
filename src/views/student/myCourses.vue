@@ -114,9 +114,7 @@ export default {
         let that = this;
         that.userId=sessionStorage.getItem("userId")
         let obj = {}
-        obj.start = ''
-        obj.end = ''
-        obj.name = ''
+     
           // obj.name = ''
         that.getDataList(obj)   
     },

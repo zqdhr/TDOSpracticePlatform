@@ -275,6 +275,7 @@ var addCourseware = function (data) {
 
 //学生获取课程
 var student_getCourseList =function(data){
+    
 	return axios.get('/get_course_list?user_id='+data.user_id+ '&per_page=' + data.per_page+ '&page=' + data.page+'&start=' + data.start+'&end=' + data.end+'&name=' + data.name)
 }
 
