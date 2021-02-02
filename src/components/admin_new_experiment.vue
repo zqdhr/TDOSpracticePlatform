@@ -156,6 +156,7 @@
               :data="Imagelibraries"
               @selection-change="handleSelectionChange"
               style="width: 100%"
+              :header-cell-class-name="cellClass"
               
             >
               <el-table-column type="selection" width="55"> </el-table-column>
@@ -390,6 +391,13 @@ export default {
         that.getImagequoteList()
     },
   methods: {
+
+    cellClass (row) {
+      
+      if (row.columnIndex === 0) {//将第一行消除
+        return 'disabledCheck'
+      }
+    },
       //查询分类
       findParentCategory(){
           let that = this;

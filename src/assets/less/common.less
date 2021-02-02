@@ -418,6 +418,16 @@ button:focus{border:0 none;outline: none;}
   .el-dialog__body{padding: 0 20px;}
 }
 
+
+/*头部全选去除*/
+.el-table /deep/.disabledCheck .cell .el-checkbox__inner{
+  display: none!important;
+}
+.el-table /deep/.disabledCheck .cell:before{
+  content: '选择';
+  position: absolute;
+  right: 11px;
+}
 @media screen and (max-width:1600px){
   .content_el-scrollbar{
     height:24%;
