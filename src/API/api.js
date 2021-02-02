@@ -149,7 +149,7 @@ var findAllByCategoryId = function(data){
 
 //管理员查询课件库所有的课件
 var getCoursewareAll = function(data){
-	return axios.get('/getCoursewareAll?perPage='+data.per_page+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name+'&category_id='+data.category_id)
+	return axios.get('/getCoursewareAll?perPage='+data.per_page+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name+'&category_id='+data.category_id+'&chapter_id='+data.chapter_id+'&section_id='+data.section_id)
 }
 
 //管理员查询所有的镜像
@@ -257,6 +257,22 @@ var addSmallSection = function (data) {
 	return axios.post('/add_small_section', data, { headers: { 'Content-Type': 'application/json' } })
 }
 
+//管理员删除课程章
+var removeChapter =function(params){
+	return axios.delete('/remove_chapter', {data:params} )
+}
+
+//管理员删除课程节
+var removeSection =function(params){
+	return axios.delete('/remove_section', {data:params} )
+}
+
+//管理员删除课程小节
+var removeSmallSection =function(params){
+	return axios.delete('/remove_small_section', {data:params} )
+}
+
+
 
 //管理员章节添加课件
 var addChapterSectionCourseware = function (data) {
@@ -286,7 +302,8 @@ export{
 	getCoursewareByChapterId,getAssignmentByChapterId,getAssignmentBySectionId,getCoursewareByCourseId,findParentCategory,findChildCategory,
 	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
 	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,addSmallSection,
-	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList
+	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
+	deleteCoursewareById
 }
 
 function getJson (data) {

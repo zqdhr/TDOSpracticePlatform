@@ -142,6 +142,7 @@ export default {
             obj.page = page;
             getCoursewareByCourseId(obj).then(res=> {
                 if(res.code==200){
+                    console.log(res.data.list)
                     that.total = res.data.total;
                     that.experimentList = res.data.list;
                 }else{
@@ -151,7 +152,7 @@ export default {
         },
         getAllCoursewareByCourseId(){
             let that = this;
-            that.getCoursewareByCourseId(10,1,0,'');
+            that.getCoursewareByCourseId(10,1,0,'',);
         },
         getCoursewareByChapterId(chapterId,kind,type,perPage,page){
             let that = this;
