@@ -26,7 +26,7 @@
           
           
           <div class="d-serach"> 
-            <input :placeholder="inplaceholder" type="text"  v-model="searchTx" autocomplete="off" />
+            <input :placeholder="inplaceholder" type="text"  v-model="searchTx" autocomplete="off" @keyup.enter="findExperiment(1)" />
             <a class="searchBtn pointer" @click="findExperiment(1)"></a>
           </div>
         </div>

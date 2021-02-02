@@ -10,15 +10,15 @@
                           >
                                 <el-option
                                 v-for="item in classList"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
                                 </el-option>
                             </el-select>
                          
                        </div>
                      
-                       <div class="sel-box">
+                       <!-- <div class="sel-box">
                           <el-select v-model="level1Name" placeholder="课程" 
                           @change="changeLevel1"
                           >
@@ -53,7 +53,7 @@
                                 :value="item.value">
                                 </el-option>
                             </el-select>
-                       </div>
+                       </div> -->
                        <div class="sel-box" >
                           <el-select v-model="state" placeholder="请选择状态" 
                           @change="changeState"
@@ -165,6 +165,7 @@
     </div>
 </template>
 <script>
+import {student_getCourseList} from '@/API/api';
 import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
@@ -251,6 +252,9 @@ export default {
             return str
         }
     },
+    created(){
+        this.getDataList()
+    },
     methods:{
         //底部分页
         handleCurrentChange(val) {
@@ -258,7 +262,7 @@ export default {
         },
         //选择班级 
         changeClass(val){
-          console.log('选择班级')
+          console.log('选择课程')
         },
         //选择状态
         changeState(val){
@@ -325,6 +329,22 @@ export default {
            }
            that.yourContent = '实验报告描述，实验报告描述，实验报告描述'
           
+        },
+        //获取我的课程列表
+        getDataList(){
+            let that = this;  
+            let obj={}
+            obj.user_id = sessionStorage.getItem("userId")
+            obj.per_page =100
+            obj.page = 1  
+            student_getCourseList(obj).then(res=>{   
+                if(res.code==200){
+                    console.log(res.data)
+                    that.classList = res.data.list  
+                }else{
+                     this.$toast(res.message, 3000);
+                }
+            })
         }
     }
 }
