@@ -107,9 +107,7 @@ export default{
     },
     */
     created() {
-        let that = this;
-        
-     
+        let that = this;   
         that.addParamShow(that.chapters)
     },
     mounted(){
@@ -147,6 +145,8 @@ export default{
             if(!show){
                 that.dataObj.chapter_id = item.id
                 that.getSections(item)
+            }else{
+                that.addParamShow(that.chapters)
             }
         },
 
@@ -155,13 +155,11 @@ export default{
            let that = this;
            get_chapter_by_id(that.dataObj).then(res=>{
                if(res.code==200){
-                   that.$set(item,'sections',res.data.sections)
-                   console.log(res)
+                   that.$set(item,'sections',res.data.sections) 
                }else{
                    this.$toast(res.message,2000)
                }
            })
-           console.log(item)
         },
     
         /*显示小节 */
