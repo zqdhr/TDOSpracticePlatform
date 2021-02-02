@@ -22,7 +22,7 @@
                 </div>
 
 
-                <el-collapse-transition>
+                <!--<el-collapse-transition>-->
                 <div class="section_box" v-if="item.show">
                     <ul class="section_ul">
                         <li class="section_li" v-for="(iitem,iindex) in item.sections" :key="iindex" :class="{'new_section_li':!iitem.id}">
@@ -47,7 +47,7 @@
                             </div>
                     
                             <!--小节-->
-                            <el-collapse-transition>
+                         
                             <ul class="section_ul i_section_ul" v-if="iitem.show">
                                 <li class="section_li" v-for="(i_item,i_index) in iitem.small_sections" :key="i_index" :class="{'new_section_li':!i_item.id}">
                                     <div class="sec_name textline1">
@@ -55,7 +55,7 @@
                                     </div>
                                 </li>
                             </ul>
-                            </el-collapse-transition>
+                            
 
                         </li>
 
@@ -63,7 +63,7 @@
                     </ul>
                     
                 </div>
-                </el-collapse-transition>
+                <!--</el-collapse-transition>-->
                 
             </li>
 
