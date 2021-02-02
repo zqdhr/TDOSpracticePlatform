@@ -6,26 +6,30 @@
       <div class="right_box">
         <!--小节下面有作业-->
         <noData v-if="sindex==''"></noData>
-        <div class="add_btn_box" v-if="!noData">
-          <div class="sel-box">
-            <el-select
-              v-model="cate"
-              placeholder="请选择作业类型"
-              @change="selectCate"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+        <div class="add_btn_box clearfix" v-if="!noData">
+          <div class="fl">
+            <div class="sel-box">
+              <el-select
+                v-model="cate"
+                placeholder="请选择作业类型"
+                @change="selectCate"
               >
-              </el-option>
-            </el-select>
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </div>
           </div>
+          <div class="fr">
           <a class="btnDefault pointer mr20" @click="deleteOperation"
             >删除题目</a
           >
           <a class="btnDefault pointer" @click="click_new">新增题目</a>
+          </div>
         </div>
         <!--课程题目-->
         <div class="coursework_box" v-if="!noData">
@@ -47,8 +51,10 @@
           </template>
 
           <div class="course_list">
+            <el-scrollbar style="height:100%">  
             <!--选择题-->
             <ul class="choice_question">
+              
               <li
                 :class="{ li_choose: isShow }"
                 v-for="(item, index) in courseList"
@@ -83,17 +89,19 @@
                   :class="{ li_radio_h: item.checked }"
                 ></span>
               </li>
+                
             </ul>
-            <div class="add_btn_box">
+        </el-scrollbar>
+          </div>
+             <div class="add_btn_box">
               <a class="btnDefault pointer">确认</a>
             </div>
-          </div>
         </div>
         
         <!--小节作业不存在-->
         <div class="noData_box" v-if="sindex != '' &&   noData">
             <p class="mess">当前小节下暂无作业，请点击下方新增作业按钮。</p>
-            <div><a class="btnDefault pointer"  @click="noData=false">新增作业</a></div>
+            <div><a class="btnDefault pointer"  @click="isnewJobName =true">新增作业</a></div>
         </div>
       </div>
     </div>
@@ -125,7 +133,7 @@
            <el-input placeholder="输入作业名称"></el-input>
        </div>
        <div slot="footer" class="dialog-footer" >
-           <a class="btnDefault" @click="isnewJobName=false">确 认</a>
+           <a class="btnDefault" @click="isnewJobName=false ; noData=false">确 认</a>
        
       </div>
     </el-dialog>
@@ -156,20 +164,22 @@
          
           <div class="d-serach"> 
             <input placeholder="请输入作业标题" type="text" autocomplete="off" />
-            <a class="searchBtn pointer"></a>
+            <!--<a class="searchBtn pointer"></a>-->
           </div>
+          <a class="btn_finsh">完成</a>
         </div>
       </div>
         <!--选择题-->
         <ul class="choice_question">
+        
           <li
             class="li_choose"
             v-for="(item, index) in all_courseList"
             :key="index"
           >
             <div class="title">{{ item.title }}</div>
-            <div class="pic">
-              <span><img :src="item.pic" /></span>
+            <div class="pic" v-if="item.picUrl!='' && item.picUrl">
+              <span><img :src="item.picUrl" /></span>
             </div>
             <p class="answer_box" v-if="item.type == 1">
               <span
@@ -190,6 +200,7 @@
               @click="cheeckedList(2,item, index, item.checked)"
             ></span>
           </li>
+      
         </ul>
       </div>
 
@@ -264,7 +275,7 @@ export default {
       isSetTime:false,//设置题目时间弹窗
       sindex:'',
       totalAllCourse:'',
-      isnewJobName:true
+      isnewJobName:false
     };
   },
   components: {
@@ -449,10 +460,17 @@ export default {
 @import url(../assets/less/admin.less);
 @import url(../assets/less/coursework.less);
 .setScope{margin: 0 50px;}
-.add_btn_box{text-align: center;}
+.coursework_box{position: relative;}
+.add_btn_box{text-align: center; }
+.coursework_box .course_list{height: 460px; padding: 20px 0;}
 </style>
 <style lang="less">
 .dialog_newJobName{
   .el-dialog__footer{padding-top: 0px;}
 }
+
+.pageTab .sel-box{width:180px;}
+.pageTab .fr .d-serach{padding-left: 12px;padding-right: 12px; width: 170px; margin-right: 20px;}
+.btn_finsh{background: @basecolor; font-size:16px;color:#fff; display: inline-block; padding: 5px 8px; .borderRadius(5px,5px,5px,5px);
+vertical-align: middle; cursor: pointer;}
 </style>

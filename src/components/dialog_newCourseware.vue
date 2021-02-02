@@ -75,8 +75,9 @@
                 type="text"
                 autocomplete="off"
               />
-              <a class="searchBtn pointer"></a>
+            
             </div>
+            <a class="btn_finsh">完成</a>
           </div>
         </div>
         <div class="list_box">
@@ -422,4 +423,8 @@ export default {
 
 <style lang="less" scoped>
 @import url(../assets/less/admin.less);
+.pageTab .sel-box{width:180px;}
+.pageTab .fr .d-serach{padding-left: 12px;padding-right: 12px; width: 170px; margin-right: 20px;}
+.btn_finsh{background: @basecolor; font-size:16px;color:#fff; display: inline-block; padding: 5px 8px; .borderRadius(5px,5px,5px,5px);
+vertical-align: middle; cursor: pointer;}
 </style>

@@ -8,7 +8,7 @@
 
             <div class="operationBox">
             
-                <a class="a-opera pointer"  @click="click_screenshots">
+                <a class="a-opera pointer"  @click="click_screenshots" v-if="isOpen">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
@@ -41,8 +41,9 @@
                   <span class="pointer" :class="{'active':virtualMachine==3}">虚拟机3</span>
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
-                <div class="operation_box" id="screen" v-if="1==0">
-                    <a class="btn-open pointer" @click="connectVnc()">点击开启全部虚拟机</a>
+                <div class="operation_box" id="screen">
+                    <!--@click="connectVnc()"-->
+                    <a class="btn-open pointer" v-if="!isOpen" @click="isOpen=true">点击开启全部虚拟机</a>
                    
                 </div>
                 <div  class="operation_box" ref="imageWrapper" id="imageWrapper">
