@@ -277,7 +277,7 @@ export default {
         }  
         /*.trans{position: absolute;width:100%;height: 100%;left:0px;top:0px; background: rgba(0,0,0,.1);} */
         .info{margin: 0 10px; min-height: 30px;background: @background; padding: 40px 0 20px 0; position:relative;}
-        .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px;}
+        .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px; line-height:20px;}
         .icon{width: 20px;height: 20px;display: block; position:absolute;top:10px}
         .icon_close{background: url(../assets/img/n_close.png) center no-repeat;right:28px}
         .icon_set{background: url(../assets/img/n_set.png) center no-repeat;right:5px}

@@ -267,11 +267,11 @@ export default {
         li{width:25%;min-height: 40px;float: left; margin-bottom: 20px; }    
       
         .info{margin: 0 10px; min-height: 30px;background: @background; padding: 40px 0 20px 0; position:relative;}
-        .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px;}
+        .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px; line-height: 20px;}
         .icon{width: 20px;height: 20px;display: block; position:absolute;top:10px;user-select: none;}
         .icon_close{background: url(../assets/img/n_close.png) center no-repeat;right:15px}
         .icon_set{background: url(../assets/img/n_set.png) center no-repeat;right:28px}
-        .p-name{padding:12px 0;}
+        .p-name{padding:8px 4px; line-height: 26px;}
         .c_icon{width:58px;height: 58px;margin:0 auto; display: block;}
         .icon_video{background: url(../assets/img/courseware_video.png) center no-repeat;}
         .icon_pdf{background: url(../assets/img/courseware_pdf.png) center no-repeat;}
