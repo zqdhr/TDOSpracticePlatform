@@ -337,6 +337,9 @@ export default {
             obj.user_id = sessionStorage.getItem("userId")
             obj.per_page =100
             obj.page = 1  
+            obj.start=''
+            obj.end=''
+            obj.name=''
             student_getCourseList(obj).then(res=>{   
                 if(res.code==200){
                     console.log(res.data)

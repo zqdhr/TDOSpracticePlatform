@@ -96,6 +96,8 @@
                 </div>
             </div>
         </div>
+         <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
+               <template v-if="hasData">
         <div class="container">
            <div class="tea_list">
               <ul class="tab_box">
@@ -134,6 +136,7 @@
                </div>
            </div>
         </div>
+              </template>
         <!--未提交弹出框-->
         <el-dialog :visible.sync="isUnsubmittedlist" width="500px">
         <div slot="title" class="dialog_header">未提交人员（15人）</div>
@@ -182,7 +185,8 @@
     </div>
 </template>
 <script>
-import {searchClass,getAdminCourseByClassId} from "@/API/api";
+import {searchClass,getCourseListByUserId} from "@/API/api";
+import noData from '@/components/noData.vue'
 export default {
     data(){
       return{
@@ -241,7 +245,12 @@ export default {
         isReport:false,
         isReport_num:0,
         source:'',//实验报告分数
-        searchTx:''//搜索关键字
+        searchTx:'',//搜索关键字
+        timestart:'',//筛选起始时间
+        timeend:'',//筛选结束时间
+        noDataType:1,  //没有数据展示的样式
+        dataMess:'当前暂无实验报告',
+        hasData:false,
       }
     },
     filters:{
@@ -257,9 +266,10 @@ export default {
         }
     },
     created(){
-        this.getClassList()
+        this.getCourseListByUserId()
         
     },
+    components:{noData},
     methods:{
       
         //底部分页
@@ -283,9 +293,11 @@ export default {
         },
         //选择状态
         changeState(val){
-           console.log('选择状态')
-           let that = this
-           that.value2=''
+            console.log('选择状态')
+            let that = this
+            that.value2=''
+            that.timestart = ''
+            that.timeend = ''
         },
         //选择课程
         changeLevel1(val){
@@ -348,13 +360,9 @@ export default {
         //选择日期
         changeDate(val){
             let that = this;
-            let obj = {}
-            that.start = val[0];
-            that.end = val[1];
-            obj.start = val[0];
-            obj.end = val[1];
-
-           console.log(val) 
+            that.timestart = val[0];
+            that.timeend = val[1];
+            console.log(val) 
         },
         //获取班级列表
         getClassList(){
@@ -374,15 +382,16 @@ export default {
                 }
             })
         },
-        //获取班级下的课程列表
-        getAdminCourseByClassId(){
+        //获取老师的课程列表
+        getCourseListByUserId(){
             let that = this;
             let obj={};
-            obj.class_id = that.classId;
+            obj.user_id = sessionStorage.getItem("userId");
             obj.page=1;
-            obj.perPage=100;
-             getAdminCourseByClassId(obj).then(res=> {
+            obj.per_page=100;
+             getCourseListByUserId(obj).then(res=> {
                 if(res.code==200){
+                    console.log(res.data)
                     that.course = res.data.list
                     
                 }else{

@@ -5,7 +5,7 @@
                 <div class="clearfix">
                     <div class="fl">
                        <div class="sel-box">
-                          <el-select v-model="className" placeholder="请选择班级" 
+                          <el-select v-model="className" placeholder="请选择课程" 
                           @change="changeClass"
                           >
                                 <el-option
@@ -20,14 +20,15 @@
                     </div>
                     <div class="fr">
                        <div class="d-serach"> 
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off" />
-                            <a class="searchBtn pointer"></a>
+                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="searchContent"  @keyup.enter="doSearch(1)"/>
+                            <a class="searchBtn pointer" @click="doSearch(1)"></a>
                         </div>
                     </div>
                 </div>
               
             </div>
-
+            <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
+              <template v-if="hasData">
             <div class="tablex_box list_box">
                 <div class="l_box">
                 <ul class="default_List">
@@ -41,7 +42,7 @@
                             <div class="btnbox">
                                 <div class="course_mana_btnbox">
                                     <a class="pointer btn btn-see"><span>查看</span></a>
-                                    <a class="pointer btn btn-end" @click="closeStudent(item.sno,item.username)"><span>结束</span></a>
+                                    <a class="pointer btn btn-end" @click="closeStudent(item)"><span>结束</span></a>
                                 </div>
                             </div>
                         </div>
@@ -55,11 +56,14 @@
                     :page-size="perPage"
                     @current-change="handleCurrentChange"
                     layout="prev, pager, next,jumper"
-                    :total="150"
+                    :total="total"
                 >
                 </el-pagination>
                 </div>
+           
+           
             </div>
+             </template>
             <!--结束当前学生的实验-->
             <el-dialog :visible.sync="isClose" width="600px">
             <div slot="title" class="dialog_header">请注意!</div>
@@ -79,7 +83,8 @@
     </div>
 </template>
 <script>
-import {searchClass} from "@/API/api";
+import {searchClass,getRunContainerByTeacher,getCourseListByUserId,execContainer} from "@/API/api";
+import noData from '@/components/noData.vue'
 export default {
     data(){
         return{
@@ -102,41 +107,64 @@ export default {
             ],
             perPage:24, //虚拟机每页
             curPage:1,//设备列表
+            total:0,
             isClose:false,
             student:{//点击关闭学生实验需要的参数
                 userid:'',
-                name:''
-            }
+                name:'',
+                containerId:''
+            },
+            searchContent:'',
+            noDataType:1,  //没有数据展示的样式
+            dataMess:'当前暂无课堂管理',
+            hasData:false,
+
         }
     },
     created(){
-        this.getClassList()
+        this.getCourseListByUserId()
     },
+    components:{noData},
     methods:{
         //选择班级 
         changeClass(val){
             let that = this
-            this.className = val
+            
+            that.getRunContainerByTeacher(1)
             console.log('选择班级'+val)
         },
         //底部分页
         handleCurrentChange(val) {
+        let that = this;
+        that.getRunContainerByTeacher(val)
         console.log(`当前页: ${val}`);
         },
         //关闭学生实验
-        closeStudent(studentId,studentName){
+        closeStudent(item){
             let that=this
-            that.student.userid = studentId
-            that.student.name = studentName
+            that.student.userid = item.sno
+            that.student.name = item.username
+            that.student.containerId = item.containerId
             that.isClose=true
             console.log('当前学生：'+that.student.name+',学号：'+that.student.userid)
         },
-        //提交关闭请求
+        //提交关闭课程请求
         commitClose(){
             let that = this
-            let obj={}
-            obj.userid = that.student.userid
-            that.isClose=false
+            let obj = {}
+            let containerId = []
+            containerId.push(that.student.containerId)
+            obj.containerId = containerId
+            obj.type = 1
+            execContainer(obj).then(res=>{
+                if (res.code==200) {
+                    that.isClose=false
+                    that.getRunContainerByTeacher(1)
+                } else {
+                   that.$toast(res.message,3000) 
+                }       
+            })
+          
         },
       
         //获取班级列表
@@ -147,6 +175,7 @@ export default {
                     that.classList = res.data
                     if(that.classList.length>0){
                         that.className = that.classList[0].id
+                        that.getRunContainerByTeacher(1)
                     }
               
                 }else{
@@ -154,6 +183,57 @@ export default {
                 }
             })
         },
+        //获取老师的课程列表
+        getCourseListByUserId(){
+            let that = this;
+            let obj={};
+            obj.user_id = sessionStorage.getItem("userId");
+            obj.page=1;
+            obj.per_page=100;
+             getCourseListByUserId(obj).then(res=> {
+                if(res.code==200){
+                    console.log(res.data)
+                    that.classList = res.data.list
+                     if(that.classList.length>0){
+                        that.className = that.classList[0].id
+                        that.getRunContainerByTeacher(1)
+                    }
+                    
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })   
+        
+        },
+        //获取课堂列表
+        getRunContainerByTeacher(page){
+            let that = this
+            that.curPage=page
+            let obj = {}
+            obj.classId=that.className
+            obj.filter = that.searchContent
+            obj.page=page
+            obj.perPage=that.perPage
+            getRunContainerByTeacher(obj).then(res=> {
+                if (res.code==200) {
+                    console.log(res.data)
+                    that.total = res.data.total
+                    that.machineList = res.data.list
+                    if(res.data.list.length==0){
+                        that.hasData = false
+                    }else {
+                        that.hasData = true
+                    }
+                } else {
+                     that.$toast(res.message,3000)
+                }
+            })
+        },
+        doSearch(page){
+            let that = this
+            that.getRunContainerByTeacher(page)
+        },
+       
     }
 }
 </script>
