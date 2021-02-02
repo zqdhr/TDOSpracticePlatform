@@ -9,7 +9,7 @@
                         <span class="s_name">章节{{index+1}}：{{item.name}}</span>
                     </div>
                      <div class="sec_enclosure">
-                        <div v-if="item.enclosure">附件包含：{{item.enclosure}}
+                        <div >附件包含：{{item.enclosure}}
                             <span
                             v-for="(file,file_index) in item.enclosure" :key="file_index" class="icon"
                             :class="{'s-video':file==1,'s-pdf':file==2,'s-exper':file==3,'s-job':file==4}">

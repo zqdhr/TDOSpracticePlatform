@@ -17,7 +17,7 @@
                                 <input type="password" placeholder="请输入密码" v-model="password" autocomplete="off"/>
                             </div>
                              <p class="p-forget">
-                                <router-link to="">忘记密码？</router-link>
+                                <router-link to=""></router-link>
                             </p>
                             <div class="btnbox">
                                 <a class="pointer btnlogin"  @click="pp_login">登录</a>

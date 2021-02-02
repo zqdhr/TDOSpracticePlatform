@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="PP_header">
     <div class="header-container">
       <div class="container">
@@ -8,9 +9,9 @@
         </div>
 
         <div class="fr fr-info">
-          欢迎你,<span>陈友谅(工号:0056)</span>
+          欢迎你,<span class="pointer" @click="resetDialog=true">陈友谅(工号:0056)</span>
           <div class="hline"></div>
-          <a class="btnexit" @click="logOut">退出系统</a>
+          <a class="btnexit" @click="logoutDialog=true">退出系统</a>
         </div>
         <ul class="nav_ul">
           <li
@@ -29,7 +30,56 @@
         </ul>
       </div>
     </div>
+
+
   </div>
+  <!--修改密码弹出框-->
+  <el-dialog 
+      :visible.sync="resetDialog"
+      width="500px"
+      class="personDialog"   
+    >
+    <div slot="title" class="dialog_header">密码修改</div>
+
+      <div class="editMain" style="margin:0 50px" >
+        <el-form ref="form" label-width="80px">
+          <el-form-item label="输入密码">
+            <el-input  type="text" placeholder="请输入密码" maxlength="20" v-model="password"></el-input>
+          </el-form-item>
+         
+          <el-form-item label="确认密码">
+            <el-input type="text" placeholder="请输入确认密码" maxlength="20" v-model="confirmPassword"></el-input>
+          </el-form-item>
+
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <button class="btnDefault" @click="resetDialog = false">取消</button>
+        <button class="btnDefault" @click="editPassword">确认</button>
+      </span>
+    </el-dialog>
+    
+    <!--退出登录弹出框-->
+    <el-dialog 
+      :visible.sync="logoutDialog"
+      width="500px"
+      class="personDialog"   
+    >
+    <div slot="title" class="dialog_header">退出登录</div>
+
+        <div class="confirm_dialog_body" style="padding-bottom:20px">
+        <p class="dialog_mess">
+          <span class="span_icon icon_waring">确定要退出登录吗？</span>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <button class="btnDefault" @click="logoutDialog = false">取消</button>
+        <button class="btnDefault" @click="logOut">确认</button>
+      </span>
+    </el-dialog>
+  </div>
+      
+  
 </template>
 <script>
 import { mapState } from "vuex";
@@ -37,7 +87,12 @@ export default {
   data() {
     return {
       menus:[],
-      isShow:false
+      isShow:false,
+      resetDialog:false,
+      password:'',
+      confirmPassword:'',
+      logoutDialog:false,
+
     }
   },
   computed: {
@@ -109,6 +164,10 @@ export default {
       that.$router.push({ path:'/login'}).catch((err) => {
         console.log(err);
       });
+    },
+    //密码修改
+    editPassword(){
+
     }
   },
 };

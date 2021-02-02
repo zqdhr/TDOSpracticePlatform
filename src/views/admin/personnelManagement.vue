@@ -86,6 +86,7 @@
             <template slot-scope="scope">
               <div>
                 <a class="pointer atab-btn" @click="editInfo(scope.row)">编辑</a>
+                <a class="pointer atab-btn" @click="reSetInfo(scope.row)">重置</a>
               </div>
             </template>
           </el-table-column>
@@ -122,6 +123,7 @@
             <template slot-scope="scope">
               <div>
                 <a class="pointer atab-btn" @click="editInfo(scope.row)">编辑</a>
+                <a class="pointer atab-btn" @click="reSetInfo(scope.row)">重置</a>
               </div>
             </template>
           </el-table-column>
@@ -158,6 +160,7 @@
             <template slot-scope="scope">
               <div>
                 <a class="pointer atab-btn" @click="editInfo(scope.row)">编辑</a>
+                <a class="pointer atab-btn" @click="reSetInfo(scope.row)">重置</a>
               </div>
             </template>
           </el-table-column>
@@ -231,7 +234,7 @@
     <el-dialog
      
       :visible.sync="editDialog"
-      width="600px"
+      width="500px"
       class="personDialog"
       
     >
@@ -269,6 +272,32 @@
         <button class="btnDefault" @click="editUserInfo">确认修改</button>
       </span>
     </el-dialog>
+     
+    <!--重置-->
+    <el-dialog 
+      :visible.sync="resetDialog"
+      width="500px"
+      class="personDialog"   
+    >
+    <div slot="title" class="dialog_header">密码重置</div>
+
+      <div class="editMain" style="margin:0 50px" >
+        <el-form ref="form" label-width="80px">
+          <el-form-item label="输入密码">
+            <el-input  type="text" placeholder="请输入密码" maxlength="20" v-model="password"></el-input>
+          </el-form-item>
+         
+          <el-form-item label="确认密码">
+            <el-input type="text" placeholder="请输入确认密码" maxlength="20" v-model="confirmPassword"></el-input>
+          </el-form-item>
+
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <button class="btnDefault" @click="resetDialog = false">取消</button>
+        <button class="btnDefault" @click="editPassword">确认</button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -294,11 +323,13 @@ export default {
         {
           value: "1",
           label: "教师",
-        },
+        }
+        /*,
         {
           value: "0",
           label: "管理员",
         },
+        */
       ],
       type: "2", //人员类型选择
       classList: [
@@ -323,6 +354,9 @@ export default {
       isUpload: false, //点击上传人员弹出框
       editDialog:false,//编辑弹出框
       userInfo: {gender:''}, //修改信息
+      resetDialog:false,//重置密码是否弹出
+      password:'',
+      confirmPassword:''
     };
   },
   components: { FileUpload },
@@ -426,6 +460,17 @@ export default {
         console.log(obj)
         that.userInfo =  Object.assign({}, obj)
         that.userInfo.gender = obj.gender==0?'男': obj.gender==1?'女':'未知'
+
+      },
+      //点击重置
+      reSetInfo(obj){
+         console.log(obj)
+         let that = this;
+         that.resetDialog = true
+      },
+
+      //密码重置确认
+      editPassword(){
 
       },
     
@@ -579,4 +624,6 @@ export default {
 }
 @import url(../../assets/less/admin.less);
 
+.atab-btn{margin:0 10px;}
+.editMain{margin: 0 30px;}
 </style>
