@@ -20,28 +20,52 @@
                             <el-input v-model="course.intro" type="textarea"></el-input>
                         </el-form-item>
                         <el-form-item label="课程封面：">
-                            <div class="PicFm" v-for="(file,index) in files" :key="index">
+                          <template v-if="files.length>0">
+                            <div class="PicFm" v-for="(file,index) in files" :key="index" >
                                 <img class="td-image-thumb" v-if="file.thumb" :src="file.thumb" />
+                                
+                                    <file-upload
+                                            style="overflow: visible"
+                                            :maximum="1"
+                                            :multiple="true"
+                                            ref="upload"
+                                            v-model="files"
+                                            extensions="jpg,gif,png,webp"
+                                            :post-action="uploadUrl"
+                                            :auto-upload="false"
+                                            @input-file="inputFile"
+                                            @input-filter="inputFilter"
+                                            name="excel_file"
+                                            :headers="{ Authorization: jwt }"
+                                        >
+                                        <a class="a_upload">
+                                            <i class="icon"></i>
+                                           
+                                        </a>
+                                    </file-upload>
+
                             </div>
-                            <file-upload
-                                style="overflow: visible"
-                                :maximum="1"
-                                :multiple="true"
-                                ref="upload"
-                                v-model="files"
-                                extensions="jpg,gif,png,webp"
-                                :post-action="uploadUrl"
-                                :auto-upload="false"
-                                @input-file="inputFile"
-                                @input-filter="inputFilter"
-                                name="excel_file"
-                                :headers="{ Authorization: jwt }"
-                            >
-                            <a class="a_upload">
-                                <i class="icon"></i>
-                                <span>上传图片</span>
-                            </a>
+                           </template>
+                            <file-upload  v-if="files.length==0"
+                                    style="overflow: visible"
+                                    :maximum="1"
+                                    :multiple="true"
+                                    ref="upload"
+                                    v-model="files"
+                                    extensions="jpg,gif,png,webp"
+                                    :post-action="uploadUrl"
+                                    :auto-upload="false"
+                                    @input-file="inputFile"
+                                    @input-filter="inputFilter"
+                                    name="excel_file"
+                                    :headers="{ Authorization: jwt }"
+                                >
+                                <a class="a_upload">
+                                    <i class="icon"></i>
+                                    <span>上传图片</span>
+                                </a>
                             </file-upload>
+                            
                             <div class="upload_mess">（请选择10MB以内比例300:180的图片）</div>
                         </el-form-item>
                     </el-form>
@@ -398,5 +422,13 @@ export default {
 
 <style lang="less" scoped>
 @import url(../../assets/less/admin.less);
-
+.PicFm{width:300px;height: 180px; position: relative;border:1px solid #DCDFE6; }
+.PicFm .a_upload{
+    position:absolute;width:56px;height:56px; border:0 none; left:50%; margin-left: -30px;top:50%;margin-top:-30px; background:0 none;
+    
+    .icon{margin-top: 0px;.borderRadius(30px,30px,30px,30px);}
+}
+</style>
+<style lang="less">
+.PicFm .file-uploads {display: block; width:100%;height: 100%;position: absolute; left:0px;top:0px}
 </style>
