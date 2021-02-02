@@ -1,7 +1,7 @@
 <template>
     <div class="chapter_box">
         <ul class="chapter_ul">                         
-            <li class="chapter_li" v-for="(item,index) in courseChapters" :key="index" :class="{'li_focus':item.show}">
+            <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}">
                 <!--已有章节内容-->
                
                 <div class="textline1 cha_title " :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="item.id">
@@ -34,12 +34,12 @@
 
                                 </div>
                                 <div class="sec_enclosure">
-                                    <div>附件包含：
-                                        <span
-                                        v-for="(i_file_item,i_file_index) in iitem.enclosure" :key="i_file_index" class="icon"
-                                        :class="{'s-video':i_file_item==1,'s-pdf':i_file_item==2,'s-exper':i_file_item==3,'s-job':i_file_item==4}">
-
-                                        </span>
+                                    <div v-if="iitem.section_has_video || iitem.section_has_pdf || iitem.section_has_experiment || iitem.section_has_video">附件包含：
+                                      
+                                        <span class="icon s-video" v-if="iitem.section_has_video"></span>
+                                        <span class="icon s-pdf" v-if="iitem.section_has_pdf"></span>
+                                        <span class="icon s-exper" v-if="iitem.section_has_experiment"></span>
+                                        <span class="icon s-job" v-if="iitem.section_has_assignment"></span>
                                     </div>
                                 </div>
                               
@@ -76,38 +76,13 @@
 
 </template>
 <script>
-import {getCoursewareBySectionId} from '@/API/api';
+import {get_chapter_by_id} from '@/API/api';
 export default{
     data(){
         return{
-          chapters:[
-                {
-                    id:'xjkc2211',
-                    name:'标题内容标题内容标题内容',
-                    introduction:'简介内容简介内容简介内容简介内容简介内容简介内容简介内容简介内容',
-                    sections:[
-                        {
-                        id:'lfllff',
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:[1,2,3,4],
-                        small_sections:[{
-                            id:'section123',
-                            name:'dgfdgfgfdgf',
-                        }]
-                        },
-                        {
-                        id:'dfkldfklal',
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:[1,2,3,4],
-                        small_sections:[{
-                            id:'section123',
-                            name:'dgfdgfgfdgf',
-                        }]
-                        }
-                    ]
-                }
-            ],
-
+           dataObj:{
+               chapter_id:''
+           }
         }
     },
     props:{
@@ -117,7 +92,7 @@ export default{
         course:{
             default:''
         },
-        courseChapters:{
+        chapters:{
             default:[]
         }
     },
@@ -133,9 +108,9 @@ export default{
     */
     created() {
         let that = this;
-
-
-        that.addParamShow(that.courseChapters)
+        
+     
+        that.addParamShow(that.chapters)
     },
     mounted(){
         let that = this
@@ -167,7 +142,26 @@ export default{
                
             }
 
-            that.$set(item,'show',!show)   
+            that.$set(item,'show',!show)  
+            
+            if(!show){
+                that.dataObj.chapter_id = item.id
+                that.getSections(item)
+            }
+        },
+
+        //获取数据
+        getSections(item){
+           let that = this;
+           get_chapter_by_id(that.dataObj).then(res=>{
+               if(res.code==200){
+                   that.$set(item,'sections',res.data.sections)
+                   console.log(res)
+               }else{
+                   this.$toast(res.message,2000)
+               }
+           })
+           console.log(item)
         },
     
         /*显示小节 */
