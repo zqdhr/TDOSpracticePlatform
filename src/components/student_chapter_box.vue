@@ -1,7 +1,7 @@
 <template>
     <div class="chapter_box">
         <ul class="chapter_ul">                         
-            <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}">
+            <li class="chapter_li" v-for="(item,index) in courseChapters" :key="index" :class="{'li_focus':item.show}">
                 <!--已有章节内容-->
                
                 <div class="textline1 cha_title " :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="item.id">
@@ -9,14 +9,15 @@
                         <span class="s_name">章节{{index+1}}：{{item.name}}</span>
                     </div>
                      <div class="sec_enclosure">
-                        <div >附件包含：{{item.enclosure}}
+                        <div v-if="item.chapter_has_pdf || item.chapter_has_video ">附件包含：{{item.enclosure}}
                             <span
                             v-for="(file,file_index) in item.enclosure" :key="file_index" class="icon"
-                            :class="{'s-video':file==1,'s-pdf':file==2,'s-exper':file==3,'s-job':file==4}">
+                            :class="{'s-video':file==1,'':file==2,'s-exper':file==3,'s-job':file==4}">
                             </span>
+                            <span class="icon s-pdf" v-if="item.chapter_has_pdf"></span>
+                            <span class="icon s-video" v-if="item.chapter_has_video"></span>
                         </div>
-                    </div>
-                  
+                    </div> 
                     <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
 
@@ -75,7 +76,7 @@
 
 </template>
 <script>
-import {getCourseById,getCoursewareBySectionId} from '@/API/api';
+import {getCoursewareBySectionId} from '@/API/api';
 export default{
     data(){
         return{
@@ -115,6 +116,9 @@ export default{
         },
         course:{
             default:''
+        },
+        courseChapters:{
+            default:[]
         }
     },
     /*
@@ -129,35 +133,30 @@ export default{
     */
     created() {
         let that = this;
-        that.getCourseById();
+
+
+        that.addParamShow(that.courseChapters)
     },
     mounted(){
         let that = this
         //that.getCourseById();
          //章节下拉添加子元素是否显示参数show
-         for(var i=0;i<that.chapters.length;i++){
-            this.$set(that.chapters[i], 'show', false);
-            for(var j=0;j<that.chapters[i].sections.length;j++){
-                 this.$set(that.chapters[i].sections[j], 'show', false);
-            }
-         }
+      
 
 
     },
     methods:{
-        getCourseById(){
-            let that = this;
-            let obj = {};
-            obj.course_id = that.courseId;
-            getCourseById(obj).then(res=> {
-                if(res.code==200){
-                    that.chapters = res.data.chapters
-                }else{
-                    that.$toast(res.message,3000)
+        //章节下拉显示添加参数
+        addParamShow(array){
+             for(var i=0;i<array.length;i++){
+                this.$set(array[i], 'show', false);
+                for(var j=0;j<array[i].sections.length;j++){
+                    this.$set(array[i].sections[j], 'show', false);
                 }
-            })
+            }
         },
 
+        
 
          //显示章节
         showSection(item,show){

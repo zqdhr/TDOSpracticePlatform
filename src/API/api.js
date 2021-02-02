@@ -303,6 +303,11 @@ var execContainer=function(data){
 	return axios.post('/execContainer?containerId='+data.containerId+'&type='+data.type)
 }
 
+//获取章下面的节pdf附件
+var get_chapter_by_id = function(data){
+	return axios.get('/get_chapter_by_id?chapter_id='+data.chapter_id)
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -311,7 +316,7 @@ export{
 	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
 	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,addSmallSection,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
-	deleteCoursewareById,getRunContainerByTeacher,execContainer
+	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id
 }
 
 function getJson (data) {

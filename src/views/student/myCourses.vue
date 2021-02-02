@@ -148,6 +148,7 @@ export default {
     //查看详情
     linkDetail(id) {
       let that = this;
+      id="13d0567f-a196-43ab-a7ac-d72f5b2915e5"
       that.$router
         .push({ path: "/student/courseDetail", query: { courseId: id } })
         .catch((err) => {});
