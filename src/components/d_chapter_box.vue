@@ -25,7 +25,7 @@
                     <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
                       <a class="a_save pointer" @click="addChapters(index)"  v-if="item.id == ''"></a>
                     </el-tooltip>
-                    <a class=" a_delete a_delete_exist" @click="deleteChapter(index)" v-if="item.lastNum == 0"></a>
+                    <a class=" a_delete a_delete_exist" @click="deleteChapter(index,item)" v-if="item.lastNum == 0"></a>
                     <a class="icon_edit pointer" @click="edit(1,item.id,item.name,index,iindex,i_index)"></a>
                     <a class="a_arrow" @click="showSection(item,item.show)"></a>
                 </div>
@@ -66,7 +66,7 @@
                                     </div>
                                 </div>
 
-                                <a class=" a_delete a_delete_exist" @click="deleteSection(index,iindex)" v-if="iitem.lastNum == 0"></a>
+                                <a class=" a_delete a_delete_exist" @click="deleteSection(index,iindex,iitem)" v-if="iitem.lastNum == 0"></a>
                                 <a class="icon_edit pointer" @click="edit(2,iitem.id,iitem.name,index,iindex,i_index)"></a>
                                 <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>
                             </div>
@@ -90,7 +90,7 @@
                                      <template v-if="i_item.id">
                                         <div class="sec_name textline1">
                                             <p class="textline1">第{{i_index+1}}小节：{{i_item.name}}</p>
-                                            <a class=" a_delete a_delete_exist" @click="deleteSmallSection(index,iindex,i_index)" ></a>
+                                            <a class=" a_delete a_delete_exist" @click="deleteSmallSection(index,iindex,i_index,iitem)"  v-if="i_item.lastNum == 0"></a>
                                               <a class="icon_edit pointer" @click="edit(3,i_item.id,i_item.name,index,iindex,i_index)"></a>
                                         </div>
                                     </template>>
@@ -100,7 +100,7 @@
                                                 <div class="din">
                                                     <input placeholder="请输入小节名称" v-model="i_item.name"/>
                                                 </div>
-                                                <a class=" a_delete a_delete_exist" @click="deleteSmallSection(index,iindex,i_index)" v-if="i_item.lastNum == 0"></a>
+                                                <a class=" a_delete" @click="deleteSmallSection(index,iindex,i_index)"></a>
                                             </div>
                                     </template>
 
@@ -206,7 +206,7 @@
 
 </template>
 <script>
-import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,getCoursewareByChapterId,getAssignmentBySectionId,addSection,addSmallSection} from '@/API/api';
+import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,removeChapter,removeSection,removeSmallSection,addSection,addSmallSection} from '@/API/api';
 export default{
     data(){
         return{
@@ -232,8 +232,14 @@ export default{
             num:'',
             order:1,
             test:'',
+            chaptersNum:'',
+            sectionNum:'',
             smallSectionNum:'',
-            lastNum:''
+            lastNum:'',
+            deleteStatus:'',
+            chaptersId:'',
+            smallSectionId:'',
+            sectionId:''
         }
     },
     props:{
@@ -309,39 +315,118 @@ export default{
         },
 
         //删除章
-        deleteChapter(num){
+        deleteChapter(num,item){
             let that = this;
             that.chaptersNum = num;
             that.isDelete=true;
             that.chaptersOrsectio=1;
-
+            if(item.status == 1){
+                that.deleteStatus = 1;
+                that.chaptersId = item.id;
+            }
         },
         //删除节
-        deleteSection(num,num1){
+        deleteSection(num,num1,item){
             let that = this;
             that.chaptersNum = num;
             that.sectionNum=num1;
             that.isDelete=true;
             that.chaptersOrsectio=2;
+            if(item.status == 1){
+                that.deleteStatus = 1;
+                that.sectionId = item.id;
+            }
         },
         //删除小节
-        deleteSmallSection(num,num1,num2){
+        deleteSmallSection(num,num1,num2,item){
             let that = this;
             that.chaptersNum = num;
             that.sectionNum=num1;
             that.smallSectionNum=num2;
             that.isDelete=true;
             that.chaptersOrsectio=3;
+            if(item.status == 1){
+                that.deleteStatus = 1;
+                that.smallSectionId = item.id;
+            }
+        },
+        //删除章
+        removeChapter(chapterId){
+            let that = this;
+            let obj = {};
+            obj.chapter_id = chapterId;
+            removeChapter(JSON.stringify(obj)).then(res=> {
+                if(res.code==200){
+                    that.chaptersId = '';
+                    that.sectionId = '';
+                    that.smallSectionId = '';
+                    that.getCourseById();
+                }else{
+                    that.$toast(res.message,3000)
+                }
+
+            })
+        },
+        //删除节
+        removeSection(sectionId){
+            let that = this;
+            let obj = {};
+            obj.section_id = sectionId;
+            removeSection(JSON.stringify(obj)).then(res=> {
+                if(res.code==200){
+                    that.chaptersId = '';
+                    that.sectionId = '';
+                    that.smallSectionId = '';
+                    that.getCourseById();
+                }else{
+                    that.$toast(res.message,3000)
+                }
+
+            })
+        },
+        //删除小节
+        removeSmallSection(smallSectionId){
+            let that = this;
+            let obj = {};
+            obj.small_section_id = smallSectionId;
+            removeSmallSection(JSON.stringify(obj)).then(res=> {
+                if(res.code==200){
+                    that.chaptersId = '';
+                    that.sectionId = '';
+                    that.smallSectionId = '';
+                    that.getCourseById();
+                }else{
+                    that.$toast(res.message,3000)
+                }
+
+            })
         },
         //判断是删除章还是节
         deleteChapterOrSection(){
             let that=this;
-            if (that.chaptersOrsectio==1) {
-                that.chapters.splice(that.chaptersNum,1)
-            } else if(that.chaptersOrsectio==2){
-                that.chapters[that.chaptersNum].sections.splice(that.sectionNum,1)
-            }else{
-                that.chapters[that.chaptersNum].sections[that.sectionNum].small_sections.splice(that.sectionNum,1)
+            if(that.deleteStatus == 1){
+                that.deleteStatus = '';
+                if( that.smallSectionNum === '' && that.sectionNum === ''){
+                    alert("删除章")
+                    alert(that.chaptersId)
+                    that.removeChapter(that.chaptersId)
+                }else  if( that.smallSectionNum === '' && that.sectionNum !== ''){
+                    alert("删除节")
+                    alert(that.sectionId)
+                    that.removeSection(that.sectionId)
+                } else  if( that.smallSectionNum !== ''){
+                    alert("删除小节")
+                    alert(that.smallSectionId)
+                    that.removeSmallSection(that.smallSectionId)
+                }
+            }else {
+                if (that.chaptersOrsectio == 1) {
+                    that.chapters.splice(that.chaptersNum, 1)
+                } else if (that.chaptersOrsectio == 2) {
+                    that.chapters[that.chaptersNum].sections.splice(that.sectionNum, 1)
+                } else {
+                    that.chapters[that.chaptersNum].sections[that.sectionNum].small_sections.splice(that.sectionNum, 1)
+                }
             }
             that.isDelete = false;
         },
@@ -388,10 +473,13 @@ export default{
         addChaptersOrSections(){
             let that = this
             let obj ={};
+            alert(that.index)
+            alert(that.iindex)
             if(that.index !== '' && that.iindex === ''){
                 alert("111")
                 obj.section_name = that.addValue;
                 obj.chapter_id = that.chapters[that.index].id;
+                alert(obj.chapter_id)
                 obj.course_id = this.$route.query.courseId;
                 addSection(JSON.stringify(obj)).then(res=> {
                     that.index = '';

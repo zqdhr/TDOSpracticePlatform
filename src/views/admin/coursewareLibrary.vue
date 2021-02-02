@@ -110,7 +110,7 @@
 </div>
 </template>
 <script>
-import { getCoursewareAll,findParentCategory,findChildCategory} from "@/API/api";
+import { getCoursewareAll,findParentCategory,findChildCategory,deleteCoursewareById} from "@/API/api";
 import newdialog from '@/components/admin_dialog_newCourseware'
 export default {
     data(){
@@ -128,7 +128,7 @@ export default {
             isDelete:false,
             isnewFilter:false,//新增课件选择
             total:1,
-            perPage:8, //8个实验一页
+            perPage:10, //8个实验一页
             curPage:1,//设备列表
             cate:'',
             type:'',
@@ -197,10 +197,10 @@ export default {
         //课件列表
         getCoursewareAll() {
             let that = this;
-            that.getCourseAll(10,1,'',0,'','');
+            that.getCourseAll(10,1,'',0,'','','','');
         },
 
-        getCourseAll(per_page,page,kind,type,name,category_id){
+        getCourseAll(per_page,page,kind,type,name,category_id,chapter_id,section_id){
             let that = this;
             let obj = {};
             obj.per_page = per_page;
@@ -209,13 +209,16 @@ export default {
             obj.type = type;
             obj.name = name;
             obj.category_id = category_id;
+            obj.chapter_id = chapter_id;
+            obj.section_id = section_id;
             getCoursewareAll(obj).then((res) => {
                 if (res.code == 200) {
                     for(let i = 0;i<res.data.list.length;i++){
-                        res.data.list[i].size = (res.data.list[i].size/(1024 * 1024 * 1024)).toFixed(2) + "GB"
+                        res.data.list[i].size = (res.data.list[i].size/(1024 * 1024)).toFixed(2) + "MB"
                     }
                     that.experimentList = res.data.list;
                     that.total = res.data.total
+                    alert(that.total)
 
                 } else {
                     that.$toast(res.message, 3000);
@@ -235,7 +238,9 @@ export default {
         
         //底部分页
         handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+            console.log(`当前页: ${val}`);
+            let that = this;
+            that.getCourseAll(10,val,'',0,'','','','');
         },
 
         //选择分类
@@ -258,6 +263,19 @@ export default {
         confirmDeleteCourseWare(){
             let that = this;
             that.isDelete = false;
+            let obj = {};
+            let list = [];
+            list.push(that.coueseWareId)
+            obj.courseware_id_list = list;
+            deleteCoursewareById(obj).then((res) => {
+                that.coueseWareId = '';
+                if (res.code == 200) {
+                    alert("删除课件成功")
+                    that.getCourseAll(10,1,'',0,'','','','');
+                } else {
+                    that.$toast(res.message, 3000);
+                }
+            });
         },
 
         hidedialog(){
