@@ -33,23 +33,11 @@
         </div>
         <!--课程题目-->
         <div class="coursework_box" v-if="!noData">
-          <!--未开课显示的样式 根据情况只显示一个-->
-          <template>
-            <div class="in-box">
-              <input
-                placeholder="请输入作业名称"
-                type="text"
-                autocomplete="off"
-                maxlength="15"
-                ref="inputVal"
-              /><a class="edit" @click="input_focus"></a>
-            </div>
-          </template>
-          <!--已开课显示的样式-->
-          <template v-if="1 == 0">
-            <div class="coursework_name">区块链原理篇作业</div>
-          </template>
+            <div class="coursework_name">
+                <p>区块链原理篇作业</p>
+                <a class="edit" @click="reset_homework"></a>
 
+            </div>
           <div class="course_list">
             <el-scrollbar style="height:100%">  
             <!--选择题-->
@@ -130,7 +118,15 @@
     <el-dialog :visible.sync="isnewJobName" width="500px" class="dialog_newJobName" v-if="sindex != ''">
        <div slot="title" class="dialog_header">请设置作业名称</div>
        <div class="setScope">
-           <el-input placeholder="输入作业名称"></el-input>
+           <el-input placeholder="输入作业名称" v-model="homework.name"></el-input>
+           <div class="set_endtime_box">
+               <el-date-picker
+                v-model="homework.endTime"  value-format="yyyy-MM-dd"  :picker-options="pickerOptions"
+                type="date"
+                style="width:100%"
+                placeholder="选择日期">
+              </el-date-picker>
+           </div>
        </div>
        
        <div slot="footer" class="dialog-footer" >
@@ -275,7 +271,16 @@ export default {
       isSetTime:false,//设置题目时间弹窗
       sindex:'',
       totalAllCourse:'',
-      isnewJobName:false
+      isnewJobName:false,
+      pickerOptions: {
+         disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7;
+          },
+        },  
+      homework:{
+        name:'',//作业名称
+        endTime:''//作业的截止时间
+      }
     };
   },
   components: {
@@ -409,12 +414,12 @@ export default {
         that.deleteList = [];
       }
     },
-    //点击编辑框输入作业名获取焦点
-    input_focus() {
-      this.$nextTick(function () {
-        //DOM 更新了
-        this.$refs.inputVal.focus();
-      });
+    //修改作业
+    reset_homework(){
+        let that = this;
+        that.isnewJobName = true
+        that.homework.name = '区块链基础掌握'
+        that.homework.endTime = '2021-2-2'
     },
     //新增题目弹出框
     selectQuestionType(val){
@@ -460,7 +465,14 @@ export default {
 @import url(../assets/less/admin.less);
 @import url(../assets/less/coursework.less);
 .setScope{margin: 0 50px;}
-.coursework_box{position: relative;}
+.coursework_box{position: relative;
+
+}
+.coursework_name{
+  padding-right: 60px; position: relative;
+  >p { font-size: 18px;}
+  .edit{position: absolute;right:0px; top:50%;margin-top: -9px;}
+}
 .add_btn_box{text-align: center; }
 .coursework_box .course_list{height: 460px; padding: 20px 0;}
 </style>
@@ -473,4 +485,6 @@ export default {
 .pageTab .fr .d-serach{padding-left: 12px;padding-right: 12px; width: 170px; margin-right: 20px;}
 .btn_finsh{background: @basecolor; font-size:16px;color:#fff; display: inline-block; padding: 5px 8px; .borderRadius(5px,5px,5px,5px);
 vertical-align: middle; cursor: pointer;}
+
+.set_endtime_box{margin-top:20px;}
 </style>

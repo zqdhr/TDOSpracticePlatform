@@ -2,6 +2,16 @@
    <div class="studentList_box">
         <div class="back_box">
            <a class="back pointer" @click="backClass"></a>
+           <div class="fr">
+              <el-select v-model="class_value" placeholder="请选择班级">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+           </div>
         </div>
         <div class="tab_box">
             <el-table class="student_tab"
@@ -74,6 +84,17 @@ export default{
             {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'},
             {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'}
           ],
+          options: [{
+            value: '选项1',
+            label: '班级1'
+          }, {
+            value: '选项2',
+            label: '班级2'
+          }, {
+            value: '选项3',
+            label: '班级3'
+          }],
+          class_value:'',//下拉选中的班级
           multipleSelection: [],
           perPage: 10,//用户列表每页条数
           curPage:1, 
@@ -109,9 +130,11 @@ export default{
 </script>
 <style scoped lang="less">
 .back_box{
-  padding:5px 0;
+  padding:20px 0;
   .back{width:30px;height:30px;background:url(../assets/img/back_classList.png) center no-repeat;
-  display:block}
+  display:inline-block; vertical-align: middle;}
+  .fr{float:right;}
 }
+
 .btnbox{text-align:center;}
 </style>

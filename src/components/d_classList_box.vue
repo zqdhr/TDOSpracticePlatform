@@ -41,8 +41,7 @@ export default{
     data(){
         return{
             classList:[//班级列表
-                {id:'20100101',name:'四年级六班',number:60}, {id:'20100102',name:'四年级六班',number:60}, {id:'20100103',name:'四年级六班',number:60},
-                {id:'20100104',name:'四年级六班',number:60}, {id:'20100105',name:'四年级六班',number:60}, {id:'20100106',name:'四年级六班',number:60}
+               
             ],
             checkedList:[],//选中的班级列表
 
@@ -127,11 +126,11 @@ export default{
         //班级选择确认
         sureCheckClass(){
             let that = this;
-           
-            
+            console.log(that.checkedList)
             if(that.checkedList.length==0){
                 return that.$toast('请先选择班级',2000)
             }
+           
             that.isStudent = true;
             //that.$emit('sureCheckClass')
         },
