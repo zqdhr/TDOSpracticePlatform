@@ -18,9 +18,6 @@ let findEle = (parent, type) => {
       $inp.handle = function () {
         let val = $inp.value
         $inp.value = val.replace(regRule, '')
-        console.log(val)
-        console.log( $inp.value)
-  
         trigger($inp, 'input')
       }
       $inp.addEventListener('keyup', $inp.handle)
