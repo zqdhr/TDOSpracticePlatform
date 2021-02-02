@@ -16,7 +16,9 @@
                                 </el-option>
                             </el-select>
                        </div>
-                       <div class="sel-box">
+
+                       
+                       <!-- <div class="sel-box">
                           <el-select v-model="className" value-key="id" placeholder="请选择班级" 
                           @change="changeClass"
                           >
@@ -28,8 +30,22 @@
                                 </el-option>
                             </el-select>
                          
-                       </div>
-                  
+                       </div> -->
+                        <el-date-picker
+                            class="pageTab_date"
+                            v-if="state==1"
+                            v-model="value2"
+                            type="daterange"
+                            align="right"
+                            unlink-panels
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            :picker-options="pickerOptions"
+                             @change="changeDate"
+                             value-format=" yyyy-MM-dd" format="yyyy-MM-dd"
+                            >
+                        </el-date-picker>
                        <div class="sel-box">
                           <el-select v-model="level1Name" placeholder="课程" 
                           @change="changeLevel1"
@@ -69,7 +85,7 @@
                     </div>
                     <div class="fr">
                        <div class="d-serach"> 
-                            <input :placeholder="inplaceholder"  v-model="searchTx" type="text" autocomplete="off" />
+                            <input :placeholder="inplaceholder"  v-model="searchTx" type="text" autocomplete="off"  @keyup.enter="doSearch"/>
                             <a class="searchBtn pointer" @click="doSearch"></a>
                         </div>
                     </div>
@@ -85,7 +101,8 @@
               <ul class="tab_box">
                   <li v-for="(item,index) in jobList" :key="index">
                      <div class="d1 d15">
-                        <div class="cell pnum">{{index+1 | catIndex}}</div>
+                        <!-- <div class="cell pnum">{{index+1 | catIndex}}</div> -->
+                        <div class="cell textline1">班级：{{item.class}}</div>
                      </div>
                      <div class="d2 d28">
                         <div class="cell textline1">学号：{{item.sno}} {{item.name}}</div>
@@ -152,7 +169,13 @@
                
             </div>
             <div class="report_detail_btnbox" v-if="isReport_num==1">
-                   <div class="din"><el-input placeholder="请输入分数" v-model="source" style="text-align:center"/></div>
+                   <div class="din">
+                       <el-input 
+                       placeholder="请输入分数" 
+                       v-model="source" 
+                       style="text-align:center"
+                       @input="changeScore"
+                        oninput="value=value.replace(/[^\d]/g, '')" /></div>
                    <a class="pointer btnDefault" @click="Scoring">确认</a>
                 </div>
         </el-dialog>
@@ -167,20 +190,24 @@ export default {
         perPage: 10,//用户列表每页条数
         curPage:1, 
         jobList:[
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'1'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'1'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',name:'陈友亮',time:'2020-09-12 16:54',state:'0'}
+            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
+            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'1'},
+            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
+            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
+            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'1'},
+            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
+            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
+            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
+            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
+            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'}
         ],
         classList:[//班级选择列表
             
         ],
+        pickerOptions: {
+          
+        },
+        value2: '',
         className:'',//选择的班级名称
         classId:'',//选择的班级id
         chooseClassName:'',
@@ -234,6 +261,7 @@ export default {
         
     },
     methods:{
+      
         //底部分页
         handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
@@ -256,23 +284,25 @@ export default {
         //选择状态
         changeState(val){
            console.log('选择状态')
+           let that = this
+           that.value2=''
         },
         //选择课程
         changeLevel1(val){
             let that = this
-            let tmp = that.course
-            that.level2List = []
-            that.level3List = []
-            for(var i=0;i<tmp.length;i++){
-                if(val == tmp[i].id){
-                    if(tmp[i].chapters){
-                       that.level2List = tmp[i].chapters || [];
-                    }else{
-                         that.level2List = []
-                    }
+            // let tmp = that.course
+            // that.level2List = []
+            // that.level3List = []
+            // for(var i=0;i<tmp.length;i++){
+            //     if(val == tmp[i].id){
+            //         if(tmp[i].chapters){
+            //            that.level2List = tmp[i].chapters || [];
+            //         }else{
+            //              that.level2List = []
+            //         }
                     
-                }
-            }
+            //     }
+            // }
              console.log('选择课程'+val)
         },
         //选择章节
@@ -300,6 +330,31 @@ export default {
            let that = this;
            that.isReport = true
            that.isReport_num = num
+        },
+        //批改分数
+        changeScore() {
+            let that = this;
+
+            if (that.score < 0) {
+                that.score = 0;
+                return that.$toast("分数不能小于0", 3000);
+            }
+            if (that.score > 100) {
+                that.score = 100;
+                return that.$toast("分数不能大于100", 3000);
+            }
+           
+    },
+        //选择日期
+        changeDate(val){
+            let that = this;
+            let obj = {}
+            that.start = val[0];
+            that.end = val[1];
+            obj.start = val[0];
+            obj.end = val[1];
+
+           console.log(val) 
         },
         //获取班级列表
         getClassList(){
