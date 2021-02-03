@@ -28,7 +28,9 @@
                     <!--学生点击课程详情没有新增课件-->
                     <a class="btnDefault pointer" @click="click_new" v-if="sindex != '' || cindex !=''">新增课件</a>
                 </div>
+                <template v-if="isHasData">
                 <div class="list_box">
+                    
                     <ul class="list_ul clearfix">
                         <li v-for="(item,index) in experimentList" :key="index">
                             <div class="info">
@@ -65,6 +67,11 @@
                     >
                     </el-pagination>
                 </div>
+                </template>
+          
+                
+                 <nodata dataMess="当前暂无课件"  v-if="!isHasData"></nodata>
+
             </div>
          </div>
          <!--删除弹出框-->
@@ -92,6 +99,7 @@
 import courseNav from "@/components/left_courseNav.vue";
 import newdialog from '@/components/dialog_newCourseware';
 import {getCoursewareByCourseId,getCoursewareByChapterId,getCoursewareBySectionId} from '@/API/api';
+import nodata from '@/components/noData'
 export default {
     data(){
         return{
@@ -112,7 +120,8 @@ export default {
             kind:0,
             typeware:'',
             cindex:'',
-            sindex:''
+            sindex:'',
+            isHasData:true,//是否有数据 默认有数据
         }
     },
     props:{
@@ -121,7 +130,7 @@ export default {
         }
     },
     components:{
-        courseNav,newdialog
+        courseNav,newdialog,nodata
     },
      created(){
         this.cate = this.options[0].value;//默认选中内置课件
@@ -144,6 +153,7 @@ export default {
                 if(res.code==200){
                     console.log(res.data.list)
                     that.total = res.data.total;
+                    res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList = res.data.list;
                 }else{
                     this.$toast(res.message,2000)
@@ -152,7 +162,7 @@ export default {
         },
         getAllCoursewareByCourseId(){
             let that = this;
-            that.getCoursewareByCourseId(10,1,0,'',);
+            that.getCoursewareByCourseId(that.perPage,1,0,'',);
         },
         getCoursewareByChapterId(chapterId,kind,type,perPage,page){
             let that = this;
@@ -165,6 +175,7 @@ export default {
             getCoursewareByChapterId(obj).then(res=> {
                 if(res.code==200){
                     that.total = res.data.total;
+                    res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList = res.data.list;
                 }else{
                     this.$toast(res.message,2000)
@@ -182,6 +193,7 @@ export default {
             getCoursewareBySectionId(obj).then(res=> {
                 if(res.code==200){
                     that.total = res.data.total;
+                    res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList = res.data.list;
                 }else{
                     this.$toast(res.message,2000)
@@ -195,9 +207,9 @@ export default {
             that.cindex = data.cindex;
             that.sindex = data.sindex;
             if(data.sindex == ""){
-                that.getCoursewareByChapterId(data.cindex,0,'',10,1)
+                that.getCoursewareByChapterId(data.cindex,0,'',that.perPage,1)
             }else{
-                that.getCoursewareBySectionId(data.sindex,0,'',10,1)
+                that.getCoursewareBySectionId(data.sindex,0,'',that.perPage,1)
             }
         },
          //底部分页
@@ -211,11 +223,11 @@ export default {
             let that = this;
             that.kind = val
             if(that.sindex == "" && that.cindex == ""){
-                that.getCoursewareByCourseId(10,1,val,that.typeware);
+                that.getCoursewareByCourseId(that.perPage,1,val,that.typeware);
             }else if (that.sindex == "" && that.cindex != ""){
-                that.getCoursewareByChapterId(that.cindex,that.typeware,val,10,1)
+                that.getCoursewareByChapterId(that.cindex,that.typeware,val,that.perPage,1)
             }else{
-                that.getCoursewareBySectionId(that.sindex,that.typeware,val,10,1)
+                that.getCoursewareBySectionId(that.sindex,that.typeware,val,that.perPage,1)
             }
         },
 
@@ -225,11 +237,11 @@ export default {
              let that = this;
             that.typeware= val;
              if(that.sindex == "" && that.cindex == ""){
-                 that.getCoursewareByCourseId(10,1,that.kind,val);
+                 that.getCoursewareByCourseId(that.perPage,1,that.kind,val);
              }else if (that.sindex == "" && that.cindex != ""){
-                 that.getCoursewareByChapterId(that.cindex,that.kind,val,10,1)
+                 that.getCoursewareByChapterId(that.cindex,that.kind,val,that.perPage,1)
              }else{
-                 that.getCoursewareBySectionId(that.sindex,that.kind,val,10,1)
+                 that.getCoursewareBySectionId(that.sindex,that.kind,val,that.perPage,1)
              }
         },
 
@@ -268,11 +280,11 @@ export default {
         li{width:25%;min-height: 40px;float: left; margin-bottom: 20px; }    
       
         .info{margin: 0 10px; min-height: 30px;background: @background; padding: 40px 0 20px 0; position:relative;}
-        .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px; line-height: 20px;}
+        .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px; line-height: 20px; height: 20px;}
         .icon{width: 20px;height: 20px;display: block; position:absolute;top:10px;user-select: none;}
         .icon_close{background: url(../assets/img/n_close.png) center no-repeat;right:15px}
         .icon_set{background: url(../assets/img/n_set.png) center no-repeat;right:28px}
-        .p-name{padding:8px 4px; line-height: 26px;}
+        .p-name{padding:8px 4px; line-height: 26px; height: 26px;}
         .c_icon{width:58px;height: 58px;margin:0 auto; display: block;}
         .icon_video{background: url(../assets/img/courseware_video.png) center no-repeat;}
         .icon_pdf{background: url(../assets/img/courseware_pdf.png) center no-repeat;}

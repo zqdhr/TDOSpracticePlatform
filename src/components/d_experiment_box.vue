@@ -40,7 +40,7 @@
                     </el-pagination>
                 </div>
                 </template>
-                <nodata dataMess="当前暂无实验" noDataType='1' v-if="!isHasData"></nodata>
+                <nodata dataMess="当前暂无实验"  v-if="!isHasData"></nodata>
             </div>
          </div>
          <newdialog   ref="newdialog" ></newdialog>
@@ -152,7 +152,7 @@ export default {
             sindex:'',
             experimentId:'',
             total:1,
-            isHasData:false,//是否有数据 默认有数据
+            isHasData:true,//是否有数据 默认有数据
         }
     },
     props:{
@@ -266,7 +266,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .experiment_box{
-    margin-top: 30px;min-height: 600px;
+    margin-top: 30px;
     .exper_main{width:100%;height: 100%; position: relative;;}
     .right_box{ margin-left: 330px;}
 }
