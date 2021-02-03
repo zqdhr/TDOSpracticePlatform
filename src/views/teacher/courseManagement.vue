@@ -36,9 +36,9 @@
                         <div class="info-box">
                         
                             <div class="d-icon"></div>
-                            <p class="p_id textline1">学号：{{item.sno}}</p>
-                            <p class="p_id p_name textline1">用户名称：{{item.username}}</p>
-                            <p class="p_id p_name textline1">实验名称：{{item.experName}}</p>
+                            <p class="p_id textline1">学号：{{item.user_id}}</p>
+                            <p class="p_id p_name textline1">用户名称：{{item.user_name}}</p>
+                            <p class="p_id p_name textline1">实验名称：{{item.experiment_name}}</p>
                             <div class="btnbox">
                                 <div class="course_mana_btnbox">
                                     <a class="pointer btn btn-see"><span>查看</span></a>
@@ -142,9 +142,9 @@ export default {
         //关闭学生实验
         closeStudent(item){
             let that=this
-            that.student.userid = item.sno
-            that.student.name = item.username
-            that.student.containerId = item.containerId
+            that.student.userid = item.user_id
+            that.student.name = item.user_name
+            that.student.containerId = item.container_id
             that.isClose=true
             console.log('当前学生：'+that.student.name+',学号：'+that.student.userid)
         },
@@ -210,7 +210,7 @@ export default {
             let that = this
             that.curPage=page
             let obj = {}
-            obj.classId=that.className
+            obj.courseId=that.className
             obj.filter = that.searchContent
             obj.page=page
             obj.perPage=that.perPage
