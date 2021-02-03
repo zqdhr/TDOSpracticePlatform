@@ -201,7 +201,9 @@
         <div slot="footer" class="dialog-footer">
           <a class="btnDefault" @click="isNewType = 1">批量上传</a>
           <a class="btnDefault" @click="singleUpload">单个上传</a>
-          <p class="dialog-mess">（点击此处下载“<a>批量上传</a>”模板）</p>
+          <p class="dialog-mess">
+            （点击此处下载“<a @click="downloadMB()">批量上传</a>”模板）
+          </p>
         </div>
       </template>
       <template v-if="isNewType == 1">
@@ -217,7 +219,7 @@
               style="overflow: visible"
               :maximum="1"
               :multiple="true"
-              ref="upload"
+              ref="upload1"
               v-model="files"
               extensions="xlsx,xls"
               :post-action="uploadUrl"
@@ -225,14 +227,13 @@
               @input-file="inputFile"
               @input-filter="inputFilter"
               name="excel_file"
-              :headers="{ Authorization: jwt }"
             >
               <a class="a_upload pointer"><span>选择需要添加的题目</span></a>
             </file-upload>
           </div>
         </div>
         <div slot="footer" class="dialog-footer">
-          <a class="btnDefault pointer" @click="confimBatchUpload">确认上传</a>
+          <a class="btnDefault pointer" @click="confimBatchUpload">确认上传{{uploadUrl}}</a>
         </div>
       </template>
 
@@ -381,7 +382,11 @@ import {
   findChildCategory,
   adminSubmitQuestions,
   upload,
+  upload_qb_excel,
 } from "@/API/api";
+
+import { mapState } from "vuex";
+
 
 export default {
   data() {
@@ -408,7 +413,6 @@ export default {
       isNew: false, //新增题目
       isNewType: 0, //题目新增方式，1批量上传 2单个上传
       jwt: "",
-      uploadUrl: "",
       files: [], //题目批量上传
       files1: [], //上传的图片列表
 
@@ -432,15 +436,22 @@ export default {
       addCategoryID: "",
       addCategoryItem: {}, //分类对象
       pic_upload_url: "",
+      xlsx_upload_url: "",
+      uploadUrl:"",
     };
   },
   components: {
     ElImageViewer,
     FileUpload,
   },
+
+
   mounted() {
     let that = this;
+    that.uploadUrl = that.$store.state.uploadUrlExcel;
+    console.log(that.uploadUrl);
     that.getQuestionBackAll();
+  
   },
   created() {
     let that = this;
@@ -449,6 +460,11 @@ export default {
     that.findParentCategory();
   },
   methods: {
+    //下载模板
+    downloadMB(val) {
+      let that = this;
+      window.location.href = that.$store.state.dowmloadExcel;
+    },
     //新增删减题目选项
     editChoice(val) {
       let that = this;
@@ -583,17 +599,7 @@ export default {
     //上传的回调函数，每次上传回调都不一样
     inputFile(newFile, oldFile) {
       let that = this;
-      console.log("123");
-      /*
-        if (
-          Boolean(newFile) !== Boolean(oldFile) ||
-          oldFile.error !== newFile.error
-        ) {
-          if (!this.$refs.upload.active) {
-            this.$refs.upload.active = true;
-          }
-        }
-         */
+
       if (newFile && oldFile) {
         //add
         if (newFile && oldFile && !newFile.active && oldFile.active) {
@@ -601,9 +607,12 @@ export default {
           let response = newFile.response;
           console.log(this.files);
           if (response.code == 200) {
+            // alert(111)
             this.$message.success("文件上传成功");
             that.isNew = false;
           } else {
+                        // alert(222)
+
             this.$message.error("文件上传失败");
           }
           if (newFile.xhr) {
@@ -620,6 +629,7 @@ export default {
         // remove
         console.log("remove", oldFile);
       }
+
     },
     //上传前的钩子函数
     inputFilter1(newFile, oldFile, prevent) {
@@ -666,6 +676,8 @@ export default {
       }
     },
 
+
+
     //上传的回调函数，每次上传回调都不一样
     inputFile1(newFile, oldFile) {
       let that = this;
@@ -703,20 +715,17 @@ export default {
       }
 
       //上传图片
-      that.upload(that.files1[0].file);
+      that.upload(that.files1[0].file, 0);
     },
     //上传图片
-    upload(file) {
+    upload(file, type) {
       let that = this;
       let obj = new FormData();
-      obj.append("type", 0);
+      obj.append("type", type);
       obj.append("file", file);
-
-      // alert(that.$store.state.picUrl);
 
       upload(obj).then((res) => {
         if (res.code == 200) {
-          //  alert(JSON.stringify(res))
           that.pic_upload_url = res.data.name;
         } else {
           that.$toast(res.message, 3000);
@@ -758,10 +767,9 @@ export default {
     },
     //点击图片
     getPreview(val) {
-
       let that = this;
       that.showViewer = true;
-      that.guidePic =that.$store.state.pic_Url+val;
+      that.guidePic = that.$store.state.pic_Url + val;
       // "https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg";
       that.guidePic
         ? (that.showViewer = true)
@@ -809,7 +817,9 @@ export default {
     //批量上传确认
     confimBatchUpload() {
       let that = this;
-      this.$refs.upload.active = true;
+  
+      this.$refs.upload1.active = true;
+      
     },
     //弹出框内，选择题目类型
     dialogselectType(val) {
@@ -821,7 +831,6 @@ export default {
     //新增题目保存
     saveTilte() {
       let that = this;
-
 
       // this.$refs.upload.active = true;
       // this.isNew = false;

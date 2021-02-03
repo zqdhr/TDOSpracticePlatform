@@ -21,6 +21,8 @@
       </div>
 
       <div class="tablex_box list_box">
+       
+       <template v-if="isHasData">
        <div class="tablex_box imageReposittory_table " :class="{'no_imageReposittory_table':Imagelibraries.length==0}">
         <!--镜像列表-->
         <el-table
@@ -61,6 +63,10 @@
           >
           </el-pagination>
         </div>
+       </template>
+
+        <nodata dataMess="镜像库暂无内容" noDataType='1' v-if="!isHasData"></nodata>
+
       </div>
     </div>
 
@@ -141,6 +147,7 @@ import { mapState } from "vuex";
 //import FileUpload from "vue-upload-component";
 import {getImagequoteList,deleteImages,addImage} from '@/API/api';
 import loading from '@/components/loading.vue'
+import nodata from '@/components/noData'
 export default {
   data() {
     return {
@@ -168,10 +175,11 @@ export default {
       uploadUrl:'',
       files:[],
       showLoading:false,
+      isHasData:true,//是否有数据 默认有数据
     };
   },
   components:{
-    loading
+    loading,nodata
       //FileUpload
   },
   computed: {
@@ -204,6 +212,7 @@ export default {
               if(res.code==200){
                   that.Imagelibraries = res.data.list;
                   that.total = res.data.total
+                  res.data.total==0 ? that.isHasData = false :that.isHasData = true
               }else{
                   this.$toast(res.message,2000)
               }

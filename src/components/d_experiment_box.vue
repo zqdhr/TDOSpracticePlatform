@@ -7,6 +7,7 @@
                 <div class="add_btn_box">
                     <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''">新增实验</a>
                 </div>
+                <template v-if="isHasData">
                 <div class="list_box">
                     <ul class="list_ul clearfix " :class="{'student_list_ul':role==3}">
                         <li v-for="(item,index) in experimentList" :key="index">
@@ -38,6 +39,8 @@
                     >
                     </el-pagination>
                 </div>
+                </template>
+                <nodata dataMess="当前暂无实验"  v-if="!isHasData"></nodata>
             </div>
          </div>
          <newdialog   ref="newdialog" ></newdialog>
@@ -106,6 +109,7 @@ import courseNav from "@/components/left_courseNav.vue";
 import newdialog from "@/components/teacher_new_experiment.vue";
 import experimentDetail from '@/components/experimentDetail';
 import {findParentCategory,findChildCategory,findAllByCategoryId,findAllByType,deleteExperiment} from '@/API/api';
+import nodata from '@/components/noData'
 export default {
     data(){
         return{
@@ -147,7 +151,8 @@ export default {
             endTime:'',
             sindex:'',
             experimentId:'',
-            total:1
+            total:1,
+            isHasData:true,//是否有数据 默认有数据
         }
     },
     props:{
@@ -161,7 +166,7 @@ export default {
         that.sid = 1
     },
     components:{
-        courseNav,newdialog,experimentDetail
+        courseNav,newdialog,experimentDetail,nodata
     },
     mounted(){
         let that = this;
@@ -178,6 +183,7 @@ export default {
             findAllByCategoryId(obj).then(res=> {
                 if(res.code==200){
                     that.total = res.data.total
+                    res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList = res.data.list;
                 }else{
                     this.$toast(res.message,2000)
@@ -194,6 +200,7 @@ export default {
             findAllByType(obj).then(res=> {
                 if(res.code==200){
                     that.total = res.data.total
+                     res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList  = res.data.list;
                 }else{
                     this.$toast(res.message,2000)
@@ -259,7 +266,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .experiment_box{
-    margin-top: 30px;min-height: 600px;
+    margin-top: 30px;
     .exper_main{width:100%;height: 100%; position: relative;;}
     .right_box{ margin-left: 330px;}
 }

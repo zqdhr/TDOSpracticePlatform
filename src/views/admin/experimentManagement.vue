@@ -27,6 +27,7 @@
       </div>
 
       <div class="tablex_box list_box">
+        <template v-if="isHasData">
         <div class="l_box">
           <ul class="default_List">
              <li v-for="(item,index) in machineList" :key="index">
@@ -54,6 +55,10 @@
           >
           </el-pagination>
         </div>
+        </template>
+
+       <nodata dataMess="当前暂无正在运行的实验" noDataType='1' v-if="!isHasData"></nodata>
+
       </div>
     </div>
    
@@ -84,6 +89,7 @@
 <script>
 import { mapState } from "vuex";
 import {getRunContainerList,searchClass,stopRunContainerList} from '@/API/api';
+import nodata from '@/components/noData'
 export default {
   data() {
     return {
@@ -104,8 +110,10 @@ export default {
       show_Release:false,//虚拟机释放弹出框显示
       release_success:false,//是否是否成功
       dialog_machine:'',
+       isHasData:true,//是否有数据 默认有数据
     };
   },
+  components:{nodata},
 
   computed: {
     ...mapState({
@@ -133,6 +141,7 @@ export default {
           getRunContainerList(obj).then(res=> {
               if(res.code==200){
                   that.total = res.data.total;
+                  res.data.total==0 ? that.isHasData = false :that.isHasData = true
                   that.machineList = res.data.list;
               }else{
                   this.$toast(res.message,2000)

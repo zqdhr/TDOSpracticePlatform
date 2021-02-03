@@ -35,6 +35,7 @@
 
     <div class="experimentLibrary_box">
         <div class="container">
+            <template v-if="isHasData">
             <div class="list_box">
                 <ul class="list_ul clearfix">
                     <li v-for="(item,index) in experimentList" :key="index">
@@ -70,6 +71,9 @@
                 >
                 </el-pagination>
             </div>
+            </template>
+
+            <nodata dataMess="实验库暂无内容" noDataType='1' v-if="!isHasData"></nodata>
         </div>
     </div>
     <!--删除实验弹出框-->
@@ -93,6 +97,7 @@
 import { findParentCategory,findChildCategory,findExperiment,deleteExperiment } from "@/API/api";
 import newExperiment from '@/components/admin_new_experiment'
 import experimentDetail from '@/components/experimentDetail'
+import nodata from '@/components/noData'
 export default {
     data(){
         return{
@@ -115,13 +120,14 @@ export default {
             searchTx:'',//搜索的关键字
             deleteExperId:'',//需要删除的实验ID
             experId:'',//获取详情点击的id
+            isHasData:true,//是否有数据 默认有数据
         }
     },
     created(){
         this.findParentCategory()
         this.findExperiment(1)
     },
-    components:{newExperiment,experimentDetail},
+    components:{newExperiment,experimentDetail,nodata},
     methods:{
 
         //自定义分类
@@ -235,6 +241,7 @@ export default {
                 if(res.code==200){
                    console.log(res.data)
                    that.experimentList  =res.data.list
+                   res.data.total==0 ? that.isHasData = false :that.isHasData = true
                    for (let index = 0; index <  that.experimentList.length; index++) {
                     that.experimentList[index].pic_url = that.$store.state.pic_Url+ that.experimentList[index].pic_url
 
