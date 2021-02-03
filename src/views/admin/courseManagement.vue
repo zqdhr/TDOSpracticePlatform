@@ -30,7 +30,7 @@
                 </div>
               
             </div>
-
+            <template v-if="isHasData">
             <div class="tea_list">
                <ul class="tab_box courseList_ul lp_courseList_ul">
                     <li v-for="(item,index) in courseList" :key="index">
@@ -70,6 +70,10 @@
                 </el-pagination>
             </div>
 
+            </template>
+
+            <nodata :dataMess="dataMess" noDataType='1' v-if="!isHasData"></nodata>
+
         </div>
 
          <!--删除人员弹出框-->
@@ -91,6 +95,7 @@
 </template>
 <script>
 import {getAdminUnpublishedCourseList,getExpirCourseList} from '@/API/api';
+import nodata from '@/components/noData'
 export default {
     data(){
        return{
@@ -104,9 +109,12 @@ export default {
             coursetypeList:[{value:0,label:'我的课程'},{value:1,label:'归档课程'}],
             coursetype:'我的课程',
             searchText:'',
-            isDelete:false
+            isDelete:false,
+            dataMess:'暂无课程列表',
+            isHasData:true,//是否有数据 默认有数据
        }
     },
+    components:{nodata},
     created(){
 	this.coursetype = this.coursetypeList[0].value
        
@@ -127,6 +135,7 @@ export default {
             getAdminUnpublishedCourseList(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
+                    res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     for(let i = 0;i<res.data.list.length;i++){
                         res.data.list[i].pic_url = that.$store.state.pic_Url+ res.data.list[i].pic_url;
                         res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
@@ -134,7 +143,10 @@ export default {
                             res.data.list[i].time = res.data.list[i].start_at.replace('T', ' ') + '-' + res.data.list[i].end_at.replace('T', ' ');
                         }
                     }
+
                     that.total = res.data.total;
+                    
+                  
                 }else{
                     this.$toast(res.message,2000)
                 }
@@ -148,6 +160,8 @@ export default {
             getExpirCourseList(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
+                    res.data.total==0 ? that.isHasData = false :that.isHasData = true
+                
                     for(let i = 0;i<res.data.list.length;i++){
                         res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
                         if(res.data.list[i].start_at !=null && res.data.list[i].end_at !=null) {
@@ -162,7 +176,7 @@ export default {
         },
         selectCourse(){
             let that = this;
-            that.coursetype ==0 ? that.getAdminUnpublishedCourseList() : that.getExpirCourseList()
+            that.coursetype ==0 ? that.getAdminUnpublishedCourseList() : that.getExpirCourseList();that.dataMess = '暂无归档课程'
         },
         searchCourse(){
             let that = this;
