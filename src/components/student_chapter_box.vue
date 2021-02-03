@@ -1,6 +1,6 @@
 <template>
     <div class="chapter_box">
-        <ul class="chapter_ul">                         
+        <ul class="chapter_ul" v-if="isHasData">                         
             <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}">
                 <!--已有章节内容-->
                
@@ -69,20 +69,24 @@
 
 
         </ul>
-
+        
+        <nodata dataMess="该课程暂无章节" v-if="!isHasData"></nodata>
 
 
     </div>
 
 </template>
 <script>
+import nodata from '@/components/noData.vue'
 import {get_chapter_by_id} from '@/API/api';
 export default{
     data(){
         return{
            dataObj:{
                chapter_id:''
-           }
+           },
+         
+           
         }
     },
     props:{
@@ -94,7 +98,13 @@ export default{
         },
         chapters:{
             default:[]
-        }
+        },
+        isHasData:{
+            default:true
+        },
+    },
+    components:{
+        nodata
     },
     /*
     watch:{
@@ -109,6 +119,7 @@ export default{
     created() {
         let that = this;   
         that.addParamShow(that.chapters)
+        
     },
     mounted(){
         let that = this
@@ -123,8 +134,10 @@ export default{
         addParamShow(array){
              for(var i=0;i<array.length;i++){
                 this.$set(array[i], 'show', false);
+                this.array.sort(this.compare('order')) 
                 for(var j=0;j<array[i].sections.length;j++){
                     this.$set(array[i].sections[j], 'show', false);
+
                 }
             }
         },
@@ -136,14 +149,13 @@ export default{
             let that = this;
             let tmp = that.chapters
             for(var i = 0;i<tmp.length;i++){
-               that.$set(that.chapters[i],'show',false)
-               
+               that.$set(that.chapters[i],'show',false)          
             }
 
             that.$set(item,'show',!show)  
-            
             if(!show){
                 that.dataObj.chapter_id = item.id
+                
                 that.getSections(item)
             }else{
                 that.addParamShow(that.chapters)
@@ -156,6 +168,10 @@ export default{
            get_chapter_by_id(that.dataObj).then(res=>{
                if(res.code==200){
                    that.$set(item,'sections',res.data.sections) 
+                   that.$set(item.sections.sort(this.compare('order')))
+                   for(var i =0 ;i<item.sections.length;i++){
+                        that.$set(item.sections[i].small_sections.sort(this.compare('order')))
+                   }
                }else{
                    this.$toast(res.message,2000)
                }
@@ -167,13 +183,13 @@ export default{
             console.log(index)
            let that = this;
            let tmp = that.chapters[index].sections;
-           console.log(tmp)
+     
            for(var i =0;i<tmp.length;i++){
 
                that.$set(that.chapters[index].sections[i],'show',false)
            }
            that.$set(item,'show',!show)
-           console.log(that.chapters)
+           
         },
 
         addChapters(){

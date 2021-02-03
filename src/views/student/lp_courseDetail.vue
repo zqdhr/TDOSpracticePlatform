@@ -44,7 +44,7 @@
                 </div>
 
                  <!--课程大纲-->
-                <chapter :courseId="courseId" v-if="navindex==0" :role="role" :chapters="courseChapters"></chapter>
+                <chapter :courseId="courseId" v-if="navindex==0" :role="role" :chapters="courseChapters" :isHasData="isHasData"></chapter>
 
                 
                
@@ -100,6 +100,7 @@ export default {
             isSetTime:false,//设置时间是否设置(这个根据课程是否是已开课)
 
             courseChapters:[],
+            isHasData:true,//传给课程大纲组件默认有数据
 
             showStudentList:false,//是否显示学生列表
 
@@ -145,6 +146,9 @@ export default {
                     that.introduction = res.data.introduction;
                     that.course = res.data
                     that.courseChapters = res.data.chapters
+                    if(res.data.chapters.length==0){
+                      that.isHasData = false
+                    }
                 }else{
                     this.$toast(res.message,2000)
                 }
