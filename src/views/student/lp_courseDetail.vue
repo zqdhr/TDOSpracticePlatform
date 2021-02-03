@@ -44,7 +44,7 @@
                 </div>
 
                  <!--课程大纲-->
-                <chapter :courseId="courseId" v-if="navindex==0" :role="role"></chapter>
+                <chapter :courseId="courseId" v-if="navindex==0" :role="role" :chapters="courseChapters"></chapter>
 
                 
                
@@ -99,7 +99,7 @@ export default {
             pickerOptionsEnd: {},
             isSetTime:false,//设置时间是否设置(这个根据课程是否是已开课)
 
-
+            courseChapters:[],
 
             showStudentList:false,//是否显示学生列表
 
@@ -130,9 +130,7 @@ export default {
         getCourseById(){
             let that = this;
             let obj = {};
-            obj.course_id = this.$route.query.courserId
-
-            console.log(that.courseId)
+            obj.course_id = that.courseId
             getCourseById(obj).then(res=> {
                 if(res.code==200){
                     that.coursrName = res.data.name;
@@ -146,6 +144,7 @@ export default {
                     that.numbers = res.data.numbers == null ? 0 : res.data.numbers
                     that.introduction = res.data.introduction;
                     that.course = res.data
+                    that.courseChapters = res.data.chapters
                 }else{
                     this.$toast(res.message,2000)
                 }

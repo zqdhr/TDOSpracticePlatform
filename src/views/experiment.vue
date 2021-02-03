@@ -41,15 +41,17 @@
                   <span class="pointer" :class="{'active':virtualMachine==3}">虚拟机3</span>
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
-                <div class="operation_box" id="screen">
+                <div class="operation_box" id="screen" v-if="1==0">
                     <!--@click="connectVnc()"-->
                     <a class="btn-open pointer" v-if="!isOpen" @click="isOpen=true">点击开启全部虚拟机</a>
                    
                 </div>
-                <div  class="operation_box" ref="imageWrapper" id="imageWrapper">
+                <div  class="operation_box" ref="imageWrapper" id="imageWrapper" >
                     <xterm></xterm>
+                    <iframe src="http://192.168.1.228:8888/"  style="width:100%;height:100%"></iframe>
                 </div>
-        
+                
+                  
                 <!--
                 <div class="operation_box" ref="imageWrapper" id="imageWrapper">
               

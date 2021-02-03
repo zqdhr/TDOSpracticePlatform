@@ -9,19 +9,20 @@
                         <span class="s_name">章节{{index+1}}：{{item.name}}</span>
                     </div>
                      <div class="sec_enclosure">
-                        <div >附件包含：{{item.enclosure}}
+                        <div v-if="item.chapter_has_pdf || item.chapter_has_video ">附件包含：{{item.enclosure}}
                             <span
                             v-for="(file,file_index) in item.enclosure" :key="file_index" class="icon"
-                            :class="{'s-video':file==1,'s-pdf':file==2,'s-exper':file==3,'s-job':file==4}">
+                            :class="{'s-video':file==1,'':file==2,'s-exper':file==3,'s-job':file==4}">
                             </span>
+                            <span class="icon s-pdf" v-if="item.chapter_has_pdf"></span>
+                            <span class="icon s-video" v-if="item.chapter_has_video"></span>
                         </div>
-                    </div>
-                  
-                    <a class="a_arrow" @click="showSection(item,item.show)"></a>
+                    </div> 
+                    <a class="a_arrow" @click="showSection(item,item.show)" v-if="item.sections && item.sections.length>0"></a>
                 </div>
 
 
-                <el-collapse-transition>
+                <!--<el-collapse-transition>-->
                 <div class="section_box" v-if="item.show">
                     <ul class="section_ul">
                         <li class="section_li" v-for="(iitem,iindex) in item.sections" :key="iindex" :class="{'new_section_li':!iitem.id}">
@@ -33,20 +34,20 @@
 
                                 </div>
                                 <div class="sec_enclosure">
-                                    <div>附件包含：
-                                        <span
-                                        v-for="(i_file_item,i_file_index) in iitem.enclosure" :key="i_file_index" class="icon"
-                                        :class="{'s-video':i_file_item==1,'s-pdf':i_file_item==2,'s-exper':i_file_item==3,'s-job':i_file_item==4}">
-
-                                        </span>
+                                    <div v-if="iitem.section_has_video || iitem.section_has_pdf || iitem.section_has_experiment || iitem.section_has_video">附件包含：
+                                      
+                                        <span class="icon s-video" v-if="iitem.section_has_video"></span>
+                                        <span class="icon s-pdf" v-if="iitem.section_has_pdf"></span>
+                                        <span class="icon s-exper" v-if="iitem.section_has_experiment"></span>
+                                        <span class="icon s-job" v-if="iitem.section_has_assignment"></span>
                                     </div>
                                 </div>
                               
-                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>
+                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)" v-if="iitem.small_sections && iitem.small_sections.length>0"></a>
                             </div>
                     
                             <!--小节-->
-                            <el-collapse-transition>
+                         
                             <ul class="section_ul i_section_ul" v-if="iitem.show">
                                 <li class="section_li" v-for="(i_item,i_index) in iitem.small_sections" :key="i_index" :class="{'new_section_li':!i_item.id}">
                                     <div class="sec_name textline1">
@@ -54,7 +55,7 @@
                                     </div>
                                 </li>
                             </ul>
-                            </el-collapse-transition>
+                            
 
                         </li>
 
@@ -62,7 +63,7 @@
                     </ul>
                     
                 </div>
-                </el-collapse-transition>
+                <!--</el-collapse-transition>-->
                 
             </li>
 
@@ -75,38 +76,13 @@
 
 </template>
 <script>
-import {getCourseById,getCoursewareBySectionId} from '@/API/api';
+import {get_chapter_by_id} from '@/API/api';
 export default{
     data(){
         return{
-          chapters:[
-                {
-                    id:'xjkc2211',
-                    name:'标题内容标题内容标题内容',
-                    introduction:'简介内容简介内容简介内容简介内容简介内容简介内容简介内容简介内容',
-                    sections:[
-                        {
-                        id:'lfllff',
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:[1,2,3,4],
-                        small_sections:[{
-                            id:'section123',
-                            name:'dgfdgfgfdgf',
-                        }]
-                        },
-                        {
-                        id:'dfkldfklal',
-                        name:'标题内容标题内容标题内容标题内容',
-                        enclosure:[1,2,3,4],
-                        small_sections:[{
-                            id:'section123',
-                            name:'dgfdgfgfdgf',
-                        }]
-                        }
-                    ]
-                }
-            ],
-
+           dataObj:{
+               chapter_id:''
+           }
         }
     },
     props:{
@@ -115,6 +91,9 @@ export default{
         },
         course:{
             default:''
+        },
+        chapters:{
+            default:[]
         }
     },
     /*
@@ -128,36 +107,29 @@ export default{
     },
     */
     created() {
-        let that = this;
-        that.getCourseById();
+        let that = this;   
+        that.addParamShow(that.chapters)
     },
     mounted(){
         let that = this
         //that.getCourseById();
          //章节下拉添加子元素是否显示参数show
-         for(var i=0;i<that.chapters.length;i++){
-            this.$set(that.chapters[i], 'show', false);
-            for(var j=0;j<that.chapters[i].sections.length;j++){
-                 this.$set(that.chapters[i].sections[j], 'show', false);
-            }
-         }
+      
 
 
     },
     methods:{
-        getCourseById(){
-            let that = this;
-            let obj = {};
-            obj.course_id = that.courseId;
-            getCourseById(obj).then(res=> {
-                if(res.code==200){
-                    that.chapters = res.data.chapters
-                }else{
-                    that.$toast(res.message,3000)
+        //章节下拉显示添加参数
+        addParamShow(array){
+             for(var i=0;i<array.length;i++){
+                this.$set(array[i], 'show', false);
+                for(var j=0;j<array[i].sections.length;j++){
+                    this.$set(array[i].sections[j], 'show', false);
                 }
-            })
+            }
         },
 
+        
 
          //显示章节
         showSection(item,show){
@@ -168,7 +140,26 @@ export default{
                
             }
 
-            that.$set(item,'show',!show)   
+            that.$set(item,'show',!show)  
+            
+            if(!show){
+                that.dataObj.chapter_id = item.id
+                that.getSections(item)
+            }else{
+                that.addParamShow(that.chapters)
+            }
+        },
+
+        //获取数据
+        getSections(item){
+           let that = this;
+           get_chapter_by_id(that.dataObj).then(res=>{
+               if(res.code==200){
+                   that.$set(item,'sections',res.data.sections) 
+               }else{
+                   this.$toast(res.message,2000)
+               }
+           })
         },
     
         /*显示小节 */
@@ -199,9 +190,9 @@ export default{
     /*章节列表*/
    
      .chapter_box{
-          min-height: 300px;
-        .chapter_li{ margin-top: 20px; padding-bottom:20px;}
-        .li_focus{border:2px solid @basecolor;.borderRadius(10px,10px,10px,10px); overflow: hidden;}
+          min-height: 300px; margin-top: 20px;
+        .chapter_li{padding-bottom:20px; }
+        .li_focus{border:2px solid @basecolor;.borderRadius(10px,10px,10px,10px); overflow: hidden;margin-bottom: 20px;}
         .cha_title{background:#F5F5F7; font-size: 18px;line-height: 40px; padding: 7px 60px 7px 20px; position: relative;
            .s_name{color:@fontColor; background: url(../assets/img/d_chapter.png) left center no-repeat; padding: 5px 0 5px 35px; }
            .s_intro{color: @hnavcolor; padding-left: 20px;}
