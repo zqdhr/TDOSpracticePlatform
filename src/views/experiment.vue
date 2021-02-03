@@ -72,7 +72,7 @@
                 <el-scrollbar style="height:100%">
                     <div class="nav">
                         <a class="pointer" :class="{'active_index':curIndex==1}" @click="curIndex=1">实验步骤</a>
-                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2">实验报告</a>
+                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" v-if="authority==0">实验报告</a>
                         <!--<a class="icon_jm pointer" @click="isHide=!isHide"></a>-->
                     </div>
                     <div v-if="curIndex==1">
@@ -115,6 +115,7 @@ import 'quill/dist/quill.bubble.css';
  import html2canvas from 'html2canvas';
 
  import xterm from '@/components/Xterminal.vue'
+ import {createContainers} from "@/API/api";
 
 
 
@@ -154,10 +155,12 @@ export default {
 
              term: null,
 
-             socketURI:'ws://192.168.1.228:4000'+'/terminals/'
+             socketURI:'ws://192.168.1.228:4000'+'/terminals/',
 
              //socketURI:'http://192.168.1.54:2222/ssh/host/192.168.1.54/5001'
-   
+            userid:'',
+            experimentId:'',
+            courseId:''
            
         }
     },
@@ -172,7 +175,13 @@ export default {
     created(){
         let that = this;
         that.authority = that.$route.query.authority?that.$Base64.decode(that.$route.query.authority):0;
-
+        that.userid = that.$route.query.userid
+        that.experimentId=that.$route.query.experimentId
+        that.courseId =that.$route.query.courseId
+        that.createContainers(that.userid,that.experimentId,that.courseId)
+        console.log(that.$route.query.userid)
+        console.log(that.$route.query.experimentId)
+        console.log(that.$route.query.courseId)
        
     },
     methods:{
@@ -190,7 +199,25 @@ export default {
         connectedToServer(msg) {
             console.log('success',msg)
         },
-        
+           //创建实验
+        createContainers(userid,experimentId,courseId){
+            let that = this
+            let obj = {}
+            obj.userId = userid
+            obj.experimentId = experimentId
+            obj.courseId = courseId
+            console.log(obj)
+            createContainers(obj).then(res=>{
+                console.log()
+                if (res.code==200) {
+                    console.log(res.data)
+                } else {
+                     console.log(res.data)
+                }
+            })
+
+        },
+
         //连接vnc的函数      
         connectVnc () {
             const PASSWORD = '';
@@ -257,7 +284,8 @@ export default {
             html2canvas(that.$refs.imageWrapper, opts).then((canvas) => {
                 var url = canvas.toDataURL('image/png')
                 that.dataURL = url
-                that.yourContent = '<p><img src="'+that.dataURL+'"/></p>'
+                that.yourContent =that.yourContent+ '<p><img src="'+that.dataURL+'"/></p>'
+                console.log(that.yourContent)
             })
         },
         // http图片转成base64，防止解决不了的图片跨域问题

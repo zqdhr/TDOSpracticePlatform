@@ -41,7 +41,7 @@
                             <p class="p_id p_name textline1">实验名称：{{item.experiment_name}}</p>
                             <div class="btnbox">
                                 <div class="course_mana_btnbox">
-                                    <a class="pointer btn btn-see"><span>查看</span></a>
+                                    <a class="pointer btn btn-see" @click="startExperiment(item)"><span>查看</span></a>
                                     <a class="pointer btn btn-end" @click="closeStudent(item)"><span>结束</span></a>
                                 </div>
                             </div>
@@ -83,7 +83,7 @@
     </div>
 </template>
 <script>
-import {searchClass,getRunContainerByTeacher,getCourseListByUserId,execContainer} from "@/API/api";
+import {searchClass,getRunContainerByTeacher,getCourseListByUserId,execContainer,createContainers} from "@/API/api";
 import noData from '@/components/noData.vue'
 export default {
     data(){
@@ -91,19 +91,10 @@ export default {
            classList:[//班级选择列表
               {label:'班级1',value:'1004'},{label:'班级2',value:'1005'}
            ],
-           className:'',//选择的班级名称
-           inplaceholder:'请输入用户名称和学号',
+            className:'',//选择的班级名称
+            inplaceholder:'请输入用户名称和学号',
             machineList:[
-                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
-                {sno:'20200115',username:'李四',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
-                {sno:'20200115',username:'赵武',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
-                {sno:'20200115',username:'爱谁谁',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
-                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
-                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
-                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
-                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
-                {sno:'20200115',username:'张三',experName:'xxx实验'},{sno:'20200115',username:'张三',experName:'xxx实验'},
-                
+     
             ],
             perPage:24, //虚拟机每页
             curPage:1,//设备列表
@@ -117,7 +108,7 @@ export default {
             searchContent:'',
             noDataType:1,  //没有数据展示的样式
             dataMess:'当前暂无课堂管理',
-            hasData:false,
+            hasData:true,
 
         }
     },
@@ -156,15 +147,32 @@ export default {
             containerId.push(that.student.containerId)
             obj.containerId = containerId
             obj.type = 1
+            console.log(obj)
             execContainer(obj).then(res=>{
                 if (res.code==200) {
                     that.isClose=false
                     that.getRunContainerByTeacher(1)
                 } else {
-                   that.$toast(res.message,3000) 
+                    that.isClose=false
+                    that.$toast(res.message,3000) 
+                    console.log(res.message)
                 }       
             })
           
+        },
+        //点击查看实验
+        startExperiment(item){
+            let that = this;
+            //权限
+            let  level = sessionStorage.getItem('p_p-authority')
+            that.$router.push({path:'/experiment',query:{
+                authority:this.$Base64.encode(level),
+                userid:item.user_id,
+                experimentId: item.experiment_id,
+                courseId:item.course_id
+                }}).catch((err) => {
+              console.log( err);
+           });
         },
       
         //获取班级列表
@@ -200,6 +208,7 @@ export default {
                     }
                     
                 }else{
+                   
                     that.$toast(res.message,3000)
                 }
             })   
@@ -225,6 +234,7 @@ export default {
                         that.hasData = true
                     }
                 } else {
+                    
                      that.$toast(res.message,3000)
                 }
             })
@@ -233,6 +243,24 @@ export default {
             let that = this
             that.getRunContainerByTeacher(page)
         },
+        //创建实验
+        createContainers(userid,experimentId,courseId){
+            let that = this
+            let obj = {}
+            obj.userId = userid
+            obj.experimentId = experimentId
+            obj.courseId = courseId
+            console.log(obj)
+            createContainers(obj).then(res=>{
+                console.log()
+                if (res.code==200) {
+                    console.log(res.data)
+                } else {
+                     console.log(res.data)
+                }
+            })
+
+        }
        
     }
 }
