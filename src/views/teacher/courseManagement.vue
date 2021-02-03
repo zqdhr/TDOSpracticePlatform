@@ -107,7 +107,7 @@ export default {
             },
             searchContent:'',
             noDataType:1,  //没有数据展示的样式
-            dataMess:'当前暂无课堂管理',
+            dataMess:'当前暂无学生做实验',
             hasData:true,
 
         }
