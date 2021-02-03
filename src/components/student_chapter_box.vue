@@ -159,12 +159,12 @@ export default{
         showSection(item,show){
         
             let that = this;
-            let tmp = that.chapters
-               
+            let tmp = that.chapters     
             for(var i = 0;i<tmp.length;i++){
                that.$set(that.chapters[i],'show',false)          
             }
             that.$set(item,'show',!show)  
+            /*
             if(!show){
                 that.dataObj.chapter_id = item.id
                 
@@ -172,6 +172,7 @@ export default{
             }else{
                 that.addParamShow(that.chapters)
             }
+            */
         },
 
         //获取数据
@@ -218,7 +219,7 @@ export default{
     /*章节列表*/
    
      .chapter_box{
-          min-height: 300px; margin-top: 20px;
+          min-height: 300px; margin-top:30px;
         .chapter_li{padding-bottom:20px; }
         .li_focus{border:2px solid @basecolor;.borderRadius(10px,10px,10px,10px); overflow: hidden;margin-bottom: 20px;}
         .cha_title{background:#F5F5F7; font-size: 18px;line-height: 40px; padding: 7px 60px 7px 20px; position: relative;

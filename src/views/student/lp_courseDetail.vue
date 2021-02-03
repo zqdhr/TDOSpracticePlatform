@@ -160,10 +160,11 @@ export default {
         addParamShow(array){
              array.sort(this.compare('order')) 
              for(var i=0;i<array.length;i++){
-                this.$set(array[i], 'show', false);  
+                this.$set(array[i], 'show', false); 
+                array[i].sections.sort(this.compare('order'))  
                 for(var j=0;j<array[i].sections.length;j++){
                     this.$set(array[i].sections[j], 'show', false);
-                    
+                    array[i].sections[j].small_sections.sort(this.compare('order')) 
 
                 }
             }

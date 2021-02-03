@@ -99,7 +99,9 @@ export default {
          //显示章节
         showSection(item,show,cid) {
             let that = this;
-            let tmp = that.chapters
+            let tmp = that.chapters;
+            console.log(item.sections)
+            item.sections.sort(this.compare1('order'))
             that.$set(item,'show',!show)
             this.$emit('getData', {cindex:cid,sindex:''})
         },
@@ -113,7 +115,7 @@ export default {
             that.$set(obj,'show',!show)
             this.$emit('getData', {cindex:cid,sindex:sid})
             
-        }
+        },
        
     }
 }

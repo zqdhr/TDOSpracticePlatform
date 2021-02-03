@@ -233,8 +233,8 @@ export default {
       console.log(obj)
       bindExperiments(JSON.stringify(obj)).then(res=> {
         if(res.code==200){
+          alert(res.code)
           that.isnewFilter = false;
-          this.reload();
         }else{
           this.$toast(res.message,2000)
         }

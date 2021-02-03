@@ -284,11 +284,11 @@
       <div class="editMain" style="margin:0 50px" >
         <el-form ref="form" label-width="80px">
           <el-form-item label="输入密码">
-            <el-input  type="text" placeholder="请输入密码" maxlength="20" v-model="password"></el-input>
+            <el-input  type="password" placeholder="请输入密码" maxlength="20" v-model="password" v-emoji></el-input>
           </el-form-item>
          
           <el-form-item label="确认密码">
-            <el-input type="text" placeholder="请输入确认密码" maxlength="20" v-model="confirmPassword"></el-input>
+            <el-input type="password" placeholder="请输入确认密码" maxlength="20" v-model="confirmPassword" v-emoji></el-input>
           </el-form-item>
 
         </el-form>
@@ -304,7 +304,7 @@
 import "vue-upload-component/dist/vue-upload-component.part.css";
 import FileUpload from "vue-upload-component";
 import { mapState } from "vuex";
-import { searchUser, searchClass, deleteUser ,modifyUser} from "@/API/api";
+import { searchUser, searchClass, deleteUser ,modifyUser,updateUserPassword} from "@/API/api";
 export default {
   data() {
     return {
@@ -356,7 +356,8 @@ export default {
       userInfo: {gender:''}, //修改信息
       resetDialog:false,//重置密码是否弹出
       password:'',
-      confirmPassword:''
+      confirmPassword:'',
+      id:''
     };
   },
   components: { FileUpload },
@@ -466,12 +467,34 @@ export default {
       reSetInfo(obj){
          console.log(obj)
          let that = this;
-         that.resetDialog = true
+         that.resetDialog = true;
+         that.id = obj.id;
       },
 
       //密码重置确认
       editPassword(){
-
+        let that = this;
+        if(that.confirmPassword !== that.password){
+          this.$toast("两次密码输入不一致",3000)
+          return;
+        }
+        if (that.confirmPassword.length<6  ||  that.confirmPassword.length>20 || that.password.length <6 || that.password.length >20) {
+          this.$toast("密码长度只能6-20位",3000)
+          return;
+        }
+        let list = []
+        list.push(that.id)
+        let obj = {};
+        obj.user_id_list = list;
+        obj.password = that.password;
+        updateUserPassword(JSON.stringify(obj)).then(res=>{
+          if(res.code==200){
+            that.resetDialog = false;
+            that.searchUser(that.type, that.searchText, that.className, that.curPage, 10);
+          }else{
+            this.$toast(res.message,2000)
+          }
+        })
       },
     
     //信息确认修改

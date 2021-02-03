@@ -31,6 +31,6 @@ export default {
 }
 .noData_page_mess{color:@basecolor;}
 
-.nodata_page_box{padding:80px 0;}
+.nodata_page_box{padding:80px 0; padding-top: 120px;}
 
 </style>
