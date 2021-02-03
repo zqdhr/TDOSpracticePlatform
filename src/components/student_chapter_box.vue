@@ -159,12 +159,12 @@ export default{
         showSection(item,show){
         
             let that = this;
-            let tmp = that.chapters
-               
+            let tmp = that.chapters     
             for(var i = 0;i<tmp.length;i++){
                that.$set(that.chapters[i],'show',false)          
             }
             that.$set(item,'show',!show)  
+            /*
             if(!show){
                 that.dataObj.chapter_id = item.id
                 
@@ -172,6 +172,7 @@ export default{
             }else{
                 that.addParamShow(that.chapters)
             }
+            */
         },
 
         //获取数据
