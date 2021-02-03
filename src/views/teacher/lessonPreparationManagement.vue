@@ -26,7 +26,14 @@
                                     <p class="p-text textline1">共有{{item.chapter_number}}个章节，共{{item.section_number}}个知识点</p>
                                     <p class="p-text textline1">{{item.introduction}}</p>
                                     <div class="data-box">
-                                        <span class="s-time">{{item.time}}</span>
+                                        <span class="s-time">
+                                            {{
+                                            item.start_at != null && item.end_at != null
+                                                ? item.start_at.replace("T", " ") +
+                                                "-" +
+                                                item.end_at.replace("T", " ")
+                                                : "暂未设置时间"
+                                            }}</span>
                                         <span class="s-number">共有{{item.numbers=="null"?0:item.numbers}}人参加该门课程</span>
                                     </div>
                                 </div>
@@ -106,7 +113,7 @@ export default {
                     that.courseList = res.data.list;
                     for(let i = 0;i<res.data.list.length;i++){
                         res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
-                        res.data.list[i].time = res.data.list[i].start_at.replace('T',' ') +'-'+ res.data.list[i].end_at.replace('T',' ');
+                        //res.data.list[i].time = res.data.list[i].start_at.replace('T',' ') +'-'+ res.data.list[i].end_at.replace('T',' ');
                     }
                     that.total = res.data.list.length;
                 }else{
