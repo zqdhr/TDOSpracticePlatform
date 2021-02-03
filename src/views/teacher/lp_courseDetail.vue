@@ -60,6 +60,7 @@
                                 type="date"
                                 placeholder="选择开始时间"
                                 @focus="clickStartTime"
+                                format="yyyy-MM-dd" value-format="yyyy-MM-dd"
                                 :disabled="isSetTime"
                                 >
                                 </el-date-picker>
@@ -71,6 +72,7 @@
                                 type="date"
                                 placeholder="选择结束时间"
                                 @focus="clickEndTime"
+                                format="yyyy-MM-dd" value-format="yyyy-MM-dd"
                                 :disabled="isSetTime">
                                 </el-date-picker>
                             </div>
@@ -110,6 +112,7 @@ import courseware from "@/components/d_courseware_box.vue";//课程课件
 import coursework from "@/components/d_coursework_box.vue";//课程作业
 import {getCourseById,modifyCourseStatus} from '@/API/api';
 export default {
+    inject:['reload'],
     data(){
         return{
            backNum:1,
@@ -155,6 +158,7 @@ export default {
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
         that.courseId = that.$route.query.courseId;
         that.navindex = that.$store.state.teacherNavindex;
+        console.log(that.$store.state.teacherNavindex)
     },
     beforeDestroy(){
         let that = this;
@@ -179,10 +183,15 @@ export default {
                     that.numbers = res.data.numbers==null?that.numbers = 0:res.data.numbers
                     that.chapterNumber = res.data.chapter_number
                     that.sectionNumber = res.data.section_number
+              
                     if(res.data.start_at !='' && res.data.end_at != '' && res.data.start_at !=null && res.data.end_at != null){
-                        that.time = res.data.time = res.data.start_at.replace('T',' ') +'-'+ res.data.end_at.replace('T',' ');
+                        let ipos1 = res.data.start_at.indexOf("T");
+                        let ipos2 = res.data.start_at.indexOf("T");
+                        that.startTime = res.data.start_at.substring(0,ipos1)
+                        that.endTime =  res.data.end_at.substring(0,ipos2)
+                        that.time = res.data.time = res.data.start_at.substring(0,ipos1) +' - '+ res.data.end_at.substring(0,ipos2);
                     }else{
-                        that.time = '';
+                        that.time = '暂无设置时间';
                     }
                     that.course = res.data
                 }else{
@@ -196,16 +205,17 @@ export default {
             obj.owner_id = sessionStorage.getItem('userId');
             obj.course_id = that.$route.query.courseId;
 
-            that.startTime=that.startTime.getFullYear() + '-' + (that.startTime.getMonth() + 1) + '-' + that.startTime.getDate();
-            console.log(that.startTime)
+            //that.startTime=that.startTime.getFullYear() + '-' + (that.startTime.getMonth() + 1) + '-' + that.startTime.getDate();
+           
             obj.start = that.startTime;
-            that.endTime=that.endTime.getFullYear() + '-' + (that.endTime.getMonth() + 1) + '-' + that.endTime.getDate();
+            //that.endTime=that.endTime.getFullYear() + '-' + (that.endTime.getMonth() + 1) + '-' + that.endTime.getDate();
+           
             obj.end = that.endTime;
             obj.user_id_list = [];
             console.log(JSON.stringify(obj))
             modifyCourseStatus(JSON.stringify(obj)).then(res=> {
                 if(res.code==200){
-                    alert("1")
+                    that.reload();
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -260,6 +270,7 @@ export default {
           let that = this;
           that.navindex = num;
           that.$store.commit("updateTeacherNavindex",num);
+          sessionStorage.setItem("store",JSON.stringify(this.$store.state))
           that.showStudentList = false
         },
        
