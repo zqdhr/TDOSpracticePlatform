@@ -2,13 +2,13 @@
     <div class="experiment_pagewrap boxsizing">
         <div class="e-header">
            
-            <div class="name textline1">正在进行的实验：模拟部署一条真实的链</div>
+            <div class="name textline1">正在进行的实验：{{experiment.name}}</div>
            
             <div class="timeBox">00:45:52</div>
 
             <div class="operationBox">
             
-                <a class="a-opera pointer"  @click="click_screenshots">
+                <a class="a-opera pointer"  v-if="isOpen" @click="execContainer">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
@@ -36,9 +36,8 @@
         <div class="experiment_container clearfix boxsizing">
             <div class="left-noVNc boxsizing " :class="{'changeWidth':isHide}">
                 <div class="l-nav" >
-                  <span class="pointer " :class="{'active':virtualMachine==1}">虚拟机1</span>
-                  <span class="pointer" :class="{'active':virtualMachine==2}">虚拟机2</span>
-                  <span class="pointer" :class="{'active':virtualMachine==3}">虚拟机3</span>
+                  <span class="pointer" :class="{'active':virtualMachine==index}" v-for="(item,index) in containers" :key="index">虚拟机{{index+1}}{{item.status==0?'(已创建)':'(运行中)'}}</span>
+
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
                 <div class="operation_box" id="screen" v-if="1==1"  ref="imageWrapper" >
@@ -79,8 +78,8 @@
                         <h3 class="htitle">实验步骤说明</h3>
                         <ul class="step-ul">
                            <li>
-                               <p class="pt">1、实验步骤</p>
-                               <p class="ptext">步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容</p>
+                               <!-- <p class="pt">1、实验步骤</p> -->
+                               <p class="ptext" v-html="experiment.step">步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容</p>
                            </li>
                         </ul>
                     </div>
@@ -115,7 +114,7 @@ import 'quill/dist/quill.bubble.css';
  import html2canvas from 'html2canvas';
 
  import xterm from '@/components/Xterminal.vue'
- import {createContainers} from "@/API/api";
+ import {createContainers,findAllByType,execContainer} from "@/API/api";
 
 
 
@@ -125,7 +124,7 @@ export default {
             dataURL: '',
             isHide:false,//右侧栏是否显示
             curIndex:1,
-            virtualMachine:0,
+            virtualMachine:6,
             reportText:'',//实验报告输入内容
             authority:0,
             isOpen:false,//虚拟机是否开启
@@ -155,12 +154,14 @@ export default {
 
              term: null,
 
-             socketURI:'ws://192.168.1.228:4000'+'/terminals/',
+             socketURI:'ws://192.168.1.228:19585'+'/terminals/',
 
              //socketURI:'http://192.168.1.54:2222/ssh/host/192.168.1.54/5001'
             userid:'',
             experimentId:'',
-            courseId:''
+            courseId:'',
+            containers:[],//虚拟机列表 这里显示标题的时候要显示status 0是已创建 1是运行中
+            experiment:{}//实验详情
            
         }
     },
@@ -179,6 +180,7 @@ export default {
         that.experimentId=that.$route.query.experimentId
         that.courseId =that.$route.query.courseId
         that.createContainers(that.userid,that.experimentId,that.courseId)
+        that.findAllByType(that.experimentId)
         console.log(that.$route.query.userid)
         console.log(that.$route.query.experimentId)
         console.log(that.$route.query.courseId)
@@ -208,14 +210,61 @@ export default {
             obj.courseId = courseId
             console.log(obj)
             createContainers(obj).then(res=>{
-                console.log()
+                console.log(res)
                 if (res.code==200) {
                     console.log(res.data)
+                    that.containers = res.data
+                    if ( that.containers.length>0&&that.containers[0]!=null) {
+                        if (that.containers[0].status==1) {
+                            that.isOpen=true
+                            that.virtualMachine=0
+                        }
+                        
+                    }
                 } else {
                      console.log(res.data)
                 }
             })
 
+        },
+        //获取实验详情
+        findAllByType(experId){
+            let that = this
+            let obj = {}
+            obj.id = experId
+            obj.type = 0
+            obj.perPage=1
+            obj.page=1
+            findAllByType(obj).then(res=>{
+                if (res.code==200) {
+                    console.log(res.data)
+                    that.experiment = res.data
+                }else {
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
+        //开启实验
+        execContainer(){
+            let that = this
+            let obj = {}
+            let containerId = []
+            for (let index = 0; index <  that.containers.length; index++) {
+                containerId.push( that.containers[index].containerId)
+            }
+            obj.containerId = containerId
+            obj.type = 0
+            console.log(obj)
+            execContainer(obj).then(res=>{
+                console.log(res)
+                if (res.code==200) {
+                    console.log(res.data)
+                } else {
+                    that.$toast(res.message,3000) 
+                    console.log(res.message)
+                }       
+            })
+          
         },
 
         //连接vnc的函数      

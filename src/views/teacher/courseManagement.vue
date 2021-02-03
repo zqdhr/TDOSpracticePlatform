@@ -83,7 +83,7 @@
     </div>
 </template>
 <script>
-import {searchClass,getRunContainerByTeacher,getCourseListByUserId,execContainer,createContainers} from "@/API/api";
+import {searchClass,getRunContainerByTeacher,getCourseListByUserId,execContainer} from "@/API/api";
 import noData from '@/components/noData.vue'
 export default {
     data(){
@@ -243,24 +243,6 @@ export default {
             let that = this
             that.getRunContainerByTeacher(page)
         },
-        //创建实验
-        createContainers(userid,experimentId,courseId){
-            let that = this
-            let obj = {}
-            obj.userId = userid
-            obj.experimentId = experimentId
-            obj.courseId = courseId
-            console.log(obj)
-            createContainers(obj).then(res=>{
-                console.log()
-                if (res.code==200) {
-                    console.log(res.data)
-                } else {
-                     console.log(res.data)
-                }
-            })
-
-        }
        
     }
 }

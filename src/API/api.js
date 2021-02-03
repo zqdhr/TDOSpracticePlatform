@@ -313,7 +313,7 @@ var get_chapter_by_id = function(data){
 }
 //创建实验
 var createContainers  =function(data){
-	return axios.get('/createContainers?userId='+data.userId+'&containerId='+data.experimentId+'&courseId='+data.courseId)
+	return axios.get('/createContainers?userId='+data.userId+'&experimentId='+data.experimentId+'&courseId='+data.courseId)
 }
 //管理员和教师关闭实验
 var removeContainers = function(data){
