@@ -13,6 +13,7 @@ export default new Vuex.Store({
 
     uploadUrl:'http://192.168.1.138:8111/upload_excel',
     pic_Url:'http://192.168.1.228:8080',
+    uploadUrlExcel: 'http://192.168.1.138:8111//upload_qb_excel',
     ad_menus: [
       { text: "统计分析", path: "/admin" },
       { text: "课程管理", path: "/admin/courseManagement" },

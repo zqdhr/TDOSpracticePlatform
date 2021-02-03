@@ -20,22 +20,24 @@
                 </el-option>
               </el-select>
             </div>
-            <div class="sel-box">
-              <el-select
-                v-model="className"
-                value-key="id"
-                placeholder="请选择班级"
-                @change="changeClass"
+
+            <div class="stSelTime" v-if="state.id == 1">
+              <el-date-picker
+                v-model="value2"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="pickerOptions"
+                @change="changeDate"
+                value-format=" yyyy-MM-dd"
+                format="yyyy-MM-dd"
               >
-                <el-option
-                  v-for="item in classList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item"
-                >
-                </el-option>
-              </el-select>
+              </el-date-picker>
             </div>
+
             <div class="sel-box">
               <el-select
                 v-model="level1Name"
@@ -52,138 +54,82 @@
                 </el-option>
               </el-select>
             </div>
-            <div class="sel-box" v-if="level2List.length > 0">
-              <el-select
-                v-model="level2Name"
-                value-key="id"
-                placeholder="章"
-                @change="changeLevel2"
-              >
-                <el-option
-                  v-for="item in level2List"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item"
-                >
-                </el-option>
-              </el-select>
-            </div>
-            <div class="sel-box" v-if="level3List.length > 0">
-              <el-select
-                v-model="level3Name"
-                value-key="id"
-                placeholder="节"
-                @change="changeLevel3"
-              >
-                <el-option
-                  v-for="item in level3List"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item"
-                >
-                </el-option>
-              </el-select>
-            </div>
           </div>
           <div class="fr">
             <div class="d-serach">
               <input
-                v-model="searchText"
+                :v-model="searchText"
                 :placeholder="inplaceholder"
                 type="text"
                 autocomplete="off"
+                v-emoji
               />
               <a class="searchBtn pointer" @click="searchAction()"></a>
             </div>
           </div>
         </div>
-        <div class="mess" v-if="JSON.stringify(level3Name) != '{}'">
-          当前选择<span>{{ momentClassName }}</span
-          >班级，共有<span>60</span>名学员，已提交<span>45</span>份，还剩<span>15</span>份未提交
-
-          <a class="nosubmit" @click="isUnsubmittedlist = true"></a>
-        </div>
       </div>
-    </div>
-    <div class="container">
-      <div class="tea_list">
-        <ul class="tab_box">
-          <li v-for="(item, index) in jobList" :key="index">
-            <div class="d1 d15">
-              <div class="cell pnum">{{ (index + 1) | catIndex }}</div>
-            </div>
-            <div class="d2 d28">
-              <div class="cell textline1">
-                学号：{{ item.userId }} {{ item.userName }}
+      <div class="container">
+        <div class="tea_list">
+          <ul class="tab_box">
+            <li v-for="(item, index) in jobList" :key="index">
+              <div class="d1 d15">
+                <div class="cell pnum">{{ (index + 1) | catIndex }}</div>
               </div>
-            </div>
-            <div class="d3 d30">
-              <div class="cell">提交时间：{{ item.committedAt }}</div>
-            </div>
-            <div class="d4 d14">
-              <div class="cell">
-                {{ item.status == 0 ? "待批阅" : "已批阅" }}
+              <div class="d2 d28">
+                <div class="cell textline1">
+                  学号：{{ item.userId }} {{ item.userName }}
+                </div>
               </div>
-            </div>
-            <div class="d5 d13">
-              <div class="cell">
-                <a
-                  class="btnDefault btn_py pointer"
-                  v-if="item.status == 0"
-                  @click="showDetail(0, item)"
-                  >批阅</a
-                >
-                <a
-                  class="btnDefault btn_py pointer"
-                  v-if="item.status == 1"
-                  @click="showDetail(1, item)"
-                  >查看详情</a
-                >
+              <div class="d3 d30">
+                <div class="cell">提交时间：{{ item.committedAt }}</div>
               </div>
-            </div>
-          </li>
-        </ul>
-        <div class="tab-pagination">
-          <el-pagination
-            background
-            :current-page="curPage"
-            :page-size="perPage"
-            @current-change="handleCurrentChange"
-            layout="prev, pager, next,jumper"
-            :total="allJob_Nub"
-          >
-          </el-pagination>
+              <div class="d4 d14">
+                <div class="cell">
+                  {{ item.status == 0 ? "待批阅" : "已批阅" }}
+                </div>
+              </div>
+              <div class="d5 d13">
+                <div class="cell">
+                  <a
+                    class="btnDefault btn_py pointer"
+                    v-if="item.status == 0"
+                    @click="showDetail(0, item)"
+                    >批阅</a
+                  >
+                  <a
+                    class="btnDefault btn_py pointer"
+                    v-if="item.status == 1"
+                    @click="showDetail(1, item)"
+                    >查看详情</a
+                  >
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="tab-pagination">
+            <el-pagination
+              background
+              :current-page="curPage"
+              :page-size="perPage"
+              @current-change="handleCurrentChange"
+              layout="prev, pager, next,jumper"
+              :total="allJob_Nub"
+            >
+            </el-pagination>
+          </div>
         </div>
       </div>
     </div>
 
-    <!--未提交弹出框-->
-    <el-dialog :visible.sync="isUnsubmittedlist" width="500px">
-      <div slot="title" class="dialog_header">未提交人员（15人）</div>
-      <div class="unSubmitList">
-        <ul>
-          <li v-for="(item, index) in Unsubmittedlist" :key="index">
-            <div class="d-col">
-              <div class="d-sno">
-                <p class="textline1">{{ item.sno }}</p>
-              </div>
-              <div class="d-name">
-                <p class="textline1">{{ item.name }}</p>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </el-dialog>
 
-  <!--点击确定按钮弹出确认框-->
+    <!--点击确定按钮弹出确认框-->
     <el-dialog :visible.sync="isCorrectJob" width="600px" top="250px">
       <div slot="title" class="dialog_header"></div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <!--成功span的class为icon_success-->
-          <span class="span_icon icon_success"
-            >是否已经批阅完成？</span>
+          <span class="span_icon icon_success">是否已经批阅完成？</span>
         </p>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -271,8 +217,7 @@
 </template>
 <script>
 import {
-  searchClass,
-  getAdminCourseByClassId,
+  getCourseListByUserId,
   getStudentJobList,
   getStudentJobDetail,
   submitCorrectJob,
@@ -281,15 +226,13 @@ import {
 export default {
   data() {
     return {
-      isCorrectJob:false,
+      value2: [],
+      isCorrectJob: false,
       allJob_Nub: 0,
       searchText: "",
-      userList: "张三，李四，王龙，李明",
       perPage: 10, //用户列表每页条数
       curPage: 1,
       jobList: [],
-      classList: [],
-      className: {}, //选择的班级对象
 
       stateList: [
         { label: "全部", id: "-1" },
@@ -301,18 +244,8 @@ export default {
       level1List: [],
       level1Name: {}, //选中课程对象
 
-      level2List: [], //章节列表
-      level2Name: {}, //章节对象
-
-      level3List: [], //小节列表
-      level3Name: {}, //小节对象
-
-      inplaceholder: "请输入学号或姓名",
-      isUnsubmittedlist: false, //人员未提交名单显示
-      Unsubmittedlist: [
-        { sno: "20200112", name: "猜一下" },
-        { sno: "20200112", name: "猜一下" },
-      ],
+      inplaceholder: "请输入学号/姓名/作业名称",
+  
       isHomework: false,
       isReport_num: 0,
       //全部题目
@@ -345,7 +278,6 @@ export default {
         },
       ],
       score: 0, //得分
-      momentClassName: "",
       momentJobMod: null,
     };
   },
@@ -364,30 +296,20 @@ export default {
   created() {
     let that = this;
     that.state = that.stateList[0];
-    that.searchClass();
+    that.getCourseListByUserId();
   },
   methods: {
+    changeDate(val) {
+      let that = this;
+      // alert(that.value2.length);
+    },
     //底部分页
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       let that = this;
       that.getStudentJobList(0);
     },
-    //选择班级
-    changeClass(val) {
-      console.log("选择班级");
-      let that = this;
-      that.momentClassName = val.name;
-      that.level1Name = {};
-      that.level2Name = {};
-      that.level3Name = {};
-      that.level1List = [];
-      that.level2List = [];
-      that.level3List = [];
-      that.jobList = [];
-      that.getAdminCourseByClassId(val.id);
-      that.getStudentJobList(0);
-    },
+
     //选择状态
     changeState(val) {
       let that = this;
@@ -396,40 +318,10 @@ export default {
     //选择课程
     changeLevel1(val) {
       let that = this;
-      let tmp = that.level1List;
-
-      that.level2List = [];
-      that.level3List = [];
-      that.level2Name = {};
-      that.level3Name = {};
-
-      if (val.chapters) {
-        that.level2List = val.chapters || [];
-      } else {
-        that.level2List = [];
-      }
 
       that.getStudentJobList(0);
     },
-    //选择章节
-    changeLevel2(val) {
-      let that = this;
-      let tmp = that.level2List;
-      that.level3List = [];
-      that.level3Name = {};
-      if (val.sections) {
-        that.level3List = val.sections || [];
-      } else {
-        that.level3List = [];
-      }
-      that.getStudentJobList(0);
-    },
-    //选择节
-    changeLevel3(val) {
-      console.log("选择节");
-      let that = this;
-      that.getStudentJobList(0);
-    },
+
     //显示选择作业
     showDetail(num, item) {
       let that = this;
@@ -458,36 +350,31 @@ export default {
 
       val.score = that.score;
     },
-    correctJob(){
-
+    correctJob() {
       let that = this;
       that.isCorrectJob = true;
     },
     //提交批改
-    submit(){
+    submit() {
       let that = this;
       let obj = {};
       let answerArr = [];
-      for(var i=0;i<that.all_courseList.length;i++)
-      {
-          let tmpDic = that.all_courseList[i];
-          let dic = {};
-          dic.question_id = tmpDic.id;
-          dic.assignment_id = that.momentJobMod.assignmentId;
-          dic.user_id = that.momentJobMod.userId;
-          if(tmpDic.type == 0)
-          {
-            if(tmpDic.studentAnswer == tmpDic.answer)
-            {
-              dic.score = tmpDic.totalScore;
-            }else
-            {
-              dic.score = 0;
-            }
-          }else{
-            dic.score = tmpDic.score;
+      for (var i = 0; i < that.all_courseList.length; i++) {
+        let tmpDic = that.all_courseList[i];
+        let dic = {};
+        dic.question_id = tmpDic.id;
+        dic.assignment_id = that.momentJobMod.assignmentId;
+        dic.user_id = that.momentJobMod.userId;
+        if (tmpDic.type == 0) {
+          if (tmpDic.studentAnswer == tmpDic.answer) {
+            dic.score = tmpDic.totalScore;
+          } else {
+            dic.score = 0;
           }
-          answerArr.push(dic);
+        } else {
+          dic.score = tmpDic.score;
+        }
+        answerArr.push(dic);
       }
       // obj.student_score_list = JSON.stringify(answerArr);
       obj.student_score_list = answerArr;
@@ -503,34 +390,17 @@ export default {
           that.$toast(res.message, 3000);
         }
       });
+    },
 
-    },
-    //班级列表
-    searchClass() {
-      let that = this;
-      searchClass().then((res) => {
-        if (res.code == 200) {
-          that.classList = res.data;
-          if (that.classList.length > 0) {
-            that.momentClassName = that.classList[0].name;
-            that.className = that.classList[0];
-            that.getAdminCourseByClassId(that.classList[0].id);
-            that.getStudentJobList(0);
-          }
-        } else {
-          that.$toast(res.message, 3000);
-        }
-      });
-    },
     //课程列表
-    getAdminCourseByClassId(val) {
+    getCourseListByUserId(val) {
       let that = this;
       let obj = {};
-      obj.perPage = 100;
+      obj.per_page = 100;
       obj.page = 1;
-      obj.class_id = val;
-      getAdminCourseByClassId(obj).then((res) => {
-        console.log(JSON.stringify(res));
+      obj.user_id = sessionStorage.getItem("userId");
+      getCourseListByUserId(obj).then((res) => {
+        // alert(JSON.stringify(res));
         if (res.code == 200) {
           that.level1List = res.data.list;
         } else {
@@ -567,28 +437,36 @@ export default {
       } else {
         obj.name = "";
       }
-      obj.classId = that.className.id;
+
+      obj.classId = "";
       obj.courseId =
         JSON.stringify(that.level1Name) != "{}" ? that.level1Name.id : "";
-      obj.chapterId =
-        JSON.stringify(that.level2Name) != "{}" ? that.level2Name.id : "";
-      obj.sectionId =
-        JSON.stringify(that.level3Name) != "{}" ? that.level3Name.id : "";
+      obj.chapterId = "";
+      obj.sectionId = "";
+
       if (that.state.id == "-1") {
         obj.status = "";
       } else {
         obj.status = that.state.id;
       }
+      obj.startTime = "";
+      obj.endTime = "";
 
-      getStudentJobList(obj).then((res) => {
-        console.log(JSON.stringify(res));
-        that.allJob_Nub = res.data.total;
-        if (res.code == 200) {
-          that.jobList = res.data.list;
-        } else {
-          that.$toast(res.message, 3000);
-        }
-      });
+      alert(JSON.stringify(obj));
+
+      getStudentJobList(obj)
+        .then((res) => {
+          alert(JSON.stringify(res));
+          that.allJob_Nub = res.data.total;
+          if (res.code == 200) {
+            that.jobList = res.data.list;
+          } else {
+            that.$toast(res.message, 3000);
+          }
+        })
+        .catch((error) => {
+          alert(JSON.stringify(error));
+        });
     },
   },
 };

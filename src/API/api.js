@@ -221,7 +221,7 @@ var findExperiment = function(data){
 
 //教师获取作业列表
 var getStudentJobList = function (data) {
-	return axios.get('/getAssignmentAll?classId=' + data.classId + '&page=' + data.page + '&perPage=' + data.perPage+ '&name=' + data.name+ '&courseId=' + data.courseId+ '&status=' + data.status+ '&chapterId=' + data.chapterId+ '&sectionId=' + data.sectionId)
+    return axios.get('/getAssignmentAll?classId=' + data.classId + '&page=' + data.page + '&perPage=' + data.perPage+ '&name=' + data.name+ '&courseId=' + data.courseId+ '&status=' + data.status+ '&chapterId=' + data.chapterId+ '&sectionId=' + data.sectionId+ '&startTime=' + data.startTime+ '&endTime=' + data.endTime)
 }
 
 //教师获取作业详情
@@ -325,6 +325,19 @@ var addAssignment = function(data){
 	return axios.post('/addAssignment', data, { headers: { 'Content-Type': 'application/json' } })
 }
 
+//学生获取作业列表
+var student_getJobList =function(data){
+    
+    return axios.get('/getStudentAssignment?userId='+data.userId+ '&perPage=' + data.perPage+ '&page=' + data.page+'&courseId=' + data.courseId+'&chapterId=' + data.chapterId+'&sectionId=' + data.sectionId+'&status=' + data.status+'&name=' + data.name)
+}
+
+
+//学生获取作业详情
+var student_getJobDetail =function(data){
+    
+    return axios.get('/getStudentAnswerByAssignment?userId='+data.userId+ '&perPage=' + data.perPage+ '&page=' + data.page+'&assignmentId=' + data.assignmentId)
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -334,7 +347,7 @@ export{
 	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,addSmallSection,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
 	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers
-	,addAssignment
+	,addAssignment,student_getJobList,student_getJobDetail
 }
 
 function getJson (data) {
