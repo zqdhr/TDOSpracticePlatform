@@ -565,6 +565,7 @@ export default {
 
       obj.perPage = that.perPage;
       obj.page = that.curPage;
+      obj.assignment_id = '';
 
       // alert(JSON.stringify(obj));
       getQuestionBackAll(obj).then((res) => {
