@@ -35,6 +35,11 @@ var searchUser = function(data){
 	return axios.get(encodeURI('/search_user?search='+data.search+'&type='+data.type+'&classes='+data.classes+'&page='+data.page+'&per_page='+data.per_page))
 }
 
+//修改学生教师密码
+var updateUserPassword = function(data){
+	return axios.post('/update_userPassword',data,{headers: {'Content-Type':'application/json'}})
+}
+
 //班级列表
 var searchClass = function(data){
 	return axios.get('/search_class', getJson(data))
@@ -103,7 +108,7 @@ var insertCourseChapterCompleted = function(data){
 
 //管理员查询课程章下的课件
 var getCoursewareByChapterId = function(data){
-	return axios.get('/getCoursewareByChapterId?chapterId='+data.chapterId+'&perPage='+data.perPage+'&page='+data.page)
+	return axios.get('/getCoursewareByChapterId?chapterId='+data.chapterId+'&kind='+data.kind+'&type='+data.type+'&perPage='+data.perPage+'&page='+data.page)
 }
 
 //管理员查询课程节下的课件
@@ -172,7 +177,7 @@ var stopRunContainerList = function(data){
 	return axios.post('/stopRunContainerList',getJson(data))
 }
 
-//管理员一键释放所有虚拟机
+//管理员新增节下的实验
 var bindExperiments = function(data){
 	return axios.post('/bindExperiments',data,{headers: {'Content-Type':'application/json'}})
 }
@@ -196,7 +201,7 @@ var insertExperiment = function(data){
 
 //管理员查询所有的题库
 var getQuestionBackAll = function(data){
-	return axios.get('/getQuestionBackAll?type='+data.type+'&content='+data.content+'&category_id='+data.category_id+'&perPage='+data.perPage+'&page='+data.page)
+	return axios.get('/getQuestionBackAll?type='+data.type+'&content='+data.content+'&category_id='+data.category_id+'&assignment_id='+data.assignment_id+'&perPage='+data.perPage+'&page='+data.page)
 }
 
 //管理员查询课程节下的题目
@@ -291,7 +296,6 @@ var addCourseware = function (data) {
 
 //学生获取课程
 var student_getCourseList =function(data){
-    
 	return axios.get('/get_course_list?user_id='+data.user_id+ '&per_page=' + data.per_page+ '&page=' + data.page+'&start=' + data.start+'&end=' + data.end+'&name=' + data.name)
 }
 //教师获取课堂列表
@@ -308,6 +312,11 @@ var get_chapter_by_id = function(data){
 	return axios.get('/get_chapter_by_id?chapter_id='+data.chapter_id)
 }
 
+//管理员端课程下的题库添加题目
+var addAssignment = function(data){
+	return axios.post('/addAssignment', data, { headers: { 'Content-Type': 'application/json' } })
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -316,7 +325,7 @@ export{
 	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
 	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,addSmallSection,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
-	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id
+	deleteCoursewareById,addAssignment
 }
 
 function getJson (data) {

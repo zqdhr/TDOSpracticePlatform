@@ -207,36 +207,37 @@ export default {
 
         //选择分类
         selectCate(val){
-            console.log(val)
+            console.log("分类"+val)
             let that = this;
             that.kind = val
             if(that.sindex == "" && that.cindex == ""){
                 that.getCoursewareByCourseId(10,1,val,that.typeware);
             }else if (that.sindex == "" && that.cindex != ""){
-                that.getCoursewareByChapterId(that.cindex,val,that.typeware,10,1)
+                that.getCoursewareByChapterId(that.cindex,that.typeware,val,10,1)
             }else{
-                that.getCoursewareByChapterId(that.sindex,val,that.typeware,10,1)
+                that.getCoursewareBySectionId(that.sindex,that.typeware,val,10,1)
             }
         },
 
         //选择课件类型
          selectType(val){
-            console.log(val)
+            console.log("类型"+val)
              let that = this;
-            that.typeware = val;
+            that.typeware= val;
              if(that.sindex == "" && that.cindex == ""){
                  that.getCoursewareByCourseId(10,1,that.kind,val);
              }else if (that.sindex == "" && that.cindex != ""){
                  that.getCoursewareByChapterId(that.cindex,that.kind,val,10,1)
              }else{
-                 that.getCoursewareByChapterId(that.sindex,that.kind,val,10,1)
+                 that.getCoursewareBySectionId(that.sindex,that.kind,val,10,1)
              }
         },
 
         //是否删除
-        click_delete(){
+        click_delete(item){
             let that = this;
             that.isDelete = true;
+            console.log(item)
         },
         //删除弹出确认
         confirmDelete(){

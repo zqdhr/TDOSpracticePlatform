@@ -32,9 +32,9 @@
           </div>
         </div>
         <!--课程题目-->
-        <div class="coursework_box" v-if="!noData">
+        <div class="coursework_box" v-if="!noData && status != 1">
             <div class="coursework_name">
-                <p>区块链原理篇作业</p>
+                <p>{{courseWorkTitle}}</p>
                 <a class="edit" @click="reset_homework"></a>
 
             </div>
@@ -87,7 +87,7 @@
         </div>
         
         <!--小节作业不存在-->
-        <div class="noData_box" v-if="sindex != '' &&   noData">
+        <div class="noData_box" v-if="noData && status == 1">
             <p class="mess">当前小节下暂无作业，请点击下方新增作业按钮。</p>
             <div><a class="btnDefault pointer"  @click="isnewJobName =true">新增作业</a></div>
         </div>
@@ -130,7 +130,7 @@
        </div>
        
        <div slot="footer" class="dialog-footer" >
-           <a class="btnDefault" @click="isnewJobName=false ; noData=false">确 认</a>
+           <a class="btnDefault" @click="addCourseWork">确 认</a>
       </div>
     </el-dialog>
     <!--题库选择弹出框-->
@@ -173,7 +173,7 @@
             v-for="(item, index) in all_courseList"
             :key="index"
           >
-            <div class="title">{{ item.title }}</div>
+            <div class="title">{{ item.content }}</div>
             <div class="pic" v-if="item.picUrl!='' && item.picUrl">
               <span><img :src="item.picUrl" /></span>
             </div>
@@ -188,7 +188,7 @@
               </span>
              
             </p>
-            <p class="answer_box" v-if="item.type == 2">{{ item.answer }}</p>
+            <p class="answer_box" v-if="item.type == 0">{{ item.answer }}</p>
             <!--选中的状态添加class   li_radio_h-->
             <span
               class="li_radio"
@@ -233,7 +233,7 @@
 <script>
 import courseNav from "@/components/left_courseNav.vue";
 import noData from "@/components/noData.vue";
-import {findParentCategory,findChildCategory,getQuestionBackAll} from '@/API/api';
+import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId} from '@/API/api';
 export default {
   data() {
     return {
@@ -260,6 +260,8 @@ export default {
       //全部题目
       all_courseList:[
       ],
+      status:'',
+      courseWorkTitle:'',
       isShow: false,
       deleteList: [], //选中需要删除的题目列表
       chooseList:[],//新增题目选中
@@ -310,13 +312,37 @@ export default {
       obj.category_id = '';
       obj.perPage = 10;
       obj.page = 1;
+      obj.assignment_id = '';
       getQuestionBackAll(obj).then(res=> {
         if(res.code==200){
           console.log(res.data.list)
           that.totalAllCourse = res.data.total;
+          for(let i =0;i<res.data.list.length;i++){
+            res.data.list[i].picUrl = that.$store.state.pic_Url+ res.data.list[i].picUrl;
+          }
           that.all_courseList = res.data.list;
         }else{
           this.$toast(res.message,2000)
+        }
+      })
+    },
+    addCourseWork(){
+      let that = this;
+      let obj = {};
+      obj.section_id = that.sindex;
+      obj.name = that.homework.name;
+      let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
+      obj.end_at = new Date(datetime).toISOString();
+      alert(obj.end_at)
+      obj.qualified_score = 100;
+      addAssignment(JSON.stringify(obj)).then(res=> {
+        if (res.code == 200) {
+          alert("添加题目名称成功")
+          that.isnewJobName = false;
+          that.isDate = true;
+          that.getAssignmentBySectionId();
+        } else {
+          that.$toast(res.message, 3000)
         }
       })
     },
@@ -454,10 +480,51 @@ export default {
     },
     getData(data){
       let that = this;
-      console.log(data.cindex)
-      console.log(data.sindex)
       that.sindex = data.sindex;
+      console.log(data.sindex)
+      if(data.sindex != '') {
+        let obj = {};
+        obj.sectionId = data.sindex;
+        obj.perPage = 10;
+        obj.page = 1;
+        getAssignmentBySectionId(obj).then(res => {
+          that.status = '';
+          if (res.code == 200) {
+            if (res.data.list.length == 0) {
+              that.status = 1;
+              that.noData = true;
+            } else {
+              that.courseWorkTitle = res.data.list[0].name;
+              that.noData = false;
+            }
+            alert(that.status)
+            console.log(res.data.list)
+            alert("查询题目成功")
+          } else {
+            that.$toast(res.message, 3000)
+          }
+        })
+      }
     },
+    getAssignmentBySectionId(){
+      let that = this;
+      let obj = {};
+      obj.sectionId = that.sindex;
+      obj.perPage = 10;
+      obj.page = 1;
+      getAssignmentBySectionId(obj).then(res => {
+        if (res.code == 200) {
+          if (res.data.list.length == 0) {
+            that.status = 1;
+          }
+          that.courseList = res.data.list;
+          console.log(res.data.list)
+          alert("查询题目成功")
+        } else {
+          that.$toast(res.message, 3000)
+        }
+      })
+    }
   },
 };
 </script>

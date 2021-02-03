@@ -47,7 +47,7 @@
                 </div>
 
                  <!--课程大纲-->
-                <chapter :courseId="courseId" v-if="navindex==0"></chapter>
+                <chapter :courseId="courseId" v-if="navindex==0" :chapters="courseChapters"></chapter>
 
                 
                
@@ -110,6 +110,7 @@ export default {
 
             courseId:'',
             role:1,//代表管理员端
+            courseChapters:[]
         }
     },
     components:{chapter,experiment,courseware,coursework},
@@ -146,7 +147,8 @@ export default {
                     that.numbers = res.data.numbers == null ? 0 : res.data.numbers
                     that.introduction = res.data.introduction;
                     that.course = res.data
-                    console.log(that.course)
+                    that.courseChapters = res.data.chapters
+                    console.log("1112121"+res.data.chapters)
                 }else{
                     this.$toast(res.message,2000)
                 }

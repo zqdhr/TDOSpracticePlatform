@@ -21,33 +21,12 @@
         <div class="pageTab clearfix nopaddingBottom">
           <div class="fl">
             <div class="sel-box">
-              <el-select
-                v-model="customType"
-                placeholder="自定义分类"
-                @change="selectCustomType"
-              >
-                <el-option
-                  v-for="item in customClass"
-                  :key="item.value"
-                  :label="item.name"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-              <el-select
-                      v-model="i_customType"
-                      placeholder="自定义分类"
-                      @change="selectCustomType"
-                      v-if="customType!=''"
-              >
-                <el-option
-                        v-for="item in i_customClass"
-                        :key="item.value"
-                        :label="item.name"
-                        :value="item.value"
-                >
-                </el-option>
-              </el-select>
+              <el-cascader
+                      v-model="category"
+                      :options="categoryOptions"
+                      :props="{value: 'id', label: 'name',children: 'cates'}"
+                      @change="handleChange" clearable>
+              </el-cascader>
             </div>
 
             <div class="sel-box">
@@ -88,10 +67,11 @@
                 :placeholder="inplaceholder"
                 type="text"
                 autocomplete="off"
+                v-model = "searchText"
               />
             
             </div>
-            <a class="btn_finsh">完成</a>
+            <a class="btn_finsh" @click="searchCoerseWare">完成</a>
           </div>
         </div>
         <div class="list_box">
@@ -211,18 +191,18 @@ export default {
       perPage: 8, //8个实验一页
       curPage: 1, //设备列表
       cate: "内置课件", //课件分类默认内置课件
-      type: "全部", //课件类型默认全部
+      type: '全部', //课件类型默认全部
 
       customClass: [
         { value: "1", label: "场景篇" },
         { value: "2", label: "原理篇" },
       ], //自定义分类
-      customType: "",
-      i_customType:'',
-      i_customClass:'',
       isnewFilter: false,
       isnewFilterType: 0, //课件库选择 1代表本地课件库  2代表本地上传
-
+      category:[],//实验所属分类
+      categoryOptions: [],
+      cateId:'',
+      searchText:'',
       jwt: "",
       uploadUrl: "",
       files: [],
@@ -230,7 +210,6 @@ export default {
       sindex:'',
       cindex:'',
       category_id:'',
-      kind:'',
       name:''
     };
   },
@@ -258,14 +237,44 @@ export default {
       let that = this;
       findParentCategory().then(res => {
         if (res.code == 200) {
-          that.customClass = res.data;
-          for (let i = 0; i < res.data.length; i++) {
-            that.$set(that.customClass[i], 'value', i)
+          that.categoryOptions = res.data;
+          for (let index = 0; index < that.categoryOptions.length; index++) {
+            that.findChildCategory(that.categoryOptions[index].id)
+
           }
         } else {
           this.$toast(res.message, 2000)
         }
       })
+    },
+    //根据一级分类id查询二级分类
+    findChildCategory(cateId){
+      let that = this
+      let obj={}
+      obj.parent_category_id = cateId
+      findChildCategory(obj).then(res=> {
+        if(res.code==200){
+          let catesons = res.data
+          if(catesons.length>0){
+            for(let i = 0; i <  that.categoryOptions.length; i++) {
+              if(that.categoryOptions[i].id === cateId) {
+                that.$set(that.categoryOptions[i], 'cates', catesons) // right
+                break;
+              }
+            }
+          }
+        }else{
+          that.$toast(res.message,3000)
+        }
+      })
+
+    },
+
+    //课件所属分类选择
+    handleChange(value) {
+      let that = this
+      console.log(value.length==1?value[0]:value[1]);
+      that.cateId = value.length==1?value[0]:value[1]
     },
 
     getCourseAll(per_page, page, kind, type, name, category_id, chapter_id, section_id) {
@@ -317,6 +326,12 @@ export default {
       let that = this;
       console.log(val);
       that.kind = val;
+    },
+    searchCoerseWare(){
+      let that = this;
+      console.log(that.searchText)
+      that.type = that.type == '2' ? '' : that.type;
+      that.getCourseAll(10, 1, that.type, that.cate, that.searchText, that.category_id, '', '');
     },
     //本地上传确认上传
     confirmLocalUpload() {
@@ -374,29 +389,9 @@ export default {
     },
     //弹窗分页
     handleCurrentChange1(val) {
+      let that = this
       console.log(`当前页: ${val}`);
-    },
-
-    //弹窗自定义分类
-    selectCustomType(val) {
-      let that = this;
-      console.log("选择自定义分类1" + val);
-      console.log(that.customClass[0])
-      that.parent_id = that.customClass[val].id
-
-      let obj = {}
-      obj.parent_category_id = that.parent_id
-      findChildCategory(obj).then(res => {
-        if (res.code == 200) {
-          that.i_customClass = res.data;
-          console.log(res.data)
-          for (let i = 0; i < res.data.length; i++) {
-            that.$set(that.i_customClass[i], 'value', i)
-          }
-        } else {
-          this.$toast(res.message, 2000)
-        }
-      })
+      that.getCourseAll(10, val, that.type, that.cate, that.searchText, that.category_id, '', '');
     },
     //数组新增checked元素
     array_addChecked(array) {

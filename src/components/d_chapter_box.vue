@@ -210,8 +210,6 @@ import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,remo
 export default{
     data(){
         return{
-          chapters:[
-            ],
             isDelete:false,
             deleteMess:'',
             course_Id:'',
@@ -245,6 +243,9 @@ export default{
     props:{
         courseId:{
             default:''
+        },
+        chapters:{
+            default:[]
         }
     },
     /*
@@ -259,59 +260,41 @@ export default{
     */
     created() {
         let that = this;
-        that.getCourseById();
+        that.addParamShow(that.chapters)
     },
     mounted(){
         let that = this
-        //that.getCourseById();
-         //章节下拉添加子元素是否显示参数show
-         for(var i=0;i<that.chapters.length;i++){
-            this.$set(that.chapters[i], 'show', false);
-            for(var j=0;j<that.chapters[i].sections.length;j++){
-                 this.$set(that.chapters[i].sections[j], 'show', false);
-            }
-         }
     },
     methods:{
-        getCourseById(){
+        //章节下拉显示添加参数
+        addParamShow(array){
             let that = this;
-            let obj = {};
-            obj.course_id = that.courseId;
-            getCourseById(obj).then(res=> {
-                if(res.code==200){
-                    res.data.chapters.sort(this.compare1('order'))
-                    that.chapters = res.data.chapters
-                    for(let i =0;i<res.data.chapters.length;i++){
-                        if(i == res.data.chapters.length-1){
-                            that.$set(res.data.chapters[i], 'lastNum', 0)
-                        }
-                        res.data.chapters[i].status = 1
-                        res.data.chapters[i].sections.sort(this.compare1('order'))
-                        that.chapters[i].sections = res.data.chapters[i].sections
-                        for(let j = 0 ;j<res.data.chapters[i].sections.length;j++){
-                            if(j == res.data.chapters[i].sections.length - 1){
-                                that.$set(res.data.chapters[i].sections[j], 'lastNum', 0)
-                            }
-                            res.data.chapters[i].sections[j].status = 1
-                            res.data.chapters[i].sections[j].small_sections.sort(this.compare1('order'))
-                            that.chapters[i].sections[j].small_sections = res.data.chapters[i].sections[j].small_sections
-                            if(res.data.chapters[i].sections[j].small_sections.length >0){
-                                for(let k = 0 ;k<res.data.chapters[i].sections[j].small_sections.length;k++){
-                                    if(k == res.data.chapters[i].sections[j].small_sections.length - 1){
-                                        console.log(res.data.chapters[i].sections[j].small_sections[k])
-                                        console.log("asa"+k)
-                                        that.$set(res.data.chapters[i].sections[j].small_sections[k], 'lastNum', 0)
-                                    }
-                                }
-                            }
+            array.sort(that.compare1('order'))
+            alert(array)
+            for(var i=0;i<array.length;i++){
+                alert(array.length)
+                this.$set(array[i], 'show', false);
+                if(i == array.length-1){
+                    alert(i)
+                    that.$set(array[i], 'lastNum', 0)
+                }
+                array[i].status = 1
+                array[i].sections.sort(this.compare1('order'))
+                for(var j=0;j<array[i].sections.length;j++){
+                    this.$set(array[i].sections[j], 'show', false);
+                    if(j == array[i].sections.length - 1) {
+                        that.$set(array[i].sections[j], 'lastNum', 0)
+                    }
+                    array[i].sections[j].status = 1
+                    array[i].sections[j].small_sections.sort(this.compare1('order'))
+                    for(var k=0;k<array[i].sections[j].small_sections.length;k++){
+                        this.$set(array[i].sections[j].small_sections[k], 'show', false);
+                        if(k == array[i].sections[j].small_sections.length - 1) {
+                            that.$set(array[i].sections[j].small_sections[k], 'lastNum', 0)
                         }
                     }
-
-
-                }else{
-                    that.$toast(res.message,3000)
                 }
-            })
+            }
         },
 
         //删除章
