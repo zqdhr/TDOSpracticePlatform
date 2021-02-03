@@ -73,7 +73,7 @@
             </div>
             </template>
 
-            <nodata dataMess="实验库暂无实验" noDataType='1' v-if="!isHasData"></nodata>
+            <nodata dataMess="实验库暂无内容" noDataType='1' v-if="!isHasData"></nodata>
         </div>
     </div>
     <!--删除实验弹出框-->
