@@ -135,7 +135,12 @@ export default {
             let that = this;
             //权限
             let  level = sessionStorage.getItem('p_p-authority')
-            that.$router.push({path:'/experiment',query:{authority:this.$Base64.encode(level)}}).catch((err) => {
+            that.$router.push({path:'/experiment',query:{
+                authority:this.$Base64.encode(level),
+                userid:sessionStorage.getItem("userId"),
+                experimentId: that.experiment.id,
+                courseId:''
+                }}).catch((err) => {
               console.log( err);
            });
         },
@@ -156,7 +161,7 @@ export default {
                     that.$toast(res.message,3000)
                 }
             })
-        }
+        },   //创建实验
     }
 }
 </script>

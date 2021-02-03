@@ -311,6 +311,14 @@ var execContainer=function(data){
 var get_chapter_by_id = function(data){
 	return axios.get('/get_chapter_by_id?chapter_id='+data.chapter_id)
 }
+//创建实验
+var createContainers  =function(data){
+	return axios.get('/createContainers?userId='+data.userId+'&containerId='+data.experimentId+'&courseId='+data.courseId)
+}
+//管理员和教师关闭实验
+var removeContainers = function(data){
+	return axios.post('/removeContainers?containerIds='+data.containerIds)
+}
 
 //管理员端课程下的题库添加题目
 var addAssignment = function(data){
@@ -325,7 +333,8 @@ export{
 	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
 	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,addSmallSection,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
-	deleteCoursewareById,addAssignment
+	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers
+	,addAssignment
 }
 
 function getJson (data) {
