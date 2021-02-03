@@ -8,7 +8,7 @@
 
             <div class="operationBox">
             
-                <a class="a-opera pointer"  @click="click_screenshots" v-if="isOpen">
+                <a class="a-opera pointer"  @click="click_screenshots">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
@@ -41,16 +41,19 @@
                   <span class="pointer" :class="{'active':virtualMachine==3}">虚拟机3</span>
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
-                <div class="operation_box" id="screen" v-if="1==0">
+                <div class="operation_box" id="screen" v-if="1==1"  ref="imageWrapper" >
                     <!--@click="connectVnc()"-->
-                    <a class="btn-open pointer" v-if="!isOpen" @click="isOpen=true">点击开启全部虚拟机</a>
-                   
+                    <!--<a class="btn-open pointer" v-if="!isOpen" @click="isOpen=true">点击开启全部虚拟机</a>-->
+                   <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">点击开启全部虚拟机</a>
+                   <xterm :socketURI="socketURI"></xterm> 
                 </div>
+                <!--
                 <div  class="operation_box" ref="imageWrapper" id="imageWrapper" >
-                    <xterm></xterm>
-                    <iframe src="http://192.168.1.228:8888/"  style="width:100%;height:100%"></iframe>
+                    
+                    <iframe src="http://192.168.1.54:2222/ssh/host/192.168.1.54/5001"  style="width:100%;height:100%"></iframe>
                 </div>
-                
+                -->
+            
                   
                 <!--
                 <div class="operation_box" ref="imageWrapper" id="imageWrapper">
@@ -150,6 +153,10 @@ export default {
             loading:false,
 
              term: null,
+
+             socketURI:'ws://192.168.1.228:4000'+'/terminals/'
+
+             //socketURI:'http://192.168.1.54:2222/ssh/host/192.168.1.54/5001'
    
            
         }
@@ -187,10 +194,10 @@ export default {
         //连接vnc的函数      
         connectVnc () {
             const PASSWORD = '';
-            const url='wx/ip/端口'
+            const url='ws://192.168.1.54:7002/vnc.html?password=123456&autoconnect=true'
             let rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
-                credentials: {password: PASSWORD }
+                credentials: {password: '123456' }
             });
             rfb.addEventListener('connect', this.connectedToServer);
             rfb.addEventListener('disconnect', this.disconnectedFromServer);
@@ -235,8 +242,8 @@ export default {
                 backgroundColor: null, // 解决生成的图片有白边
                 useCORS: true, // 如果截图的内容里有图片,解决文件跨域问题
                 scale:2,
-                height: document.getElementById('imageWrapper').offsetHeight,
-                width:document.getElementById('imageWrapper').offsetWidth,
+                height: document.getElementById('screen').offsetHeight,
+                width:document.getElementById('screen').offsetWidth,
                 //windowHeight: document.getElementById('imageWrapper').scrollHeight,
                 //windowWidth: document.getElementById('imageWrapper').scrollWidth,
                 x:0,
@@ -245,7 +252,7 @@ export default {
              
                
             }
-            console.log(document.getElementById('imageWrapper').offsetWidth)
+            console.log(document.getElementById('screen').offsetWidth)
             // eslint-disable-next-line no-undef
             html2canvas(that.$refs.imageWrapper, opts).then((canvas) => {
                 var url = canvas.toDataURL('image/png')

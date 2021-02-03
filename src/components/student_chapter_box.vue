@@ -108,37 +108,48 @@ export default{
     },
     /*
     watch:{
-        courseId:{
-            handler(courseId){
-                this.course_Id = courseId;
+        chapters:{
+            handler(chapters){
+              let that = this;
+            
 
             }
         }
     },
     */
+    
     created() {
         let that = this;   
-        that.addParamShow(that.chapters)
+        
         
     },
     mounted(){
         let that = this
         //that.getCourseById();
          //章节下拉添加子元素是否显示参数show
-      
-
 
     },
     methods:{
         //章节下拉显示添加参数
         addParamShow(array){
+        
              for(var i=0;i<array.length;i++){
                 this.$set(array[i], 'show', false);
-                this.array.sort(this.compare('order')) 
+               
+                array.sort(this.compare('order')) 
                 for(var j=0;j<array[i].sections.length;j++){
                     this.$set(array[i].sections[j], 'show', false);
+                    
 
                 }
+            }
+        },
+
+        compare(property) {
+            return function (a, b) {
+                var value1 = a[property];
+                var value2 = b[property];
+                return value1 - value2;
             }
         },
 
@@ -146,12 +157,13 @@ export default{
 
          //显示章节
         showSection(item,show){
+        
             let that = this;
             let tmp = that.chapters
+               
             for(var i = 0;i<tmp.length;i++){
                that.$set(that.chapters[i],'show',false)          
             }
-
             that.$set(item,'show',!show)  
             if(!show){
                 that.dataObj.chapter_id = item.id

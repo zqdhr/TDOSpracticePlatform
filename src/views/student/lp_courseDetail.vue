@@ -145,7 +145,8 @@ export default {
                     that.numbers = res.data.numbers == null ? 0 : res.data.numbers
                     that.introduction = res.data.introduction;
                     that.course = res.data
-                    that.courseChapters = res.data.chapters
+                    that.courseChapters = res.data.chapters;
+                    that.addParamShow(that.courseChapters)
                     if(res.data.chapters.length==0){
                       that.isHasData = false
                     }
@@ -154,6 +155,27 @@ export default {
                 }
             })
         },
+        
+         //章节下拉显示添加参数
+        addParamShow(array){
+             array.sort(this.compare('order')) 
+             for(var i=0;i<array.length;i++){
+                this.$set(array[i], 'show', false);  
+                for(var j=0;j<array[i].sections.length;j++){
+                    this.$set(array[i].sections[j], 'show', false);
+                    
+
+                }
+            }
+        },
+        compare(property) {
+            return function (a, b) {
+                var value1 = a[property];
+                var value2 = b[property];
+                return value1 - value2;
+            }
+        },
+
         clickStartTime() {
         this.pickerOptionsStart.disabledDate = time => {
           if (this.endTime) {
