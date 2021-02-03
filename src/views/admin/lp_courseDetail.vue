@@ -195,6 +195,7 @@ export default {
           let that = this;
           that.navindex = num;
           that.$store.commit("updateAdminNavindex",num);
+          sessionStorage.setItem("store",JSON.stringify(this.$store.state))
           that.showStudentList = false
         },
        
