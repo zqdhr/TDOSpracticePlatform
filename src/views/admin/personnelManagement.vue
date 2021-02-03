@@ -280,7 +280,7 @@
       class="personDialog"   
     >
     <div slot="title" class="dialog_header">密码重置</div>
-
+       <!--
       <div class="editMain" style="margin:0 50px" >
         <el-form ref="form" label-width="80px">
           <el-form-item label="输入密码">
@@ -292,6 +292,12 @@
           </el-form-item>
 
         </el-form>
+      </div>
+      -->
+       <div class="confirm_dialog_body" style="padding-bottom:20px">
+        <p class="dialog_mess">
+          <span class="span_icon icon_waring">是否需要重置密码！</span>
+        </p>
       </div>
       <span slot="footer" class="dialog-footer">
         <button class="btnDefault" @click="resetDialog = false">取消</button>
