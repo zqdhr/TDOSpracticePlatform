@@ -49,7 +49,7 @@
 
     <div class="coursewareLibrary_box">
         <div class="container">
-
+            <template v-if="isHasData">
             <div class="list_box">
                 <ul class="list_ul coursewareLibrary_ul  clearfix">
                     <li v-for="(item,index) in experimentList" :key="index">
@@ -85,7 +85,9 @@
                 >
                 </el-pagination>
             </div>
-
+            </template>
+            
+             <nodata dataMess="课件库暂无内容" noDataType='1' v-if="!isHasData"></nodata>
 
         </div>
     </div>
@@ -112,6 +114,7 @@
 <script>
 import { getCoursewareAll,findParentCategory,findChildCategory,deleteCoursewareById} from "@/API/api";
 import newdialog from '@/components/admin_dialog_newCourseware'
+import nodata from '@/components/noData'
 export default {
     data(){
         return{
@@ -148,10 +151,12 @@ export default {
             options:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
             options1:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
             options2:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
+
+            isHasData:false,
         }
     },
     components:{
-      newdialog
+      newdialog,nodata
     },
     created(){
         this.cate = this.options[0].value;//默认选中内置课件
@@ -217,8 +222,10 @@ export default {
                         res.data.list[i].size = (res.data.list[i].size/(1024 * 1024)).toFixed(2) + "MB"
                     }
                     that.experimentList = res.data.list;
+                    res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.total = res.data.total
-                    alert(that.total)
+                    
+                    //alert(that.total)
 
                 } else {
                     that.$toast(res.message, 3000);
@@ -270,7 +277,7 @@ export default {
             deleteCoursewareById(obj).then((res) => {
                 that.coueseWareId = '';
                 if (res.code == 200) {
-                    alert("删除课件成功")
+               
                     that.getCourseAll(10,1,'',0,'','','','');
                 } else {
                     that.$toast(res.message, 3000);
