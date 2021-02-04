@@ -154,7 +154,8 @@ var findAllByCategoryId = function(data){
 
 //管理员查询课件库所有的课件
 var getCoursewareAll = function(data){
-	return axios.get('/getCoursewareAll?perPage='+data.per_page+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name+'&category_id='+data.category_id+'&chapter_id='+data.chapter_id+'&section_id='+data.section_id)
+	//kind种类，type0内置课件  type1教师上传  name关键词  去除'&chapter_id='+data.chapter_id+'&section_id='+data.section_id+
+	return axios.get('/getCoursewareAll?perPage='+data.perPage+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name+'&category_id='+data.category_id+'&c_category_id='+data.c_category_id)
 }
 
 //管理员查询所有的镜像
@@ -338,6 +339,18 @@ var student_getJobDetail =function(data){
     return axios.get('/getStudentAnswerByAssignment?userId='+data.userId+ '&perPage=' + data.perPage+ '&page=' + data.page+'&assignmentId=' + data.assignmentId)
 }
 
+
+//管理员课程下上传节下的作业
+var addQuestionBackAssignmentList =function(data){
+	return axios.post('/addQuestionBackAssignmentList',data, { headers: { 'Content-Type': 'application/json' } })
+}
+
+
+//管理员端删除课程
+var removeCourseById =function(params){
+	return axios.delete('/remove_course_by_id',{data:params})
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -347,7 +360,7 @@ export{
 	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,addSmallSection,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
 	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers
-	,addAssignment,student_getJobList,student_getJobDetail
+	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById
 }
 
 function getJson (data) {

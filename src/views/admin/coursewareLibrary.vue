@@ -4,17 +4,17 @@
       <div class="pageTab clearfix">
         <div class="fl">
             <div class="sel-box">
-                <el-select v-model="customType" placeholder="自定义分类" @change="selectType" >
-                <el-option v-for="item in customClass" :key="item.value" :label="item.name" :value="item.value" > </el-option>
+                <el-select v-model="paramData.category_id" placeholder="自定义分类" @change="selectType" >
+                <el-option v-for="item in customClass" :key="item.id" :label="item.name" :value="item.id" > </el-option>
                 </el-select>
             </div>
-            <div class="sel-box" v-if="customType!=''">
-                <el-select v-model="i_customType" placeholder="自定义分类" >
-                <el-option v-for="item in i_customClass" :key="item.value" :label="item.name" :value="item.value" > </el-option>
+            <div class="sel-box" v-if="i_customClass.length>0">
+                <el-select v-model="paramData.c_category_id" placeholder="自定义分类"  @change="child_selectType">
+                <el-option v-for="item in i_customClass" :key="item.id" :label="item.name" :value="item.id" > </el-option>
                 </el-select>
             </div>
             <div class="sel-box">               
-                <el-select v-model="cate" placeholder="请选择课件分类" @change="selectCourseWareType">
+                <el-select v-model="paramData.type" placeholder="请选择课件分类" @change="selectCourseWareType">
                     <el-option
                     v-for="item in catoptions"
                     :key="item.value"
@@ -24,7 +24,7 @@
                 </el-select>               
             </div>
             <div class="sel-box">               
-                <el-select v-model="type" placeholder="请选择课件类型" @change="selectCate">
+                <el-select v-model="paramData.kind" placeholder="请选择课件类型" @change="selectCate">
                     <el-option
                     v-for="item in typeList"
                     :key="item.value"
@@ -38,7 +38,7 @@
         <div class="fr">
           <a class="btnDefault pointer abtn" @click="click_new">新增课件</a>      
           <div class="d-serach"> 
-            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="searchText"/>
+            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="paramData.name"/>
             <a class="searchBtn pointer" @click="searchCourse"></a>
           </div>
         </div>
@@ -63,12 +63,12 @@
                             </el-tooltip>
                             -->
                             <div class="icon-box">
-                                <span class="c_icon" :class="{'icon_video':item.type==0,'icon_pdf':item.type==1}"></span>
+                                <span class="c_icon" :class="{'icon_video':item.kind==0,'icon_pdf':item.kind==1}"></span>
                             </div>
                             <p class="p-text textline1 p-name">{{item.name}}</p>
                             <div class="line"></div>
                             <p class="p-text textline1">课件大小：{{item.size}}</p>
-                            <p class="p-text textline1">视频时长：{{item.duration}}</p>
+                            <!--<p class="p-text textline1">视频时长：{{item.duration}}</p>-->
                         </div>
                     </li>
                 </ul>
@@ -77,8 +77,8 @@
              <div class="tab-pagination">
                 <el-pagination
                     background
-                    :current-page="curPage"
-                    :page-size="perPage"
+                    :current-page="paramData.page"
+                    :page-size="paramData.perPage"
                     @current-change="handleCurrentChange"
                     layout="prev, pager, next,jumper"
                     :total="total"
@@ -92,7 +92,7 @@
         </div>
     </div>
      <!--删除实验弹出框-->
-    <el-dialog :visible.sync="isDelete" width="600px">
+    <el-dialog :visible.sync="isDelete" width="500px">
       <div slot="title" class="dialog_header">请注意!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
@@ -131,92 +131,83 @@ export default {
             isDelete:false,
             isnewFilter:false,//新增课件选择
             total:1,
-            perPage:10, //8个实验一页
-            curPage:1,//设备列表
-            cate:'',
-            type:'',
-            kind:0,
+           
+          
+        
+        
             category_id:'',
-            searchText:'',
-            customClass: [
-                { value: "1", label: "场景篇" },
-                { value: "2", label: "原理篇" },
-            ], //自定义分类
-            i_customClass: [
-                { value: "1", label: "场景篇" },
-                { value: "2", label: "原理篇" },
-            ], //自定义分类
-            customType: "",
-            i_customType: "",
+         
+            customClass: [], //自定义分类
+            i_customClass: [ ], //自定义分类子
+    
             options:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
             options1:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
             options2:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
 
             isHasData:false,
+
+            paramData:{
+                perPage:10,
+                page:1,
+                kind:'', //种类 0视频 1pdf
+                type:0 ,//0内置课件 1教师上传
+                category_id:'',//自定义种类
+                c_category_id:'', //自定义子种类
+                name:'' //搜索的关键词
+            }
         }
     },
     components:{
       newdialog,nodata
     },
     created(){
-        this.cate = this.options[0].value;//默认选中内置课件
-        this.type = this.typeList[0].value;//课件类型默认选中全部
+        this.paramData.type = this.options[0].value;//默认选中内置课件
+        this.paramData.kind = this.typeList[0].value;//课件类型默认选中全部
+
+        //获取课件列表
+        this.getCourseAll();
+
+        //获取父级分类
+        this.findParentCategory();
     },
     methods:{
 
-        //自定义父级分类
+        //自定义父级分类获取数据
         findParentCategory(){
             let that = this;
             findParentCategory().then(res=> {
                 if(res.code==200){
                     that.customClass = res.data;
-                    for(let i =0;i<res.data.length;i++){
-                        that.$set(that.customClass[i],'value',i)
-                    }
+                  
                 }else{
                     this.$toast(res.message,2000)
                 }
             })
         },
-         //自定义分类
+         //自定义分类父级分类点击事件
         selectType(val){
             let that = this;
-            console.log("选择自定义分类1"+val);
-            console.log(that.customClass[0])
-            that.parent_id = that.customClass[val].id
-
             let obj = {}
-            obj.parent_category_id = that.parent_id
+            obj.parent_category_id = val
+            that.i_customClass = []
             findChildCategory(obj).then(res=> {
                 if(res.code==200){
                     that.i_customClass = res.data;
-                    for(let i =0;i<res.data.length;i++){
-                        that.$set(that.i_customClass[i],'value',i)
-                    }
                 }else{
                     this.$toast(res.message,2000)
                 }
             })
-            that.getCourseAll(10,1,that.kind,that.type,that.searchText,val);
+            that.getCourseAll();
         },
-        //课件列表
-        getCoursewareAll() {
-            let that = this;
-            that.getCourseAll(10,1,'',0,'','','','');
+        child_selectType(val){
+            let that = this
+            that.getCourseAll();
         },
-
-        getCourseAll(per_page,page,kind,type,name,category_id,chapter_id,section_id){
+        //获取课件列表方法
+        getCourseAll(){
             let that = this;
-            let obj = {};
-            obj.per_page = per_page;
-            obj.page = page;
-            obj.kind = kind;
-            obj.type = type;
-            obj.name = name;
-            obj.category_id = category_id;
-            obj.chapter_id = chapter_id;
-            obj.section_id = section_id;
-            getCoursewareAll(obj).then((res) => {
+         console.log(that.paramData)
+            getCoursewareAll(that.paramData).then((res) => {                
                 if (res.code == 200) {
                     for(let i = 0;i<res.data.list.length;i++){
                         res.data.list[i].size = (res.data.list[i].size/(1024 * 1024)).toFixed(2) + "MB"
@@ -235,7 +226,7 @@ export default {
 
         searchCourse(){
             let that = this;
-            that.getCourseAll(10,1,that.type,that.cate,that.searchText,that.category_id);
+            that.getCourseAll();
         },
 
         click_new(){
@@ -245,21 +236,22 @@ export default {
         
         //底部分页
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
             let that = this;
-            that.getCourseAll(10,val,'',0,'','','','');
+            that.paramData.page =val
+            this.getCourseAll();
         },
 
         //选择分类
         selectCate(val){
             let that = this;
-            that.getCourseAll(10,1,that.type,val,that.searchText);
+            that.getCourseAll();
         },
 
         //选择课件类型
          selectCourseWareType(val){
              let that = this;
-             that.getCourseAll(10,1,val,that.cate,that.searchText);
+              
+             that.getCourseAll();
         },
         isDeleteWare(id){
           let that = this;
@@ -277,8 +269,12 @@ export default {
             deleteCoursewareById(obj).then((res) => {
                 that.coueseWareId = '';
                 if (res.code == 200) {
-               
-                    that.getCourseAll(10,1,'',0,'','','','');
+                    if(that.paramData.page!=1){
+                        if(list.length == that.total){
+                            that.paramData.page = that.paramData.page - 1
+                        }
+                    }
+                    that.getCourseAll();
                 } else {
                     that.$toast(res.message, 3000);
                 }
@@ -292,7 +288,7 @@ export default {
 
         //新增题目所属分类
         handleChange(val){
-        console.log(val)
+         console.log(val)
         },
        
 
@@ -300,8 +296,8 @@ export default {
     },
     mounted() {
         let that = this;
-        that.getCoursewareAll();
-        that.findParentCategory();
+       
+       
     },
 }
 </script>

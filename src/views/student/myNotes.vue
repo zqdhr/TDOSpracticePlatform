@@ -201,8 +201,7 @@
 <script>
 //视频
 import { videoPlayer } from "vue-video-player";
-import "video.js/dist/video-js.css";
-import "vue-video-player/src/custom-theme.css";
+
 import "videojs-flash"; // 如果是直播或者是视频流，注意需要引入这个模块
 import 'video.js/dist/video.js'
 

@@ -43,7 +43,7 @@
                                 </el-tooltip>
                                 -->
                                 <div class="icon-box">
-                                    <span class="c_icon" :class="{'icon_video':item.type==0,'icon_pdf':item.type==1}"></span>
+                                    <span class="c_icon" :class="{'icon_video':item.kind==0,'icon_pdf':item.kind==1}"></span>
                                 </div>
                                 <p class="p-text textline1 p-name">{{item.name}}</p>
                                 <div class="line"></div>

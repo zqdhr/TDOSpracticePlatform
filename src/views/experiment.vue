@@ -122,9 +122,7 @@ import RFB from '@novnc/novnc/core/rfb';
 
 
 import { quillEditor } from "vue-quill-editor"; //调用编辑器
-import 'quill/dist/quill.core.css';
-import 'quill/dist/quill.snow.css';
-import 'quill/dist/quill.bubble.css';
+
 
  import html2canvas from 'html2canvas';
 
@@ -169,7 +167,7 @@ export default {
 
              term: null,
 
-             socketURI:'ws://192.168.1.228:19585'+'/terminals/',
+             socketURI:'ws://192.168.1.133:2222'+'/terminals/',
 
              //socketURI:'http://192.168.1.54:2222/ssh/host/192.168.1.54/5001'
             userid:'',
