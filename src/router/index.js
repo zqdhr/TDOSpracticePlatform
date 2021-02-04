@@ -196,6 +196,9 @@ router.beforeEach((to, from, next) => {
     let teacher_username = sessionStorage.getItem('p_p-teacher_userName');
     let user_id =  sessionStorage.getItem('userId');
     let student_username = sessionStorage.getItem('p_p-student_userName');
+    if(to.path.indexOf("operation") != -1){
+       next();
+    }else{
     if(!(user_id &&user_id!=null)){
       next('/login');
     }
@@ -219,9 +222,10 @@ router.beforeEach((to, from, next) => {
       } else {
         next();
       }
-  }
+    }
     
     next();
+  }
   }
 });
 export default router

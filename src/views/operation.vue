@@ -6,7 +6,7 @@
             <a class="pointer btnSure" @click="sureContact">确定</a>
         </div>
         <xterm :socketURI="socketURI" ref="xterm"></xterm> 
-        <iframe src="http://192.168.1.133:6080/" style="width:100%; height:100%"/>
+        <!--<iframe src="http://192.168.1.133:6080/" style="width:100%; height:100%"/>-->
     </div>
     
 </template>
