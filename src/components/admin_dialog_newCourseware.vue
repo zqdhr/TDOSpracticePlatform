@@ -15,15 +15,12 @@
             <el-form ref="form"  label-width="120px">
               <el-form-item>
                 <span slot="label" class="s-label" ><span>*</span>所属分类：</span >
-                    <el-cascader
-                            v-model="category"
-                            :options="categoryOptions"
-                            :props="{ value: 'id', label: 'name', children: 'cates' }"
-                            @change="handleChange"
-                         
-                            clearable
-                    >
-                    </el-cascader>
+                <el-cascader
+                        v-model="category"
+                        :options="categoryOptions"
+                        :props="{value: 'id', label: 'name',children: 'cates'}"
+                        @change="handleChange" clearable>
+                </el-cascader>
               </el-form-item>
             </el-form>
              <el-form ref="form"  label-width="120px">
@@ -89,7 +86,8 @@ export default {
       curPage: 1, //设备列表
       cate: "内置课件", //课件分类默认内置课件
       type: "全部", //课件类型默认全部
-
+      category:[],//实验所属分类
+      categoryOptions: [],
       customClass: [
         { value: "1", label: "场景篇" },
         { value: "2", label: "原理篇" },
@@ -102,11 +100,10 @@ export default {
       jwt: "",
       uploadUrl: "",
       files: [],
-      category: [], //实验所属分类
-      categoryOptions: [],
       extension:'',
       size:'',
-      time:''
+      time:'',
+      addCategoryID:'',//自定义分类ID
     };
   },
   components: {
@@ -116,6 +113,7 @@ export default {
   created() {
     this.cate = this.options[0].value; //默认选中内置课件
     this.type = this.typeList[0].value; //课件类型默认选中全部
+    this.findParentCategory();
   },
   methods: {
 
@@ -127,36 +125,41 @@ export default {
 
     },
 
-    //获取一级分类
-    findParentCategory(){
-      let that = this
-      findParentCategory().then(res=> {
-        if(res.code==200){
-          that.options = res.data;
+    //自定义父级分类
+    findParentCategory() {
+      let that = this;
+      findParentCategory().then(res => {
+        if (res.code == 200) {
           that.categoryOptions = res.data;
+          for (let index = 0; index < that.categoryOptions.length; index++) {
+            that.findChildCategory(that.categoryOptions[index].id)
 
+          }
+        } else {
+          this.$toast(res.message, 2000)
+        }
+      })
+    },
+    //根据一级分类id查询二级分类
+    findChildCategory(cateId){
+      let that = this
+      let obj={}
+      obj.parent_category_id = cateId
+      findChildCategory(obj).then(res=> {
+        if(res.code==200){
+          let catesons = res.data
+          if(catesons.length>0){
+            for(let i = 0; i <  that.categoryOptions.length; i++) {
+              if(that.categoryOptions[i].id === cateId) {
+                that.$set(that.categoryOptions[i], 'cates', catesons) // right
+                break;
+              }
+            }
+          }
         }else{
           that.$toast(res.message,3000)
         }
       })
-    },
-   
-    //根据一级分类id查询二级分类
-    findChildCategory(val){
-      let that = this;
-      let obj = {};
-      obj.parent_category_id = val.id;
-      findChildCategory(obj).then((res) => {
-        // alert(JSON.stringify(res));
-        if (res.code == 200) {
-          that.options1 = res.data;
-          // if (that.options1.length > 0) {
-          //   that.i_customClass = that.options1[0];
-          // }
-        } else {
-          this.$toast(res.message, 2000);
-        }
-      });
 
     },
 
@@ -207,7 +210,7 @@ export default {
       //  console.log(value.length==1?value[0]:value[1]);
       that.addCategoryItem = val;
       that.addCategoryID = val.length == 1 ? val[0] : val[1];
-      
+
     },
   
    
@@ -255,9 +258,14 @@ export default {
     //上传图片
     upload(file){
       let that =this
+      if(that.addCategoryID == '' || that.addCategoryID == null ){
+        this.$toast("请选择自定义分类", 3000);
+        return;
+      }
       let obj= new FormData()
       obj.append('type',0)
       obj.append('file',file)
+      console.log(obj)
       alert(that.files[0].file.name)
       upload(obj).then(res=>{
         if (res.code==200) {
@@ -267,7 +275,6 @@ export default {
           let obj = {};
           obj.name = that.files[0].file.name;
           obj.type = that.extension == 'pdf'?2:1;
-          obj.kind = that.extension == 'pdf' ?1 : 0
           obj.url = that.picUrl;
           obj.duration = that.time;
           obj.size = that.size;

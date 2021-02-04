@@ -49,7 +49,7 @@
                 :key="index"
               > 
                 <div class="title">{{ item.content }}
-                   <span> ({{item.qualifiedScore}}分) </span>
+                   <span> ({{item.score}}分) </span>
                     <a class="btn-set pointer" @click="setNewScore(item)"></a>
                
                 </div>
@@ -222,7 +222,7 @@
     <el-dialog :visible.sync="isSetTime" width="500px">
        <div slot="title" class="dialog_header">设置该题目分数</div>
        <div class="setScope">
-         <el-input placeholder="请输入该题目的分数" v-model = 'questionScore'></el-input>
+         <el-input placeholder="请输入该题目的分数" v-model = 'score'></el-input>
        </div>
        <div slot="footer" class="dialog-footer">
            <a class="btnDefault" @click="setScore">确 认</a>
@@ -234,7 +234,7 @@
 <script>
 import courseNav from "@/components/left_courseNav.vue";
 import noData from "@/components/noData.vue";
-import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId,addQuestionBackAssignmentList} from '@/API/api';
+import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId,addQuestionBackAssignmentList,getAssignmentNameBySectionId} from '@/API/api';
 export default {
   data() {
     return {
@@ -285,7 +285,7 @@ export default {
         endTime:''//作业的截止时间
       },
       assignmentId:'',
-      questionScore:'',
+      score:'',
       updateScore:{}
     };
   },
@@ -336,15 +336,16 @@ export default {
       obj.name = that.homework.name;
       let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
       obj.end_at = new Date(datetime).toISOString();
-      alert(obj.end_at)
       obj.qualified_score = 100;
       addAssignment(JSON.stringify(obj)).then(res=> {
         if (res.code == 200) {
           alert("添加题目名称成功")
           that.assignmentId = res.data.assignmentId;
           that.isnewJobName = false;
-          that.isDate = true;
-          that.getAssignmentBySectionId();
+          that.status = 0;
+          that.noData = false;
+          that.courseWorkTitle = res.data.name;
+          //that.getAssignmentBySectionId();
         } else {
           that.$toast(res.message, 3000)
         }
@@ -433,14 +434,17 @@ export default {
     },
     setScore(){
       let that = this;
-      this.$set(that.updateScore, 'qualifiedScore', that.questionScore);
+      this.$set(that.updateScore, 'score', that.score);
       that.isSetTime=false
     },
     showQuestion(){
       let that = this;
       that.showQuestionBank = false;
       console.log(that.chooseList)
-      that.courseList = that.chooseList;
+      for(let i = 0;i<that.chooseList.length;i++){
+        that.courseList.push(that.chooseList[i])
+      }
+      console.log(that.courseList)
     },
 
     addQuestionBack(){
@@ -449,18 +453,12 @@ export default {
       let obj = {};
       let list = [];
       alert(that.assignmentId)
-      for(let i =0;i<that.chooseList.length;i++){
-        let objques = {};
-        objques.assignment_id = that.assignmentId;
-        objques.question_id = that.chooseList[i].id;
-        objques.score = that.chooseList[i].score;
-        list.push(objques)
-      }
+      console.log(that.courseList)
       for(let i =0;i<that.courseList.length;i++){
         let objques = {};
         objques.assignment_id = that.assignmentId;
         objques.question_id = that.courseList[i].id;
-        objques.score = that.courseList[i].qualifiedScore;
+        objques.score = that.courseList[i].score;
         list.push(objques)
       }
       obj.question_back_assignment_list = list;
@@ -536,26 +534,37 @@ export default {
       that.sindex = data.sindex;
       console.log(data.sindex)
       if(data.sindex != '') {
-        let obj = {};
-        obj.sectionId = data.sindex;
-        obj.perPage = 10;
-        obj.page = 1;
-        getAssignmentBySectionId(obj).then(res => {
-          that.status = '';
+        let obj1 = {};
+        obj1.sectionId = data.sindex;
+        getAssignmentNameBySectionId(obj1).then(res => {
           if (res.code == 200) {
-            if (res.data.list.length == 0) {
+            if (res.data.name == '' || res.data.name == null) {
+              alert("123")
               that.status = 1;
               that.noData = true;
             } else {
-              alert("asd"+res.data.list[0].id)
-              that.courseWorkTitle = res.data.list[0].name;
-              that.assignmentId = res.data.list[0].id;
-              that.noData = false;
+              that.courseWorkTitle = res.data.name;
+              that.assignmentId = res.data.id;
+              let obj = {};
+              obj.sectionId = data.sindex;
+              obj.perPage = 10;
+              obj.page = 1;
+              getAssignmentBySectionId(obj).then(res => {
+                that.status = '';
+                if (res.code == 200) {
+                  console.log("asd"+res.data.list[0])
+                  if (res.data.list.length > 0) {
+                    that.courseList = res.data.list;
+                  }
+                  that.noData = false;
+                  // alert(that.status)
+                  // console.log(res.data.list)
+                  alert("查询题目成功")
+                } else {
+                  that.$toast(res.message, 3000)
+                }
+              })
             }
-            that.courseList = res.data.list;
-            alert(that.status)
-            console.log(res.data.list)
-            alert("查询题目成功")
           } else {
             that.$toast(res.message, 3000)
           }
@@ -570,9 +579,6 @@ export default {
       obj.page = 1;
       getAssignmentBySectionId(obj).then(res => {
         if (res.code == 200) {
-          if (res.data.list.length == 0) {
-            that.status = 1;
-          }
           that.courseList = res.data.list;
           console.log(res.data.list)
           alert("查询题目成功")

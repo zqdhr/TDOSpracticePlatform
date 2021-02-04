@@ -191,7 +191,7 @@ var getAdminCourseByClassId = function(data){
 
 //管理员新增镜像
 var addImage = function(data){
-	return axios.get('/addImage?imageName='+data.imageName+'&introduction='+data.introduction)
+	return axios.get('/addImage?imageName='+data.imageName+'&introduction='+data.introduction+'&kind='+data.kind+'&url='+data.url)
 }
 
 
@@ -360,6 +360,16 @@ var hasExperimentReport = function(data){
 	return axios.get('/hasExperimentReport?experiment_id='+data.experiment_id+'&user_id='+data.user_id)
 }
 
+//管理员端删除课程
+var unbindExperiments =function(data){
+	return axios.post('/unbindExperiments',data, { headers: { 'Content-Type': 'application/json' } })
+}
+
+//管理员端查询课程下的作业名称
+var getAssignmentNameBySectionId =function(data){
+	return axios.get('/getAssignmentNameBySectionId?sectionId='+data.sectionId)
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -370,6 +380,7 @@ export{
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
 	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers
 	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
+	,unbindExperiments,getAssignmentNameBySectionId
 }
 
 function getJson (data) {
