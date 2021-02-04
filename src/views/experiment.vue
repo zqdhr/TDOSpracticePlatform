@@ -386,7 +386,7 @@ export default {
         //连接vnc的函数      
         connectVnc () {
             const PASSWORD = '';
-            const url='ws://192.168.1.54:7002/vnc.html?password=123456&autoconnect=true'
+            const url='ws://192.168.1.31:6901/vnc.html?password=vncpassword&autoconnect=true'
             let rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
                 credentials: {password: '123456' }

@@ -263,7 +263,8 @@ export default {
         return;
       }
       let obj= new FormData()
-      obj.append('type',0)
+      let type = that.extension == 'pdf'?1:2
+      obj.append('type',type)
       obj.append('file',file)
       console.log(obj)
       alert(that.files[0].file.name)
@@ -274,7 +275,8 @@ export default {
           that.time = res.data.time;
           let obj = {};
           obj.name = that.files[0].file.name;
-          obj.type = that.extension == 'pdf'?2:1;
+          obj.type = 0;
+          obj.kind = type;
           obj.url = that.picUrl;
           obj.duration = that.time;
           obj.size = that.size;
