@@ -4,11 +4,11 @@
            
             <div class="name textline1">正在进行的实验：{{experiment.name}}</div>
            
-            <div class="timeBox">00:45:52</div>
+            <div class="timeBox">{{time}}</div>
 
             <div class="operationBox">
             
-                <a class="a-opera pointer"  v-if="isOpen" @click="execContainer">
+                <a class="a-opera pointer"  v-if="isOpen" @click="makeImg">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
@@ -20,11 +20,11 @@
                     <i><img src="../assets/img/exper_back.png"/></i>
                     <span>返回</span>
                 </a>
-                 <a class="a-opera pointer" v-if="isOpen">
+                 <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=1">
                     <i><img src="../assets/img/exper_end.png"/></i>
                     <span>结束</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen">
+                <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=2">
                     <i><img src="../assets/img/exper_restart.png"/></i>
                     <span>重新开始</span>
                 </a>
@@ -94,12 +94,27 @@
                                 @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
                             >
                          </quill-editor>
-                         <div class="btnbox"><a class="btnDefault">确认上传</a></div>
+                         <div class="btnbox"><a class="btnDefault" @click="insertExperimentRepor">确认上传</a></div>
                     </div>
                     </template>
                 </el-scrollbar>
             </div>
+
         </div>
+                <!--弹窗-->
+            <el-dialog :visible.sync="isClose" width="600px">
+            <div slot="title" class="dialog_header">请注意!</div>
+            <div class="confirm_dialog_body">
+                <p class="dialog_mess">
+                <!--成功span的class为icon_success-->
+                <span class="span_icon icon_waring">{{type==1?'确认结束当前实验':'确认重新开始当前实验'}}？</span>
+                </p>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <a class="btnDefault" @click="stopOrrestart">确 认</a>
+                <a class="btnDefault" @click="isClose=false">取 消</a>
+            </div>
+            </el-dialog>
     </div>
 </template>
 <script>
@@ -112,7 +127,7 @@ import { quillEditor } from "vue-quill-editor"; //调用编辑器
  import html2canvas from 'html2canvas';
 
  import xterm from '@/components/Xterminal.vue'
- import {createContainers,findAllByType,execContainer} from "@/API/api";
+ import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor} from "@/API/api";
 
 
 
@@ -159,7 +174,11 @@ export default {
             experimentId:'',
             courseId:'',
             containers:[],//虚拟机列表 这里显示标题的时候要显示status 0是已创建 1是运行中
-            experiment:{}//实验详情
+            experiment:{},//实验详情
+            time:'',
+            second:'',//用来记录当前倒计时的秒数
+            isClose:false,
+            type:''//0是START,1是 STOP,2是 RESTART
            
         }
     },
@@ -178,11 +197,7 @@ export default {
         that.experimentId=that.$route.query.experimentId
         that.courseId =that.$route.query.courseId
         that.createContainers(that.userid,that.experimentId,that.courseId)
-        that.findAllByType(that.experimentId)
-        console.log(that.$route.query.userid)
-        console.log(that.$route.query.experimentId)
-        console.log(that.$route.query.courseId)
-       
+        that.findAllByType(that.experimentId)  
     },
     methods:{
         // vnc连接断开的回调函数
@@ -206,13 +221,12 @@ export default {
             obj.userId = userid
             obj.experimentId = experimentId
             obj.courseId = courseId
-            console.log(obj)
             createContainers(obj).then(res=>{
-                console.log(res)
                 if (res.code==200) {
                     console.log(res.data)
                     that.containers = res.data
-                    if ( that.containers.length>0&&that.containers[0]!=null) {
+                 
+                    if (that.containers!=null&& that.containers.length>0&&that.containers[0]!=null) {
                         if (that.containers[0].status==1) {
                             that.isOpen=true
                             that.virtualMachine=0
@@ -235,15 +249,36 @@ export default {
             obj.page=1
             findAllByType(obj).then(res=>{
                 if (res.code==200) {
-                    console.log(res.data)
-                    that.experiment = res.data
+                    that.experiment = res.data          
+                    let time= that.experiment.duration*60
+                    that.formatSecToDate(time)
+                    that.daojishi(time)
                 }else {
                     that.$toast(res.message,3000)
                 }
             })
         },
-        //开启实验
-        execContainer(){
+        //判断是关闭实验还是重启实验
+        stopOrrestart(){
+            let that = this
+            if (that.type==2) {
+                //重启实验
+                that.execContainer(2)
+                
+            }else {
+                if (that.authority==0) {
+                   //学生关闭实验 
+                   that.execContainer(1)
+                }else{
+                    //教师与管理员关闭实验
+                    that.removeContainers()
+                }
+            }
+            that.isClose=false
+
+        },
+        //开启实验 type 0是START,1是 STOP,2是 RESTART
+        execContainer(type){
             let that = this
             let obj = {}
             let containerId = []
@@ -251,18 +286,57 @@ export default {
                 containerId.push( that.containers[index].containerId)
             }
             obj.containerId = containerId
-            obj.type = 0
-            console.log(obj)
+            obj.type = type
             execContainer(obj).then(res=>{
-                console.log(res)
                 if (res.code==200) {
                     console.log(res.data)
+                    if (type==1) {
+                        that.click_back()
+                    }
                 } else {
                     that.$toast(res.message,3000) 
                     console.log(res.message)
                 }       
             })
           
+        },
+        //管理员和老师关闭实验调用
+        removeContainers(){
+            let that = this
+            let obj = {}
+            let containerId = []
+            for (let index = 0; index <  that.containers.length; index++) {
+                containerId.push( that.containers[index].containerId)
+            }
+            obj.containerId = containerId
+            removeContainers(obj).then(res=>{
+                if (res.code==200) {
+                    that.click_back()
+                } else {
+                    that.$toast(res.message,3000) 
+                }
+            })
+        },
+        //添加实验报告
+        insertExperimentRepor(){
+            let that = this
+            let obj={}
+            if (that.yourContent=='') {
+               return that.$toast("请输入实验报告内容",3000) 
+            }
+            obj.experiment_id = that.experimentId
+            obj.user_id = that.userid
+            obj.info = that.yourContent
+            console.log(obj)
+            insertExperimentRepor(obj).then(res=>{
+                if (res.code==200) {
+                    that.$toast("实验报告上传成功",3000)
+                    that.yourContent='' 
+                } else {
+                    that.$toast(res.message,3000) 
+                }
+            })
+
         },
 
         //连接vnc的函数      
@@ -307,6 +381,54 @@ export default {
            that.makeImg()
            
         },
+        //时间转化
+        formatSecToDate(sec){
+            if(!sec){
+                return '-'
+            }
+            var min = Math.floor(sec%3600);//分钟
+            this.time= (Math.floor(sec/3600)<10?"0"+ Math.floor(sec/3600):Math.floor(sec/3600) )+ ":" +( Math.floor(min/60)<10?"0"+Math.floor(min/60):Math.floor(min/60)) + ":"+ (sec%60<10?"0"+sec%60:sec%60)
+        },
+
+      //倒计时
+        daojishi(time){
+            let that = this
+            var min = Math.floor(time%3600)
+            //时
+            var h = parseInt(time / 3600) > 0 ? parseInt(time / 3600) : 0
+            //分
+            var m = parseInt( min /60)
+            //秒
+            var s = time%60
+
+            //开始执行倒计时
+            var timeInterval = setInterval(function () {
+            //如果时、分、秒都为0时将停止当前的倒计时
+            if (h == 0 && m == 0 && s == 0) { clearInterval(timeInterval); return; }
+             //当秒走到0时，再次为60秒
+            if (s == 0) { s = 60; }
+            if (s == 60) {
+            //每次当秒走到60秒时，分钟减一
+            m -= 1;
+            //当分等于0时并且小时还多余1个小时的时候进里面看看
+            if (m < 0 && h > 0) {
+                //小时减一
+                h -= 1;
+                //分钟自动默认为60分
+                m = 59;
+                //秒自动默认为60秒
+                s = 60;
+                }
+             }
+            //秒继续跳动，减一
+            s -= 1;
+            //小时赋值
+            that.time= (h<10?"0"+ h:h )+ ":" +( m<10?"0"+m:m) + ":"+ (s<10?"0"+s:s) ;
+            that.second = h*3600+m*60+s
+         
+            }, 1000);
+        },
+
         // 将dom转成canvas
         makeImg() {
             var that = this
@@ -332,7 +454,6 @@ export default {
                 var url = canvas.toDataURL('image/png')
                 that.dataURL = url
                 that.yourContent =that.yourContent+ '<p><img src="'+that.dataURL+'"/></p>'
-                console.log(that.yourContent)
             })
         },
         // http图片转成base64，防止解决不了的图片跨域问题

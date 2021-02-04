@@ -351,6 +351,11 @@ var removeCourseById =function(params){
 	return axios.delete('/remove_course_by_id',{data:params})
 }
 
+//学生端新增实验报告
+var insertExperimentRepor = function(data){
+	return axios.post('/insertExperimentRepor', data,{headers: {'Content-Type':'application/json'}})
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -360,7 +365,7 @@ export{
 	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,addSmallSection,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
 	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers
-	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById
+	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor
 }
 
 function getJson (data) {
