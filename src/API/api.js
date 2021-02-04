@@ -154,7 +154,8 @@ var findAllByCategoryId = function(data){
 
 //管理员查询课件库所有的课件
 var getCoursewareAll = function(data){
-	return axios.get('/getCoursewareAll?perPage='+data.per_page+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name+'&category_id='+data.category_id+'&chapter_id='+data.chapter_id+'&section_id='+data.section_id)
+	//kind种类，type0内置课件  type1教师上传  name关键词  去除'&chapter_id='+data.chapter_id+'&section_id='+data.section_id+
+	return axios.get('/getCoursewareAll?perPage='+data.perPage+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name+'&category_id='+data.category_id+'&c_category_id='+data.c_category_id)
 }
 
 //管理员查询所有的镜像
