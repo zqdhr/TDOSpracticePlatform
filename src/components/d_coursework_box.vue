@@ -48,26 +48,26 @@
                 v-for="(item, index) in courseList"
                 :key="index"
               > 
-                <div class="title">{{ item.title }}
-                   <span> (5分) </span>
-                    <a class="btn-set pointer" @click="isSetTime=true"></a>
+                <div class="title">{{ item.content }}
+                   <span> ({{item.qualifiedScore}}分) </span>
+                    <a class="btn-set pointer" @click="setNewScore(item)"></a>
                
                 </div>
                 <div class="pic">
-                  <span><img :src="item.pic" /></span>
+                  <span><img :src="item.picUrl" /></span>
                 </div>
           
-                <p class="answer_box" v-if="item.type == 1">
+                <p class="answer_box" v-if="item.type == 0">
                   <span
                     class="s_radio"
-                    :class="{ 's_radio_answer': iindex+1 == item.answer }"
-                    v-for="(iitem, iindex) in item.chose"
+                    :class="{ 's_radio_answer': iitem == item.answer }"
+                    v-for="(iitem, iindex) in JSON.parse(item.choice)"
                     :key="iindex"
                   >
                   {{iitem}}
                   </span>
                 </p>
-                <p class="answer_box" v-if="item.type == 2">
+                <p class="answer_box" v-if="item.type == 1">
                   {{ item.answer }}
                 </p>
                 <!--选中的状态添加class   li_radio_h-->
@@ -82,7 +82,8 @@
         </el-scrollbar>
           </div>
              <div class="add_btn_box">
-              <a class="btnDefault pointer">确认</a>
+               <a class="btnDefault pointer" @click="addQuestionBack">保存</a>
+              <a class="btnDefault pointer" @click="addQuestionBack">确认</a>
             </div>
         </div>
         
@@ -128,7 +129,6 @@
               </el-date-picker>
            </div>
        </div>
-       
        <div slot="footer" class="dialog-footer" >
            <a class="btnDefault" @click="addCourseWork">确 认</a>
       </div>
@@ -177,24 +177,25 @@
             <div class="pic" v-if="item.picUrl!='' && item.picUrl">
               <span><img :src="item.picUrl" /></span>
             </div>
-            <p class="answer_box" v-if="item.type == 1">
+            <p class="answer_box" v-if="item.type == 0">
               <span
                 class="s_radio"
-                :class="{ s_radio_answer: iindex+1 == item.answer }"
-                v-for="(iitem, iindex) in item.chose"
+                :class="{ s_radio_answer: iitem == item.answer }"
+                v-for="(iitem, iindex) in JSON.parse(item.choice)"
                 :key="iindex"
               >
-               {{iitem}} 
+               {{iitem}}
               </span>
              
             </p>
-            <p class="answer_box" v-if="item.type == 0">{{ item.answer }}</p>
+            <p class="answer_box" v-if="item.type == 1">{{ item.answer }}</p>
             <!--选中的状态添加class   li_radio_h-->
             <span
               class="li_radio"
               :class="{ li_radio_h: item.checked }"
               @click="cheeckedList(2,item, index, item.checked)"
-            ></span>
+            >
+            </span>
           </li>
       
         </ul>
@@ -202,7 +203,7 @@
 
 
       <div  class="choseFooter clearfix">
-          <a class="btnDefault fl pointer" @click="showQuestionBank = false">确认</a>
+          <a class="btnDefault fl pointer" @click=" showQuestion">确认</a>
 
           <div class="tab-pagination fr">
             <el-pagination
@@ -221,10 +222,10 @@
     <el-dialog :visible.sync="isSetTime" width="500px">
        <div slot="title" class="dialog_header">设置该题目分数</div>
        <div class="setScope">
-         <el-input placeholder="请输入该题目的分数" ></el-input>
+         <el-input placeholder="请输入该题目的分数" v-model = 'questionScore'></el-input>
        </div>
        <div slot="footer" class="dialog-footer">
-           <a class="btnDefault" @click="isSetTime=false">确 认</a>
+           <a class="btnDefault" @click="setScore">确 认</a>
         
       </div>
     </el-dialog>
@@ -233,7 +234,7 @@
 <script>
 import courseNav from "@/components/left_courseNav.vue";
 import noData from "@/components/noData.vue";
-import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId} from '@/API/api';
+import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId,addQuestionBackAssignmentList} from '@/API/api';
 export default {
   data() {
     return {
@@ -268,11 +269,11 @@ export default {
       isDelete: false,
       type:'',//题目类型
       curPage:1,
-      perPage:10,
+      perPage:6,
       noData:true,//小节没有内容
       isSetTime:false,//设置题目时间弹窗
       sindex:'',
-      totalAllCourse:'',
+      totalAllCourse:1,
       isnewJobName:false,
       pickerOptions: {
          disabledDate(time) {
@@ -282,7 +283,10 @@ export default {
       homework:{
         name:'',//作业名称
         endTime:''//作业的截止时间
-      }
+      },
+      assignmentId:'',
+      questionScore:'',
+      updateScore:{}
     };
   },
   components: {
@@ -310,12 +314,11 @@ export default {
       obj.type = '';
       obj.content = '';
       obj.category_id = '';
-      obj.perPage = 10;
+      obj.perPage = 6;
       obj.page = 1;
       obj.assignment_id = '';
       getQuestionBackAll(obj).then(res=> {
         if(res.code==200){
-          console.log(res.data.list)
           that.totalAllCourse = res.data.total;
           for(let i =0;i<res.data.list.length;i++){
             res.data.list[i].picUrl = that.$store.state.pic_Url+ res.data.list[i].picUrl;
@@ -338,6 +341,7 @@ export default {
       addAssignment(JSON.stringify(obj)).then(res=> {
         if (res.code == 200) {
           alert("添加题目名称成功")
+          that.assignmentId = res.data.assignmentId;
           that.isnewJobName = false;
           that.isDate = true;
           that.getAssignmentBySectionId();
@@ -385,7 +389,7 @@ export default {
         
         if (!checked) {
             if (!(that.chooseList.indexOf(obj.id) != -1)) {
-            that.chooseList.push(obj.id);
+            that.chooseList.push(obj);
             }
             that.$set(that.all_courseList[index], "checked", true);
             
@@ -422,6 +426,55 @@ export default {
       let that = this;
       that.showQuestionBank = false;
     },
+    setNewScore(item){
+      let that = this
+      that.isSetTime=true
+      that.updateScore = item;
+    },
+    setScore(){
+      let that = this;
+      this.$set(that.updateScore, 'qualifiedScore', that.questionScore);
+      that.isSetTime=false
+    },
+    showQuestion(){
+      let that = this;
+      that.showQuestionBank = false;
+      console.log(that.chooseList)
+      that.courseList = that.chooseList;
+    },
+
+    addQuestionBack(){
+      alert("111")
+      let that = this;
+      let obj = {};
+      let list = [];
+      alert(that.assignmentId)
+      for(let i =0;i<that.chooseList.length;i++){
+        let objques = {};
+        objques.assignment_id = that.assignmentId;
+        objques.question_id = that.chooseList[i].id;
+        objques.score = that.chooseList[i].score;
+        list.push(objques)
+      }
+      for(let i =0;i<that.courseList.length;i++){
+        let objques = {};
+        objques.assignment_id = that.assignmentId;
+        objques.question_id = that.courseList[i].id;
+        objques.score = that.courseList[i].qualifiedScore;
+        list.push(objques)
+      }
+      obj.question_back_assignment_list = list;
+      console.log(JSON.stringify(obj))
+      addQuestionBackAssignmentList(JSON.stringify(obj)).then(res=> {
+        if(res.code==200){
+          alert("新增成功")
+        }else{
+          alert("新增失败")
+          this.$toast(res.message,2000)
+        }
+      })
+    },
+
     //选择分类
     selectCate(val) {
       console.log(val);
@@ -494,9 +547,12 @@ export default {
               that.status = 1;
               that.noData = true;
             } else {
+              alert("asd"+res.data.list[0].id)
               that.courseWorkTitle = res.data.list[0].name;
+              that.assignmentId = res.data.list[0].id;
               that.noData = false;
             }
+            that.courseList = res.data.list;
             alert(that.status)
             console.log(res.data.list)
             alert("查询题目成功")

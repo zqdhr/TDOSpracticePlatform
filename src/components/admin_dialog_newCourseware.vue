@@ -115,7 +115,6 @@ export default {
   created() {
     this.cate = this.options[0].value; //默认选中内置课件
     this.type = this.typeList[0].value; //课件类型默认选中全部
-    this.findParentCategory()
   },
   methods: {
 
@@ -166,6 +165,7 @@ export default {
       that.isnewFilterType = 0;
       that.isnewFilter = true;
       that.chooseList = [];
+      this.findParentCategory()
     },
   
     //选择分类

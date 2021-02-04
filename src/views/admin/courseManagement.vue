@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a class="icon_delete pointer" @click="isDelete=true" v-if="item.status==0"></a>
+                        <a class="icon_delete pointer" @click="isDeleteCourse(item)" v-if="item.status==0"></a>
                     </li>
                </ul>
               
@@ -94,7 +94,7 @@
     </div>
 </template>
 <script>
-import {getAdminUnpublishedCourseList,getExpirCourseList} from '@/API/api';
+import {getAdminUnpublishedCourseList,getExpirCourseList,removeCourseById} from '@/API/api';
 import nodata from '@/components/noData'
 export default {
     data(){
@@ -112,6 +112,7 @@ export default {
             isDelete:false,
             dataMess:'暂无课程列表',
             isHasData:true,//是否有数据 默认有数据
+            courseId:''
        }
     },
     components:{nodata},
@@ -151,6 +152,12 @@ export default {
                     this.$toast(res.message,2000)
                 }
             })
+        },
+        //删除课程
+        isDeleteCourse(item){
+            let that = this;
+            that.isDelete = true;
+            that.courseId = item;
         },
         getExpirCourseList(){
             let that = this;
@@ -207,6 +214,18 @@ export default {
         //课程确认删除    
         confirmDeleterCourse(){
             let that = this;
+            console.log(that.courseId)
+            let obj = {};
+            obj.course_id  = that.courseId.id
+            obj.owner_id = that.courseId.owner_id
+            removeCourseById(JSON.stringify(obj)).then(res=> {
+                if(res.code==200){
+                    that.isDelete = false;
+                    that.getAdminCourseList(sessionStorage.getItem("userId"),10,1,'');
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
         }
             
     },
