@@ -355,6 +355,10 @@ var removeCourseById =function(params){
 var insertExperimentRepor = function(data){
 	return axios.post('/insertExperimentRepor', data,{headers: {'Content-Type':'application/json'}})
 }
+//学生端判断是否已提交实验报告
+var hasExperimentReport = function(data){
+	return axios.get('/hasExperimentReport?experiment_id='+data.experiment_id+'&user_id='+data.user_id)
+}
 
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
@@ -365,7 +369,7 @@ export{
 	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,addSmallSection,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
 	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers
-	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor
+	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
 }
 
 function getJson (data) {

@@ -94,7 +94,7 @@
                                 @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
                             >
                          </quill-editor>
-                         <div class="btnbox"><a class="btnDefault" @click="insertExperimentRepor">确认上传</a></div>
+                         <div class="btnbox"><a class="btnDefault" @click="insertExperimentRepor(hasReport)">确认上传</a></div>
                     </div>
                     </template>
                 </el-scrollbar>
@@ -115,6 +115,20 @@
                 <a class="btnDefault" @click="isClose=false">取 消</a>
             </div>
             </el-dialog>
+            <!--再次上传实验报告弹出框-->
+              <el-dialog :visible.sync="isHas" width="600px">
+            <div slot="title" class="dialog_header">请注意!</div>
+            <div class="confirm_dialog_body">
+                <p class="dialog_mess">
+                <!--成功span的class为icon_success-->
+                <span class="span_icon icon_waring">实验报告已存在,确认覆盖上次提交的报告？</span>
+                </p>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <a class="btnDefault" @click="insertExperimentRepor(false)">确 认</a>
+                <a class="btnDefault" @click="isHas=false">取 消</a>
+            </div>
+            </el-dialog>
     </div>
 </template>
 <script>
@@ -127,7 +141,7 @@ import { quillEditor } from "vue-quill-editor"; //调用编辑器
  import html2canvas from 'html2canvas';
 
  import xterm from '@/components/Xterminal.vue'
- import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor} from "@/API/api";
+ import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor,hasExperimentReport} from "@/API/api";
 
 
 
@@ -178,7 +192,10 @@ export default {
             time:'',
             second:'',//用来记录当前倒计时的秒数
             isClose:false,
-            type:''//0是START,1是 STOP,2是 RESTART
+            type:'',//0是START,1是 STOP,2是 RESTART
+            hasReport:false,//是否已上传过实验报告
+            isHas:false
+
            
         }
     },
@@ -197,7 +214,10 @@ export default {
         that.experimentId=that.$route.query.experimentId
         that.courseId =that.$route.query.courseId
         that.createContainers(that.userid,that.experimentId,that.courseId)
-        that.findAllByType(that.experimentId)  
+        that.findAllByType(that.experimentId)
+        if (that.authority==0) {
+            that.hasExperimentReport()
+        }  
     },
     methods:{
         // vnc连接断开的回调函数
@@ -265,7 +285,7 @@ export default {
                 //重启实验
                 that.execContainer(2)
                 
-            }else {
+            }else if (that.type==1) {                     
                 if (that.authority==0) {
                    //学生关闭实验 
                    that.execContainer(1)
@@ -318,12 +338,19 @@ export default {
             })
         },
         //添加实验报告
-        insertExperimentRepor(){
+        insertExperimentRepor(hasReport){
             let that = this
-            let obj={}
             if (that.yourContent=='') {
                return that.$toast("请输入实验报告内容",3000) 
             }
+            console.log(hasReport)
+            if ( hasReport==true) {
+                 that.isHas=true           
+                return
+                
+            }
+            that.isHas=false
+            let obj={}
             obj.experiment_id = that.experimentId
             obj.user_id = that.userid
             obj.info = that.yourContent
@@ -331,8 +358,26 @@ export default {
                 if (res.code==200) {
                     that.$toast("实验报告上传成功",3000)
                     that.yourContent='' 
+                    that.hasReport=true
                 } else {
                     that.$toast(res.message,3000) 
+                }
+            })
+
+        },
+        //判断是否已提交实验报告
+        hasExperimentReport(){
+            let that = this
+            let obj ={}
+            obj.experiment_id = that.experimentId
+            obj.user_id =  that.userid
+            hasExperimentReport(obj).then(res=>{
+                   console.log(res)
+                if (res.code==200) {
+                    console.log(res)
+                    that.hasReport=true
+                } else {
+                     that.$toast(res.message,3000) 
                 }
             })
 
