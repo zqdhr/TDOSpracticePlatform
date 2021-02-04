@@ -20,6 +20,7 @@
                             :options="categoryOptions"
                             :props="{ value: 'id', label: 'name', children: 'cates' }"
                             @change="handleChange"
+                         
                             clearable
                     >
                     </el-cascader>
@@ -139,6 +140,7 @@ export default {
         }
       })
     },
+   
     //根据一级分类id查询二级分类
     findChildCategory(val){
       let that = this;
@@ -205,6 +207,7 @@ export default {
       //  console.log(value.length==1?value[0]:value[1]);
       that.addCategoryItem = val;
       that.addCategoryID = val.length == 1 ? val[0] : val[1];
+      
     },
   
    
@@ -263,7 +266,7 @@ export default {
           that.time = res.data.time;
           let obj = {};
           obj.name = that.files[0].file.name;
-          obj.type = 0;
+          obj.type = that.extension == 'pdf'?2:1;
           obj.kind = that.extension == 'pdf' ?1 : 0
           obj.url = that.picUrl;
           obj.duration = that.time;
