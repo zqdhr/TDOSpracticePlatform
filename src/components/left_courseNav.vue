@@ -5,14 +5,14 @@
            <ul class="tree_ul">
               <li class="tree_li" v-for="(item,index) in chapters" :key="index">
                   <div class="p-name" :class="{'arrow':!item.show,'arrow_up':item.show}" @click="showSection(item,item.show,item.id)">
-                      <p class="textline1">{{index+1}}、{{item.name}}({{item.num}})</p>
+                      <p class="textline1">{{index+1}}、{{item.name}}</p>
                  </div>
                    
                     <el-collapse-transition>
                         <ul class="children_ul" v-show="item.show">
                             <li v-for="(iitem,iindex) in item.sections" :key="iindex" class="pointer">
                                 <div class=" children_name" :class="{'arrow_up':iitem.id ==sectionId}" @click="showSubsection(index,iitem,iitem.show,item.id,iitem.id)">
-                                    <p class="textline1">{{iitem.name}}({{iitem.num}})</p>
+                                    <p class="textline1">{{iitem.name}}</p>
                                 </div>
                                <el-collapse-transition>
                                 <ul class="subSection_ul" v-if="iitem.subsection && iitem.show">
@@ -67,6 +67,7 @@ export default {
                     that.courseName = res.data.name;
                     res.data.chapters.sort(this.compare1('order'))
                     that.chapters = res.data.chapters;
+                    console.log(that.chapters)
                 }else{
                     this.$toast(res.message,2000)
                 }

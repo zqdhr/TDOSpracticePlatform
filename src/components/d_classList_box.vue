@@ -4,7 +4,7 @@
    <div class="classList_box">
         <div class="classList_div">
             <div class="classList_intro">
-                <span class="s1">为已选择班级</span><span class="s2">为未选择班级</span><span class="s3">为已编辑班级</span>
+                <span class="s1">为未选择班级</span><span class="s2">为已选择班级</span><span class="s3">为已编辑班级</span>
             </div>
             <ul class="classList_ul clearfix">
                 <li v-for="(item,index) in classList" :key="index">                               

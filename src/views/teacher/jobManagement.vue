@@ -122,7 +122,6 @@
       </div>
     </div>
 
-
     <!--点击确定按钮弹出确认框-->
     <el-dialog :visible.sync="isCorrectJob" width="600px" top="250px">
       <div slot="title" class="dialog_header"></div>
@@ -163,7 +162,7 @@
               >
             </div>
             <div class="pic" v-if="item.picUrl.length > 0">
-              <span><img :src="item.picUrl" /></span>
+              <span><img :src="pic_Url + item.picUrl" /></span>
             </div>
             <p class="answer_box" v-if="item.type == 0">
               <span
@@ -192,7 +191,7 @@
                   oninput="value=value.replace(/[^\d]/g, '')"
                   v-if="isReport_num == 0"
                   type="text"
-                  v-model="score"
+                  v-model="item.score"
                   placeholder="请输入本题分数"
                 />
               </div>
@@ -245,40 +244,13 @@ export default {
       level1Name: {}, //选中课程对象
 
       inplaceholder: "请输入学号/姓名/作业名称",
-  
+
       isHomework: false,
       isReport_num: 0,
       //全部题目
-      all_courseList: [
-        {
-          id: "1",
-          content: "阿青是一个什么样的女人?",
-          type: 0,
-          choice: '["钟灵毓秀","沉鱼落雁","国色天香","坏女人"]',
-          picUrl: "",
-          answer: "坏女人",
-          modelId: "1",
-          categoryId: "1",
-          studentAnswer: "国色天香",
-          score: 0,
-          totalScore: 10,
-        },
-        {
-          id: "2",
-          content: "简单明了的阐述下刚勇为什么那么刚。",
-          type: 1,
-          choice: null,
-          picUrl: "",
-          answer: "因为他是刚子。",
-          modelId: "1",
-          categoryId: "1",
-          studentAnswer: "烤鸭吃多了。",
-          score: 0,
-          totalScore: 20,
-        },
-      ],
-      score: 0, //得分
+      all_courseList: [],
       momentJobMod: null,
+      pic_Url: "",
     };
   },
   filters: {
@@ -292,6 +264,10 @@ export default {
       }
       return str;
     },
+  },
+  mounted() {
+    let that = this;
+    that.pic_Url = that.$store.state.pic_Url;
   },
   created() {
     let that = this;
@@ -328,7 +304,7 @@ export default {
       that.isHomework = true;
       that.isReport_num = num;
       that.momentJobMod = item;
-      // that.getStudentJobDetail(item);
+      that.getStudentJobDetail(item);
     },
     //搜索事件
     searchAction() {
@@ -339,16 +315,14 @@ export default {
     changeScore(val) {
       let that = this;
 
-      if (that.score < 0) {
-        that.score = 0;
+      if (val.score < 0) {
+        val.score = 0;
         return that.$toast("分数不能小于0", 3000);
       }
-      if (that.score > val.totalScore) {
-        that.score = 0;
+      if (val.score > val.totalScore) {
+        val.score = 0;
         return that.$toast("分数不能大于" + val.totalScore, 3000);
       }
-
-      val.score = that.score;
     },
     correctJob() {
       let that = this;
@@ -379,17 +353,22 @@ export default {
       // obj.student_score_list = JSON.stringify(answerArr);
       obj.student_score_list = answerArr;
 
-      submitCorrectJob(obj).then((res) => {
-        console.log(JSON.stringify(res));
-        if (res.code == 200) {
-          that.isHomework = false;
-          that.isCorrectJob = false;
-          that.getStudentJobList(0);
-          that.$toast("作业批改成功", 3000);
-        } else {
-          that.$toast(res.message, 3000);
-        }
-      });
+// alert(JSON.stringify(obj));
+      submitCorrectJob(obj)
+        .then((res) => {
+          console.log(JSON.stringify(res));
+          if (res.code == 200) {
+            that.isHomework = false;
+            that.isCorrectJob = false;
+            that.getStudentJobList(0);
+            that.$toast("作业批改成功", 3000);
+          } else {
+            that.$toast(res.message, 3000);
+          }
+        })
+        .catch((error) => {
+          // alert(JSON.stringify(error));
+        });
     },
 
     //课程列表
@@ -452,11 +431,11 @@ export default {
       obj.startTime = "";
       obj.endTime = "";
 
-      alert(JSON.stringify(obj));
+      // alert(JSON.stringify(obj));
 
       getStudentJobList(obj)
         .then((res) => {
-          alert(JSON.stringify(res));
+          // alert(JSON.stringify(res));
           that.allJob_Nub = res.data.total;
           if (res.code == 200) {
             that.jobList = res.data.list;
@@ -465,7 +444,7 @@ export default {
           }
         })
         .catch((error) => {
-          alert(JSON.stringify(error));
+          // alert(JSON.stringify(error));
         });
     },
   },

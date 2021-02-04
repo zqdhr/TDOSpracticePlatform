@@ -135,10 +135,10 @@ export default {
      created(){
         this.cate = this.options[0].value;//默认选中内置课件
         this.type = this.typeList[0].value;//课件类型默认选中全部
+         this.getAllCoursewareByCourseId();
     },
     mounted(){
         let that = this;
-        that.getAllCoursewareByCourseId();
     },
     methods:{
         getCoursewareByCourseId(perPage,page,kind,type){
@@ -151,7 +151,6 @@ export default {
             obj.page = page;
             getCoursewareByCourseId(obj).then(res=> {
                 if(res.code==200){
-                    console.log(res.data.list)
                     that.total = res.data.total;
                     res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList = res.data.list;
@@ -162,6 +161,7 @@ export default {
         },
         getAllCoursewareByCourseId(){
             let that = this;
+            alert(that.perPage)
             that.getCoursewareByCourseId(that.perPage,1,0,'',);
         },
         getCoursewareByChapterId(chapterId,kind,type,perPage,page){
@@ -202,8 +202,6 @@ export default {
         },
         getData(data){
             let that = this;
-            console.log(data.cindex)
-            console.log(data.sindex)
             that.cindex = data.cindex;
             that.sindex = data.sindex;
             if(data.sindex == ""){

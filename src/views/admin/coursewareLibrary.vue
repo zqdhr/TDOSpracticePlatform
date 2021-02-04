@@ -209,7 +209,9 @@ export default {
                 type:0 ,//0内置课件 1教师上传
                 category_id:'',//自定义种类
                 c_category_id:'', //自定义子种类
-                name:'' //搜索的关键词
+                name:'', //搜索的关键词
+                chapter_id:'',
+                section_id:''
             },
             showvideo:false, //是否显示详情
             show_name:'',

@@ -200,9 +200,9 @@
         <div class="confirm_dialog_body"></div>
         <div slot="footer" class="dialog-footer">
           <a class="btnDefault" @click="isNewType = 1">批量上传</a>
-          <a class="btnDefault" @click="singleUpload">单个上传</a>
+          <a class="btnDefault" @click="singleUpload()">单个上传</a>
           <p class="dialog-mess">
-            （点击此处下载“<a @click="downloadMB()">批量上传</a>”模板）
+            （<a @click="downloadMB()">点击此处</a>下载“批量上传”模板）
           </p>
         </div>
       </template>
@@ -233,7 +233,9 @@
           </div>
         </div>
         <div slot="footer" class="dialog-footer">
-          <a class="btnDefault pointer" @click="confimBatchUpload">确认上传{{uploadUrl}}</a>
+          <a class="btnDefault pointer" @click="confimBatchUpload"
+            >确认上传{{ uploadUrl }}</a
+          >
         </div>
       </template>
 
@@ -387,7 +389,6 @@ import {
 
 import { mapState } from "vuex";
 
-
 export default {
   data() {
     return {
@@ -437,7 +438,7 @@ export default {
       addCategoryItem: {}, //分类对象
       pic_upload_url: "",
       xlsx_upload_url: "",
-      uploadUrl:"",
+      uploadUrl: "",
     };
   },
   components: {
@@ -445,13 +446,11 @@ export default {
     FileUpload,
   },
 
-
   mounted() {
     let that = this;
     that.uploadUrl = that.$store.state.uploadUrlExcel;
     console.log(that.uploadUrl);
     that.getQuestionBackAll();
-  
   },
   created() {
     let that = this;
@@ -565,7 +564,7 @@ export default {
 
       obj.perPage = that.perPage;
       obj.page = that.curPage;
-      obj.assignment_id = '';
+      obj.assignment_id = "";
 
       // alert(JSON.stringify(obj));
       getQuestionBackAll(obj).then((res) => {
@@ -611,7 +610,7 @@ export default {
             this.$message.success("文件上传成功");
             that.isNew = false;
           } else {
-                        // alert(222)
+            // alert(222)
 
             this.$message.error("文件上传失败");
           }
@@ -629,7 +628,6 @@ export default {
         // remove
         console.log("remove", oldFile);
       }
-
     },
     //上传前的钩子函数
     inputFilter1(newFile, oldFile, prevent) {
@@ -675,8 +673,6 @@ export default {
         }
       }
     },
-
-
 
     //上传的回调函数，每次上传回调都不一样
     inputFile1(newFile, oldFile) {
@@ -762,8 +758,18 @@ export default {
       let that = this;
       that.isNewType = 2;
       that.choseQuestionType = that.questOptions[0].value;
+
       that.files1 = [];
       that.pic_upload_url = "";
+      let obj = {
+        title: "",
+        answer: "",
+        options: [
+          { value: 1, label: "" },
+          { value: 2, label: "" },
+        ],
+      };
+      that.question = obj;
     },
     //点击图片
     getPreview(val) {
@@ -817,9 +823,8 @@ export default {
     //批量上传确认
     confimBatchUpload() {
       let that = this;
-  
+
       this.$refs.upload1.active = true;
-      
     },
     //弹出框内，选择题目类型
     dialogselectType(val) {
@@ -850,7 +855,7 @@ export default {
         for (let i = 0; i < that.question.options.length; i++) {
           let aa = that.question.options[i];
           if (aa.label == "") {
-            return that.$toast("题目选项答案存在空", 3000);
+            return that.$toast("题目选项存在空", 3000);
           }
           tmpArr.push(aa.label);
         }

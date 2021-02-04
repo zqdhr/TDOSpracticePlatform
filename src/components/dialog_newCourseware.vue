@@ -220,17 +220,18 @@ export default {
   created() {
     this.cate = this.options[0].value; //默认选中内置课件
     this.type = this.typeList[0].value; //课件类型默认选中全部
+
+    this.findParentCategory();
   },
   mounted() {
     let that = this;
-    that.getCoursewareAll();
-    that.findParentCategory();
+
   },
   methods: {
     //课件列表
     getCoursewareAll() {
       let that = this;
-      that.getCourseAll(10, 1, '', '', '', '', '', '');
+      that.findCourseWareAll(that.perPage, 1, '', '', '', '', '', '','');
     },
     //自定义父级分类
     findParentCategory() {
@@ -277,10 +278,10 @@ export default {
       that.cateId = value.length==1?value[0]:value[1]
     },
 
-    getCourseAll(per_page, page, kind, type, name, category_id, chapter_id, section_id) {
+    findCourseWareAll(per_page, page, kind, type, name, category_id, chapter_id, section_id,c_category_id) {
       let that = this;
       let obj = {};
-      obj.per_page = per_page;
+      obj.perPage = per_page;
       obj.page = page;
       obj.kind = kind;
       obj.type = type;
@@ -289,6 +290,7 @@ export default {
       obj.category_id = category_id;
       obj.chapter_id = chapter_id;
       obj.section_id = section_id;
+      obj.c_category_id = c_category_id;
       getCoursewareAll(obj).then((res) => {
         if (res.code == 200) {
           that.all_experimentList = res.data.list;
@@ -307,6 +309,7 @@ export default {
       that.chooseList = [];
       that.sindex = sid
       that.cindex = cid
+      that.getCoursewareAll();
     },
     //点击课件库选择
     choseLibray() {
@@ -331,7 +334,7 @@ export default {
       let that = this;
       console.log(that.searchText)
       that.type = that.type == '2' ? '' : that.type;
-      that.getCourseAll(10, 1, that.type, that.cate, that.searchText, that.category_id, '', '');
+      that.findCourseWareAll(10, 1, that.type, that.cate, that.searchText, that.category_id, '', '');
     },
     //本地上传确认上传
     confirmLocalUpload() {
@@ -391,7 +394,7 @@ export default {
     handleCurrentChange1(val) {
       let that = this
       console.log(`当前页: ${val}`);
-      that.getCourseAll(10, val, that.type, that.cate, that.searchText, that.category_id, '', '');
+      that.findCourseWareAll(10, val, that.type, that.cate, that.searchText, that.category_id, '', '');
     },
     //数组新增checked元素
     array_addChecked(array) {
@@ -480,7 +483,8 @@ export default {
     upload(file) {
       let that = this
       let obj = new FormData()
-      obj.append('type', 0)
+      let type = that.extension == 'pdf' ?2 : 1
+      obj.append('type', type)
       obj.append('file', file)
       alert(that.files[0].file.name)
       upload(obj).then(res => {
@@ -491,7 +495,7 @@ export default {
           let obj = {};
           obj.name = that.files[0].file.name;
           obj.type = 0;
-          obj.kind = that.extension == 'pdf' ?1 : 0
+          obj.kind = type;
           obj.url = that.picUrl;
           obj.duration = that.time;
           obj.size = that.size;

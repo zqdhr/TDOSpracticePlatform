@@ -155,7 +155,7 @@ var findAllByCategoryId = function(data){
 //管理员查询课件库所有的课件
 var getCoursewareAll = function(data){
 	//kind种类，type0内置课件  type1教师上传  name关键词  去除'&chapter_id='+data.chapter_id+'&section_id='+data.section_id+
-	return axios.get('/getCoursewareAll?perPage='+data.perPage+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name+'&category_id='+data.category_id+'&c_category_id='+data.c_category_id)
+	return axios.get('/getCoursewareAll?perPage='+data.perPage+'&page='+data.page+'&kind='+data.kind+'&type='+data.type+'&name='+data.name+'&category_id='+data.category_id+'&c_category_id='+data.c_category_id+'&chapter_id='+data.chapter_id+'&section_id='+data.section_id)
 }
 
 //管理员查询所有的镜像
@@ -191,7 +191,7 @@ var getAdminCourseByClassId = function(data){
 
 //管理员新增镜像
 var addImage = function(data){
-	return axios.get('/addImage?imageName='+data.imageName+'&introduction='+data.introduction)
+	return axios.get('/addImage?imageName='+data.imageName+'&introduction='+data.introduction+'&kind='+data.kind+'&url='+data.url)
 }
 
 
@@ -328,14 +328,12 @@ var addAssignment = function(data){
 
 //学生获取作业列表
 var student_getJobList =function(data){
-    
     return axios.get('/getStudentAssignment?userId='+data.userId+ '&perPage=' + data.perPage+ '&page=' + data.page+'&courseId=' + data.courseId+'&chapterId=' + data.chapterId+'&sectionId=' + data.sectionId+'&status=' + data.status+'&name=' + data.name)
 }
 
 
 //学生获取作业详情
 var student_getJobDetail =function(data){
-    
     return axios.get('/getStudentAnswerByAssignment?userId='+data.userId+ '&perPage=' + data.perPage+ '&page=' + data.page+'&assignmentId=' + data.assignmentId)
 }
 
@@ -355,6 +353,30 @@ var removeCourseById =function(params){
 var insertExperimentRepor = function(data){
 	return axios.post('/insertExperimentRepor', data,{headers: {'Content-Type':'application/json'}})
 }
+//学生端判断是否已提交实验报告
+var hasExperimentReport = function(data){
+	return axios.get('/hasExperimentReport?experiment_id='+data.experiment_id+'&user_id='+data.user_id)
+}
+
+//管理员端删除课程
+var unbindExperiments =function(data){
+	return axios.post('/unbindExperiments',data, { headers: { 'Content-Type': 'application/json' } })
+}
+
+//管理员端查询课程下的作业名称
+var getAssignmentNameBySectionId =function(data){
+	return axios.get('/getAssignmentNameBySectionId?sectionId='+data.sectionId)
+}
+
+//学生保存作业
+var stduentSaveHomework = function(data){
+	return axios.post('/addStudentAnswerList', data,{headers: {'Content-Type':'application/json'}})
+}
+
+//学生提交作业
+var stduentSubmitHomework = function(data){
+	return axios.post('/modifyStudentAnswerStatusById', data,{headers: {'Content-Type':'application/json'}})
+}
 
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
@@ -365,7 +387,8 @@ export{
 	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,addSmallSection,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
 	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers
-	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor
+	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
+	,unbindExperiments,getAssignmentNameBySectionId
 }
 
 function getJson (data) {

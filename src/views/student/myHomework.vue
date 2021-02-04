@@ -81,7 +81,7 @@
             </div>
             <div class="d3 d18">
               <div class="cell">
-                {{ item.score == -1 ? "待老师批阅" : item.score+"分" }}
+                {{ item.score == -1 ? "待老师批阅" : item.score + "分" }}
               </div>
             </div>
             <div class="d4 d14">
@@ -95,14 +95,15 @@
             <div class="d5 d14">
               <div class="cell">
                 <div class="cell">
-                  <a
-                    class="pointer tab_atn"
-                    @click="showDetail(item)"
-                    >查看</a
-                  >
+                  <a class="pointer tab_atn" @click="showDetail(item)">查看</a>
                   <!--这两个属性只有在未提交的时候显示-->
                   <span class="space-line" v-if="item.status != 1"></span>
-                  <a class="pointer tab_atn" v-if="item.status != 1">提交</a>
+                  <a
+                    class="pointer tab_atn"
+                    @click="submitHomework(item)"
+                    v-if="item.status != 1"
+                    >提交</a
+                  >
                 </div>
               </div>
             </div>
@@ -122,13 +123,30 @@
       </div>
     </div>
 
+    <!--点击确定按钮弹出确认框-->
+    <el-dialog :visible.sync="isSubmitJob" width="600px">
+      <div slot="title" class="dialog_header"></div>
+      <div class="confirm_dialog_body">
+        <p class="dialog_mess">
+          <!--成功span的class为icon_success-->
+          <span class="span_icon icon_success">是否已经完成作业？</span>
+        </p>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <a class="btnDefault" @click="submitHomeworkConfirm()">确 认</a>
+        <a class="btnDefault" @click="isSubmitJob = false">取 消</a>
+      </div>
+    </el-dialog>
+
     <el-dialog
       width="1100px"
       :visible.sync="isHomework"
       class="report_detail_dialog homeWork"
       :class="{ dialog_submitted_noreview: curStatus == 2 || curStatus == 1 }"
     >
-      <div slot="title" class="dialog_header">xxxxx实验(作业)---共100分</div>
+      <div slot="title" class="dialog_header">
+        {{ momentJob.assignmentName }}(作业)---共{{ totalScore }}分
+      </div>
       <div class="reportMain course_list">
         <ul class="choice_question">
           <li
@@ -137,67 +155,79 @@
             :key="index"
           >
             <div class="title">
-              {{ item.title }}<span class="colorRed">（本题分数：20分）</span>
+              {{ index + 1 }}. {{ item.content
+              }}<span class="colorRed"
+                >（本题分数：{{ item.totalScore }}分）</span
+              >
             </div>
-            <div class="pic">
-              <span><img src="../../assets/pic/course.png" /></span>
+
+            <div class="pic" v-if="item.picUrl.length > 0">
+              <span><img :src="pic_Url + item.picUrl" /></span>
             </div>
-            <p class="answer_box" v-if="item.type == 1">
+
+            <p class="answer_box" v-if="item.type == 0">
               <span
                 class="s_radio"
-                :class="{ s_radio_answer: iindex + 1 == item.answer }"
-                v-for="(iitem, iindex) in item.chose"
+                :class="{ s_radio_answer: iitem == item.studentAnswer }"
+                v-for="(iitem, iindex) in JSON.parse(item.choice)"
                 :key="iindex"
-                @click="choseanswer(index, iindex)"
+                @click="choseanswer(item, iindex)"
               >
                 {{ iitem }}
               </span>
             </p>
-            <div class="answer-in" v-if="item.type == 2 && curStatus == 1">
+            <div class="answer-in" v-if="item.type == 1 && curStatus == 0">
               <el-input
                 type="textarea"
                 placeholder="请输入答案"
                 :rows="3"
-                v-model="item.answer"
+                v-model="item.studentAnswer"
               />
             </div>
 
             <p
               class="answer_box Short-answer p_text"
-              v-if="item.type == 2 && curStatus != 1"
+              v-if="item.type == 1 && curStatus != 0"
             >
-              作答：{{ item.answer }}
+              作答：{{ item.studentAnswer }}
             </p>
 
             <p
               class="answer_box colorRed p_correct_text"
-              v-if="item.type == 2 && item.correctAnswer != ''"
+              v-if="curStatus == 2"
             >
-              正确答案：{{ item.correctAnswer }}
+              正确答案：{{ item.answer }}
             </p>
 
-            <div
-              class="score_box"
-              v-if="item.type == 2 && item.correctAnswer != ''"
-            >
-              本题得分：<span>10</span>
+            <div class="score_box" v-if="curStatus == 2">
+              本题得分：<span>{{item.score}}</span>
             </div>
             <!--选中的状态添加class   li_radio_h-->
             <span
               class="li_radio"
-              :class="{ li_radio_correct: 1 == 0, li_radio_error: 1 == 1 }"
+              v-if="item.type == 0 && curStatus == 2"
+              :class="{
+                li_radio_correct: item.studentAnswer == item.answer,
+                li_radio_error: item.studentAnswer != item.answer,
+              }"
             ></span>
           </li>
         </ul>
       </div>
-      <div class="report_detail_btnbox" v-if="curStatus == 1">
-        <a class="pointer btnDefault">确认</a>
+      <div class="report_detail_btnbox" v-if="curStatus == 0">
+        <a class="pointer btnDefault" @click="confirm()">保存</a>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { student_getCourseList, student_getJobList,student_getJobDetail } from "@/API/api";
+import {
+  student_getCourseList,
+  student_getJobList,
+  student_getJobDetail,
+  stduentSaveHomework,
+  stduentSubmitHomework,
+} from "@/API/api";
 
 export default {
   created() {
@@ -207,7 +237,8 @@ export default {
   },
   data() {
     return {
-      totalNum:0,
+      isSubmitJob: false,
+      totalNum: 0,
       perPage: 10, //用户列表每页条数
       curPage: 1,
       jobList: [],
@@ -228,8 +259,11 @@ export default {
       score: 6, //得分
 
       isHomework: false,
+      pic_Url: "",
 
-      curStatus: 0, //当前的作业状态
+      curStatus: 0, //0-->未提交可编辑   1-->已提交未批改   2-->已提交已批改
+      totalScore: 0, //题目总分
+      momentJob: {},
     };
   },
   filters: {
@@ -244,6 +278,12 @@ export default {
       return str;
     },
   },
+
+  mounted() {
+    let that = this;
+    that.pic_Url = that.$store.state.pic_Url;
+  },
+
   methods: {
     //获取学生作业
     student_getJobList(val) {
@@ -251,31 +291,32 @@ export default {
       let obj = {};
       obj.perPage = that.perPage;
       obj.page = 1;
-      obj.courseId = "13d0567f-a196-43ab-a7ac-d72f5b2915e5";//that.level1Name;
+      obj.courseId = that.level1Name; //"13d0567f-a196-43ab-a7ac-d72f5b2915e5";
       obj.userId = sessionStorage.getItem("userId");
       obj.chapterId = "";
       obj.sectionId = "";
       obj.name = "";
-      obj.status =  that.state == "-1"?"":that.state;
+      obj.status = that.state == "-1" ? "" : that.state;
 
+      // alert(JSON.stringify(obj));
       student_getJobList(obj)
         .then((res) => {
           if (res.code == 200) {
-              that.totalNum = res.data.total;
-              that.jobList = res.data.list;
+            that.totalNum = res.data.total;
+            that.jobList = res.data.list;
             // alert(JSON.stringify(res));
           } else {
             that.$toast(res.message, 3000);
           }
         })
         .catch((err) => {
-            // alert(JSON.stringify(err));
+          // alert(JSON.stringify(err));
         });
     },
 
     //获取学生作业详情
     student_getJobDetail(val) {
-        alert(JSON.stringify(val))
+      // alert(JSON.stringify(val))
       let that = this;
       let obj = {};
       obj.perPage = 100;
@@ -286,13 +327,22 @@ export default {
       student_getJobDetail(obj)
         .then((res) => {
           if (res.code == 200) {
-            alert(JSON.stringify(res));
+            // alert(JSON.stringify(res))
+
+            that.all_courseList = res.data.list;
+            that.totalScore = 0;
+            for (let i = 0; i < that.all_courseList.length; i++) {
+              let dic = that.all_courseList[i];
+
+              that.totalScore = that.totalScore + dic.totalScore;
+            }
+            // console.log(JSON.stringify(res));
           } else {
             that.$toast(res.message, 3000);
           }
         })
         .catch((err) => {
-            // alert(JSON.stringify(err));
+          // alert(JSON.stringify(err));
         });
     },
     //获取课程
@@ -310,7 +360,7 @@ export default {
         .then((res) => {
           if (res.code == 200) {
             that.level1List = res.data.list;
-            //   alert(JSON.stringify(res));
+            // console.log(JSON.stringify(res));
           } else {
             that.$toast(res.message, 3000);
           }
@@ -342,88 +392,98 @@ export default {
       //status:0 未提交 state:1 已提交
       //score:-1 待老师批阅  >=0老师已批阅
       let that = this;
+
+      that.momentJob = item;
+
+      if (item.status == 0) {
+        that.curStatus = 0;
+      } else if (item.score == -1) {
+        that.curStatus = 1;
+      } else {
+        that.curStatus = 2;
+      }
+
       that.isHomework = true;
       that.student_getJobDetail(item);
-    //   //老师已批阅
-    //   if (state == 1 && score == 1) {
-    //     that.all_courseList = [
-    //       {
-    //         id: "1",
-    //         title: "1.题目文本题目文本题目文本题目文本题目?",
-    //         type: 1,
-    //         chose: ["选项111", "选项222", "选项3333", "选项4444"],
-    //         pic: "",
-    //         answer: 2,
-    //       },
-    //       {
-    //         id: "2",
-    //         title: "1.题目文本题目文本题目文本题目文本题目?",
-    //         type: 2,
-    //         pic: "",
-    //         answer: "题目文本题目文本题目文本题目文本题目",
-    //         correctAnswer: "你猜我答题对不对",
-    //       },
-    //     ];
-    //     that.curStatus = 3; //已提交已批阅
-    //   }
-    //   //老师未批阅
-    //   if (state == 1 && score == 0) {
-    //     that.curStatus = 2; //已提交待批阅
-    //     that.all_courseList = [
-    //       {
-    //         id: "1",
-    //         title: "1.题目文本题目文本题目文本题目文本题目?",
-    //         type: 1,
-    //         chose: ["选项111", "选项222", "选项3333", "选项4444"],
-    //         pic: "",
-    //         answer: "2",
-    //         correctAnswer: "",
-    //       },
-    //       {
-    //         id: "2",
-    //         title: "1.题目文本题目文本题目文本题目文本题目?",
-    //         type: 2,
-    //         pic: "",
-    //         answer: "ffffffff",
-    //         correctAnswer: "",
-    //       },
-    //     ];
-    //   }
-    //   if (state == 0) {
-    //     that.curStatus = 1; //已提交待批阅
-    //     that.all_courseList = [
-    //       {
-    //         id: "1",
-    //         title: "1.题目文本题目文本题目文本题目文本题目?",
-    //         type: 1,
-    //         chose: ["选项111", "选项222", "选项3333", "选项4444"],
-    //         pic: "",
-    //         answer: "",
-    //         correctAnswer: "",
-    //       },
-    //       {
-    //         id: "2",
-    //         title: "1.题目文本题目文本题目文本题目文本题目?",
-    //         type: 2,
-    //         pic: "",
-    //         answer: "",
-    //         correctAnswer: "",
-    //       },
-    //     ];
-    //   }
-    //   that.curStatus = 2;
-
-},
+    },
     //未提交可以选中
-    choseanswer(index, iindex) {
-      console.log("index" + index);
-      console.log("iindex" + iindex);
+    choseanswer(item, iindex) {
       let that = this;
-      if (that.curStatus != 1) {
-        return false;
-      } else {
-        that.$set(that.all_courseList[index], "answer", iindex + 1);
+      if (that.curStatus == 0) {
+        let aswArr = JSON.parse(item.choice);
+        that.$set(item, "studentAnswer", aswArr[iindex]);
       }
+    },
+    //提交作业确认
+    submitHomework(item) {
+      let that = this;
+      that.momentJob = item;
+      that.isSubmitJob = true;
+    },
+    //提交作业
+    submitHomeworkConfirm() {
+      let that = this;
+
+      let obj = {};
+      obj.assignment_id = that.momentJob.assignmentId;
+      obj.user_id = sessionStorage.getItem("userId");
+
+      stduentSubmitHomework(obj)
+        .then((res) => {
+          // alert(JSON.stringify(res));
+          if (res.code == 200) {
+            that.$toast("作业提交成功", 3000);
+            that.isSubmitJob = false;
+            that.student_getJobList(0);
+          } else {
+            that.$toast(res.message, 3000);
+          }
+        })
+        .catch((ero) => {
+          // alert(JSON.stringify(ero));
+        });
+    },
+    confirm(val) {
+      let that = this;
+
+      let obj = {};
+      let answerArr = [];
+      for (var i = 0; i < that.all_courseList.length; i++) {
+        let tmpDic = that.all_courseList[i];
+        let dic = {};
+        dic.question_id = tmpDic.id;
+        dic.assignment_id = that.momentJob.assignmentId;
+        dic.user_id = sessionStorage.getItem("userId");
+        if (tmpDic.type == 0) {
+          if (tmpDic.studentAnswer == tmpDic.answer) {
+            dic.score = tmpDic.totalScore;
+          } else {
+            dic.score = 0;
+          }
+        } else {
+          dic.score = 0;
+        }
+        dic.answer = tmpDic.studentAnswer;
+        answerArr.push(dic);
+      }
+      // obj.student_score_list = JSON.stringify(answerArr);
+      obj.student_answer_list = answerArr;
+
+      // alert(JSON.stringify(obj));
+
+      stduentSaveHomework(obj)
+        .then((res) => {
+          // alert(JSON.stringify(res));
+          if (res.code == 200) {
+            that.$toast("作业保存成功", 3000);
+            that.isHomework = false;
+          } else {
+            that.$toast(res.message, 3000);
+          }
+        })
+        .catch((ero) => {
+          alert(JSON.stringify(ero));
+        });
     },
   },
 };
@@ -467,9 +527,10 @@ export default {
       }
     }
   }
-  .answer-in {
-    padding: 10px 0;
-    background: inherit;
-  }
+}
+.answer-in {
+  padding: 10px 0;
+  margin-top: 10px;
+  background: inherit;
 }
 </style>

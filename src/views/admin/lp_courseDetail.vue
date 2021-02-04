@@ -195,7 +195,6 @@ export default {
             let that = this;
             array.sort(this.compare('order'))
             for(var i=0;i<array.length;i++){
-                alert(array.length)
                 this.$set(array[i], 'show', false);
                 if(i == array.length-1){
                     alert(i)

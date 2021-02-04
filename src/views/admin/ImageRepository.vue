@@ -40,8 +40,8 @@
             <template slot-scope="scope">
               <span>{{
                 scope.row.type == 0
-                  ? "Docker"
-                  : "Docker"
+                  ? "命令行"
+                  : "图形化界面"
               }}</span>
             </template>
           </el-table-column>
@@ -101,6 +101,14 @@
                  <el-form-item label="镜像简介:">
                     <el-input v-model="Mirroring.introduction" type="textarea"></el-input>
                 </el-form-item>
+              <el-form-item label="输入类型:">
+              <el-select v-model="type" @change="selectKind" >
+                  <el-option v-for="item in optionsKind" :key="item.value" :label="item.label" :value="item.value" > </el-option>
+              </el-select>
+              </el-form-item>
+                  <el-form-item label="镜像路径:">
+                      <el-input v-model="Mirroring.url" type="textarea"></el-input>
+                  </el-form-item>
                 <!--
                 <el-form-item label="">
                     <ul class="fileList_name">
@@ -151,7 +159,8 @@ import nodata from '@/components/noData'
 export default {
   data() {
     return {
-     options: [ { value: "0", label: "KVM"}, { value: "1", label: "Docker"} ],
+     options: [ { value: "0", label: "命令行"}, { value: "1", label: "图形化界面"} ],
+        optionsKind: [ { value: "0", label: "命令行"}, { value: "1", label: "图形化界面"} ],
      type: "", //
       className: "", //
       inplaceholder: "请输入镜像名称",
@@ -176,6 +185,7 @@ export default {
       files:[],
       showLoading:false,
       isHasData:true,//是否有数据 默认有数据
+      kind:''
     };
   },
   components:{
@@ -200,11 +210,16 @@ export default {
       }
      
     },
+      selectKind(val){
+        let that = this;
+        console.log(val)
+          that.kind = val
+      },
       //查询所有镜像
       getImagequoteList(){
           let that = this;
           let obj = {};
-          obj.kind = 0;
+          obj.kind = -1;
           obj.imageName = '';
           obj.page = 1;
           obj.perPage = 10;
@@ -321,7 +336,10 @@ export default {
       let obj = {};
       obj.imageName = that.Mirroring.name;
       obj.introduction = that.Mirroring.introduction;
+    obj.kind = 0;
+    obj.url = that.Mirroring.url;
         addImage(obj).then(res=> {
+            that.kind = '';
             if(res.code==200){
                 that.getImagequoteList();
             }else{
