@@ -11,7 +11,7 @@
                 <div class="list_box">
                     <ul class="list_ul clearfix " :class="{'student_list_ul':role==3}">
                         <li v-for="(item,index) in experimentList" :key="index">
-                            <div class="info pointer"  @click="link_Detail">
+                            <div class="info pointer"  @click="link_Detail(item.id)">
                                 <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3">
                                    <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="getDelete(item.id)"></a>
                                 </el-tooltip>
@@ -241,10 +241,10 @@ export default {
             that.$refs.newdialog.click_new(that.sid);
         },
          //查看实验详情
-        link_Detail(){
+        link_Detail(id){
           let that = this;
           that.isNewExperiment = true;
-          that.$refs.experimentDetail.click_Detail();
+          that.$refs.experimentDetail.click_Detail(id);
 
         },
         getData(data){

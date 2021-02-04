@@ -94,7 +94,7 @@
                                 @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
                             >
                          </quill-editor>
-                         <div class="btnbox"><a class="btnDefault">确认上传</a></div>
+                         <div class="btnbox"><a class="btnDefault" @click="insertExperimentRepor">确认上传</a></div>
                     </div>
                     </template>
                 </el-scrollbar>
@@ -127,7 +127,7 @@ import { quillEditor } from "vue-quill-editor"; //调用编辑器
  import html2canvas from 'html2canvas';
 
  import xterm from '@/components/Xterminal.vue'
- import {createContainers,findAllByType,execContainer,removeContainers} from "@/API/api";
+ import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor} from "@/API/api";
 
 
 
@@ -317,6 +317,27 @@ export default {
                 }
             })
         },
+        //添加实验报告
+        insertExperimentRepor(){
+            let that = this
+            let obj={}
+            if (that.yourContent=='') {
+               return that.$toast("请输入实验报告内容",3000) 
+            }
+            obj.experiment_id = that.experimentId
+            obj.user_id = that.userid
+            obj.info = that.yourContent
+            console.log(obj)
+            insertExperimentRepor(obj).then(res=>{
+                if (res.code==200) {
+                    that.$toast("实验报告上传成功",3000)
+                    that.yourContent='' 
+                } else {
+                    that.$toast(res.message,3000) 
+                }
+            })
+
+        },
 
         //连接vnc的函数      
         connectVnc () {
@@ -433,7 +454,6 @@ export default {
                 var url = canvas.toDataURL('image/png')
                 that.dataURL = url
                 that.yourContent =that.yourContent+ '<p><img src="'+that.dataURL+'"/></p>'
-                console.log(that.yourContent)
             })
         },
         // http图片转成base64，防止解决不了的图片跨域问题
