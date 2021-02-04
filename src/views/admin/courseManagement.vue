@@ -23,7 +23,7 @@
                     <div class="fr">
                        <a class="btnDefault pointer abtn"  @click="linkNewCourse">新建课程</a>
                        <div class="d-serach"> 
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="searchText"/>
+                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="paramData.name"/>
                             <a class="searchBtn pointer" @click="searchCourse"></a>
                         </div>
                     </div>
@@ -34,7 +34,7 @@
             <div class="tea_list">
                <ul class="tab_box courseList_ul lp_courseList_ul">
                     <li v-for="(item,index) in courseList" :key="index">
-                        <div class="pic"><img :src="item.pic_url"></div>
+                        <div class="pic"><img :src="$store.state.pic_Url+item.pic_url"></div>
                         <div class="course-info boxsizing">
                             <div class="info_box">
                                 <div class="cell-info boxsizing">
@@ -42,8 +42,16 @@
                                     <p class="p-text textline1">共有{{item.chapter_number}}个章节，共{{item.section_number}}个知识点</p>
                                     <p class="p-text textline1">{{item.introduction}}</p>
                                     <div class="data-box">
-                                        <span class="s-time">{{item.time}}</span>
-                                        <span class="s-number">共有{{item.numbers}}人参加该门课程</span>
+                                        <span class="s-time">
+                                            {{
+                                                item.start_at != null && item.end_at != null
+                                                    ? item.start_at.replace("T", " ") +
+                                                    "-" +
+                                                    item.end_at.replace("T", " ")
+                                                    : "暂未设置时间"
+                                                }}
+                                        </span>
+                                        <span class="s-number">共有{{item.numbers==null?0:item.numbers}}人参加该门课程</span>
                                     </div>
                                 </div>
                                 <div class="cell-fun boxsizing">
@@ -61,8 +69,8 @@
             <div class="tab-pagination">
                 <el-pagination
                         background
-                        :current-page="curPage"
-                        :page-size="perPage"
+                        :current-page="paramData.page"
+                        :page-size="paramData.per_page"
                         @current-change="handleCurrentChange"
                         layout="prev, pager, next,jumper"
                         :total="total"
@@ -112,29 +120,33 @@ export default {
             isDelete:false,
             dataMess:'暂无课程列表',
             isHasData:true,//是否有数据 默认有数据
-            courseId:''
+            courseId:'',
+
+            paramData:{ //查询数据的参数
+               user_id:'',
+               per_page:6,
+               page:1,
+               name:'',
+            }
        }
     },
     components:{nodata},
     created(){
-	this.coursetype = this.coursetypeList[0].value
+      this.coursetype = this.coursetypeList[0].value
+       this.paramData.user_id=sessionStorage.getItem("userId")
        
     },
     methods:{
         getAdminUnpublishedCourseList(){
             let that = this;
-            that.getAdminCourseList(sessionStorage.getItem("userId"),10,1,'');
+            that.getAdminCourseList();
         },
         
         //获取管理员未发布课程
-        getAdminCourseList(user_id,per_page,page,name){
+        getAdminCourseList(){
             let that = this;
-            let obj = {};
-            obj.user_id = user_id;
-            obj.per_page = per_page;
-            obj.page = page;
-            obj.name = name;
-            getAdminUnpublishedCourseList(obj).then(res=> {
+            
+            getAdminUnpublishedCourseList(that.paramData).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
                     res.data.total==0 ? that.isHasData = false :that.isHasData = true
@@ -168,14 +180,7 @@ export default {
             getExpirCourseList(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
-                    res.data.total==0 ? that.isHasData = false :that.isHasData = true
-                
-                    for(let i = 0;i<res.data.list.length;i++){
-                        res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
-                        if(res.data.list[i].start_at !=null && res.data.list[i].end_at !=null) {
-                            res.data.list[i].time = res.data.list[i].start_at.replace('T', ' ') + '-' + res.data.list[i].end_at.replace('T', ' ');
-                        }
-                    }
+                    res.data.total==0 ? that.isHasData = false :that.isHasData = true              
                     that.total = res.data.list.length;
                 }else{
                     this.$toast(res.message,2000)
@@ -188,13 +193,14 @@ export default {
         },
         searchCourse(){
             let that = this;
-            that.getAdminCourseList(sessionStorage.getItem("userId"),10,1,that.searchText);
+            that.getAdminCourseList();
         },
         //底部分页
         handleCurrentChange(val) {
             let that = this;
-            that.getAdminCourseList(sessionStorage.getItem("userId"),10,val,that.searchText);
-             console.log(`当前页: ${val}`);
+            that.paramData.page = val
+            that.getAdminCourseList();
+       
         },
         //点击备课跳转详情
         linkDetail(id){
@@ -222,7 +228,14 @@ export default {
             removeCourseById(JSON.stringify(obj)).then(res=> {
                 if(res.code==200){
                     that.isDelete = false;
-                    that.getAdminCourseList(sessionStorage.getItem("userId"),10,1,'');
+                    if(that.paramData.page!=1){
+                        if(that.total == 1){
+                            that.paramData.page = that.paramData.page-1;
+                        }
+                        
+                    }
+                    
+                    that.getAdminCourseList();
                 }else{
                     this.$toast(res.message,2000)
                 }

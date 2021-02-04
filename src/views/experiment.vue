@@ -44,8 +44,9 @@
                     <!--@click="connectVnc()"-->
                     <!--<a class="btn-open pointer" v-if="!isOpen" @click="isOpen=true">点击开启全部虚拟机</a>-->
                    <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">点击开启全部虚拟机</a>
-                   <xterm :socketURI="socketURI"></xterm> 
+                   
                 </div>
+                <xterm :socketURI="socketURI"></xterm> 
                 <!--
                 <div  class="operation_box" ref="imageWrapper" id="imageWrapper" >
                     
@@ -342,7 +343,8 @@ export default {
         //连接vnc的函数      
         connectVnc () {
             const PASSWORD = '';
-            const url='ws://192.168.1.54:7002/vnc.html?password=123456&autoconnect=true'
+            const url='ws://192.168.1.31:6901/vnc.html?password=123456&autoconnect=true'
+            //const url ='ws://192.168.1.133:6080/'
             let rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
                 credentials: {password: '123456' }
