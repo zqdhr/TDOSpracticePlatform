@@ -38,7 +38,7 @@
                       <p class="p_id textline1">用户：{{item.user_name}}</p>
                      <p class="p_id textline1">实验名称：{{item.name}}</p>
                      <div class="btnbox">
-                         <a class="btnDefault machbtn pointer" @click="click_Release(2,item.id)"><span>释放内存</span></a>
+                         <a class="btnDefault machbtn pointer" @click="click_Release(2,item.container_id)"><span>释放内存</span></a>
                      </div>
                  </div>
              </li>
@@ -88,7 +88,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import {getRunContainerList,searchClass,stopRunContainerList} from '@/API/api';
+import {getRunContainerList,searchClass,stopRunContainerList,execContainer} from '@/API/api';
 import nodata from '@/components/noData'
 export default {
   data() {
@@ -208,25 +208,48 @@ export default {
       let that = this;
       that.show_Release = true
       that.release_success = false
+        that.type = num;
       if(num==1){
     
         that.type == 1?that.dialog_machine ='确定要一键释放所有学生内存吗？':that.type==2?that.dialog_machine ='确定要一键释放所有老师内存吗？':that.dialog_machine ='确定要一键释放所有内存吗？'
         
       }else{
+          that.id = id
         that.dialog_machine ='确定要释放ID：'+id+'的虚拟机内存吗？'
       }
 
     },
     //虚拟机释放确认
     confiremRelease(){
-      let that = this;
-    stopRunContainerList().then((res) => {
-        if (res.code == 200) {
-            that.release_success = true
-        } else {
-            that.$toast(res.message, 3000);
+        let that = this;
+        if(that.type == 1){
+            that.type    = ''
+            stopRunContainerList().then((res) => {
+               if (res.code == 200) {
+                   that.release_success = true
+               } else {
+                   that.$toast(res.message, 3000);
+               }
+            });
+        }else{
+            let obj = {}
+            let containerId = []
+            containerId.push(that.id)
+            obj.containerId = containerId
+            obj.type = 1
+            console.log(obj)
+            execContainer(obj).then(res=>{
+                that.id = ''
+                if (res.code==200) {
+                    that.isClose=false
+                } else {
+                    that.isClose=false
+                    that.$toast(res.message,3000)
+                    console.log(res.message)
+                }
+            })
         }
-    });
+
 
     },
     //释放成功确认

@@ -9,13 +9,14 @@
                         <span class="s_name">章节{{index+1}}：{{item.name}}</span>
                     </div>
                      <div class="sec_enclosure">
-                        <div>附件包含：
-                            <span
-                            v-for="(file,file_index) in item.enclosure" :key="file_index" class="icon"
-                            :class="{'s-video':file==0,'s-pdf':file==1,'s-exper':file==2,'s-job':file==2}">
-
+                         <div v-if="item.chapter_has_pdf || item.chapter_has_video ">附件包含：{{item.enclosure}}
+                             <span
+                                     v-for="(file,file_index) in item.enclosure" :key="file_index" class="icon"
+                                     :class="{'s-video':file==1,'':file==2,'s-exper':file==3,'s-job':file==4}">
                             </span>
-                        </div>
+                             <span class="icon s-pdf" v-if="item.chapter_has_pdf"></span>
+                             <span class="icon s-video" v-if="item.chapter_has_video"></span>
+                         </div>
                         
                         
                     </div>
@@ -57,12 +58,12 @@
 
                                 </div>
                                 <div class="sec_enclosure" >
-                                    <div>附件包含：
-                                        <span
-                                        v-for="(i_file_item,i_file_index) in iitem.secEnclosure" :key="i_file_index" class="icon"
-                                        :class="{'s-video':i_file_item==0,'s-pdf':i_file_item==1,'s-exper':i_file_item==2,'s-job':i_file_item==3}">
+                                    <div v-if="iitem.section_has_video || iitem.section_has_pdf || iitem.section_has_experiment || iitem.section_has_video">附件包含：
 
-                                        </span>
+                                        <span class="icon s-video" v-if="iitem.section_has_video"></span>
+                                        <span class="icon s-pdf" v-if="iitem.section_has_pdf"></span>
+                                        <span class="icon s-exper" v-if="iitem.section_has_experiment"></span>
+                                        <span class="icon s-job" v-if="iitem.section_has_assignment"></span>
                                     </div>
                                 </div>
 
@@ -260,42 +261,11 @@ export default{
     */
     created() {
         let that = this;
-        that.addParamShow(that.chapters)
     },
     mounted(){
         let that = this
     },
     methods:{
-        //章节下拉显示添加参数
-        addParamShow(array){
-            let that = this;
-            array.sort(that.compare1('order'))
-            alert(array)
-            for(var i=0;i<array.length;i++){
-                alert(array.length)
-                this.$set(array[i], 'show', false);
-                if(i == array.length-1){
-                    alert(i)
-                    that.$set(array[i], 'lastNum', 0)
-                }
-                array[i].status = 1
-                array[i].sections.sort(this.compare1('order'))
-                for(var j=0;j<array[i].sections.length;j++){
-                    this.$set(array[i].sections[j], 'show', false);
-                    if(j == array[i].sections.length - 1) {
-                        that.$set(array[i].sections[j], 'lastNum', 0)
-                    }
-                    array[i].sections[j].status = 1
-                    array[i].sections[j].small_sections.sort(this.compare1('order'))
-                    for(var k=0;k<array[i].sections[j].small_sections.length;k++){
-                        this.$set(array[i].sections[j].small_sections[k], 'show', false);
-                        if(k == array[i].sections[j].small_sections.length - 1) {
-                            that.$set(array[i].sections[j].small_sections[k], 'lastNum', 0)
-                        }
-                    }
-                }
-            }
-        },
 
         //删除章
         deleteChapter(num,item){

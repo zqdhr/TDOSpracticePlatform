@@ -47,7 +47,7 @@
                 </div>
 
                  <!--课程大纲-->
-                <chapter :courseId="courseId" v-if="navindex==0" :chapters="courseChapters"></chapter>
+                <chapter :courseId="courseId" v-if="navindex==0" :chapters="courseChapters" :isHasData="isHasData"></chapter>
 
                 
                
@@ -93,7 +93,7 @@ export default {
                {name:'课件库'},
                {name:'题库'}
             ],
-
+           isHasData:true,//传给课程大纲组件默认有数据
            picurl:null,
            
             startTime:'',//课程开始时间
@@ -148,7 +148,7 @@ export default {
                     that.introduction = res.data.introduction;
                     that.course = res.data
                     that.courseChapters = res.data.chapters
-                    console.log("1112121"+res.data.chapters)
+                    that.addParamShow(that.courseChapters)
                 }else{
                     this.$toast(res.message,2000)
                 }
@@ -188,6 +188,43 @@ export default {
             that.$router.push({path:'/admin/courseManagement'}).catch((err)=>{
                 console.log(err)
             })
+        },
+
+        //章节下拉显示添加参数
+        addParamShow(array){
+            let that = this;
+            array.sort(this.compare('order'))
+            for(var i=0;i<array.length;i++){
+                alert(array.length)
+                this.$set(array[i], 'show', false);
+                if(i == array.length-1){
+                    alert(i)
+                    that.$set(array[i], 'lastNum', 0)
+                }
+                array[i].status = 1
+                array[i].sections.sort(this.compare('order'))
+                for(var j=0;j<array[i].sections.length;j++){
+                    this.$set(array[i].sections[j], 'show', false);
+                    if(j == array[i].sections.length - 1) {
+                        that.$set(array[i].sections[j], 'lastNum', 0)
+                    }
+                    array[i].sections[j].status = 1
+                    array[i].sections[j].small_sections.sort(this.compare('order'))
+                    for(var k=0;k<array[i].sections[j].small_sections.length;k++){
+                        this.$set(array[i].sections[j].small_sections[k], 'show', false);
+                        if(k == array[i].sections[j].small_sections.length - 1) {
+                            that.$set(array[i].sections[j].small_sections[k], 'lastNum', 0)
+                        }
+                    }
+                }
+            }
+        },
+        compare(property) {
+            return function (a, b) {
+                var value1 = a[property];
+                var value2 = b[property];
+                return value1 - value2;
+            }
         },
 
         //页面nav切换
