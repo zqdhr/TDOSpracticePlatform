@@ -152,7 +152,7 @@ export default {
 
              term: null,
 
-             socketURI:'ws://192.168.1.133:2222'+'/terminals/',
+             socketURI:'ws://192.168.1.228:19585'+'/terminals/',
 
              //socketURI:'http://192.168.1.54:2222/ssh/host/192.168.1.54/5001'
             userid:'',

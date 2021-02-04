@@ -278,6 +278,7 @@ export default {
             let obj = {}
             obj.parent_category_id = val
             that.i_customClass = []
+            that.paramData.c_category_id = '';
             findChildCategory(obj).then(res=> {
                 if(res.code==200){
                     that.i_customClass = res.data;

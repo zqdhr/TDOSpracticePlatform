@@ -173,9 +173,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/login.vue')
   },
   {
-    path: '/home',//页面登录
-    name: 'home',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')
+    path: '/operation',//页面登录
+    name: 'operation',
+    component: () => import(/* webpackChunkName: "about" */ '../views/operation.vue')
   }
 ]
 

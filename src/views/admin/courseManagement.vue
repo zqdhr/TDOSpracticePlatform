@@ -125,7 +125,8 @@ export default {
             let that = this;
             that.getAdminCourseList(sessionStorage.getItem("userId"),10,1,'');
         },
-
+        
+        //获取管理员未发布课程
         getAdminCourseList(user_id,per_page,page,name){
             let that = this;
             let obj = {};
