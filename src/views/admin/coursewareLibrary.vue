@@ -53,7 +53,7 @@
             <div class="list_box">
                 <ul class="list_ul coursewareLibrary_ul  clearfix">
                     <li v-for="(item,index) in experimentList" :key="index">
-                        <div class="info padt20 boxShadow">
+                        <div class="info padt20 boxShadow pointer" @click="click_showDetail(item.kind,item)">
                             <el-tooltip class="item" effect="dark" content="删除" placement="top">
                                 <a class="icon icon_close pointer" @click.stop="isDeleteWare(item.id)"></a>
                             </el-tooltip>
@@ -105,7 +105,53 @@
       </div>
     </el-dialog>
 
-
+           <!--视频弹出-->
+       <div class="studetTrans" v-if="showvideo">
+           <div class="studentMain">
+                <div class="dis-table-cell">
+                <div class="video_box" v-if="detailType==0">
+                        <video-player 
+                            @touchstart.passive="passive"
+                            class="video-player vjs-custom-skin"
+                            ref="videoPlayer" 
+                            :playsinline="true"
+                            :x5-playsinline="true"
+                            :webkit-playsinline="true"
+                            :options="playerOptions"
+                            
+                        >
+                        </video-player>
+                    <div class="name_box">
+                        <div class="name textline1">{{show_name}}</div>
+                        <a class="a_close pointer" @click="click_Hidevideo"></a>
+                    </div>
+                 
+                </div>
+                <div class="video_box pdf_box" v-if="detailType==1"> 
+                    <div class="pdf_name">
+                        {{show_name}}
+                        <a class="a_close pointer" @click="click_Hidevideo"></a>
+                    </div>
+                    <div class="pdf-main">
+                        <div class="p-main">
+                            <pdf ref="pdf"  :src="url" v-if="url" @loaded="loadPdfHandler" :page="pdf_currentPage"
+                                @num-pages="pageCount=$event" 
+                                @page-loaded="pdf_currentPage=$event" 
+                            > </pdf>
+                            <div class="pdf_info">
+                                <div class="btn_box">
+                                <a  @click="changePdfPage(0)" class="pointer preve" :class="{grey: pdf_currentPage==1}"></a>
+                                <a  @click="changePdfPage(1)" class="pointer next" :class="{grey: pdf_currentPage==pageCount}"></a>
+                                </div>
+                              
+                                <p>{{pdf_currentPage}} / {{pageCount}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+           </div>
+       </div>
 
    <newdialog   ref="newdialog"></newdialog>
 
@@ -115,6 +161,16 @@
 import { getCoursewareAll,findParentCategory,findChildCategory,deleteCoursewareById} from "@/API/api";
 import newdialog from '@/components/admin_dialog_newCourseware'
 import nodata from '@/components/noData'
+
+//视频
+import { videoPlayer } from "vue-video-player";
+
+import "videojs-flash"; // 如果是直播或者是视频流，注意需要引入这个模块
+import 'video.js/dist/video.js'
+
+//pdf
+import pdf from 'vue-pdf'
+
 export default {
     data(){
         return{
@@ -154,11 +210,43 @@ export default {
                 category_id:'',//自定义种类
                 c_category_id:'', //自定义子种类
                 name:'' //搜索的关键词
-            }
+            },
+            showvideo:false, //是否显示详情
+            show_name:'',
+             detailType:2,
+             passive:true,
+             playerOptions: {
+                playbackRates: [0.5, 1.0, 1.5, 2.0], // 可选的播放速度
+                autoplay: true, // 如果为true,浏览器准备好时开始回放。
+                muted: false, // 默认情况下将会消除任何音频。
+                loop: false, // 是否视频一结束就重新开始。
+                preload: "auto", // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+                language: "zh-CN",
+                aspectRatio: "16:9", // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+                fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+                sources: [
+                {
+                    type: "video/mp4", // 类型
+                    src:'', //require("../../assets/video.mp4"), // url地址
+                
+                },
+                ],
+                poster: "", // 封面地址
+                notSupportedMessage: "此视频暂无法播放，请稍后再试", // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
+                controlBar: {
+                timeDivider: true, // 当前时间和持续时间的分隔符
+                durationDisplay: true, // 显示持续时间
+                remainingTimeDisplay: false, // 是否显示剩余时间功能
+                fullscreenToggle: true, // 是否显示全屏按钮
+                },
+            },
+            pdf_currentPage:1,
+            pageCount: 0, // pdf文件总页数
+            url:''
         }
     },
     components:{
-      newdialog,nodata
+      newdialog,nodata,videoPlayer ,pdf
     },
     created(){
         this.paramData.type = this.options[0].value;//默认选中内置课件
@@ -269,12 +357,16 @@ export default {
             deleteCoursewareById(obj).then((res) => {
                 that.coueseWareId = '';
                 if (res.code == 200) {
+                    if(res.data.reason.indexOf('课件已关联到章节')!=-1){
+                        that.$toast(res.data.reason+'无法删除', 3000);
+                    }else{
                     if(that.paramData.page!=1){
                         if(list.length == that.total){
                             that.paramData.page = that.paramData.page - 1
                         }
                     }
                     that.getCourseAll();
+                    }
                 } else {
                     that.$toast(res.message, 3000);
                 }
@@ -289,6 +381,63 @@ export default {
         //新增题目所属分类
         handleChange(val){
          console.log(val)
+        },
+
+         //视频播放
+         videoPlay() {
+            this.$refs.videoPlayer.player.play();
+        },
+        
+        //pdf加载
+        loadPdfHandler(e) {
+        this.pdf_currentPage = 1; // 加载的时候先加载第一页
+        },
+
+        //点击查看视频
+        click_showDetail(num,item){
+          let that = this
+          that.showvideo = true
+          that.detailType = num;
+          that.show_name = item.name
+          console.log(item)
+          var mo=function(e){e.preventDefault();};
+          document.body.style.overflow='hidden';
+          document.addEventListener("touchmove",mo,false);//禁止页面滑动
+          if(num==2){
+            that.$nextTick(function(){
+                that.videoPlay();
+                that.playerOptions.sources.src= that.$store.state.pic_Url + item.url
+            })
+          
+          }else{
+              that.$nextTick(function(){
+                 that.url =  that.$store.state.pic_Url + item.url
+                 that.loadPdfHandler()
+              })
+          }
+          
+        },
+
+        //视频关闭
+        click_Hidevideo(){
+           let that = this
+           that.showvideo = false
+           var mo=function(e){e.preventDefault();};
+           document.body.style.overflow='';//出现滚动条
+           document.removeEventListener("touchmove",mo,false);
+        },
+
+        // 改变PDF页码,val传过来区分上一页下一页的值,0上一页,1下一页
+        changePdfPage(val) {
+        // console.log(val)
+        if (val === 0 && this.pdf_currentPage > 1) {
+            this.pdf_currentPage--;
+            // console.log(this.currentPage)
+        }
+        if (val === 1 && this.pdf_currentPage < this.pageCount) {
+            this.pdf_currentPage++;
+            // console.log(this.currentPage)
+        }
         },
        
 
@@ -305,4 +454,5 @@ export default {
 @import url(../../assets/less/admin.less);
 .sel-box{width:200px}
 .list_box .list_ul .p-name{padding: 12px 10px;}
+@import url(../../assets/less/attachment.less);
 </style>
