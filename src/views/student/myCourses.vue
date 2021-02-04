@@ -123,7 +123,7 @@ export default {
 
       dataObj:{
          user_id:'',
-         per_page:1, //每页条数
+         per_page:8, //每页条数
          page:1, //当前页
          start:'', //开始时间
          end:'', //结束时间
