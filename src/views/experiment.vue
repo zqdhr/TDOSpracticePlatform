@@ -327,7 +327,6 @@ export default {
             obj.experiment_id = that.experimentId
             obj.user_id = that.userid
             obj.info = that.yourContent
-            console.log(obj)
             insertExperimentRepor(obj).then(res=>{
                 if (res.code==200) {
                     that.$toast("实验报告上传成功",3000)
@@ -454,6 +453,7 @@ export default {
                 var url = canvas.toDataURL('image/png')
                 that.dataURL = url
                 that.yourContent =that.yourContent+ '<p><img src="'+that.dataURL+'"/></p>'
+                console.log(that.yourContent)
             })
         },
         // http图片转成base64，防止解决不了的图片跨域问题
