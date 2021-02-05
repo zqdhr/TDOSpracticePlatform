@@ -30,12 +30,12 @@
    </template>
  
     <!--学生列表-->
-    <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="isStudent"></studentList>
+    <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="isStudent" :studentsList="list"></studentList>
 
    </div>
 </template>
 <script>
-import {searchClass,searchClassCount} from '@/API/api';
+import {searchClass,searchClassCount,getStudentsByClasses} from '@/API/api';
 import studentList from "@/components/d_studentList_box.vue";//学生信息-学生列表
 export default{
     data(){
@@ -46,6 +46,7 @@ export default{
             checkedList:[],//选中的班级列表
 
             isStudent:false,
+            list:{}
         }
     },
     components:{studentList},
@@ -123,6 +124,26 @@ export default{
        
         },
 
+        //班级学生信息
+        searchClassStudents(list){
+            let that = this;
+            let obj = {}
+            let classIds = [];
+            obj.per_page = 10
+            obj.page = 1
+            for(let i=0;i<list.length;i++){
+                classIds.push(list[i].id)
+            }
+            obj.classIds = classIds
+            getStudentsByClasses(obj).then(res=> {
+                if(res.code==200){
+                    that.list = res.data
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
+
         //班级选择确认
         sureCheckClass(){
             let that = this;
@@ -130,8 +151,9 @@ export default{
             if(that.checkedList.length==0){
                 return that.$toast('请先选择班级',2000)
             }
-           
+            that.searchClassStudents(that.checkedList)
             that.isStudent = true;
+
             //that.$emit('sureCheckClass')
         },
     }

@@ -15,39 +15,47 @@
         </div>
         <div class="tab_box">
             <el-table class="student_tab"
-                :data="studentList"
+                :data="studentsList.list"
                 stripe
                 ref="multipleTable"
                 style="width: 100%">
                     <el-table-column type="selection" width="60" ></el-table-column>
                     <el-table-column
-                    prop="sno"
+                    prop="userId"
                     label="学号"
                     width="180">
                     </el-table-column>
                     <el-table-column
-                    prop="name"
+                    prop="userName"
                     label="姓名"
                     width="180">
                     </el-table-column>
-                    <el-table-column
-                    prop="sex"
-                    label="性别">
+                    <el-table-column prop="gender" label="性别">
+
+                        <template slot-scope="scope">
+                          <span>{{
+                            scope.row.gender == 0
+                              ? "男"
+                              : scope.row.gender == 1
+                              ? "女"
+                              : "未知"
+                          }}</span>
+                        </template>
                     </el-table-column>
                     <el-table-column
                     prop="department"
                     label="专业">
                     </el-table-column>
-                    <el-table-column
-                    prop="speciality"
-                    label="区块链">
-                    </el-table-column>
+<!--                    <el-table-column-->
+<!--                    prop="speciality"-->
+<!--                    label="区块链">-->
+<!--                    </el-table-column>-->
                     <el-table-column
                     prop="grade"
                     label="年级">
                     </el-table-column>
                     <el-table-column
-                    prop="class_name"
+                    prop="name"
                     label="班级">
                     </el-table-column>
             </el-table>
@@ -59,7 +67,7 @@
             :page-size="perPage"
             @current-change="handleCurrentChange"
             layout="prev, pager, next,jumper"
-            :total="150"
+            :total="total"
             >
             </el-pagination>
         </div>
@@ -73,17 +81,8 @@ export default{
     data(){
         return{
           studentList:[
-            {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'},
-            {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'},
-            {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'},
-            {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'},
-            {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'},
-            {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'},
-            {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'},
-            {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'},
-            {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'},
-            {sno:'200100101',name:'王威龙',sex:'男',department:'互联网技术',speciality:'区块链',grade:'大一',class_id:'20100101',class_name:'三班'}
           ],
+            total:1,//总人数
           options: [{
             value: '选项1',
             label: '班级1'
@@ -98,6 +97,11 @@ export default{
           multipleSelection: [],
           perPage: 10,//用户列表每页条数
           curPage:1, 
+        }
+    },
+    props:{
+        studentsList:{
+            default:[]
         }
     },
     methods:{
