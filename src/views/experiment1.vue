@@ -388,9 +388,9 @@ export default {
         connectVnc () {
             const PASSWORD = '';
 
-            //const url='ws://192.168.1.31:6901/vnc.html?password=123456&autoconnect=true'
+            const url='ws://192.168.1.31:6901/vnc.html?password=123456&autoconnect=true'
             //const url ='ws://192.168.1.133:6080/'
-            const url ='ws://192.168.1.133:7002/vnc.html?password=123456&autoconnect=true'
+            //const url ='ws://192.168.1.133:7002/vnc.html?password=123456&autoconnect=true'
 
             let rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
@@ -499,8 +499,8 @@ export default {
             }
             console.log(document.getElementById('screen').offsetWidth)
             // eslint-disable-next-line no-undef
-            //const iframeHtml = this.$refs.frameWrapper.contentWindow // 获取iframe内容
-            //const iframeBody = iframeHtml.document.getElementsByTagName('body')[0]
+            const iframeHtml = this.$refs.frameWrapper.contentWindow // 获取iframe内容
+            const iframeBody = iframeHtml.document.getElementsByTagName('body')[0]
             //that.$refs.imageWrapper
             html2canvas(that.$refs.imageWrapper, opts).then((canvas) => {
                 var url = canvas.toDataURL('image/png')
