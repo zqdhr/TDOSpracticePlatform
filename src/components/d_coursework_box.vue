@@ -120,7 +120,7 @@
        <div slot="title" class="dialog_header">请设置作业名称</div>
        <div class="setScope">
            <el-input placeholder="输入作业名称" v-model="homework.name"></el-input>
-           <div class="set_endtime_box">
+           <div class="set_endtime_box" v-if="timeStatus == 1">
                <el-date-picker
                type="datetime"
                 v-model="homework.endTime"    :picker-options="pickerOptions"
@@ -133,6 +133,26 @@
            <a class="btnDefault" @click="addCourseWork">确 认</a>
       </div>
     </el-dialog>
+
+    <!--修改作业名称-->
+    <el-dialog :visible.sync="modifyJobName" width="500px" class="dialog_newJobName" v-if="sindex != ''">
+      <div slot="title" class="dialog_header">请设置作业名称</div>
+      <div class="setScope">
+        <el-input placeholder="输入作业名称" v-model="modifyName"></el-input>
+        <div class="set_endtime_box" v-if="timeStatus == 1">
+          <el-date-picker
+                  type="datetime"
+                  v-model="homework.endTime"    :picker-options="pickerOptions"
+                  style="width:100%"
+                  placeholder="选择日期">
+          </el-date-picker>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer" >
+        <a class="btnDefault" @click="modifyCourseName">确 认</a>
+      </div>
+    </el-dialog>
+
     <!--题库选择弹出框-->
     <el-dialog :visible.sync="showQuestionBank" width="1100px" class="dialog_pagination teacher_add_coursework">
       <div slot="title" class="dialog_header">新增题目（题目库选择）</div>
@@ -140,17 +160,39 @@
         <div class="pageTab clearfix ">
         <div class="fl">
           <div class="sel-box">
-            <el-select v-model="customType" placeholder="添加自定义分类" @change="selectQuestionType" >
-              <el-option v-for="item in customClass" :key="item.value" :label="item.name" :value="item.value" > </el-option>
+            <el-select
+                    v-model="customClass"
+                    value-key="id"
+                    placeholder="自定义分类"
+                    @change="selectType"
+            >
+              <el-option
+                      v-for="item in options2"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item"
+              >
+              </el-option>
             </el-select>
           </div>
-          <div class="sel-box" v-if="customType!=''">
-            <el-select v-model="i_customType" placeholder="添加自定义分类" @change="selectQuestionType" >
-              <el-option v-for="item in i_customClass" :key="item.value" :label="item.name" :value="item.value" > </el-option>
+          <div class="sel-box" v-if="options1.length > 0">
+            <el-select
+                    v-model="i_customClass"
+                    value-key="id"
+                    placeholder="自定义分类"
+                    @change="selectType1"
+            >
+              <el-option
+                      v-for="item in options1"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item"
+              >
+              </el-option>
             </el-select>
           </div>
           <div class="sel-box">
-            <el-select v-model="type" placeholder="题目类型" @change="selectQuestionType" >
+            <el-select v-model="cate" placeholder="题目类型" @change="selectQuestionType" >
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
             </el-select>
           </div>
@@ -159,10 +201,10 @@
         <div class="fr">
          
           <div class="d-serach"> 
-            <input placeholder="请输入作业标题" type="text" autocomplete="off" />
+            <input placeholder="请输入作业标题" type="text" autocomplete="off" v-model="searchText"/>
             <!--<a class="searchBtn pointer"></a>-->
           </div>
-          <a class="btn_finsh">完成</a>
+          <a class="btn_finsh" @click="searchQuestionAll">完成</a>
         </div>
       </div>
         <!--选择题-->
@@ -234,21 +276,18 @@
 <script>
 import courseNav from "@/components/left_courseNav.vue";
 import noData from "@/components/noData.vue";
-import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId,addQuestionBackAssignmentList,getAssignmentNameBySectionId} from '@/API/api';
+import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId,addQuestionBackAssignmentList,getAssignmentNameBySectionId,modifyAssignmentNameById} from '@/API/api';
 export default {
   data() {
     return {
-      //自定义分类
-      customClass: [
-      ],
-      i_customClass: [
-      ],
       options: [
         { value: "1", label: "选择题" },
         { value: "2", label: "简答题" },
       ],
-      customType:'',
-      i_customType:'',
+      customClass: {}, //父类
+      i_customClass: {}, //子类
+      options2: [],
+      options1: [],
       cate: "选择题", //课件分类默认内置课件
       showQuestionBank: false, //题库是否显示(弹出框)
       dialogWidth: 0,
@@ -267,14 +306,17 @@ export default {
       deleteList: [], //选中需要删除的题目列表
       chooseList:[],//新增题目选中
       isDelete: false,
-      type:'',//题目类型
+      type:0,//题目类型
       curPage:1,
       perPage:6,
+      timeStatus:0,//默认管理员为0，不显示时间
       noData:true,//小节没有内容
       isSetTime:false,//设置题目时间弹窗
       sindex:'',
       totalAllCourse:1,
       isnewJobName:false,
+      modifyJobName:false,
+      modifyName:'',//修改作业名称
       pickerOptions: {
          disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
@@ -286,7 +328,10 @@ export default {
       },
       assignmentId:'',
       score:'',
-      updateScore:{}
+      updateScore:{},
+      parentId:'',//父类id
+      childrenId:'',//子类id
+      searchText:'',//搜索框
     };
   },
   components: {
@@ -294,7 +339,8 @@ export default {
   },
   created() {
     let that = this;
-    this.cate = this.options[0].value; //默认选中内置课件
+    alert(this.options[0].value)
+    this.cate = this.options[0].label; //默认选中内置课件
     this.setDialogWidth();
     that.addState(that.courseList);
   },
@@ -310,13 +356,18 @@ export default {
     //查题库
     getQuestionBackAll(){
       let that = this;
+      that.findQuestionBackAll(that.type,'','',1,that.assignmentId,'')
+    },
+    findQuestionBackAll(type,content,category_id,page,assignment_id,c_category_id){
+      let that = this;
       let obj = {};
-      obj.type = '';
-      obj.content = '';
-      obj.category_id = '';
-      obj.perPage = 6;
-      obj.page = 1;
-      obj.assignment_id = '';
+      obj.type = type;
+      obj.content = content;
+      obj.category_id = category_id;
+      obj.c_category_id = c_category_id;
+      obj.perPage = that.perPage;
+      obj.page = page;
+      obj.assignment_id = assignment_id;
       getQuestionBackAll(obj).then(res=> {
         if(res.code==200){
           that.totalAllCourse = res.data.total;
@@ -334,8 +385,14 @@ export default {
       let obj = {};
       obj.section_id = that.sindex;
       obj.name = that.homework.name;
-      let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
-      obj.end_at = new Date(datetime).toISOString();
+      if(that.timeStatus == 1){
+        let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
+        obj.end_at = new Date(datetime).toISOString();
+      }else{
+        var date = new Date();
+        obj.end_at = date.toLocaleDateString();
+        console.log(obj.end_at)
+      }
       obj.qualified_score = 100;
       addAssignment(JSON.stringify(obj)).then(res=> {
         if (res.code == 200) {
@@ -351,23 +408,51 @@ export default {
         }
       })
     },
-    //自定义父级分类
-    findParentCategory(){
+    //获取父类
+    findParentCategory() {
       let that = this;
-      findParentCategory().then(res=> {
-        if(res.code==200){
-          that.customClass = res.data;
-          for(let i =0;i<res.data.length;i++){
-            that.$set(that.customClass[i],'value',i)
-          }
-        }else{
-          this.$toast(res.message,2000)
+      findParentCategory().then((res) => {
+        // alert(JSON.stringify(res));
+        console.log(res);
+        if (res.code == 200) {
+          that.options2 = res.data;
+        } else {
+          this.$toast(res.message, 2000);
         }
-      })
+      });
+    },
+    findChildCategory(val) {
+      let that = this;
+      let obj = {};
+      obj.parent_category_id = val.id;
+      findChildCategory(obj).then((res) => {
+        if (res.code == 200) {
+          that.options1 = res.data;
+        } else {
+          this.$toast(res.message, 2000);
+        }
+      });
+    },
+    //父类
+    selectType(val) {
+      let that = this;
+      that.i_customClass = {};
+      console.log(val)
+      that.parentId = val.id;
+      that.findChildCategory(val);
+    },
+    //子类
+    selectType1(val) {
+      let that = this;
+      that.childrenId = val.id;
     },
     //分页
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      let that = this;
+      that.curPage = val;
+      alert(that.parentId)
+      that.findQuestionBackAll(that.type,that.searchText,that.parentId,val,that.assignmentId,that.childrenId)
     },
     //选中事件
     cheeckedList(num,obj, index, checked) {
@@ -473,9 +558,11 @@ export default {
       })
     },
 
-    //选择分类
+    //选择分类(选择，简答)
     selectCate(val) {
-      console.log(val);
+      console.log("asd"+val);
+      let that = this;
+      that.getAssignmentBySectionId(val-1)
     },
 
     //删除题目
@@ -494,25 +581,48 @@ export default {
     //修改作业
     reset_homework(){
         let that = this;
-        that.isnewJobName = true
-        that.homework.name = '区块链基础掌握'
-        that.homework.endTime = '2021-2-2'
-    },
-    //新增题目弹出框
-    selectQuestionType(val){
-       let that = this;
-       console.log('选择题类型'+val)
-      that.parent_id = that.customClass[val].id
+        that.modifyJobName = true
 
-      let obj = {}
-      obj.parent_category_id = that.parent_id
-      findChildCategory(obj).then(res=> {
-        if(res.code==200){
-          that.i_customClass = res.data;
-        }else{
-          this.$toast(res.message,2000)
+    },
+    //查询课件库
+    searchQuestionAll(){
+      let that = this;
+      alert(that.parentId)
+      that.findQuestionBackAll(that.type,that.searchText,that.parentId,1,that.assignmentId,that.childrenId)
+    },
+    modifyCourseName(){
+      let that = this;
+      let obj = {};
+      obj.id = that.assignmentId;
+      obj.section_id = that.sindex;
+      obj.name = that.modifyName;
+      if(that.timeStatus == 1){
+        let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
+        obj.end_at = new Date(datetime).toISOString();
+      }else{
+        var date = new Date();
+        obj.end_at = date.toLocaleDateString();
+        console.log(obj.end_at)
+      }
+      obj.qualified_score = 100;
+      console.log(JSON.stringify(obj))
+      modifyAssignmentNameById(JSON.stringify(obj)).then(res=> {
+        if (res.code == 200) {
+          alert("修改题目名称成功")
+          that.modifyJobName = false;
+          that.noData = false;
+          that.courseWorkTitle = that.modifyName;
+          //that.getAssignmentBySectionId();
+        } else {
+          that.$toast(res.message, 3000)
         }
       })
+    },
+    //选择题目类型（选择，简答）
+    selectQuestionType(val){
+       console.log('选择题类型'+val)
+      let that = this;
+       that.type = val-1;
     },
     //删除确认
     confirmDeleteCourseWork() {
@@ -547,10 +657,12 @@ export default {
               that.assignmentId = res.data.id;
               let obj = {};
               obj.sectionId = data.sindex;
-              obj.perPage = 10;
+              obj.perPage = that.perPage;
               obj.page = 1;
+              obj.type = that.type;
               getAssignmentBySectionId(obj).then(res => {
                 that.status = '';
+                that.courseList = '';
                 if (res.code == 200) {
                   console.log("asd"+res.data.list[0])
                   if (res.data.list.length > 0) {
@@ -571,12 +683,13 @@ export default {
         })
       }
     },
-    getAssignmentBySectionId(){
+    getAssignmentBySectionId(type){
       let that = this;
       let obj = {};
       obj.sectionId = that.sindex;
-      obj.perPage = 10;
-      obj.page = 1;
+      obj.perPage = that.perPage;
+      obj.page = that.curPage;
+      obj.type = type;
       getAssignmentBySectionId(obj).then(res => {
         if (res.code == 200) {
           that.courseList = res.data.list;

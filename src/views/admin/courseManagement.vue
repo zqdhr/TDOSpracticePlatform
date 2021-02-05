@@ -145,7 +145,7 @@ export default {
         //获取管理员未发布课程
         getAdminCourseList(){
             let that = this;
-            
+
             getAdminUnpublishedCourseList(that.paramData).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
@@ -159,7 +159,7 @@ export default {
                     }
 
                     that.total = res.data.total;
-                    
+
                   
                 }else{
                     this.$toast(res.message,2000)

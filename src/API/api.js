@@ -128,7 +128,7 @@ var getCoursewareByCourseId = function(data){
 
 //管理员查询课程节下的作业
 var getAssignmentBySectionId = function(data){
-	return axios.get('/getAssignmentBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page)
+	return axios.get('/getAssignmentBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page+'&type='+data.type)
 }
 
 //管理员查询父级分类
@@ -202,7 +202,7 @@ var insertExperiment = function(data){
 
 //管理员查询所有的题库
 var getQuestionBackAll = function(data){
-	return axios.get('/getQuestionBackAll?type='+data.type+'&content='+data.content+'&category_id='+data.category_id+'&assignment_id='+data.assignment_id+'&perPage='+data.perPage+'&page='+data.page)
+	return axios.get(encodeURI('/getQuestionBackAll?type='+data.type+'&content='+data.content+'&category_id='+data.category_id+'&assignment_id='+data.assignment_id+'&perPage='+data.perPage+'&page='+data.page+'&c_category_id='+data.c_category_id))
 }
 
 //管理员查询课程节下的题目
@@ -360,7 +360,7 @@ var hasExperimentReport = function(data){
 
 //管理员端删除课程
 var unbindExperiments =function(data){
-	return axios.post('/unbindExperiments',data, { headers: { 'Content-Type': 'application/json' } })
+	return axios.post('/unbindExperiments?section_id='+data.section_id+'&experiment_id='+data.experiment_id)
 }
 
 //管理员端查询课程下的作业名称
@@ -395,6 +395,21 @@ var getStudentsByClasses = function(data){
 	return axios.get('/get_students_by_classes?classIds='+data.classIds+ '&per_page=' + data.per_page+ '&page=' + data.page)
 }
 
+//修改作业名称
+var modifyAssignmentNameById = function(data){
+	return axios.post('/modifyAssignmentNameById', data,{headers: {'Content-Type':'application/json'}})
+}
+
+//学生获取笔记
+var getStudentsNotes = function(data){
+	return axios.get('/get_courseware_remark_list?course_id='+data.course_id+ '&per_page=' + data.per_page+ '&page=' + data.page+ '&user_id=' + data.user_id+ '&title=' + data.title)
+}
+
+//学生上传笔记
+var stduentUploadNotes = function(data){
+	return axios.post('/upload_remark', data,{headers: {'Content-Type':'application/json'}})
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -403,9 +418,10 @@ export{
 	getStudentJobList,getStudentJobDetail,submitCorrectJob,findAllByCategoryId,getStudentAnswerBySectionId,findExperiment,deleteExperiment,
 	findAllByType,getRunContainerList,adminSubmitQuestions,addSection,addChapterSectionCourseware,addCourseware,addSmallSection,
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
-	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers
+	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers,modifyAssignmentNameById
 	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
-	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses
+	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
+	getStudentsNotes,stduentUploadNotes
 }
 
 function getJson (data) {

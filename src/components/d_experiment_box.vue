@@ -108,7 +108,7 @@
 import courseNav from "@/components/left_courseNav.vue";
 import newdialog from "@/components/teacher_new_experiment.vue";
 import experimentDetail from '@/components/experimentDetail';
-import {findParentCategory,findChildCategory,findAllByCategoryId,findAllByType,deleteExperiment} from '@/API/api';
+import {findParentCategory,findChildCategory,findAllByCategoryId,findAllByType,unbindExperiments} from '@/API/api';
 import nodata from '@/components/noData'
 export default {
     data(){
@@ -222,7 +222,7 @@ export default {
             let that = this
             let obj = {};
             obj.id = that.experimentId;
-            deleteExperiment(obj).then(res=> {
+            unbindExperiments(obj).then(res=> {
                 if(res.code==200){
                     that.isDelete = false;
                     that.getAllExperiment();

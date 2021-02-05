@@ -69,8 +69,9 @@
               :placeholder="inplaceholder"
               type="text"
               autocomplete="off"
+              v-model="searchText"
             />
-            <a class="searchBtn pointer"></a>
+            <a class="searchBtn pointer" @click="search"></a>
           </div>
         </div>
       </div>
@@ -252,7 +253,6 @@
                   :options="categoryOptions"
                   :props="{ value: 'id', label: 'name', children: 'cates' }"
                   @change="handleChange"
-                  clearable
                 >
                 </el-cascader>
               </el-form-item>
@@ -392,6 +392,7 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
+      searchText: "",
       inplaceholder: "请输入题目详情",
       customClass: {}, //父类
       i_customClass: {}, //子类
@@ -459,6 +460,11 @@ export default {
     that.findParentCategory();
   },
   methods: {
+    //搜索
+    search() {
+      let that = this;
+      that.selectQuestionBackAll(that.searchText);
+    },
     //下载模板
     downloadMB(val) {
       let that = this;
@@ -554,13 +560,15 @@ export default {
       let obj = {};
       obj.type = that.quest_type;
       obj.content = content;
+
+      obj.category_id = "";
+      obj.c_category_id = "";
+
       if (JSON.stringify(that.i_customClass) != "{}") {
-        obj.category_id = that.i_customClass.id;
+        obj.c_category_id = that.i_customClass.id;
       } else if (JSON.stringify(that.customClass) != "{}") {
         obj.category_id = that.customClass.id;
-      } else {
-        obj.category_id = "";
-      }
+      } 
 
       obj.perPage = that.perPage;
       obj.page = that.curPage;
@@ -752,6 +760,8 @@ export default {
       let that = this;
 
       console.log(`当前页: ${val}`);
+
+      that.selectQuestionBackAll("");
     },
     //点击单个上传
     singleUpload() {
@@ -823,8 +833,11 @@ export default {
     //批量上传确认
     confimBatchUpload() {
       let that = this;
-
-      this.$refs.upload1.active = true;
+      if (that.files.length > 0) {
+        that.$refs.upload1.active = true;
+      } else {
+        that.$toast("请先选取批量上传文件", 3000);
+      }
     },
     //弹出框内，选择题目类型
     dialogselectType(val) {
@@ -848,6 +861,7 @@ export default {
       if (that.question.title == "") {
         return that.$toast("请输入题目详情", 3000);
       }
+      // alert(that.addCategoryID);
       obj.content = that.question.title;
 
       if (that.choseQuestionType == 0) {

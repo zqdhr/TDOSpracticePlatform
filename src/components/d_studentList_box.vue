@@ -67,7 +67,7 @@
             :page-size="perPage"
             @current-change="handleCurrentChange"
             layout="prev, pager, next,jumper"
-            :total="total"
+            :total="studentsList.total"
             >
             </el-pagination>
         </div>
@@ -140,9 +140,9 @@ export default{
     mounted(){
         //默认全选
           this.$nextTick(() => {
-            for (let i = 0; i < this.studentList.length; i++) {
+            for (let i = 0; i < this.studentsList.list.length; i++) {
               this.$refs.multipleTable.toggleRowSelection(
-                this.studentList[i],
+                this.studentsList.list[i],
                 true
               );
             }

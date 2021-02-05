@@ -14,8 +14,8 @@
           <a class="btnDefault pointer abtn" @click="delDataList">删除镜像</a>
           <a class="btnDefault pointer abtn" @click="show_Add=true">新增镜像</a>
           <div class="d-serach"> 
-            <input :placeholder="inplaceholder" type="text" autocomplete="off" />
-            <a class="searchBtn pointer"></a>
+            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model = "searchText"/>
+            <a class="searchBtn pointer" @click="searchImage"></a>
           </div>
         </div>
       </div>
@@ -185,7 +185,8 @@ export default {
       files:[],
       showLoading:false,
       isHasData:true,//是否有数据 默认有数据
-      kind:''
+      kind:-1,
+      searchText:''
     };
   },
   components:{
@@ -210,19 +211,27 @@ export default {
       }
      
     },
+      searchImage(){
+          let that = this;
+          that.getImagequoteList(that.kind,that.searchText,1);
+      },
       selectKind(val){
         let that = this;
         console.log(val)
           that.kind = val
       },
+      findAllImagequoteList(){
+          let that = this;
+          that.getImagequoteList(-1,'',1);
+      },
       //查询所有镜像
-      getImagequoteList(){
+      getImagequoteList(kind,imageName,page){
           let that = this;
           let obj = {};
-          obj.kind = -1;
-          obj.imageName = '';
-          obj.page = 1;
-          obj.perPage = 10;
+          obj.kind = kind;
+          obj.imageName = imageName;
+          obj.page = page;
+          obj.perPage = that.perPage;
           getImagequoteList(obj).then(res=> {
               if(res.code==200){
                   that.Imagelibraries = res.data.list;
@@ -357,7 +366,7 @@ export default {
   },
     mounted() {
         let that = this;
-        that.getImagequoteList();
+        that.findAllImagequoteList();
     }
 };
 </script>

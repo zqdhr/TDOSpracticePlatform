@@ -35,7 +35,7 @@
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
                                 <div class="btnbox">
-                                    <a class="btnDefault pointer btn-course">确认发布</a>
+                                    <a class="btnDefault pointer btn-course" @click="modifyCourseStatus">确认发布</a>
                                 </div>
                              </div>
                          </div>
@@ -65,6 +65,39 @@
 
        
         </div>
+
+        <!--重置-->
+        <el-dialog
+                :visible.sync="resetDialog"
+                width="500px"
+                class="personDialog"
+        >
+            <div slot="title" class="dialog_header">课程发布</div>
+            <!--
+           <div class="editMain" style="margin:0 50px" >
+             <el-form ref="form" label-width="80px">
+               <el-form-item label="输入密码">
+                 <el-input  type="password" placeholder="请输入密码" maxlength="20" v-model="password" v-emoji></el-input>
+               </el-form-item>
+
+               <el-form-item label="确认密码">
+                 <el-input type="password" placeholder="请输入确认密码" maxlength="20" v-model="confirmPassword" v-emoji></el-input>
+               </el-form-item>
+
+             </el-form>
+           </div>
+           -->
+            <div class="confirm_dialog_body" style="padding-bottom:20px">
+                <p class="dialog_mess">
+                    <span class="span_icon icon_waring">是否发布课程！</span>
+                </p>
+            </div>
+            <span slot="footer" class="dialog-footer">
+        <button class="btnDefault" @click="resetDialog = false">取消</button>
+        <button class="btnDefault" @click="back">确认</button>
+      </span>
+        </el-dialog>
+
     </div>
 </template>
 <script>
@@ -73,7 +106,7 @@ import chapter from "@/components/d_chapter_box.vue";//课程大纲
 import experiment from "@/components/d_experiment_box.vue";//课程实验
 import courseware from "@/components/d_courseware_box.vue";//课程课件
 import coursework from "@/components/d_coursework_box.vue";//课程作业
-import {getCourseById} from '@/API/api';
+import {getCourseById,modifyCourseStatus} from '@/API/api';
 export default {
     data(){
         return{
@@ -110,7 +143,8 @@ export default {
 
             courseId:'',
             role:1,//代表管理员端
-            courseChapters:[]
+            courseChapters:[],
+            resetDialog:false,//重置密码是否弹出
         }
     },
     components:{chapter,experiment,courseware,coursework},
@@ -170,6 +204,26 @@ export default {
           }
         }
       },
+        //发布课程
+        modifyCourseStatus(){
+            let that = this;
+            let obj = {};
+            obj.owner_id = sessionStorage.getItem('userId');
+            obj.course_id = that.$route.query.courseId;
+            obj.start = '';
+            //that.endTime=that.endTime.getFullYear() + '-' + (that.endTime.getMonth() + 1) + '-' + that.endTime.getDate();
+
+            obj.end = '';
+            obj.user_id_list = [];
+            modifyCourseStatus(obj).then(res=> {
+                if(res.code==200){
+                    alert("111")
+                    that.resetDialog = true;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
       clickEndTime(){
         this.pickerOptionsEnd.disabledDate = time => {
           if (this.startTime) {
