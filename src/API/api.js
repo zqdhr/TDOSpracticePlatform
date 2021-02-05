@@ -377,6 +377,18 @@ var stduentSaveHomework = function(data){
 var stduentSubmitHomework = function(data){
 	return axios.post('/modifyStudentAnswerStatusById', data,{headers: {'Content-Type':'application/json'}})
 }
+//查询实验报告列表
+var findByExperimentReportAll = function(data){
+	return axios.get('/findByExperimentReportAll?course_id='+data.course_id+'&status='+data.status+'&isCorrect='+data.isCorrect+'&name='+data.name+'&startTime='+data.startTime+'&endTime='+data.endTime+'&perPage=' + data.perPage+ '&page=' +data.page)
+}
+//学生端提交实验报告和教师端批阅
+var updateExperimentReport = function(data){
+	return axios.post('/updateExperimentReport',data,{headers: {'Content-Type':'application/json'}})
+}
+//查看实验报告
+var findExperimentReportByExperimentAndUserId = function(data){
+	return axios.get('/findExperimentReportByExperimentAndUserId?experiment_id='+data.experiment_id+'&user_id='+data.user_id)
+}
 
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
@@ -388,7 +400,7 @@ export{
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
 	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers
 	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
-	,unbindExperiments,getAssignmentNameBySectionId
+	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId
 }
 
 function getJson (data) {

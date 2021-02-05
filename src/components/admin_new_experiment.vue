@@ -385,9 +385,7 @@ export default {
             }
   },
     mounted(){
-        let that = this;
-        that.findParentCategory();
-        that.getImagequoteList()
+
     },
   methods: {
 
@@ -465,6 +463,8 @@ export default {
     },
     click_new() {
       let that = this;
+      that.findParentCategory();
+       that.getImagequoteList()
       that.isNew_experiment = true;
     },
     tab_virtualMachine(){

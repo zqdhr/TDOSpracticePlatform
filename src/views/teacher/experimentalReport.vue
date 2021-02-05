@@ -43,7 +43,7 @@
                             end-placeholder="结束日期"
                             :picker-options="pickerOptions"
                              @change="changeDate"
-                             value-format=" yyyy-MM-dd" format="yyyy-MM-dd"
+                             value-format="yyyy-MM-dd" format="yyyy-MM-dd"
                             >
                         </el-date-picker>
                        <div class="sel-box">
@@ -104,21 +104,21 @@
                   <li v-for="(item,index) in jobList" :key="index">
                      <div class="d1 d15">
                         <!-- <div class="cell pnum">{{index+1 | catIndex}}</div> -->
-                        <div class="cell textline1">班级：{{item.class}}</div>
+                        <div class="cell textline1">班级：{{item.className}}</div>
                      </div>
                      <div class="d2 d28">
-                        <div class="cell textline1">学号：{{item.sno}} {{item.name}}</div>
+                        <div class="cell textline1">学号：{{item.user_id}} {{item.userName}}</div>
                      </div>
                      <div class="d3 d30">
-                        <div class="cell">提交时间：{{item.time}}</div>
+                        <div class="cell">提交时间：{{item.submit_at}}</div>
                      </div>
                      <div class="d4 d14"> 
-                        <div class="cell">{{item.state==0?'待批阅':'已批阅'}}</div>
+                        <div class="cell">{{item.isCorrect==0?'待批阅':'已批阅'}}</div>
                      </div>
                      <div class="d5 d13">
                          <div class="cell">
-                            <a class="btnDefault btn_py pointer" v-if="item.state==0" @click="showDetail(1)">批阅</a>
-                            <a class="btnDefault btn_py pointer" v-if="item.state==1" @click="showDetail(2)">查看详情</a>
+                            <a class="btnDefault btn_py pointer" v-if="item.isCorrect==0" @click="showDetail(1,item)">批阅</a>
+                            <a class="btnDefault btn_py pointer" v-if="item.isCorrect==1" @click="showDetail(2,item)">查看详情</a>
                          </div>
                      </div>
                   </li>
@@ -130,7 +130,7 @@
                         :page-size="perPage"
                         @current-change="handleCurrentChange"
                         layout="prev, pager, next,jumper"
-                        :total="60"
+                        :total="total"
                     >
                     </el-pagination>
                </div>
@@ -159,12 +159,10 @@
 
         <!--实验报告批阅-->
         <el-dialog width='1100px' :visible.sync="isReport" class="report_detail_dialog">
-            <div slot="title" class="dialog_header">xxxxx实验---王威龙提交</div>
+            <div slot="title" class="dialog_header">{{singleData.name}}实验---{{singleData.userName}}提交</div>
             <div class="reportMain">
                 <div class="ptext">
-                    <p>报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文本报告文 
-                        报告文本报告文本报告文本报告文本报告文本报告文本报告文本
-                        报告文本报告文本报告文本报告文本报告文本报告文 报告文本报告文本报告文本报告文本报告文本报告文本。</p>
+                    <p v-html="yourContent"></p>
                 </div>
                 <div class="pic">
                     <img src=""/>
@@ -185,7 +183,7 @@
     </div>
 </template>
 <script>
-import {searchClass,getCourseListByUserId} from "@/API/api";
+import {searchClass,getCourseListByUserId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId} from "@/API/api";
 import noData from '@/components/noData.vue'
 export default {
     data(){
@@ -194,17 +192,9 @@ export default {
         perPage: 10,//用户列表每页条数
         curPage:1, 
         jobList:[
-            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'1'},
-            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'1'},
-            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'},
-            {sno:'20200112',class:'三年二班',name:'陈友亮',time:'2020-09-12 16:54',state:'0'}
+           
         ],
+        singleData:{},//存储单个实验报告数据
         classList:[//班级选择列表
             
         ],
@@ -216,8 +206,8 @@ export default {
         classId:'',//选择的班级id
         chooseClassName:'',
 
-        stateList:[{label:'全部',value:''},{label:'待批阅',value:'0'},{label:'已批阅',value:'1'}],//作业状态list
-        state:'',//作业选中状态
+        stateList:[{label:'全部',value:-1},{label:'待批阅',value:0},{label:'已批阅',value:1}],//作业状态list
+        state:-1,//作业选中状态
 
         level1List:[
             {label:'区块链的发展史',value:'1'},
@@ -250,7 +240,9 @@ export default {
         timeend:'',//筛选结束时间
         noDataType:1,  //没有数据展示的样式
         dataMess:'当前暂无实验报告',
-        hasData:false,
+        hasData:true,
+        total:0,
+        yourContent:''
       }
     },
     filters:{
@@ -267,6 +259,7 @@ export default {
     },
     created(){
         this.getCourseListByUserId()
+        this.findByExperimentReportAll(1)
         
     },
     components:{noData},
@@ -274,6 +267,8 @@ export default {
       
         //底部分页
         handleCurrentChange(val) {
+        let that = this
+        that.findByExperimentReportAll(val)
         console.log(`当前页: ${val}`);
         },
         //选择班级 
@@ -298,6 +293,7 @@ export default {
             that.value2=''
             that.timestart = ''
             that.timeend = ''
+            that.findByExperimentReportAll(1)
         },
         //选择课程
         changeLevel1(val){
@@ -315,7 +311,8 @@ export default {
                     
             //     }
             // }
-             console.log('选择课程'+val)
+            that.findByExperimentReportAll(1)
+            console.log('选择课程'+val)
         },
         //选择章节
         changeLevel2(val){
@@ -338,10 +335,12 @@ export default {
         changeLevel3(val){
             console.log('选择节'+val)
         },
-        showDetail(num){
+        showDetail(num,item){
            let that = this;
+           that.singleData = item
            that.isReport = true
            that.isReport_num = num
+           that.findExperimentReportByExperimentAndUserId(item)
         },
         //批改分数
         changeScore() {
@@ -362,6 +361,7 @@ export default {
             let that = this;
             that.timestart = val[0];
             that.timeend = val[1];
+            that.findByExperimentReportAll(1)
             console.log(val) 
         },
         //获取班级列表
@@ -378,6 +378,29 @@ export default {
                     }
               
                 }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
+        //查询实验报告列表
+        findByExperimentReportAll(page){
+            let that= this
+            let obj={}
+            obj.course_id = that.level1Name
+            obj.status=1
+            obj.isCorrect = that.state
+            obj.name = that.searchTx
+            obj.startTime = that.timestart
+            obj.endTime = that.timeend
+            obj.perPage=that.perPage
+            obj.page = page
+            findByExperimentReportAll(obj).then(res=>{
+                if (res.code==200) {
+                    console.log(res.data)
+                    that.jobList = res.data.list
+                    that.hasData=res.data.list.length==0?false:true
+                    that.total=res.data.total
+                } else {
                     that.$toast(res.message,3000)
                 }
             })
@@ -400,16 +423,34 @@ export default {
             })   
         
         },
+        //查看实验报告
+        findExperimentReportByExperimentAndUserId(item){
+            let that = this
+            that.yourContent=''
+            let obj = {}
+            obj.experiment_id = item.experiment_id
+            obj.user_id = item.user_id
+            findExperimentReportByExperimentAndUserId(obj).then(res=>{
+                if (res.code==200) {
+                    console.log(res.data)
+                    that.yourContent = res.data.info
+                } else {
+                     that.$toast(res.message,3000)
+                }
+            })
+        },
         //搜索
         doSearch(){
             let that = this;
-            if (that.searchTx=='') {
-                 return  that.$toast(that.inplaceholder,2000)
-            }
+            // if (that.searchTx=='') {
+            //      return  that.$toast(that.inplaceholder,2000)
+            // }
+            that.findByExperimentReportAll(1)
         },
         //打分
         Scoring(){
             let that = this;
+            let obj={}
             if (that.source=='') {
                  return  that.$toast('请输入分数',2000)
             }
@@ -417,7 +458,19 @@ export default {
                   return  that.$toast('分数最高为100',2000)
             }
             that.isReport = false
-            that.source=''
+            obj.experiment_id = that.singleData.experiment_id
+            obj.user_id = that.singleData.user_id
+            obj.score= that.source
+            obj.isCorrect=1
+            console.log(obj)
+            updateExperimentReport(obj).then(res=>{
+                if (res.code==200) {
+                    that.findByExperimentReportAll(1)
+                }else {
+                    that.$toast(res.message,3000)
+                }
+            })
+           
         }
 
     }

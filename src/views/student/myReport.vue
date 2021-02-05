@@ -69,14 +69,16 @@
                     </div>
                     <div class="fr">
                        <div class="d-serach"> 
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off" />
-                            <a class="searchBtn pointer"></a>
+                            <input :placeholder="inplaceholder" type="text" v-emoji v-model="searchTx" autocomplete="off"  @keyup.enter="doSearch"/>
+                            <a class="searchBtn pointer" @click="doSearch"></a>
                         </div>
                     </div>
                 </div>
               
             </div>
         </div>
+            <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
+                        <template v-if="hasData">   
         <div class="container">
            <div class="tea_list">
               <ul class="tab_box">
@@ -104,20 +106,20 @@
                         <div class="cell pname">{{item.name}}</div>
                      </div>
                      <div class="d2 d15">
-                        <div class="cell textline1">{{item.time}}</div>
+                        <div class="cell textline1">{{item.end_at}}</div>
                      </div>
                      <div class="d3 d18">
-                        <div class="cell">{{item.isreview==1?item.score:'待老师批阅'}}</div>
+                        <div class="cell">{{item.isCorrect==1?item.score:'待老师批阅'}}</div>
                      </div>
                      <div class="d4 d14"> 
-                        <div class="cell">{{item.state==1?'已提交':'待提交'}}</div>
+                        <div class="cell">{{item.status==1?'已提交':'待提交'}}</div>
                      </div>
                      <div class="d5 d25">
                          <div class="cell"> 
-                            <a class="pointer tab_atn" @click="showDetail(item.state,item.isreview)">查看</a>
+                            <a class="pointer tab_atn" @click="showDetail(item.status,item.isCorrect,item),singleData=item">查看</a>
                             <span class="space-line"></span>
-                            <a class="pointer tab_atn" v-if="item.state!=1">提交</a>
-                            <span class="space-line" v-if="item.state!=1"></span>
+                            <a class="pointer tab_atn" v-if="item.status!=1" @click="isCommit=true,singleData=item">提交</a>
+                            <span class="space-line" v-if="item.status!=1"></span>
                             <a class="pointer tab_atn">导出</a>
                          </div>
                      </div>
@@ -130,19 +132,32 @@
                         :page-size="perPage"
                         @current-change="handleCurrentChange"
                         layout="prev, pager, next,jumper"
-                        :total="100"
+                        :total="total"
                     >
                     </el-pagination>
                </div>
            </div>
         </div>
-       
-
+        </template>
+            <!--提交实验报告-->
+              <el-dialog :visible.sync="isCommit" width="600px">
+            <div slot="title" class="dialog_header">请注意!</div>
+            <div class="confirm_dialog_body">
+                <p class="dialog_mess">
+                <!--成功span的class为icon_success-->
+                <span class="span_icon icon_waring">确认提交实验报告？</span>
+                </p>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <a class="btnDefault" @click="updateExperimentReport">确 认</a>
+                <a class="btnDefault" @click="isCommit=false">取 消</a>
+            </div>
+            </el-dialog>
         <!--实验报告批阅-->
         <el-dialog width='1100px' :visible.sync="isReport" class="report_detail_dialog">
-            <div slot="title" class="dialog_header">xxxxx实验---王威龙提交</div>
+            <div slot="title" class="dialog_header">{{singleData.name}}实验---{{singleData.userName}}提交</div>
             <p v-if="curStatus==2" class="p-score">
-                报告得分：85分
+                报告得分：{{singleData.score}}分
             </p>
             <div class="reportMain" v-if="curStatus!=1">
                 <div v-html="yourContent"></div>
@@ -159,17 +174,18 @@
             </div>
             <div class="report_detail_btnbox" v-if="curStatus==1">
                   
-                   <a class="pointer btnDefault">确认</a>
+                   <a class="pointer btnDefault" @click="updateExperimentInfo">确认</a>
                 </div>
         </el-dialog>
     </div>
 </template>
 <script>
-import {student_getCourseList} from '@/API/api';
+import {student_getCourseList,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId} from '@/API/api';
 import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
+import noData from '@/components/noData.vue'
 export default {
     data(){
       return{
@@ -177,20 +193,15 @@ export default {
         perPage: 10,//用户列表每页条数
         curPage:1, 
         jobList:[
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:0,score:0,isreview:0}, 
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:1,score:70,isreview:1},
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:0,score:0,isreview:0},
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:1,score:85,isreview:1},
-            {name:'XXXXXXXX实验',time:'2020年9月6日',state:0,score:0,isreview:0},
-
         ],
+        singleData:{},//存储单个实验报告数据
         classList:[//班级选择列表
             {label:'课程1',value:'1004'},{label:'课程2',value:'1005'}
         ],
         className:'',//选择的课程名称
 
-        stateList:[{label:'全部',value:'0'},{label:'已提交',value:'1'},{label:'未提交',value:'2'}],//作业状态list
-        state:'',//作业选中状态
+        stateList:[{label:'全部',value:-1},{label:'已提交',value:1},{label:'未提交',value:0}],//作业状态list
+        state:-1,//作业选中状态
 
         level1List:[
             {label:'区块链的发展史',value:'1'},
@@ -211,7 +222,11 @@ export default {
         level3Name:'',//小节名称
 
         inplaceholder:'请输入实验名称',
-      
+        total:0,
+        noDataType:1,  //没有数据展示的样式
+        dataMess:'当前暂无实验报告',
+        hasData:true,
+        isCommit:false,
      
         isReport:false,
         curStatus:0,//当前实验报告的状态
@@ -236,10 +251,11 @@ export default {
                     ['image','link']    //上传图片、上传视频'video'
                     ]
             }
-        }
+        },
+        searchTx:''
       }
     },
-    components:{quillEditor},
+    components:{quillEditor,noData},
     filters:{
         catIndex: function (val) {
             let str = ''
@@ -254,19 +270,26 @@ export default {
     },
     created(){
         this.getDataList()
+        this.findByExperimentReportAll(1)
     },
     methods:{
         //底部分页
         handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+            let that = this
+            that.findByExperimentReportAll(val)
+            console.log(`当前页: ${val}`);
         },
         //选择班级 
         changeClass(val){
-          console.log('选择课程')
+            let that
+            that.findByExperimentReportAll(1)
+            console.log('选择课程')
         },
         //选择状态
         changeState(val){
-           console.log('选择状态')
+            let that = this
+            that.findByExperimentReportAll(1)
+            console.log('选择状态'+val)
         },
         //选择课程
         changeLevel1(val){
@@ -302,6 +325,15 @@ export default {
                 }
             }
         },
+            //搜索
+        doSearch(){
+            let that = this;
+            // if (that.searchTx=='') {
+            //      return  that.$toast(that.inplaceholder,2000)
+            // }
+            that.findByExperimentReportAll(1)
+
+        },
         //选择节
         changeLevel3(val){
             console.log('选择节')
@@ -313,7 +345,7 @@ export default {
         onEditorChange(){}, // 内容改变事件
 
         
-        showDetail(state,isreview){
+        showDetail(state,isreview,item){
            let that = this;
            that.isReport = true
            if(state==0){
@@ -327,7 +359,8 @@ export default {
                    that.curStatus = 0
                }
            }
-           that.yourContent = '实验报告描述，实验报告描述，实验报告描述'
+           that.findExperimentReportByExperimentAndUserId(item)
+        
           
         },
         //获取我的课程列表
@@ -346,6 +379,84 @@ export default {
                     that.classList = res.data.list  
                 }else{
                      this.$toast(res.message, 3000);
+                }
+            })
+        },
+           //查询实验报告列表
+        findByExperimentReportAll(page){
+            let that= this
+            that.curPage=page
+            let obj={}
+            obj.course_id = that.level1Name
+            obj.status=that.state
+            obj.isCorrect = -1
+            obj.name = that.searchTx
+            obj.startTime = ''
+            obj.endTime = ''
+            obj.perPage=that.perPage
+            obj.page = page
+            findByExperimentReportAll(obj).then(res=>{
+                if (res.code==200) {
+                    console.log(res.data)
+                    that.jobList = res.data.list
+                    that.hasData=res.data.list.length==0?false:true
+                    that.total = res.data.total
+                   
+                } else {
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
+        //查看实验报告
+        findExperimentReportByExperimentAndUserId(item){
+            let that = this
+            that.yourContent=''
+            let obj = {}
+            obj.experiment_id = item.experiment_id
+            obj.user_id = item.user_id
+            findExperimentReportByExperimentAndUserId(obj).then(res=>{
+                if (res.code==200) {
+                    console.log(res.data)
+                    that.yourContent = res.data.info
+                } else {
+                     that.$toast(res.message,3000)
+                }
+            })
+        },
+        //提交实验报告
+        updateExperimentReport(){
+            let that = this
+            let obj={}
+            that.isCommit=false
+            obj.experiment_id = that.singleData.experiment_id
+            obj.user_id = that.singleData.user_id
+            obj.status=1
+            console.log(obj)
+            updateExperimentReport(obj).then(res=>{
+                if (res.code==200) {
+                    that.findByExperimentReportAll(1)
+                }else {
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
+        //更新实验报告内容
+        updateExperimentInfo(){
+            let that = this
+            if (that.yourContent=='') {
+                return that.$toast("请输入实验报告内容",2000)
+                
+            }
+            let obj={}
+            obj.experiment_id = that.singleData.experiment_id
+            obj.user_id = that.singleData.user_id
+            obj.status=0
+            obj.info=that.yourContent
+            updateExperimentReport(obj).then(res=>{
+                if (res.code==200) {
+                    that.isReport=false
+                }else {
+                    that.$toast(res.message,3000)
                 }
             })
         }
