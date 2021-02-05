@@ -390,6 +390,11 @@ var findExperimentReportByExperimentAndUserId = function(data){
 	return axios.get('/findExperimentReportByExperimentAndUserId?experiment_id='+data.experiment_id+'&user_id='+data.user_id)
 }
 
+//班级学生信息
+var getStudentsByClasses = function(data){
+	return axios.get('/get_students_by_classes?classIds='+data.classIds+ '&per_page=' + data.per_page+ '&page=' + data.page)
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -400,7 +405,7 @@ export{
 	stopRunContainerList,bindExperiments,searchClassCount,getRunExperiment,upload,student_getCourseList,removeChapter,removeSection,removeSmallSection,
 	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers
 	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
-	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId
+	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses
 }
 
 function getJson (data) {

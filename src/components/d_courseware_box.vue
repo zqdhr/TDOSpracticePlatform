@@ -48,7 +48,7 @@
                                 <p class="p-text textline1 p-name">{{item.name}}</p>
                                 <div class="line"></div>
                                 <p class="p-text textline1">课件大小：{{item.size}}</p>
-                                <p class="p-text textline1">视频时长：{{item.duration}}</p>
+                               
                                 <!---
                                 <p class="p-text textline1">文档页数：共16页</p>
                                 -->
