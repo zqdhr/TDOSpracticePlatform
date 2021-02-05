@@ -11,7 +11,7 @@
           <a class="pointer" @click="curIndex=1" :class="{ active: curIndex == 1 }"
             ><span class="num">1</span> 基本资料</a
           >
-          <a class="pointer" @click="curIndex=2" :class="{ active: curIndex == 2 }"
+          <a class="pointer" @click="tab_virtualMachine" :class="{ active: curIndex == 2 }"
             ><span class="num">2</span> 选择虚拟机</a
           >
           <a class="pointer" @click="curIndex=3" :class="{ active: curIndex == 3 }"
@@ -157,6 +157,8 @@
               @selection-change="handleSelectionChange"
               style="width: 100%"
               :header-cell-class-name="cellClass"
+
+              ref="multipleTable"
               
             >
               <el-table-column type="selection" width="55"> </el-table-column>
@@ -280,7 +282,6 @@
 <script>
 import FileUpload from "vue-upload-component";
 import { quillEditor } from "vue-quill-editor"; //调用编辑器
-
 import {findParentCategory,findChildCategory,insertExperiment,getImagequoteList,upload} from '@/API/api';
 export default {
   data() {
@@ -465,6 +466,22 @@ export default {
     click_new() {
       let that = this;
       that.isNew_experiment = true;
+    },
+    tab_virtualMachine(){
+        this.curIndex = 2
+        console.log('Imagelibraries'+this.multipleSelection)
+        console.log('multipleSelection'+this.multipleSelection)
+        this.$nextTick(function(){
+           this.Imagelibraries.forEach((item,i)=>{
+               this.multipleSelection.forEach((multItem,j)=>{
+                   if(this.Imagelibraries[i].id == this.multipleSelection[j].id){                  
+                      this.$refs.multipleTable.toggleRowSelection(this.Imagelibraries[i],true);
+                    
+                  }
+               })
+          })
+        })
+       
     },
     /*tab选择 */
     handleSelectionChange(val) {

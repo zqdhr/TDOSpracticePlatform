@@ -436,6 +436,18 @@ button:focus{border:0 none;outline: none;}
 }
 
 .course_list .el-scrollbar__wrap{ overflow-x: hidden;}
+
+
+/* chrome */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 100px white inset;
+  box-shadow: 0 0 0px 100px white inset;
+}
+/* firefox */
+input {
+  filter: none !important;
+}
+
 @media screen and (max-width:1600px){
   .content_el-scrollbar{
     height:24%;

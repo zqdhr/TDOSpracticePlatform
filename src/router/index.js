@@ -163,6 +163,11 @@ const routes = [
     component: () => import('../views/experiment.vue')
   },
   {
+    path: '/experiment1',//操作界面
+    name: 'experiment1',
+    component: () => import('../views/experiment1.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
