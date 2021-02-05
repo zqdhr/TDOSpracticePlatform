@@ -8,7 +8,7 @@
 
             <div class="operationBox">
             
-                <a class="a-opera pointer"  v-if="isOpen" @click="makeImg">
+                <a class="a-opera pointer"  @click="makeImg">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
@@ -44,9 +44,9 @@
                     <!--@click="connectVnc()"-->
                     <!--<a class="btn-open pointer" v-if="!isOpen" @click="isOpen=true">点击开启全部虚拟机</a>-->
                    <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">点击开启全部虚拟机</a>
-                   
+                   <!--<iframe src="http://192.168.1.133:6080/" ref="frameWrapper"/>-->
                 </div>
-                <xterm :socketURI="socketURI"></xterm> 
+                <xterm :socketURI="socketURI" v-if="1==0"></xterm> 
                 <!--
                 <div  class="operation_box" ref="imageWrapper" id="imageWrapper" >
                     
@@ -84,8 +84,8 @@
                            </li>
                         </ul>
                     </div>
-                    <!--&& authority==0-->
-                    <template v-if="curIndex==2">
+                    <!--&& authority==0 v-if="curIndex==2"-->
+                    <template >
                     <h3 class="htitle">填写实验报告</h3>
                     <div class="labReport_box"  >
                         <quill-editor 
@@ -498,6 +498,9 @@ export default {
             }
             console.log(document.getElementById('screen').offsetWidth)
             // eslint-disable-next-line no-undef
+            const iframeHtml = this.$refs.frameWrapper.contentWindow // 获取iframe内容
+            const iframeBody = iframeHtml.document.getElementsByTagName('body')[0]
+            //that.$refs.imageWrapper
             html2canvas(that.$refs.imageWrapper, opts).then((canvas) => {
                 var url = canvas.toDataURL('image/png')
                 that.dataURL = url
