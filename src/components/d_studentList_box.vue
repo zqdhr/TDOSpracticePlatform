@@ -15,7 +15,7 @@
         </div>
         <div class="tab_box">
             <el-table class="student_tab"
-                :data="studentsList.list"
+                :data="studentList"
                 stripe
                 ref="multipleTable"
                 style="width: 100%">
@@ -77,11 +77,12 @@
    </div>
 </template>
 <script>
+
 export default{
+  
     data(){
         return{
-          studentList:[
-          ],
+         studentList:[],
             total:1,//总人数
           options: [{
             value: '选项1',
@@ -103,6 +104,24 @@ export default{
         studentsList:{
             default:[]
         }
+    },
+
+     watch: {
+      studentsList: {
+        handler: function(newV, oldV) {
+          this.studentList = newV.list
+         this.$nextTick(() => {
+          for (let i = 0; i < newV.list.length; i++) {
+        
+              this.$refs.multipleTable.toggleRowSelection(
+                  this.studentList[i],
+                  true
+              );
+            }
+         })
+        },
+        deep: true
+      }
     },
     methods:{
          //底部分页
