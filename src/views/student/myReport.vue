@@ -281,7 +281,7 @@ export default {
         },
         //选择班级 
         changeClass(val){
-            let that
+            let that=this
             that.findByExperimentReportAll(1)
             console.log('选择课程')
         },
@@ -387,7 +387,7 @@ export default {
             let that= this
             that.curPage=page
             let obj={}
-            obj.course_id = that.level1Name
+            obj.course_id = that.className
             obj.status=that.state
             obj.isCorrect = -1
             obj.name = that.searchTx
