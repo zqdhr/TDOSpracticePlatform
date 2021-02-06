@@ -165,6 +165,7 @@ import FileUpload from "vue-upload-component";
 import toastVue from "./toast/toast.vue";
 import {getCoursewareAll,addChapterSectionCourseware,findParentCategory,findChildCategory,upload,addCourseware} from '@/API/api';
 export default {
+  inject:['reload'],
   data() {
     return {
       inplaceholder: "请输入课件名",
@@ -179,16 +180,9 @@ export default {
       ],
       //已有的课件库
       all_experimentList: [
-        {
-          id: "522dddz",
-          name: "xxxxx.mp4",
-          size: "2.3G",
-          duration: "00:16:34",
-          type: 0,
-        }
       ],
       total: 100,
-      perPage: 8, //8个实验一页
+      perPage: 10, //8个实验一页
       curPage: 1, //设备列表
       cate: "内置课件", //课件分类默认内置课件
       type: '全部', //课件类型默认全部
@@ -209,8 +203,12 @@ export default {
       chooseList: [], //课件被选择列表
       sindex:'',
       cindex:'',
-      category_id:'',
-      name:''
+      category_id:'',//父分类id
+      c_category_id:'',//子分类id
+      kind:'',
+      type1:'',
+      name:'',
+      count:'',
     };
   },
   components: {
@@ -231,7 +229,11 @@ export default {
     //课件列表
     getCoursewareAll() {
       let that = this;
-      that.findCourseWareAll(that.perPage, 1, '', '', '', '', '', '','');
+      if(that.sindex != '' && that.cindex != ''){
+        that.cindex = '';
+      }
+      alert(that.type1)
+      that.findCourseWareAll(that.perPage, 1, that.kind, that.type1,'', '', that.cindex, that.sindex,'');
     },
     //自定义父级分类
     findParentCategory() {
@@ -301,14 +303,15 @@ export default {
       });
     },
     //点击新建课件
-    click_new(cid, sid) {
+    click_new(cid, sid,count) {
       let that = this;
       that.files = [];
       that.isnewFilterType = 0;
       that.isnewFilter = true;
       that.chooseList = [];
-      that.sindex = sid
-      that.cindex = cid
+      that.sindex = sid;
+      that.cindex = cid;
+      that.count = count;
       that.getCoursewareAll();
     },
     //点击课件库选择
@@ -321,7 +324,7 @@ export default {
     selectCate(val) {
       let that = this;
       console.log("选择自定义分类1" + val);
-      that.type = val;
+      that.type1 = val;
     },
 
     //选择课件类型
@@ -333,8 +336,8 @@ export default {
     searchCoerseWare(){
       let that = this;
       console.log(that.searchText)
-      that.type = that.type == '2' ? '' : that.type;
-      that.findCourseWareAll(10, 1, that.type, that.cate, that.searchText, that.category_id, '', '');
+      that.type = that.type1 == '2' ? '' : that.type1;
+      that.findCourseWareAll(10, 1, that.kind, that.type, that.searchText, that.category_id, '', '',that.c_category_id);
     },
     //本地上传确认上传
     confirmLocalUpload() {
@@ -354,13 +357,22 @@ export default {
       if (that.sindex !== '') {
         console.log("节新增课件")
         let obj = {};
-        obj.courseware_id = that.chooseList[0].id
-        obj.section_id = that.sindex;
-        obj.chapter_id = that.cindex;
+        let list = [];
+        for(let i = 0;i<that.chooseList.length;i++){
+          let obj1 = {};
+          obj1.courseware_id = that.chooseList[i].id
+          obj1.section_id = that.sindex;
+          obj1.chapter_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
+          list.push(obj1);
+        }
+        obj.chapter_section_courseware_list = list
+        console.log(JSON.stringify(obj))
         addChapterSectionCourseware(JSON.stringify(obj)).then(res => {
           if (res.code == 200) {
             alert("111")
             that.isnewFilter = false;
+            this.$toast("新增成功", 2000)
+            that.reload();
           } else {
             this.$toast(res.message, 2000)
           }
@@ -368,15 +380,22 @@ export default {
       } else {
         console.log("章新增课件")
         let obj = {};
-        obj.courseware_id = that.chooseList[0].id
-        console.log(that.chooseList[0].id)
-        console.log(that.cindex)
-        obj.section_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
-        obj.chapter_id = that.cindex;
+        let list = [];
+        for(let i = 0;i<that.chooseList.length;i++){
+          let obj1 = {};
+          obj1.courseware_id = that.chooseList[i].id
+          obj1.section_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
+          obj1.chapter_id = that.cindex;
+          list.push(obj1);
+        }
+        obj.chapter_section_courseware_list = list
+        console.log(JSON.stringify(obj))
         addChapterSectionCourseware(JSON.stringify(obj)).then(res => {
           if (res.code == 200) {
             alert("111")
             that.isnewFilter = false;
+            this.$toast("新增成功", 2000)
+            that.reload();
           } else {
             this.$toast(res.message, 2000)
           }
@@ -394,7 +413,7 @@ export default {
     handleCurrentChange1(val) {
       let that = this
       console.log(`当前页: ${val}`);
-      that.findCourseWareAll(10, val, that.type, that.cate, that.searchText, that.category_id, '', '');
+      that.findCourseWareAll(that.perPage, val, that.kind, that.cate, that.searchText, that.category_id, that.cindex, that.sindex,that.c_category_id);
     },
     //数组新增checked元素
     array_addChecked(array) {
@@ -425,8 +444,8 @@ export default {
       let that = this;
       if (!checked) {
         if (!(that.chooseList.indexOf(obj.id) != -1)) {
-          if (that.chooseList.length == 1) {
-            return this.$toast("最多上传1个课件", 3000);
+          if (that.chooseList.length + parseInt(that.count) > 4) {
+            return this.$toast("最多上传5个课件，还需添加请删除", 3000);
           }
           that.chooseList.push(obj);
         }

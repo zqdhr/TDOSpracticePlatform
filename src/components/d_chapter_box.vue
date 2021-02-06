@@ -361,15 +361,12 @@ export default{
                 that.deleteStatus = '';
                 if( that.smallSectionNum === '' && that.sectionNum === ''){
                     alert("删除章")
-                    alert(that.chaptersId)
                     that.removeChapter(that.chaptersId)
                 }else  if( that.smallSectionNum === '' && that.sectionNum !== ''){
                     alert("删除节")
-                    alert(that.sectionId)
                     that.removeSection(that.sectionId)
                 } else  if( that.smallSectionNum !== ''){
                     alert("删除小节")
-                    alert(that.smallSectionId)
                     that.removeSmallSection(that.smallSectionId)
                 }
             }else {
@@ -426,13 +423,9 @@ export default{
         addChaptersOrSections(){
             let that = this
             let obj ={};
-            alert(that.index)
-            alert(that.iindex)
             if(that.index !== '' && that.iindex === ''){
-                alert("111")
                 obj.section_name = that.addValue;
                 obj.chapter_id = that.chapters[that.index].id;
-                alert(obj.chapter_id)
                 obj.course_id = this.$route.query.courseId;
                 addSection(JSON.stringify(obj)).then(res=> {
                     that.index = '';
@@ -446,7 +439,6 @@ export default{
 
                 })
             }else{
-                alert("22")
                 obj.small_section_name = that.addValue;
                 obj.chapter_id = that.chapters[that.index].id;
                 obj.section_id = that.chapters[that.index].sections[that.iindex].id;

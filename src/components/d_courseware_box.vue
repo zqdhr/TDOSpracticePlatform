@@ -98,7 +98,7 @@
 <script>
 import courseNav from "@/components/left_courseNav.vue";
 import newdialog from '@/components/dialog_newCourseware';
-import {getCoursewareByCourseId,getCoursewareByChapterId,getCoursewareBySectionId} from '@/API/api';
+import {getCoursewareByCourseId,getCoursewareByChapterId,getCoursewareBySectionId,deleteChapterSectionCourseById} from '@/API/api';
 import nodata from '@/components/noData'
 export default {
     data(){
@@ -122,6 +122,8 @@ export default {
             cindex:'',
             sindex:'',
             isHasData:true,//是否有数据 默认有数据
+            count:'',//课程下章，节已经存在的课件数量
+            isdeleteId:'',//删除的课件id
         }
     },
     props:{
@@ -174,6 +176,7 @@ export default {
             obj.page = page;
             getCoursewareByChapterId(obj).then(res=> {
                 if(res.code==200){
+                    that.count = res.data.total;
                     that.total = res.data.total;
                     res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList = res.data.list;
@@ -192,6 +195,7 @@ export default {
             obj.page = page;
             getCoursewareBySectionId(obj).then(res=> {
                 if(res.code==200){
+                    that.count = res.data.total;
                     that.total = res.data.total;
                     res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList = res.data.list;
@@ -204,10 +208,11 @@ export default {
             let that = this;
             that.cindex = data.cindex;
             that.sindex = data.sindex;
+            console.log(that.sindex+that.cindex)
             if(data.sindex == ""){
-                that.getCoursewareByChapterId(data.cindex,0,'',that.perPage,1)
+                that.getCoursewareByChapterId(data.cindex,'',0,that.perPage,1)
             }else{
-                that.getCoursewareBySectionId(data.sindex,0,'',that.perPage,1)
+                that.getCoursewareBySectionId(data.sindex,'',0,that.perPage,1)
             }
         },
          //底部分页
@@ -247,16 +252,42 @@ export default {
         click_delete(item){
             let that = this;
             that.isDelete = true;
+            that.isdeleteId = item.id;
             console.log(item)
         },
         //删除弹出确认
         confirmDelete(){
             let that = this;
+            let obj = {};
+            let list = [];
+            let obj1 = {};
+            if(that.sindex != ''){
+                that.cindex = 'fb0a1080-b11e-427c-8567-56ca6105ea07'
+            }
+            if(that.cindex != ''){
+                that.sindex = 'fb0a1080-b11e-427c-8567-56ca6105ea07'
+            }
+            obj1.courseware_id = that.isdeleteId;
+            obj1.section_id = that.sindex;
+            obj1.chapter_id = that.cindex;
+            list.push(obj1);
+            obj.chapter_section_courseware_list = list
+            console.log(JSON.stringify(obj))
+            deleteChapterSectionCourseById(JSON.stringify(obj)).then(res=> {
+                if(res.code==200){
+                    that.count = res.data.total;
+                    that.total = res.data.total;
+                    res.data.total==0 ? that.isHasData = false :that.isHasData = true
+                    that.experimentList = res.data.list;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
             that.isDelete = false;
         },
          click_new(){
             let that = this;
-            that.$refs.newdialog.click_new(that.cindex,that.sindex);
+            that.$refs.newdialog.click_new(that.cindex,that.sindex,that.count);
         },
     }
 }

@@ -34,7 +34,7 @@
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
                                 <div class="btnbox">
-                                    <a class="btnDefault pointer btn-course">确认开课</a>
+                                    <a class="btnDefault pointer btn-course" @click="openClass">确认开课</a>
                                 </div>
                              </div>
                          </div>
@@ -201,6 +201,10 @@ export default {
                     that.$toast(res.message,3000)
                 }
             })
+        },
+        //教师开课
+        openClass(){
+
         },
         //章节下拉显示添加参数
         addParamShow(array){

@@ -480,25 +480,19 @@ export default {
       //密码重置确认
       editPassword(){
         let that = this;
-        if(that.confirmPassword !== that.password){
-          this.$toast("两次密码输入不一致",3000)
-          return;
-        }
-        if (that.confirmPassword.length<6  ||  that.confirmPassword.length>20 || that.password.length <6 || that.password.length >20) {
-          this.$toast("密码长度只能6-20位",3000)
-          return;
-        }
         let list = []
         list.push(that.id)
         let obj = {};
         obj.user_id_list = list;
-        obj.password = that.password;
+        obj.password = '12345678';
+        console.log(JSON.stringify(obj))
         updateUserPassword(JSON.stringify(obj)).then(res=>{
           if(res.code==200){
             that.resetDialog = false;
-            that.searchUser(that.type, that.searchText, that.className, that.curPage, 10);
+            this.$toast("重置成功",2000)
+           that.searchUser(that.type, that.searchText, that.className, that.curPage, 10);
           }else{
-            this.$toast(res.message,2000)
+            this.$toast(res.message,3000)
           }
         })
       },

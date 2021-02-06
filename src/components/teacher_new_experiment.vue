@@ -13,33 +13,13 @@
         <div class="pageTab clearfix nopaddingBottom">
           <div class="fl">
             <div class="sel-box">
-              <el-select
-                v-model="customType"
-                placeholder="自定义分类"
-                @change="selectCustomType"
-              >
-                <el-option
-                  v-for="item in customClass"
-                  :key="item.value"
-                  :label="item.name"
-                  :value="item.value"
-                >
-                </el-option>
+              <el-select v-model="customClass" placeholder="自定义分类" @change="selectType" >
+                <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id" > </el-option>
               </el-select>
             </div>
-            <div class="sel-box" v-if="customType!=''">
-              <el-select
-                      v-model="i_customType"
-                      placeholder="自定义分类"
-                      @change="i_selectCustomType"
-              >
-                <el-option
-                        v-for="item in i_customClass"
-                        :key="item.value"
-                        :label="item.name"
-                        :value="item.value"
-                >
-                </el-option>
+            <div class="sel-box" v-if="customClass!=''">
+              <el-select v-model="i_customClass" placeholder="自定义分类" @change="selectType1" >
+                <el-option v-for="item in options1" :key="item.id" :label="item.name" :value="item.id" > </el-option>
               </el-select>
             </div>
 
@@ -111,8 +91,9 @@
 <script>
 
 import toastVue from "./toast/toast.vue";
-import {findParentCategory,findChildCategory,findAllByCategoryId,bindExperiments,findAllByType} from '@/API/api';
+import {findParentCategory,findChildCategory,findAllByCategoryId,bindExperiments,findAllExperimentByCategoryId} from '@/API/api';
 export default {
+  inject:['reload'],
   data() {
     return {
       inplaceholder: "请输入实验名",
@@ -121,9 +102,10 @@ export default {
      
       total: 1,
       searchTx:'',
-      perPage: 8, //8个实验一页
+      perPage: 10, //8个实验一页
       curPage: 1, //设备列表
-
+      options:[],
+      options1:[],
       customClass: [
         { value: "1", label: "场景篇" },
         { value: "2", label: "原理篇" },
@@ -138,39 +120,34 @@ export default {
       isnewFilterType: 0, //实验库选择 1代表本地实验库  2代表本地上传
 
       chooseList: [], //实验被选择列表
-      parent_id:''
+      parent_id:'',
+      count:'',//节下已有的实验，不能超过五个
+      sindex:'',//节id
     };
   },
   components: {
   },
   created() {
   },
-  inject:['reload'],
   mounted(){
     let that = this;
-    that.findParentCategory();
 
   },
   methods: {
-    //自定义父级分类
-    findParentCategory(){
-      let that = this;
-      findParentCategory().then(res=> {
-        if(res.code==200){
-          that.customClass = res.data;
-          for(let i =0;i<res.data.length;i++){
-            that.$set(that.customClass[i],'value',i)
-          }
-        }else{
-          this.$toast(res.message,2000)
-        }
-      })
+    findAllExperiment(){
+      let that= this;
+      that.getAllExperiment('','','',1,that.sindex);
+    },
+    getAllExperiment(f_category_id,c_category_id,name,page,section_id){
+      let that= this;
       let obj = {}
-      obj.category_id = '';
+      obj.f_category_id = f_category_id;
       obj.name = '';
-      obj.perPage = 10;
-      obj.page = 1;
-      findAllByCategoryId(obj).then(res=> {
+      obj.perPage = that.perPage;
+      obj.page = page;
+      obj.section_id = section_id;
+      obj.c_category_id = c_category_id;
+      findAllExperimentByCategoryId(obj).then(res=> {
         if(res.code==200){
           that.total = res.data.total
           that.all_experimentList = res.data.list;
@@ -197,13 +174,17 @@ export default {
       })
     },
     //点击选择实验
-    click_new(sid) {
+    click_new(sid,count,sindex) {
       let that = this;
       that.isnewFilter = true;
       that.chooseList = [];
       that.isnewFilterType = 1;
       that.sindex = sid;
+      that.count = count;
+      that.sindex = sindex;
       that.array_addChecked(that.all_experimentList);
+      that.findAllExperiment();
+      that.findParentCategory();
     },
   
     //选择分类
@@ -235,6 +216,7 @@ export default {
         if(res.code==200){
           alert(res.code)
           that.isnewFilter = false;
+          that.reload();
         }else{
           this.$toast(res.message,2000)
         }
@@ -250,58 +232,50 @@ export default {
     //弹窗分页
     handleCurrentChange1(val) {
       console.log(`当前页: ${val}`);
+      let that= this;
+      that.getAllExperiment('','','',val,that.sindex);
     },
 
-    //弹窗自定义分类
-    selectCustomType(val) {
+    //获取父类
+    findParentCategory() {
       let that = this;
-      console.log("选择自定义分类1");
-      that.parent_id = that.customClass[val].id
-
-      let obj = {}
-      obj.parent_category_id = that.parent_id
-      findChildCategory(obj).then(res=> {
-        if(res.code==200){
-          that.i_customClass = res.data;
-          for(let i =0;i<res.data.length;i++){
-            that.$set(that.i_customClass[i],'value',i)
-          }
-        }else{
-          this.$toast(res.message,2000)
+      findParentCategory().then((res) => {
+        // alert(JSON.stringify(res));
+        console.log(res);
+        if (res.code == 200) {
+          that.options = res.data;
+          console.log("as"+res.data)
+        } else {
+          this.$toast(res.message, 2000);
         }
-      })
-      let objC = {};
-      objC.category_id = that.customClass[val].id
-      objC.name = that.searchTx
-      objC.perPage = 10;
-      objC.page = 1;
-      findAllByCategoryId(objC).then(res=> {
-        if(res.code==200){
-          that.all_experimentList = res.data.list;
-        }else{
-          this.$toast(res.message,2000)
-        }
-      })
+      });
     },
-    //弹窗自定义分类
-    i_selectCustomType(val) {
+    findChildCategory(val) {
       let that = this;
-      console.log("选择自定义分类2");
-      console.log(that.i_customClass[val].id)
-      that.parent_id = that.i_customClass[val].id;
-      let objC = {};
-      objC.category_id = that.i_customClass[val].id
-      objC.name = that.searchTx
-      objC.perPage = 10;
-      objC.page = 1;
-      findAllByCategoryId(objC).then(res=> {
-        if(res.code==200){
-          that.all_experimentList = res.data.list;
-        }else{
-          this.$toast(res.message,2000)
+      let obj = {};
+      obj.parent_category_id = val;
+      findChildCategory(obj).then((res) => {
+        if (res.code == 200) {
+          that.options1 = res.data;
+        } else {
+          this.$toast(res.message, 2000);
         }
-      })
-
+      });
+    },
+    //父类
+    selectType(val) {
+      let that = this;
+      that.i_customClass = {};
+      console.log("11"+val)
+      that.parentId = val;
+      that.findChildCategory(val);
+      that.getAllExperiment(val,'',that.searchTx,1,that.sindex);
+    },
+    //子类
+    selectType1(val) {
+      let that = this;
+      that.childrenId = val.id;
+      that.getAllExperiment('',that.childrenId,that.searchTx,1,that.sindex);
     },
     //数组新增checked元素
     array_addChecked(array) {
@@ -326,8 +300,9 @@ export default {
       let that = this;
       if (!checked) {
         if (!(that.chooseList.indexOf(obj.id) != -1)) {
-          if (that.chooseList.length == 2) {
-            return this.$toast("最多上传2个实验", 3000);
+          alert(that.count)
+          if (that.chooseList.length + parseInt(that.count) > 4) {
+            return this.$toast("最多上传5个实验，还需添加请删除", 3000);
           }
           that.chooseList.push(obj);
         }

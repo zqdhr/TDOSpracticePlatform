@@ -209,7 +209,7 @@ export default {
       if (val == 1) {
         console.log('Docker')
       }
-     
+        that.getImagequoteList(val,that.searchText,1);
     },
       searchImage(){
           let that = this;
@@ -266,12 +266,14 @@ export default {
             list.push(that.multipleSelection[i].imageid)
         }
         obj.imagesID = list;
+        alert("111")
         deleteImages(obj).then(res=> {
             if(res.code==200){
                 that.isDelete = false;
                 that.getImagequoteList();
             }else{
-                this.$toast(res.message,2000)
+                this.$toast("删除失败",3000)
+                that.getImagequoteList();
             }
         })
         console.log('确认删除镜像'+that.multipleSelection[0].imageid)
@@ -345,14 +347,15 @@ export default {
       let obj = {};
       obj.imageName = that.Mirroring.name;
       obj.introduction = that.Mirroring.introduction;
-    obj.kind = 0;
-    obj.url = that.Mirroring.url;
+        obj.kind = 0;
+        obj.url = that.Mirroring.url;
         addImage(obj).then(res=> {
             that.kind = '';
             if(res.code==200){
                 that.getImagequoteList();
             }else{
-                this.$toast(res.message,2000)
+                this.$toast("上传失败",3000)
+                that.getImagequoteList();
             }
         })
     },

@@ -522,12 +522,16 @@ export default {
       this.$set(that.updateScore, 'score', that.score);
       that.isSetTime=false
     },
-    showQuestion(){
+    showQuestion() {
       let that = this;
       that.showQuestionBank = false;
       console.log(that.chooseList)
-      for(let i = 0;i<that.chooseList.length;i++){
-        that.courseList.push(that.chooseList[i])
+      if (that.courseList.length == 0) {
+        that.courseList = that.chooseList
+      } else {
+        for (let i = 0; i < that.chooseList.length; i++) {
+          that.courseList.push(that.chooseList[i])
+        }
       }
       console.log(that.courseList)
     },
@@ -538,7 +542,14 @@ export default {
       let obj = {};
       let list = [];
       alert(that.assignmentId)
-      console.log(that.courseList)
+      let totalscore = 0;
+      for(let i =0;i<that.courseList.length;i++){
+        totalscore += that.courseList[i].score
+      }
+      if(totalscore > 100){
+        this.$toast("总分值大于100,请修改",3000)
+        return;
+      }
       for(let i =0;i<that.courseList.length;i++){
         let objques = {};
         objques.assignment_id = that.assignmentId;

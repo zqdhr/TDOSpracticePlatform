@@ -12,7 +12,7 @@
                     <ul class="list_ul clearfix " :class="{'student_list_ul':role==3}">
                         <li v-for="(item,index) in experimentList" :key="index">
                             <div class="info pointer"  @click="link_Detail(item.id)">
-                                <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3">
+                                <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3 && isdeleteStatus == 1">
                                    <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="getDelete(item.id)"></a>
                                 </el-tooltip>
                                 <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3 && role!=1">
@@ -152,7 +152,9 @@ export default {
             sindex:'',
             experimentId:'',
             total:1,
+            count:0,
             isHasData:true,//是否有数据 默认有数据
+            isdeleteStatus:0,//节下面才能删除实验，默认节下面是1
         }
     },
     props:{
@@ -182,6 +184,7 @@ export default {
             obj.page = page;
             findAllByCategoryId(obj).then(res=> {
                 if(res.code==200){
+
                     that.total = res.data.total
                     res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList = res.data.list;
@@ -202,6 +205,7 @@ export default {
                     that.total = res.data.total
                      res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList  = res.data.list;
+                    that.count = res.data.total;
                 }else{
                     this.$toast(res.message,2000)
                 }
@@ -221,7 +225,8 @@ export default {
         deleteExperiment(){
             let that = this
             let obj = {};
-            obj.id = that.experimentId;
+            obj.experiment_id = that.experimentId;
+            obj.section_id = that.sindex;
             unbindExperiments(obj).then(res=> {
                 if(res.code==200){
                     that.isDelete = false;
@@ -238,7 +243,7 @@ export default {
         click_new(){
             let that = this;
             that.sid = that.sindex;
-            that.$refs.newdialog.click_new(that.sid);
+            that.$refs.newdialog.click_new(that.sid,that.count,that.sindex);
         },
          //查看实验详情
         link_Detail(id){
@@ -249,11 +254,13 @@ export default {
         },
         getData(data){
             let that = this;
-            //console.log(data.cindex)
-            //console.log(data.sindex)
+            console.log(data.cindex)
+            console.log(data.sindex)
             that.sindex = data.sindex;
             that.cindex = data.cindex;
+            that.isdeleteStatus = '';
             if(data.sindex != "" && that.cindex != ''){
+                that.isdeleteStatus = 1;
                 that.findAllByType(data.sindex,3,10,1)
             }else if(data.sindex == "" && that.cindex != ''){
                 that.findAllByType(data.cindex,2,10,1)

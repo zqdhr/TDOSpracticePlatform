@@ -368,6 +368,7 @@ export default {
                             that.paramData.page = that.paramData.page - 1
                         }
                     }
+                    that.$toast('删除成功', 2000);
                     that.getCourseAll();
                     }
                 } else {

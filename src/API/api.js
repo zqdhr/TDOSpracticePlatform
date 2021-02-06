@@ -152,6 +152,11 @@ var findAllByCategoryId = function(data){
 	return axios.get('/findExperimentByCategory?category_id='+data.category_id+'&name='+data.name+'&perPage='+data.perPage+'&page='+data.page)
 }
 
+//管理员查询分类下的实验
+var findAllExperimentByCategoryId = function(data){
+	return axios.get('/findSelectedExperimentByCategory?f_category_id='+data.f_category_id+'&c_category_id='+data.c_category_id+'&section_id='+data.section_id+'&name='+data.name+'&perPage='+data.perPage+'&page='+data.page)
+}
+
 //管理员查询课件库所有的课件
 var getCoursewareAll = function(data){
 	//kind种类，type0内置课件  type1教师上传  name关键词  去除'&chapter_id='+data.chapter_id+'&section_id='+data.section_id+
@@ -410,6 +415,11 @@ var stduentUploadNotes = function(data){
 	return axios.post('/upload_remark', data,{headers: {'Content-Type':'application/json'}})
 }
 
+//删除课程章或节下的课件
+var deleteChapterSectionCourseById = function(data){
+	return axios.post('/deleteChapterSectionCourseById', data,{headers: {'Content-Type':'application/json'}})
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -421,7 +431,7 @@ export{
 	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers,modifyAssignmentNameById
 	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
-	getStudentsNotes,stduentUploadNotes
+	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById
 }
 
 function getJson (data) {

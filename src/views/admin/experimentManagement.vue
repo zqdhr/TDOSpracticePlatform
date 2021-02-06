@@ -105,12 +105,13 @@ export default {
       ],//设备列表
       total:1,
       showDel: false, //删除多选是否显示
-      perPage:24, //虚拟机每页
+      perPage:12, //虚拟机每页
       curPage:1,
       show_Release:false,//虚拟机释放弹出框显示
       release_success:false,//是否是否成功
       dialog_machine:'',
        isHasData:true,//是否有数据 默认有数据
+        type1:'',
     };
   },
   components:{nodata},
@@ -131,13 +132,13 @@ export default {
         that.searchClass();
     },
   methods: {
-      getRunContainerList(type,classId,page,perPage){
+      getRunContainerList(type,classId,page){
           let that = this;
           let obj = {};
           obj.type = type;
           obj.classId = classId;
           obj.page = page;
-          obj.perPage = perPage;
+          obj.perPage = that.perPage;
           getRunContainerList(obj).then(res=> {
               if(res.code==200){
                   that.total = res.data.total;
@@ -150,7 +151,7 @@ export default {
       },
       getAllRunContainer(){
         let that = this;
-        that.getRunContainerList(0,'',1,10);
+        that.getRunContainerList(0,'',1);
       },
       //班级列表
       searchClass() {
@@ -168,14 +169,19 @@ export default {
       //表示选择的是学生
       let that = this;
       that.className = "";
+      that.type1 = val;
       if (val == 1) {
         console.log('老师')
-        that.getRunContainerList(1,'',1,10);
+        that.getRunContainerList(1,'',1);
       }
       if (val == 2) {
         console.log('学生')
-        that.getRunContainerList(2,'',1,10);
+        that.getRunContainerList(2,'',1);
       }
+        if (val == 0) {
+            console.log('管理员')
+            that.getRunContainerList(0,'',1);
+        }
      
     },
     //班级选择事件
@@ -198,12 +204,25 @@ export default {
     },
     //底部分页
     handleCurrentChange(val) {
+     let that = this
       console.log(`当前页: ${val}`);
+        if (that.type1 == 1) {
+            console.log('老师')
+            that.getRunContainerList(1,'',val);
+        }
+        if (that.type1 == 2) {
+            console.log('学生')
+            that.getRunContainerList(2,'',val);
+        }
+        if (that.type1 == 0) {
+            console.log('管理员')
+            that.getRunContainerList(0,'',val);
+        }
     },
     upLoad() {
       this.$refs.upload.active = true;
     },
-    //虚拟机释放点击
+    //虚拟机释放点击x
     click_Release(num,id){
       let that = this;
       that.show_Release = true
