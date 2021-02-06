@@ -400,14 +400,14 @@ export default {
         connectVnc () {
             const PASSWORD = '';
 
-            const url='ws://192.168.1.38:6901/?password=vncpassword&autoconnect=true/'
+            const url='ws://192.168.1.113:6901/?password=vncpassword&autoconnect=true/'
             //const url ='ws://192.168.1.133:6080/'
             //const url ='ws://192.168.1.133:7002/vnc.html?password=123456&autoconnect=true'
            this.socket = new WebSocket('ws://192.168.1.133:6903/?password=vncpassword');
             
             console.log(this.socket)
              console.log('78999')
-          
+            
             let rfb = new RFB(document.getElementById('screen'), url, { 
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等,wsProtocols:'binary'
                 credentials: {password: '123456' },wsProtocols:'binary'
@@ -418,6 +418,7 @@ export default {
             rfb.resizeSession = true; //是一个boolean指示是否每当容器改变尺寸应被发送到调整远程会话的请求。默认情况下禁用
             console.log(rfb)
             this.rfb = rfb;
+           
            
             
         },

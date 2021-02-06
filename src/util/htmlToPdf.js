@@ -7,23 +7,35 @@ export default{
       var title = this.htmlTitle
       let dd =''
        if (num==1){
-          dd   = document.querySelector('#pdfDom')
+          dd = document.querySelector('#pdfDom')
        }
        else{
-        dd   = document.querySelector('.ql-editor')
+         dd  = document.querySelector('.ql-editor')
        }
-       console.log(dd)
-      document.body.appendChild(dd.cloneNode(true));
-       
-    this.$nextTick(() => {
-      html2Canvas(dd, {
+     
+    document.body.appendChild(dd.cloneNode(true));
+    document.body.lastChild.classList.add("html_pdfdom")
+    let pdfdom = document.querySelector('.html_pdfdom');
+    /*
+    window.pageYoffset = 0;
+    pdfdom.scrollTop = 0;
+    document.body.scrollTop = 0;
+    */
+
+    console.log(pdfdom.scrollTop)
+
+    setTimeout(() => {
+        
+  
+      html2Canvas(pdfdom, {
         allowTaint: true,
         dpi: 192,
         useCORS: true, // 如果截图的内容里有图片,解决文件跨域问题
-        scale:1,
-        height: dd.scrollHeight ,
-        width:dd.scrollWidth,
-        windowHeight:dd.scrollHeight,
+        scale:1,      
+        height: pdfdom.scrollHeight ,
+        width:pdfdom.scrollWidth,
+       
+        
       }).then(function (canvas) {
         console.log(canvas)
         let contentWidth = canvas.width
@@ -34,7 +46,7 @@ export default{
         let imgWidth = 595.28
         let imgHeight = 592.28 / contentWidth * contentHeight
         let pageData = canvas.toDataURL('image/jpeg', 1.0)
-        //document.getElementsByTagName("body")[0].innerHTML = '<img src="'+pageData+'"/>'
+        document.getElementsByTagName("body")[0].innerHTML = '<img src="'+pageData+'"/>'
         let PDF = new JsPDF('', 'pt', 'a4')
         if (leftHeight < pageHeight) {
           PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight)
@@ -50,8 +62,8 @@ export default{
         }
         PDF.save(title + '.pdf')
       })
-    })
-
+    
+    },800);
    
     }
 
