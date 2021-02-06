@@ -283,6 +283,7 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       let that = this;
+      that.curPage = val;
       that.getStudentJobList(0);
     },
 

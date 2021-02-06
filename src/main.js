@@ -21,7 +21,9 @@ import toastRegistry from './components/toast/index'
 import Base64 from './util/base64.js' 
 
 
-
+import htmlToPdf from '@/util/htmlToPdf'
+// 使用Vue.use()方法就会调用工具方法中的install方法
+Vue.use(htmlToPdf)
 Vue.use(ElementUI);
 Vue.use(toastRegistry)
 

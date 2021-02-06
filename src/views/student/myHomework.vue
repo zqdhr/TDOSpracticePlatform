@@ -320,7 +320,7 @@ export default {
       let that = this;
       let obj = {};
       obj.perPage = 100;
-      obj.page = 1;
+      obj.page = that.curPage;
       obj.assignmentId = val.assignmentId;
       obj.userId = sessionStorage.getItem("userId");
 
@@ -374,6 +374,7 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       let that = this;
+      that.curPage = val;
       that.student_getJobList(0);
     },
     //选择状态

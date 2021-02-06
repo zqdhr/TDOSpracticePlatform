@@ -85,11 +85,13 @@
         >
           <el-table-column type="selection" width="55" v-if="showDel">
           </el-table-column>
+          
           <el-table-column prop="serial_number" label="题目序号" width="150">
             <template slot-scope="scope">
               <span>{{ (curPage - 1) * perPage + scope.$index + 1 }}</span>
             </template>
           </el-table-column>
+          
           <el-table-column prop="title" label="题目详情">
             <template slot-scope="scope">
               <div class="">
@@ -107,6 +109,7 @@
               </div>
             </template>
           </el-table-column>
+         
           <el-table-column prop="answer" label="题目答案">
             <template slot-scope="scope">
               <div class="">
@@ -143,7 +146,7 @@
           </el-table-column>
           <el-table-column prop="pictureAddress" label="题目图片">
             <template slot-scope="scope">
-              <div class="" v-if="scope.row.picUrl.length > 0">
+              <div class="" v-if="scope.row.picUrl != null">
                 <span
                   class="s-text textline1 pointer"
                   @click="getPreview(scope.row.picUrl)"
@@ -154,6 +157,7 @@
           </el-table-column>
         </el-table>
       </div>
+
 
       <div class="tab-pagination">
         <el-pagination
@@ -580,6 +584,7 @@ export default {
         if (res.code == 200) {
           that.total = res.data.total;
           that.questionList = res.data.list;
+          console.log(res.data.list)
         } else {
           this.$toast(res.message, 2000);
         }
@@ -760,6 +765,8 @@ export default {
       let that = this;
 
       console.log(`当前页: ${val}`);
+
+      that.curPage = val;
 
       that.selectQuestionBackAll("");
     },

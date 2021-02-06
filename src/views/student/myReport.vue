@@ -120,7 +120,7 @@
                             <span class="space-line"></span>
                             <a class="pointer tab_atn" v-if="item.status!=1" @click="isCommit=true,singleData=item">提交</a>
                             <span class="space-line" v-if="item.status!=1"></span>
-                            <a class="pointer tab_atn">导出</a>
+                            <a class="pointer tab_atn" >导出</a>
                          </div>
                      </div>
                   </li>
@@ -159,12 +159,13 @@
             <p v-if="curStatus==2" class="p-score">
                 报告得分：{{singleData.score}}分
             </p>
-            <div class="reportMain" v-if="curStatus!=1">
+            <div class="reportMain" id="pdfDom" v-if="curStatus!=1">
                 <div v-html="yourContent"></div>
+                <a class="pointer tab_atn" @click="getPdf(1)">导出</a>
                
             </div>
-            <div>
-                <quill-editor  v-if="curStatus==1"
+            <div id="pdfDom" v-if="curStatus!=2">
+                <quill-editor  
                     v-model="yourContent" 
                     ref="myQuillEditor"  
                     :options="editorOption" 
@@ -173,10 +174,11 @@
                 </quill-editor>
             </div>
             <div class="report_detail_btnbox" v-if="curStatus==1">
-                  
+                    <a class="pointer tab_atn" @click="getPdf(2)">导出</a>
                    <a class="pointer btnDefault" @click="updateExperimentInfo">确认</a>
                 </div>
         </el-dialog>
+        
     </div>
 </template>
 <script>
@@ -252,7 +254,8 @@ export default {
                     ]
             }
         },
-        searchTx:''
+        searchTx:'',
+        htmlTitle: '页面导出PDF文件名'
       }
     },
     components:{quillEditor,noData},
