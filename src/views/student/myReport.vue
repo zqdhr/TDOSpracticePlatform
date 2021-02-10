@@ -161,7 +161,7 @@
             </p>
             <div class="reportMain" id="pdfDom" v-if="curStatus!=1">
                 <div v-html="yourContent"></div>
-                <a class="pointer tab_atn" @click="getPdf(1)">导出</a>
+                <a class="pointer tab_atn" @click="getPdf(1,singleData.name+'实验')">导出</a>
                
             </div>
             <div id="pdfDom" v-if="curStatus!=2">
@@ -174,7 +174,7 @@
                 </quill-editor>
             </div>
             <div class="report_detail_btnbox" v-if="curStatus==1">
-                    <a class="pointer tab_atn" @click="getPdf(2)">导出</a>
+                    <a class="pointer tab_atn" @click="getPdf(2,singleData.name+'实验')">导出</a>
                    <a class="pointer btnDefault" @click="updateExperimentInfo">确认</a>
                 </div>
         </el-dialog>
@@ -469,6 +469,7 @@ export default {
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
 @import url(../../assets/less/student.less);
+.pp_main{background:#f3f4fa;}
 .reportMain img{width:100%}
 .p-score{text-align: center; font-size:18px; padding-bottom: 20px;}
 </style>

@@ -40,11 +40,11 @@
 
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
-                <div class="operation_box" id="screen" v-if="1==1"  ref="imageWrapper" >
+                <div class="operation_box" id="screen" v-if="1==1"   >
                     <!--@click="connectVnc()"-->
                     <!--<a class="btn-open pointer" v-if="!isOpen" @click="isOpen=true">点击开启全部虚拟机</a>-->
                    <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">点击开启全部虚拟机</a>
-                   <!--<iframe src="http://192.168.1.31:6901/?password=vncpassword&autoconnect=true/" ref="frameWrapper"  />-->
+                   <iframe src="http://192.168.1.31:6901/?password=vncpassword&autoconnect=true/"  data-html2canvas-ignore='true' />
                    
                 </div>
                 <xterm :socketURI="socketURI" v-if="1==0"></xterm> 
@@ -517,15 +517,15 @@ export default {
             }
             console.log(document.getElementById('screen').offsetWidth)
             // eslint-disable-next-line no-undef
-           
+           /*
             const iframeHtml = this.$refs.frameWrapper.contentWindow // 获取iframe内容
             console.log(this.$refs.frameWrapper.contentWindow )
             const iframeBody = iframeHtml.document.getElementsByTagName('body')[0]
-            
+            */
             //that.$refs.imageWrapper
             console.log(document.getElementById('noVNC_status_bar'))
         
-            html2canvas(iframeBody, opts).then((canvas) => {
+            html2canvas(document.getElementById('screen'), opts).then((canvas) => {
                 var url = canvas.toDataURL('image/png')
                 that.dataURL = url
                 that.yourContent =that.yourContent+ '<p><img src="'+that.dataURL+'"/></p>'

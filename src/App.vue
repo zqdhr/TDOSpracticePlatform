@@ -61,6 +61,7 @@ window.addEventListener("beforeunload",()=>{
   width:100%;height: 100%;
  
   font-weight: normal; font-style: normal;
+
   
 }
 input,select,ul,li,textarea{
