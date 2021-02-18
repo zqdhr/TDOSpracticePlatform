@@ -248,11 +248,17 @@ export default {
             obj.course_id = that.$route.query.courseId;
 
             //that.startTime=that.startTime.getFullYear() + '-' + (that.startTime.getMonth() + 1) + '-' + that.startTime.getDate();
-           
+            if(that.startTime == ''){
+              return this.$toast('开课开始时间不能为空',2000)
+            }
+             if(that.endTime == ''){
+              return this.$toast('开课结束时间不能为空',2000)
+            }
             obj.start = that.startTime;
             //that.endTime=that.endTime.getFullYear() + '-' + (that.endTime.getMonth() + 1) + '-' + that.endTime.getDate();
            
             obj.end = that.endTime;
+          
             obj.user_id_list = [];
             console.log(JSON.stringify(obj))
             modifyCourseStatus(JSON.stringify(obj)).then(res=> {
