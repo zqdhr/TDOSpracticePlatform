@@ -204,7 +204,20 @@ export default {
         },
         //教师开课
         openClass(){
-
+            let that = this;
+            let obj = {}
+            obj.owner_id = sessionStorage.getItem("userId")
+            obj.classIds =  [];
+            obj.course_id = this.$route.query.courseId;
+            obj.start = '';
+            obj.end = '';
+            modifyCourseStatus(obj).then(res=> {
+                if(res.code==200){
+                    alert("111")
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
         },
         //章节下拉显示添加参数
         addParamShow(array){

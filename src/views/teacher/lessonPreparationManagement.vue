@@ -100,14 +100,14 @@ export default {
     methods:{
         getCourseListByUserId(){
             let that = this;
-            that.courseListByUserId(1,10);
+            that.courseListByUserId();
         },
-        courseListByUserId(per_page,page){
+        courseListByUserId(){
             let that = this;
             let obj = {};
             obj.user_id = sessionStorage.getItem("userId");
-            obj.page = page;
-            obj.per_page = per_page;
+            obj.page = that.curPage;
+            obj.per_page = that.perPage;
             getCourseListByUserId(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;

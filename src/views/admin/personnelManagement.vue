@@ -500,6 +500,20 @@ export default {
     //信息确认修改
     editUserInfo(){
       let that = this;
+      if(that.userInfo.name == null || that.userInfo.name == ''){
+        this.$toast("姓名不能为空",3000);
+        return false;
+      }
+      var p = /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+      if(!p.test(that.userInfo.identificationNumber)){
+        this.$toast("身份证号错误",3000);
+        return false;
+      }
+      var phone = that.userInfo.phoneNumber;
+      if(!(/^1[3456789]d{9}$/.test(phone))){
+        this.$toast("手机号码错误",3000);
+        return false;
+      }
       let obj = {};
       obj.user_id = that.userInfo.id;
       obj.name = that.userInfo.name;
@@ -510,6 +524,7 @@ export default {
       console.log(JSON.stringify(obj));
       modifyUser(JSON.stringify(obj)).then(res=>{
         if(res.code==200){
+          this.$toast("信息确认修改成功",2000)
           that.editDialog = false;
           that.searchUser(that.type, that.searchText, that.className, that.curPage, 10);
         }else{
@@ -517,7 +532,6 @@ export default {
         }
       })
       console.log(that.userInfo.id)
-      console.log('信息确认修改')
     },
     //性别改变
     changeSex(selVal){

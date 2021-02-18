@@ -77,7 +77,7 @@
    </div>
 </template>
 <script>
-
+import {modifyCourseStatus,getStudentsByClasses} from '@/API/api';
 export default{
   
     data(){
@@ -103,6 +103,9 @@ export default{
     props:{
         studentsList:{
             default:[]
+        },
+        classList:{
+            default: []
         }
     },
 
@@ -126,11 +129,47 @@ export default{
     methods:{
          //底部分页
         handleCurrentChange(val) {
-          console.log(`当前页: ${val}`);
+            let that = this;
+            let obj = {}
+            let classIds = [];
+            obj.per_page = that.perPage
+            obj.page = val
+            for(let i = 0;i<that.classList.length;i++){
+                classIds.push(that.classList[i].id)
+            }
+            obj.classIds = classIds
+            getStudentsByClasses(obj).then(res=> {
+                if(res.code==200){
+                    alert("qwe")
+                    that.studentList = res.data
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
         },
         //选择学生确认
         chooseStudent(){
-            this.$emit('sureStudent');   
+            this.$emit('sureStudent');
+            let that = this;
+            let obj = {}
+            obj.owner_id = sessionStorage.getItem("userId")
+            let user_id_list = [];
+            console.log(that.studentsList.list)
+            for(let i = 0;i<that.studentsList.list.length;i++){
+                user_id_list.push(that.studentsList.list[i].userId);
+            }
+            obj.user_id_list =  user_id_list;
+            obj.start = '';
+            obj.end = '';
+            obj.course_id = this.$route.query.courseId;
+            console.log(obj)
+            modifyCourseStatus(obj).then(res=> {
+            if(res.code==200){
+                alert("111")
+            }else{
+                that.$toast(res.message,3000)
+            }
+            })
         },
         //返回班级列表
         backClass(){
