@@ -34,7 +34,7 @@
                 <div  class="textline1 cha_title new_cha_title" :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="!item.id" >
                      <span class="s_name">章节{{index+1}}：</span>
                      <div class="din">
-                         <input type="text" placeholder="请输入章节" v-model="item.name"/>
+                         <input type="text" placeholder="请输入章最多16个字符"  v-model="item.name" maxlength="16" autocomplete="off"/>
                          <!--已保存添加s-saved-->
                          <span class="s-state s-Not_saved" :class="{'s-saved':1==1}">未保存</span>
                      </div>
@@ -77,7 +77,7 @@
                                 <div class="sec_name textline1 new_sec_name">
                                     <span class="textline1">第{{iindex+1}}节：</span>
                                     <div class="din">
-                                        <input placeholder="请输入节名称" v-model="iitem.name"/>
+                                        <input placeholder="请输入节最多14个字符" type="text"  v-model="iitem.name" maxlength="14" autocomplete="off"/>
                                     </div>
                                 </div>
                                 <a class=" a_delete" @click="deleteSection(index,iindex)"></a>
@@ -99,7 +99,7 @@
                                             <div class="sec_name textline1 ">
                                                 <span class="textline1">第{{i_index+1}}小节：</span>
                                                 <div class="din">
-                                                    <input placeholder="请输入小节名称" v-model="i_item.name"/>
+                                                    <input placeholder="请输入小节名称最多12个字符" type="text" v-model="i_item.name" maxlength="12" autocomplete="off"/>
                                                 </div>
                                                 <a class=" a_delete" @click="deleteSmallSection(index,iindex,i_index)"></a>
                                             </div>

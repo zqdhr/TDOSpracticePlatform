@@ -89,7 +89,7 @@
         
         <!--小节作业不存在-->
         <div class="noData_box" v-if="noData && status == 1">
-            <p class="mess">当前小节下暂无作业，请点击下方新增作业按钮。</p>
+            <p class="mess">当前节下暂无作业，请点击下方新增作业按钮。</p>
             <div><a class="btnDefault pointer"  @click="isnewJobName =true">新增作业</a></div>
         </div>
       </div>

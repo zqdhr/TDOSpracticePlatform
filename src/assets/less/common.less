@@ -166,7 +166,7 @@ a,a:hover{text-decoration: none;}
 .v-middle{display: table-cell; vertical-align:middle;}
 /*课程详情scroll*/
 .content_el-scrollbar{
-  height:30%;
+  height:110px;
   .el-scrollbar__wrap{overflow-x: hidden;}
 }
 
@@ -461,16 +461,20 @@ p{
 }
 }
 
+
+.el-scrollbar.is-empty .el-select-dropdown__wrap { 
+  height:0 
+}
 @media screen and (max-width:1600px){
   .content_el-scrollbar{
-    height:24%;
+    height:130px;
     .el-scrollbar__wrap{overflow-x: hidden;}
   }
 }
 
 @media screen and (max-width:1470px){
   .content_el-scrollbar{
-    height:23%;
+    height:100px;
     .el-scrollbar__wrap{overflow-x: hidden;}
   }
 }

@@ -66,7 +66,7 @@
     <el-dialog
       
       :visible.sync="show_Release"
-      width="600px">
+      width="500px">
       <div slot="title" class="dialog_header">
           请注意!
       </div>
@@ -227,10 +227,10 @@ export default {
       let that = this;
       that.show_Release = true
       that.release_success = false
-        that.type = num;
+      //that.type = num;
       if(num==1){
-    
-        that.type == 1?that.dialog_machine ='确定要一键释放所有学生内存吗？':that.type==2?that.dialog_machine ='确定要一键释放所有老师内存吗？':that.dialog_machine ='确定要一键释放所有内存吗？'
+        console.log(that.type)
+        that.type == 1?that.dialog_machine ='确定要一键释放所有老师内存吗？':that.type==2?that.dialog_machine ='确定要一键释放所有学生内存吗？':that.dialog_machine ='确定要一键释放所有内存吗？'
         
       }else{
           that.id = id
