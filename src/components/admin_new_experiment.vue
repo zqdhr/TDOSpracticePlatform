@@ -4,6 +4,7 @@
       class="dialog_pagination admin_dialog_newExperiment"
       :visible.sync="isNew_experiment"
       width="1100px"
+      @close="cleanData"
     >
       <div slot="title" class="dialog_header">新增实验</div>
       <div class="newdialog_body">
@@ -88,7 +89,7 @@
                       </div>
                     </div>
                     <p class="mess">
-                      （上传图片比例为360x200的，支持png.jpg.jpeg）
+                      （上传图片比例为360x200的，支持.png.jpg.gif.webp）
                     </p>
                   </div>
                   <div class="bupload_btn_box">
@@ -318,7 +319,7 @@ export default {
         advice: "",
         report: "",
         task: "",
-        cover: "/data2/pic/45cf2cd8-d9ce-4803-b80a-d836e6e68550-5.png",
+        cover: "",
         cateId:'',
         images:[]
         
@@ -328,7 +329,8 @@ export default {
  
       category:[],//实验所属分类
       categoryOptions: [],
-      inplaceholder: "请输入实验名称",
+      multipleSelection:[],
+      inplaceholder: "请输入镜像名称",
       isNew_experiment: false,
       uploadUrl: "",
       jwt: "",
@@ -486,7 +488,7 @@ export default {
     /*tab选择 */
     handleSelectionChange(val) {
       let that = this
-      this.multipleSelection = val;
+      that.multipleSelection = val;
       that.form.images=[]
       for (let index = 0; index < val.length; index++) {
         that.form.images.push(val[index].id)
@@ -643,6 +645,21 @@ export default {
 
 
     },
+    //清除数据
+    cleanData(){
+      let that = this
+      that.category = []
+      that.curIndex =1
+      that.form.name= ''
+      that.yourContent= ''
+      that.form.duration= ''
+      that.form.cateId= ''
+      that.form.introduction =''
+      that.form.images=[]
+      that.files=[]
+      that.form.cover=''
+      that.multipleSelection=[]
+    },
     //新增实验
     commitExprement(){
         let that = this
@@ -660,13 +677,6 @@ export default {
            if(res.code==200){                  
                 that.isNew_experiment = false
                 that.$parent.findExperiment(1)
-                that.form.name= ''
-                that.yourContent= ''
-                that.form.duration= ''
-                that.form.cateId= ''
-                that.form.introduction =''
-                that.form.images=[]
-                that.form.cover=''
                 that.innerVisible = false
             }else{
               console.log(res.message)
