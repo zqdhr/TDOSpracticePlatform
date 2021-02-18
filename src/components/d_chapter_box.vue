@@ -21,7 +21,7 @@
                         
                     </div>
                      <!--已保存添加s-saved-->
-                     <span class="s-state s-Not_saved" :class="{'s-saved':1==1}" v-if="item.id == ''">未保存</span>
+                     <span class="s-state s-Not_saved" :class="{'s-saved':1==1}" >已保存</span>
 
                     <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
                       <a class="a_save pointer" @click="addChapters(index)"  v-if="item.id == ''"></a>
@@ -34,9 +34,9 @@
                 <div  class="textline1 cha_title new_cha_title" :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="!item.id" >
                      <span class="s_name">章节{{index+1}}：</span>
                      <div class="din">
-                         <input type="text" placeholder="请输入章最多16个字符"  v-model="item.name" maxlength="16" autocomplete="off"/>
+                         <input type="text" placeholder="请输入章最多16个字符"   v-model="item.name" maxlength="16" autocomplete="off"/>
                          <!--已保存添加s-saved-->
-                         <span class="s-state s-Not_saved" :class="{'s-saved':1==1}">未保存</span>
+                         <span class="s-state s-Not_saved" :class="{'s-saved':1==0}">未保存</span>
                      </div>
                       
                       <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
@@ -136,7 +136,7 @@
         -->
 
          <!--删除弹出框-->
-        <el-dialog :visible.sync="isDelete" width="600px">
+        <el-dialog :visible.sync="isDelete" width="500px">
         <div slot="title" class="dialog_header">请注意!</div>
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
@@ -162,42 +162,42 @@
       class="personDialog"
       
     >
-    <div slot="title" class="dialog_header">{{editTitle}}</div>
+    <div slot="title" class="dialog_header">{{num==1?'章修改':num==2?'节修改':'小节修改'}}</div>
 
       <div class="editMain" >
         <el-form ref="form" label-width="60px">
           <el-form-item label="名称">
-            <el-input v-model="editValue"></el-input>
+            <el-input v-model="editValue" :placeholder="edit_placeholder" :maxlength="editTitle==1?16:editTitle==2?14:12"></el-input>
           </el-form-item>
         
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
         <button class="btnDefault" @click="isEdit = false">取消</button>
-        <button class="btnDefault" @click="modify">确认修改</button>
+        <button class="btnDefault" @click="modify(editValue)">确认修改</button>
       </span>
     </el-dialog>
 
 <!--新建弹出框-->
         <el-dialog
 
-                :visible.sync="isAdd"
-                width="600px"
-                class="personDialog"
+        :visible.sync="isAdd"
+        width="560px"
+        class="personDialog"
 
         >
-            <div slot="title" class="dialog_header">{{addTitle}}</div>
+            <div slot="title" class="dialog_header">{{addTitle==1?'新建节':'新建小节'}}</div>
 
             <div class="editMain" >
                 <el-form ref="form" label-width="60px">
                     <el-form-item label="名称">
-                        <el-input v-model="addValue"></el-input>
+                        <el-input v-model="addValue" :maxlength='addTitle==1?14:12' :placeholder='addTitle==1?"请输入节最多14个字符":"请输入小节最多12个字符"'></el-input>
                     </el-form-item>
 
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-        <button class="btnDefault" @click="isAdd = false">取消</button>
+        <button class="btnDefault" @click="isAdd = false;addValue=''">取消</button>
         <button class="btnDefault" @click="addChaptersOrSections">确认添加</button>
       </span>
         </el-dialog>
@@ -209,14 +209,16 @@
 <script>
 import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,removeChapter,removeSection,removeSmallSection,addSection,addSmallSection} from '@/API/api';
 export default{
+    inject:['reload'],
     data(){
         return{
             isDelete:false,
             deleteMess:'',
             course_Id:'',
-            editTitle:'章修改',
+            editTitle:0, //1表示章修改，2表示节修改，3表示小节修改
+            edit_placeholder:'',
             editValue:'',
-            addTitle:'',
+            addTitle:0, //1表示弹出框是新建节，2表示弹出框是新建小节
             addValue:'',
             editId:'',
             isEdit:false,
@@ -313,7 +315,9 @@ export default{
                     that.chaptersId = '';
                     that.sectionId = '';
                     that.smallSectionId = '';
-                    that.getCourseById();
+                    //that.$emit('getCourseById')
+                    that.reload();
+                   
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -330,7 +334,8 @@ export default{
                     that.chaptersId = '';
                     that.sectionId = '';
                     that.smallSectionId = '';
-                    that.getCourseById();
+                    //that.$emit('getCourseById')
+                    that.reload();
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -347,7 +352,8 @@ export default{
                     that.chaptersId = '';
                     that.sectionId = '';
                     that.smallSectionId = '';
-                    that.getCourseById();
+                    //that.$emit('getCourseById')
+                    that.reload();
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -360,13 +366,13 @@ export default{
             if(that.deleteStatus == 1){
                 that.deleteStatus = '';
                 if( that.smallSectionNum === '' && that.sectionNum === ''){
-                    alert("删除章")
+                    
                     that.removeChapter(that.chaptersId)
                 }else  if( that.smallSectionNum === '' && that.sectionNum !== ''){
-                    alert("删除节")
+                    
                     that.removeSection(that.sectionId)
                 } else  if( that.smallSectionNum !== ''){
-                    alert("删除小节")
+                    
                     that.removeSmallSection(that.smallSectionId)
                 }
             }else {
@@ -412,27 +418,32 @@ export default{
            that.index = index;
            let tmp = that.chapters[index].sections.length;
            if(obj.status==1){
-               console.log('已有')
-               that.addTitle = "新建节"
+   
+               that.addTitle = 1
                that.isAdd = true;
            }else{
               that.chapters[index].sections.push({name:'',order:tmp,show:false,small_sections:[]})
            }
         },
-        //确认添加章或节
+        //确认添加节或小节
         addChaptersOrSections(){
             let that = this
             let obj ={};
+            if(that.addValue==''){
+                return that.$toast(that.addTitle==1?'新建节不能为空':'新建小节不能为空',2000)
+            }
+
             if(that.index !== '' && that.iindex === ''){
                 obj.section_name = that.addValue;
                 obj.chapter_id = that.chapters[that.index].id;
                 obj.course_id = this.$route.query.courseId;
+                
                 addSection(JSON.stringify(obj)).then(res=> {
                     that.index = '';
                     that.addValue = '';
                     if(res.code==200){
                         that.isAdd = false;
-                        that.getCourseById();
+                        that.reload();
                     }else{
                         that.$toast(res.message,3000)
                     }
@@ -449,7 +460,7 @@ export default{
                     that.addValue = '';
                     if(res.code==200){
                         that.isAdd = false;
-                        that.getCourseById();
+                        that.reload();
                     }else{
                         that.$toast(res.message,3000)
                     }
@@ -460,15 +471,15 @@ export default{
         },
         /*显示小节 */
         showSection_children(index,item,show){
-            console.log(index)
+            //console.log(index)
            let that = this;
            let tmp = that.chapters[index].sections;
-           console.log(tmp)
+  
            for(var i =0;i<tmp.length;i++){
                that.$set(that.chapters[index].sections[i],'show',false)
            }
            that.$set(item,'show',!show)
-           console.log(that.chapters)
+           //console.log(that.chapters)
         },
         /*新建小节 */
         click_new_section(index,iindex,item){
@@ -477,8 +488,8 @@ export default{
           that.iindex = iindex;
             let tmp = that.chapters[index].sections[iindex].small_sections.length;
             if(item.status==1){
-                console.log('已有')
-                that.addTitle = "新建小节"
+                
+                that.addTitle = 2
                 that.isAdd = true;
             }else{
                 that.chapters[index].sections[iindex].small_sections.push({name:'',order:tmp,show:false})
@@ -487,34 +498,34 @@ export default{
         addChapters(index){
             let that = this;
             let obj = {};
-            console.log(index)
+           
             obj.course_id = that.courseId
             obj.chapter = that.chapters[index];
-            console.log(obj)
+           
             insertCourseChapterCompleted(JSON.stringify(obj)).then(res=> {
                 if(res.code==200){
-                    that.getCourseById();
+                   that.reload();
                 }else{
                     that.$toast(res.message,3000)
                 }
             })
         },
         addNewChapters(index){
-            let that = this;
-            console.log(index)
-            console.log(that.chapters[index])
+            let that = this;  
             let obj = {};
-            console.log(index)
             obj.course_id = that.courseId
             obj.chapter = that.chapters[index];
-            console.log(obj)
+            if(obj.chapter.name==''){
+               return that.$toast('新建章不能为空',2000)
+            }          
             insertCourseChapterCompleted(JSON.stringify(obj)).then(res=> {
                 if(res.code==200){
-                    that.getCourseById();
+                   that.reload();
                 }else{
                     that.$toast(res.message,3000)
                 }
             })
+            
         },
         //点击编辑
         edit(num,id,text,index,iindex,i_index){
@@ -526,39 +537,26 @@ export default{
             that.iindex = iindex
             that.i_index = i_index
             that.num = num
-            console.log(index)
-            //章
-           if(num==1){
-              that.editTitle = "章修改"
-              console.log(text)
-           }
-           //节
-           if(num==2){
-               that.editTitle = "节修改"
-              console.log(text)
-           }
-           //小节
-           if(num==3){
-              that.editTitle = "小节修改"
-              console.log(text)
-           }
+            //num 1章  2节   3小节
+        
+            num==1?that.edit_placeholder = '章名称最多16个字符':num==2?that.edit_placeholder = '节名称最多14个字符':that.edit_placeholder = '小节名称最多12个字符'
+          
         },
-        modify(){
+        modify(text){
             let that = this;
-            console.log(that.num)
+            if(text==''){
+               return that.$toast('修改值不能为空',2000)
+            }
             //章
             if(that.num==1){
-                console.log(that.editValue)
                 that.chapters[that.index].name = that.editValue;
             }
             //节
             if(that.num==2){
-                console.log(that.editValue)
                 that.chapters[that.index].sections[that.iindex].name = that.editValue;
             }
             //小节
             if(that.num==3){
-                console.log(that.editValue)
                 that.chapters[that.index].sections[that.iindex].small_sections[that.i_index].name = that.editValue;
             }
             that.isEdit = false;
@@ -604,7 +602,7 @@ export default{
              width:20px;height:20px;display: block;position: absolute;top:50%;margin-top: -10px;
             background: url(../assets/img/icon_del.png)  center no-repeat;cursor: pointer; right:56px}
          .a_delete_exist{right:84px}
-        .din{display: inline-block; width: 88%;
+        .din{display: inline-block; width: 80%;
           input{font-size: 18px;color: #6666; width:90%; background: 0 none;color:#333; line-height: 40px;}
         }
 

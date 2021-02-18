@@ -53,7 +53,7 @@
         <el-dialog
 
                 :visible.sync="show_dialog_file"
-                width="600px">
+                width="500px">
             <div slot="title" class="dialog_header">
                 备课
             </div>

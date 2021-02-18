@@ -159,7 +159,7 @@ export default {
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
         that.courseId = that.$route.query.courseId;
         that.navindex = that.$store.state.teacherNavindex;
-        console.log(that.$store.state.teacherNavindex)
+        //console.log(that.$store.state.teacherNavindex)
     },
     beforeDestroy(){
         let that = this;
@@ -226,7 +226,7 @@ export default {
             for(var i=0;i<array.length;i++){
                 this.$set(array[i], 'show', false);
                 if(i == array.length-1){
-                    alert(i)
+                    //alert(i)
                     that.$set(array[i], 'lastNum', 0)
                 }
                 array[i].status = 1
