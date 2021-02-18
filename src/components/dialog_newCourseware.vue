@@ -514,7 +514,7 @@ export default {
           let obj = {};
           obj.name = that.files[0].file.name;
           obj.type = 0;
-          obj.kind = type;
+          obj.kind = that.extension == 'pdf' ?1 : 0;
           obj.url = that.picUrl;
           obj.duration = that.time;
           obj.size = that.size;

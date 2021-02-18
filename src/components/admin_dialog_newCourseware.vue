@@ -263,20 +263,21 @@ export default {
         return;
       }
       let obj= new FormData()
-      let type = that.extension == 'pdf'?1:2
+      let type = that.extension == 'pdf'?2:1
       obj.append('type',type)
       obj.append('file',file)
       console.log(obj)
       alert(that.files[0].file.name)
       upload(obj).then(res=>{
         if (res.code==200) {
+          alert("上传服务器成功")
           that.picUrl = res.data.name;
           that.size = res.data.size;
           that.time = res.data.time;
           let obj = {};
           obj.name = that.files[0].file.name;
           obj.type = 0;
-          obj.kind = type;
+          obj.kind = that.extension == 'pdf'?1:0;
           obj.url = that.picUrl;
           obj.duration = that.time;
           obj.size = that.size;
@@ -294,7 +295,7 @@ export default {
         }else {
           that.$toast(res.message,3000)
         }
-      })
+      }).catch(res => {alert(JSON.stringify(res))})
 
     },
 

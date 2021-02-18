@@ -57,10 +57,16 @@ export default{
         
         that.searchClass();
     },
+    props: {
+        classesList: {
+            default: 0,
+        },
+    },
     methods:{
         
         //班级列表添加选中的状态
         addParamcheck(array){
+            console.log(array)
          let that = this;
           for(var i=0;i<array.length;i++){
               that.$set(array[i], 'checked', 0)
@@ -70,6 +76,7 @@ export default{
         //班级列表
         searchClass(){
             let that = this;
+            console.log("1213"+that.classesList)
             searchClass().then(res=> {
                 if(res.code==200){
                     that.classList = res.data

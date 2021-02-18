@@ -34,7 +34,7 @@
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
                                 <div class="btnbox">
-                                    <a class="btnDefault pointer btn-course" @click="openClass">确认开课</a>
+                                    <a class="btnDefault pointer btn-course" @click="openClass" v-if="status == 1">确认开课</a>
                                 </div>
                              </div>
                          </div>
@@ -84,7 +84,7 @@
                 </div>
                 
                 <!--班级列表-->
-                <classList v-if="navindex==2" @sureCheckClass="sureCheckClass" ></classList>
+                <classList v-if="navindex==2" @sureCheckClass="sureCheckClass" :classesList = "classesList"></classList>
 
         
                 
@@ -149,7 +149,9 @@ export default {
             showStudentList:false,//是否显示学生列表
             courseId:'',
             course:'111',
-            courseChapters:[]
+            courseChapters:[],
+            classesList:[],
+            status:0
             
         }
     },
@@ -195,6 +197,8 @@ export default {
                         that.time = '暂无设置时间';
                     }
                     that.course = res.data
+                    that.status = res.data.status
+                    that.classesList = res.data.classesList
                     that.courseChapters = res.data.chapters
                     that.addParamShow(that.courseChapters)
                 }else{

@@ -102,7 +102,7 @@ export default {
             getAdminCourseList(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list
-                    that.totalCourse = res.data.size
+                    that.totalCourse = res.data.total
                 }else{
                     that.$toast(res.message,3000)
                 }
