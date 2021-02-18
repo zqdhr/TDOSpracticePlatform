@@ -419,6 +419,10 @@ var stduentUploadNotes = function(data){
 var deleteChapterSectionCourseById = function(data){
 	return axios.post('/deleteChapterSectionCourseById', data,{headers: {'Content-Type':'application/json'}})
 }
+//学生删除笔记
+var delete_remark =function(params){
+	return axios.delete('/delete_remark', {data:params} )
+}
 
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
@@ -431,7 +435,7 @@ export{
 	deleteCoursewareById,getRunContainerByTeacher,execContainer,get_chapter_by_id,createContainers,removeContainers,modifyAssignmentNameById
 	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
-	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById
+	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
 }
 
 function getJson (data) {

@@ -44,7 +44,7 @@
                     <!--@click="connectVnc()"-->
                     <!--<a class="btn-open pointer" v-if="!isOpen" @click="isOpen=true">点击开启全部虚拟机</a>-->
                    <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">点击开启全部虚拟机</a>
-                   <!--<iframe src="http://192.168.1.133:6080/" ref="frameWrapper"/>-->
+                   <!--<iframe src="http://192.168.1.133:6080/" ref="frameWrapper" />-->
                 </div>
                 <xterm :socketURI="socketURI" v-if="1==0"></xterm> 
                 <!--
@@ -137,12 +137,9 @@ import RFB from '@novnc/novnc/core/rfb';
 
 
 import { quillEditor } from "vue-quill-editor"; //调用编辑器
-
-
- import html2canvas from 'html2canvas';
-
- import xterm from '@/components/Xterminal.vue'
- import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor,hasExperimentReport} from "@/API/api";
+import html2canvas from 'html2canvas';
+import xterm from '@/components/Xterminal.vue'
+import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor,hasExperimentReport} from "@/API/api";
 
 
 

@@ -27,8 +27,9 @@
                 :placeholder="inplaceholder"
                 type="text"
                 autocomplete="off"
+                v-model="searchRemark"
               />
-              <a class="searchBtn pointer"></a>
+              <a class="searchBtn pointer" @click="getNote(searchRemark)"></a>
             </div>
           </div>
         </div>
@@ -92,7 +93,7 @@
         </p>
       </div>
       <div slot="footer" class="dialog-footer">
-        <a class="btnDefault">确 认</a>
+        <a class="btnDefault" @click="confirmDel">确 认</a>
         <a
           class="btnDefault"
           @click="
@@ -233,15 +234,17 @@ import {
   student_getCourseList,
   getStudentsNotes,
   stduentUploadNotes,
+  delete_remark,
 } from "@/API/api";
 
 //pdf
 import pdf from "vue-pdf";
-import CMapReaderFactory from 'vue-pdf/src/CMapReaderFactory.js';
+import CMapReaderFactory from "vue-pdf/src/CMapReaderFactory.js";
 
 export default {
   data() {
     return {
+      searchRemark: "",
       titleText: "",
       contentText: "",
       total: 0,
@@ -316,6 +319,32 @@ export default {
   },
 
   methods: {
+    //确认删除
+    confirmDel() {
+      let that = this;
+
+      // that.selectNotes
+      // alert(JSON.stringify(that.selectNotes));
+
+      let obj = {};
+      obj.remark_id_list = that.selectNotes;
+
+      delete_remark(obj)
+        .then((res) => {
+          if (res.code == 200) {
+            that.selectNotes = [];
+            that.isShowCheck = false;
+            that.getNote("");
+            that.isDelete = false;
+            that.$toast("删除成功！", 3000);
+          } else {
+            that.$toast(res.message, 3000);
+          }
+        })
+        .catch((err) => {
+          alert(JSON.stringify(err));
+        });
+    },
     //保存笔记
     submitNote() {
       let that = this;
@@ -368,7 +397,7 @@ export default {
             that.total = res.data.total;
             that.notesList = res.data.list;
 
-            console.log(JSON.stringify(res));
+            // alert(JSON.stringify(res));
           } else {
             that.$toast(res.message, 3000);
           }
@@ -418,6 +447,8 @@ export default {
     changeLevel1(val) {
       let that = this;
       that.getNote("");
+      that.selectNotes = [];
+      that.isShowCheck = false;
     },
 
     //点击删除
@@ -474,7 +505,10 @@ export default {
       } else {
         that.jumpPage = item.remark_page;
         that.$nextTick(function () {
-          that.url = this.pdfUrl = pdf.createLoadingTask({ url: that.$store.state.pic_Url + that.momentMod.url, CMapReaderFactory });
+          that.url = this.pdfUrl = pdf.createLoadingTask({
+            url: that.$store.state.pic_Url + that.momentMod.url,
+            CMapReaderFactory,
+          });
           that.loadPdfHandler();
         });
       }

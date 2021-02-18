@@ -157,11 +157,11 @@
         <el-dialog width='1100px' :visible.sync="isReport" class="report_detail_dialog">
             <div slot="title" class="dialog_header">{{singleData.name}}实验---{{singleData.userName}}提交</div>
             <p v-if="curStatus==2" class="p-score">
-                报告得分：{{singleData.score}}分
+                报告得分：{{singleData.score}}分  <a class="pointer tab_atn" @click="getPdf(1,singleData.name+'实验')">导出</a>
             </p>
-            <div class="reportMain" id="pdfDom" v-if="curStatus!=1">
+            <div class="reportMain"  v-if="curStatus!=1"  id="pdfDom">
                 <div v-html="yourContent"></div>
-                <a class="pointer tab_atn" @click="getPdf(1,singleData.name+'实验')">导出</a>
+                
                
             </div>
             <div id="pdfDom" v-if="curStatus!=2">

@@ -167,18 +167,14 @@ const routes = [
     name: 'experiment1',
     component: () => import('../views/experiment1.vue')
   },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  },
+
   {
     path: '/login',//页面登录
     name: 'login',
     component: () => import(/* webpackChunkName: "about" */ '../views/login.vue')
   },
   {
-    path: '/operation',//页面登录
+    path: '/operation',//页面操作
     name: 'operation',
     component: () => import(/* webpackChunkName: "about" */ '../views/operation.vue')
   }
