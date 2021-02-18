@@ -88,7 +88,7 @@ var modifyCourseStatus = function(data){
 
 //查询管理员没有发布的课程
 var getAdminUnpublishedCourseList = function(data){
-	return axios.get('/get_admin_unpublished_course_list?user_id='+data.user_id+'&per_page='+data.per_page+'&page='+data.page+'&name='+data.name)
+	return axios.get('/get_admin_course_list_by_status?user_id='+data.user_id+'&per_page='+data.per_page+'&page='+data.page+'&name='+data.name+'&status='+data.status)
 }
 
 //管理员查询已归档的课程
@@ -424,6 +424,11 @@ var delete_remark =function(params){
 	return axios.delete('/delete_remark', {data:params} )
 }
 
+//教师备课
+var prepareCourse = function(data){
+	return axios.post('/prepare_course', data,{headers: {'Content-Type':'application/json'}})
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -436,6 +441,7 @@ export{
 	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
+	,prepareCourse
 }
 
 function getJson (data) {

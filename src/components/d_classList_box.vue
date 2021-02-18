@@ -24,13 +24,13 @@
         </div>
         <!--已开课班级列表不可编辑-->
         <div class="btnbox">
-            <a class="btnDefault pointer" @click="sureCheckClass" >确认选择</a>
+            <a class="btnDefault pointer" @click="sureCheckClass" >查看</a>
         </div>
    </div>
    </template>
  
     <!--学生列表-->
-    <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="isStudent" :studentsList="list"></studentList>
+    <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="isStudent" :studentsList="list" :classList = this.checkedList></studentList>
 
    </div>
 </template>

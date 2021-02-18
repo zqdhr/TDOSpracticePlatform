@@ -127,6 +127,7 @@ export default {
                per_page:6,
                page:1,
                name:'',
+               status:'',
             }
        }
     },

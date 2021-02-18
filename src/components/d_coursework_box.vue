@@ -525,13 +525,25 @@ export default {
     showQuestion() {
       let that = this;
       that.showQuestionBank = false;
-      console.log(that.chooseList)
+      var temp = []; //一个新的临时数组
+      var res = [];
+      console.log(that.courseList)
       if (that.courseList.length == 0) {
         that.courseList = that.chooseList
       } else {
-        for (let i = 0; i < that.chooseList.length; i++) {
-          that.courseList.push(that.chooseList[i])
+        for(let i = 0; i < that.courseList.length; i++){
+          if(temp.indexOf(that.courseList[i].id) == -1){
+            temp.push(that.courseList[i].id);
+            res.push(that.courseList[i]);
+          }
         }
+        for(let i = 0; i < that.chooseList.length; i++){
+          if(temp.indexOf(that.chooseList[i].id) == -1){
+            temp.push(that.chooseList[i].id);
+            res.push(that.chooseList[i]);
+          }
+        }
+        that.courseList = res
       }
       console.log(that.courseList)
     },
@@ -544,7 +556,7 @@ export default {
       alert(that.assignmentId)
       let totalscore = 0;
       for(let i =0;i<that.courseList.length;i++){
-        totalscore += that.courseList[i].score
+        totalscore += parseInt(that.courseList[i].score)
       }
       if(totalscore > 100){
         this.$toast("总分值大于100,请修改",3000)
@@ -644,6 +656,7 @@ export default {
     //点击新增题目
     click_new() {
       let that = this;
+      that.chooseList = [];
       that.showQuestionBank = true;
       that.addState(that.all_courseList);
       that.deleteList = [];

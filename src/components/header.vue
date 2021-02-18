@@ -150,7 +150,8 @@ export default {
     logOut(){
       let that = this;
      
-     window.sessionStorage.removeItem('store')
+      window.sessionStorage.removeItem('store')
+      window.sessionStorage.removeItem('userId')
       let authority = sessionStorage.getItem('p_p-authority') ;
       if(authority==2){
           window.sessionStorage.removeItem('p_p-admin_userName')
