@@ -121,7 +121,7 @@
         </div>
 
          <!--课程暂未新建退出-->
-        <el-dialog :visible.sync="isNewComplete" width="600px">
+        <el-dialog :visible.sync="isNewComplete" width="500px">
         <div slot="title" class="dialog_header">请注意!</div>
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
@@ -135,7 +135,7 @@
         </div>
         </el-dialog>
         <!--点击大纲删除按钮-->
-        <el-dialog :visible.sync="isDeleteChapter" width="600px">
+        <el-dialog :visible.sync="isDeleteChapter" width="500px">
         <div slot="title" class="dialog_header">请注意!</div>
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
@@ -154,7 +154,7 @@
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
             <!--成功span的class为icon_success-->
-            <span class="span_icon icon_success">确认新建名为：{{course.name}}？</span>
+            <span class="span_icon icon_success">确认新建名为：{{course.name}}!</span>
             </p>
         </div>
         <div slot="footer" class="dialog-footer">
@@ -303,6 +303,8 @@ export default {
                     insertCourse(JSON.stringify(obj)).then((res) => {
                         if (res.code == 200) {
                             // this.$message.success("新建成功");
+                            that.isNewCoursesSuccess=true;
+                            
                         } else {
                             that.$toast(res.message, 3000);
                         }
@@ -399,6 +401,7 @@ export default {
                 return that.$toast('请上传课程封面',2000)
             }
             that.isNewCourses = true;
+            
         },
         //此方法是用来写新建课程的接口的
         uploadCourses(){
@@ -406,7 +409,7 @@ export default {
              that.isNewCourses = false;
              
             //上传成功后 isNewCoursesSuccess=true即可显示创建课程成功弹窗
-            that.isNewCoursesSuccess=true;
+            
 
             that.upload(that.files[0].file)
 

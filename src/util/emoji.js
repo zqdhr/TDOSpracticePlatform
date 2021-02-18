@@ -27,12 +27,12 @@ let findEle = (parent, type) => {
       */
       $inp.addEventListener('compositionstart',function(){
         flag = false;
-        console.log(123)
+       //console.log(123)
         
       });
      $inp.addEventListener('compositionend',function(){
        flag = true;
-       console.log(456)
+       //console.log(456)
      });
 
      
