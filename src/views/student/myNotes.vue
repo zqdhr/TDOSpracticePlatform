@@ -349,8 +349,9 @@ export default {
     submitNote() {
       let that = this;
 
+      // alert(JSON.stringify(that.momentMod))
       let obj = {};
-      obj.courseware_id = "95d78a46-4586-454b-8d7c-08dca78dc3be";
+      obj.courseware_id = that.momentMod.courseware_id;
       obj.course_id = that.level1Name;
       obj.user_id = sessionStorage.getItem("userId");
       obj.title = that.titleText;
@@ -372,6 +373,8 @@ export default {
             that.titleText = "";
             that.contentText = "";
             that.getNote("");
+            that.isRecordNotes = false;
+            that.$toast("记录成功！", 3000);
           } else {
             that.$toast(res.message, 3000);
           }
