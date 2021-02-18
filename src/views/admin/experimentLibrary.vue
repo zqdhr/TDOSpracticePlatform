@@ -167,16 +167,15 @@ export default {
         //实验确认删除
         confirmDeleteExper(){
           let that = this
+          that.isDelete = false
           let obj={}
           obj.id=that.deleteExperId 
           deleteExperiment(obj).then(res=> {
                 if(res.code==200){
-                   that.isDelete = false
-                   console.log(res.data)
                    that.findExperiment(1)
                 }else{
                    console.log(res.message)
-                    that.$toast(res.message,3000)
+                   that.$toast(res.message,3000)
                 }
             })
            

@@ -168,7 +168,7 @@
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
             <!--成功span的class为icon_success-->
-            <span >新建成功！请至“备课管理”中查看。</span>
+            <span >新建成功！请至“课程管理”中查看。</span>
             </p>
         </div>
         <div slot="footer" class="dialog-footer">
@@ -394,6 +394,9 @@ export default {
             }
             if(that.course.intro ==''){
                 return  that.$toast('请输入课程详情',2000)
+            }
+            if (that.files.length==0) {
+                return that.$toast('请上传课程封面',2000)      
             }
             that.isNewCourses = true;
         },
