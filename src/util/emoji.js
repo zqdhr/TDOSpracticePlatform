@@ -1,3 +1,4 @@
+var flag = true;
 let findEle = (parent, type) => {
     return parent.tagName.toLowerCase() === type ? parent : parent.querySelector(type)
   }
@@ -7,7 +8,8 @@ let findEle = (parent, type) => {
     e.initEvent(type, true, true)
     el.dispatchEvent(e)
   }
-  
+
+
   const emoji = {
     bind: function (el, binding, vnode) {
       // 正则规则可根据需求自定义
@@ -15,15 +17,42 @@ let findEle = (parent, type) => {
       var regRule = /[^\u4E00-\u9FA5|\d|a-zA-Z|\r\n\s,.?!，。？！…—=()-+/*{}[\]]|\s/g
       let $inp = findEle(el, 'input')
       el.$inp = $inp
+      /*
       $inp.handle = function () {
         let val = $inp.value
         $inp.value = val.replace(regRule, '')
         trigger($inp, 'input')
+        console.log($inp.value)
       }
-      $inp.addEventListener('keyup', $inp.handle)
+      */
+      $inp.addEventListener('compositionstart',function(){
+        flag = false;
+        console.log(123)
+        
+      });
+     $inp.addEventListener('compositionend',function(){
+       flag = true;
+       console.log(456)
+     });
+
+     
+     $inp.addEventListener('keyup',function(){
+      if(flag){
+
+        let val = $inp.value
+        $inp.value = val.replace(regRule, '')
+        trigger($inp, 'input')
+    
+      }
+      
+     })
+
     },
+
     unbind: function (el) {
-      el.$inp.removeEventListener('keyup', el.$inp.handle)
+      if(flag){
+        el.$inp.removeEventListener('keyup', el.$inp.handle)
+      }
     },
   }
   
