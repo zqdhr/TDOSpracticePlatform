@@ -124,7 +124,7 @@ export default {
       
                {name:'实验库'},
                {name:'课件库'},
-               {name:'题库'}
+               {name:'作业'}
             ],
            isHasData:true,//传给课程大纲组件默认有数据
            picurl:null,
