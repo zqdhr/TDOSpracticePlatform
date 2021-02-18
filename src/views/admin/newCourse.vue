@@ -14,7 +14,7 @@
                 <div class="formMain">
                     <el-form ref="form" label-width="120px">
                         <el-form-item label="课程名称：">
-                            <el-input v-model="course.name"></el-input>
+                            <el-input v-model="course.name"  maxlength="16" placeholder="请输入课程名称最多16个字符"></el-input>
                         </el-form-item>
                         <el-form-item label="课程详情：">
                             <el-input v-model="course.intro" type="textarea"></el-input>

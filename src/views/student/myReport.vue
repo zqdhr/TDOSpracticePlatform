@@ -106,7 +106,7 @@
                         <div class="cell pname">{{item.name}}</div>
                      </div>
                      <div class="d2 d15">
-                        <div class="cell textline1">{{item.end_at}}</div>
+                        <div class="cell textline1">{{item.end_at?item.end_at:'暂未设置'}}</div>
                      </div>
                      <div class="d3 d18">
                         <div class="cell">{{item.isCorrect==1?item.score:'待老师批阅'}}</div>
@@ -119,8 +119,7 @@
                             <a class="pointer tab_atn" @click="showDetail(item.status,item.isCorrect,item),singleData=item">查看</a>
                             <span class="space-line"></span>
                             <a class="pointer tab_atn" v-if="item.status!=1" @click="isCommit=true,singleData=item">提交</a>
-                            <span class="space-line" v-if="item.status!=1"></span>
-                            <a class="pointer tab_atn" >导出</a>
+                           
                          </div>
                      </div>
                   </li>
@@ -157,12 +156,15 @@
         <el-dialog width='1100px' :visible.sync="isReport" class="report_detail_dialog">
             <div slot="title" class="dialog_header">{{singleData.name}}实验---{{singleData.userName}}提交</div>
             <p v-if="curStatus==2" class="p-score">
-                报告得分：{{singleData.score}}分  <a class="pointer tab_atn" @click="getPdf(1,singleData.name+'实验')">导出</a>
+                报告得分：{{singleData.score}}分  
             </p>
-            <div class="reportMain"  v-if="curStatus!=1"  id="pdfDom">
+            <div class="reportMain"  v-if="curStatus==2"  id="pdfDom">
                 <div v-html="yourContent"></div>
                 
                
+            </div>
+            <div class="report_detail_btnbox" v-if="curStatus==2">
+                <a class="pointer btnDefault" @click="getPdf(1,singleData.name+'实验')">导出</a>        
             </div>
             <div id="pdfDom" v-if="curStatus!=2">
                 <quill-editor  
@@ -174,9 +176,9 @@
                 </quill-editor>
             </div>
             <div class="report_detail_btnbox" v-if="curStatus==1">
-                    <a class="pointer tab_atn" @click="getPdf(2,singleData.name+'实验')">导出</a>
+                    <a class="pointer btnDefault tab_atn colorfff" @click="getPdf(2,singleData.name+'实验')">导出</a>
                    <a class="pointer btnDefault" @click="updateExperimentInfo">确认</a>
-                </div>
+            </div>
         </el-dialog>
         
     </div>
