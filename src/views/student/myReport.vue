@@ -395,6 +395,7 @@ export default {
             obj.course_id = that.className
             obj.status=that.state
             obj.isCorrect = -1
+            obj.user_id =sessionStorage.getItem("userId")
             obj.name = that.searchTx
             obj.startTime = ''
             obj.endTime = ''

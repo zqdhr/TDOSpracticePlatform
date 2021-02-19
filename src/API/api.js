@@ -384,7 +384,7 @@ var stduentSubmitHomework = function(data){
 }
 //查询实验报告列表
 var findByExperimentReportAll = function(data){
-	return axios.get('/findByExperimentReportAll?course_id='+data.course_id+'&status='+data.status+'&isCorrect='+data.isCorrect+'&name='+data.name+'&startTime='+data.startTime+'&endTime='+data.endTime+'&perPage=' + data.perPage+ '&page=' +data.page)
+	return axios.get('/findByExperimentReportAll?course_id='+data.course_id+'&user_id='+data.user_id+'&status='+data.status+'&isCorrect='+data.isCorrect+'&name='+data.name+'&startTime='+data.startTime+'&endTime='+data.endTime+'&perPage=' + data.perPage+ '&page=' +data.page)
 }
 //学生端提交实验报告和教师端批阅
 var updateExperimentReport = function(data){

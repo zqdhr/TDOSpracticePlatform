@@ -252,7 +252,7 @@ export default {
       level1List: [],
       level1Name: "", //选中课程名称
 
-      inplaceholder: "请输入实验名称",
+      inplaceholder: "请输入作业名称",
 
       //全部题目
       all_courseList: [],

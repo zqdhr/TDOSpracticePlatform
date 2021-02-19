@@ -42,9 +42,9 @@
     <div slot="title" class="dialog_header">密码修改</div>
 
       <div class="editMain" style="margin:0 50px" >
-        <el-form ref="form" label-width="80px">
-          <el-form-item label="输入密码">
-            <el-input  type="text" placeholder="请输入密码" maxlength="20" v-model="password"></el-input>
+        <el-form ref="form" label-width="100px">
+          <el-form-item label="输入新密码">
+            <el-input  type="text" placeholder="请输入新密码" maxlength="20" v-model="password"></el-input>
           </el-form-item>
          
           <el-form-item label="确认密码">
@@ -169,6 +169,17 @@ export default {
     },
     //密码修改
     editPassword(){
+      let that =this
+      if (that.password=='') {
+        return that.$toast('请输入新密码',2000)      
+      }
+      if (that.confirmPassword=='') {
+        return that.$toast('请输入确认密码',2000)      
+      }
+      if (that.password!=that.confirmPassword) {
+        return that.$toast('两次输入的密码不一致',2000) 
+      }
+
 
     },
     //根据登录的账号显示对应的用户信息
