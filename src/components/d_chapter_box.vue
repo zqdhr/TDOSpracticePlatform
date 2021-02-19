@@ -240,7 +240,8 @@ export default{
             deleteStatus:'',
             chaptersId:'',
             smallSectionId:'',
-            sectionId:''
+            sectionId:'',
+          
         }
     },
     props:{
@@ -265,8 +266,13 @@ export default{
         let that = this;
     },
     mounted(){
-        let that = this
+        let that = this       
+      
+        
+     
+    
     },
+
     methods:{
 
         //删除章
@@ -335,7 +341,7 @@ export default{
                     that.sectionId = '';
                     that.smallSectionId = '';
                     //that.$emit('getCourseById')
-                    that.reload();
+                   that.reload();
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -403,8 +409,13 @@ export default{
             for(var i = 0;i<tmp.length;i++){
                that.$set(that.chapters[i],'show',false)
             }
-
-            that.$set(item,'show',!show)   
+            that.$set(item,'show',!show)
+            
+            //把当前展开的章节保存到缓存中，新建小节后展示，而不是刷新页面之后不展示
+            if(!show){
+               sessionStorage.setItem('show_courseOutline',JSON.stringify(item))
+            }
+           
         },
         //新建章节
         click_newChapter(){
@@ -417,8 +428,8 @@ export default{
            let that = this;
            that.index = index;
            let tmp = that.chapters[index].sections.length;
+
            if(obj.status==1){
-   
                that.addTitle = 1
                that.isAdd = true;
            }else{
@@ -479,6 +490,9 @@ export default{
                that.$set(that.chapters[index].sections[i],'show',false)
            }
            that.$set(item,'show',!show)
+           if(!show){
+              sessionStorage.setItem('show_courseSection',JSON.stringify(item))
+            }
            //console.log(that.chapters)
         },
         /*新建小节 */

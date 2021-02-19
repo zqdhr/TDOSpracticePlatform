@@ -17,7 +17,7 @@
                             <el-input v-model="course.name" maxlength="16" placeholder="请输入课程名称最多16个字符" v-emoji></el-input>
                         </el-form-item>
                         <el-form-item label="课程详情：">
-                            <el-input v-model="course.intro" type="textarea"></el-input>
+                            <el-input v-model="course.intro" type="textarea" rows="6" resize="none"></el-input>
                         </el-form-item>
                         <el-form-item label="课程封面：">
                           <template v-if="files.length>0">
