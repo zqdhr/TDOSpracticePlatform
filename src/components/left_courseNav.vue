@@ -105,6 +105,7 @@ export default {
             item.sections.sort(this.compare1('order'))
             that.$set(item,'show',!show)
             that.sectionId = '';
+            
             this.$emit('getData', {cindex:cid,sindex:''})
         },
 
