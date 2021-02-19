@@ -39,7 +39,7 @@
           <a
             class="btnDefault pointer"
             @click="click_new"
-            v-if="sindex != '' || cindex != ''"
+            v-if="(sindex != '' || cindex != '') &&role!=3"
             >新增课件</a
           >
         </div>

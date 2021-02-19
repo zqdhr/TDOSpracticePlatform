@@ -5,7 +5,7 @@
             <courseNav @getData = "getData"></courseNav>
             <div class="right_box">
                 <div class="add_btn_box">
-                    <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''">新增实验</a>
+                    <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''&&role!=3">新增实验</a>
                 </div>
                 <template v-if="isHasData">
                 <div class="list_box">
@@ -166,6 +166,7 @@ export default {
         let that = this;
         that.time = that.timeOptions[1].value
         that.sid = 1
+       
     },
     components:{
         courseNav,newdialog,experimentDetail,nodata
