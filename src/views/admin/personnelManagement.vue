@@ -510,7 +510,7 @@ export default {
         return false;
       }
       var phone = that.userInfo.phoneNumber;
-      if(!(/^[1][3,4,5,7,8][0-9]{9}$/.test(phone))){
+      if(!(/^1\d{10}$/.test(phone))){
         this.$toast("手机号码错误",3000);
         return false;
       }

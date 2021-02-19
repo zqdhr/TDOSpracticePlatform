@@ -215,6 +215,7 @@ export default {
 
             obj.end = '';
             obj.user_id_list = [];
+            obj.status = 1;
             modifyCourseStatus(obj).then(res=> {
                 if(res.code==200){
                     alert("111")
