@@ -341,7 +341,7 @@ export default{
                     that.sectionId = '';
                     that.smallSectionId = '';
                     //that.$emit('getCourseById')
-                    that.reload();
+                   that.reload();
                 }else{
                     that.$toast(res.message,3000)
                 }

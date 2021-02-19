@@ -168,10 +168,6 @@ export default {
         let that = this;
         that.show_courseOutline = sessionStorage.getItem('show_courseOutline')?JSON.parse(sessionStorage.getItem('show_courseOutline')):{};
         that.show_courseSection = sessionStorage.getItem('show_courseSection')?JSON.parse(sessionStorage.getItem('show_courseSection')):{};
-
-        sessionStorage.removeItem('show_courseOutline');
-        sessionStorage.removeItem('show_courseSection');
-
        that.getCourseById();
     },
     methods:{
