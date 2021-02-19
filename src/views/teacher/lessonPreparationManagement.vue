@@ -87,7 +87,7 @@ import {getCourseListByUserId} from '@/API/api';
 export default {
     data(){
        return{
-            perPage: 10,//每页条数
+            perPage: 8,//每页条数
             curPage:1, //当前页
             total:1,
             inplaceholder:'请输入课程名称',
@@ -111,11 +111,12 @@ export default {
             getCourseListByUserId(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
+                    alert("asd"+res.data.list.length)
                     for(let i = 0;i<res.data.list.length;i++){
                         res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
                         //res.data.list[i].time = res.data.list[i].start_at.replace('T',' ') +'-'+ res.data.list[i].end_at.replace('T',' ');
                     }
-                    that.total = res.data.list.length;
+                    that.total = res.data.total;
                 }else{
                     this.$toast(res.message,2000)
                 }
@@ -124,6 +125,23 @@ export default {
         //底部分页
         handleCurrentChange(val) {
            console.log(`当前页: ${val}`);
+            let that = this;
+            let obj = {};
+            obj.user_id = sessionStorage.getItem("userId");
+            obj.page = val;
+            obj.per_page = that.perPage;
+            getCourseListByUserId(obj).then(res=> {
+                if(res.code==200){
+                    that.courseList = res.data.list;
+                    for(let i = 0;i<res.data.list.length;i++){
+                        res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
+                        //res.data.list[i].time = res.data.list[i].start_at.replace('T',' ') +'-'+ res.data.list[i].end_at.replace('T',' ');
+                    }
+                    that.total = res.data.total;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
         },
         //点击备课跳转详情
         linkDetail(id){

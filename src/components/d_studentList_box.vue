@@ -162,6 +162,7 @@ export default{
             obj.start = '';
             obj.end = '';
             obj.course_id = this.$route.query.courseId;
+            obj.status = 0;
             console.log(obj)
             modifyCourseStatus(obj).then(res=> {
             if(res.code==200){

@@ -243,7 +243,7 @@
       <div class="editMain" >
         <el-form ref="form" label-width="80px">
           <el-form-item label="姓名">
-            <el-input v-model="userInfo.name"></el-input>
+            <el-input v-model="userInfo.name" v-emoji></el-input>
           </el-form-item>
           <el-form-item label="性别">
             <el-select  v-model="userInfo.gender"
@@ -510,7 +510,7 @@ export default {
         return false;
       }
       var phone = that.userInfo.phoneNumber;
-      if(!(/^1[3456789]d{9}$/.test(phone))){
+      if(!(/^[1][3,4,5,7,8][0-9]{9}$/.test(phone))){
         this.$toast("手机号码错误",3000);
         return false;
       }
