@@ -224,7 +224,9 @@ export default {
         if(res.code==200){
           alert(res.code)
           that.isnewFilter = false;
-          that.reload();
+          // that.reload();
+           //that.findAllByType(that.sindex,3,8,1)
+          that.$emit('findAllByType',that.sindex,3,8,1)
         }else{
           this.$toast(res.message,2000)
         }

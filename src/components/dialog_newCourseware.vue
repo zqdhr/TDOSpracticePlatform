@@ -573,4 +573,5 @@ export default {
 .pageTab .fr .d-serach{padding-left: 12px;padding-right: 12px; width: 170px; margin-right: 20px;}
 .btn_finsh{background: @basecolor; font-size:16px;color:#fff; display: inline-block; padding: 5px 8px; .borderRadius(5px,5px,5px,5px);
 vertical-align: middle; cursor: pointer;}
+.fileList_name li {text-align:center; padding-bottom:12px; color: #444; font-size:18px;}
 </style>

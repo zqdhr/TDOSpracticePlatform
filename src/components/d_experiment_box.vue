@@ -43,11 +43,12 @@
                 <nodata dataMess="当前暂无实验"  v-if="!isHasData"></nodata>
             </div>
          </div>
-         <newdialog   ref="newdialog" ></newdialog>
+         <!--新增实验弹窗-->
+         <newdialog  ref="newdialog"  @findAllByType='sectionExperment(arguments)'></newdialog>
          <experimentDetail ref="experimentDetail"></experimentDetail>
         
          <!--是否删除-->
-        <el-dialog :visible.sync="isDelete" width="600px">
+        <el-dialog :visible.sync="isDelete" width="500px">
             <div slot="title" class="dialog_header">请注意!</div>
             <div class="confirm_dialog_body">
                 <p class="dialog_mess">
@@ -201,8 +202,10 @@ export default {
             obj.type = type;
             obj.perPage = perPage;
             obj.page = page;
+         
             findAllByType(obj).then(res=> {
                 if(res.code==200){
+                    
                     that.total = res.data.total
                      res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList  = res.data.list;
@@ -235,7 +238,8 @@ export default {
             unbindExperiments(obj).then(res=> {
                 if(res.code==200){
                     that.isDelete = false;
-                    that.getAllExperiment();
+                    //that.getAllExperiment();
+                    that.findAllByType(that.sindex,3,8,1)
                 }else{
                     this.$toast(res.message,2000)
                 }
@@ -273,6 +277,10 @@ export default {
                 that.findAllByType(that.$route.query.courseId,1,8,1)
             }
         },
+        sectionExperment(array){
+          let that = this;
+           that.findAllByType(array[0],array[1],array[2],array[3])
+        }
     }
 }
 </script>

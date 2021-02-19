@@ -103,6 +103,9 @@ export default {
             let tmp = that.chapters;
             console.log(item.sections)
             item.sections.sort(this.compare1('order'))
+            for(let i = 0;i<that.chapters.length;i++){
+               that.$set(that.chapters[i],'show',false)
+            }
             that.$set(item,'show',!show)
             that.sectionId = '';
             

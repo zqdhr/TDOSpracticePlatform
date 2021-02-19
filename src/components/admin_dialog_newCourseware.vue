@@ -311,4 +311,5 @@ export default {
 .fileList_name{padding: 0 30px;}
 .classifyBox{width:500px;margin: 0 auto;;}
 .confirm_dialog_body .upload_person{text-align: left;}
+.fileList_name li {text-align:center; padding-bottom:12px; color: #444; font-size:18px;}
 </style>
