@@ -102,7 +102,7 @@
       </div>
     </div>
     <!--删除弹出框-->
-    <el-dialog :visible.sync="isDelete" width="600px">
+    <el-dialog :visible.sync="isDelete" width="500px">
       <div slot="title" class="dialog_header">请注意!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
@@ -114,7 +114,7 @@
         <a class="btnDefault" @click="isDelete = false">取 消</a>
       </div>
     </el-dialog>
-    <newdialog ref="newdialog"></newdialog>
+    <newdialog ref="newdialog" @getCoursewareBySectionId='subcomponent_getCoursewareBySectionId(params)'></newdialog>
 
     <!--视频弹出-->
     <div class="studetTrans" v-if="showvideo">
@@ -476,6 +476,12 @@ export default {
         }
       });
     },
+    //子组件调用结果
+    subcomponent_getCoursewareBySectionId(params){
+       let that = this;
+       that.getCoursewareBySectionId(params[0],params[1],params[2],params[3])
+    },
+
     getData(data) {
       let that = this;
       that.cindex = data.cindex;

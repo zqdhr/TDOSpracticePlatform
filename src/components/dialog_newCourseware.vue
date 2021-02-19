@@ -4,7 +4,7 @@
     <el-dialog
       class="dialog_pagination"
       :visible.sync="isnewFilter"
-      :width="isnewFilterType == 1 ? '1100px' : '600px'"
+      :width="isnewFilterType == 1 ? '1100px' : '500px'"
       :class="{ newCourseware_dialog: isnewFilterType == 0 }"
     >
       <template v-if="isnewFilterType == 0">
@@ -372,7 +372,9 @@ export default {
             alert("111")
             that.isnewFilter = false;
             this.$toast("新增成功", 2000)
-            that.reload();
+            //that.reload();
+            that.$emit('getCoursewareBySectionId',that.sindex, "", 0, that.perPage, 1)
+            
           } else {
             this.$toast(res.message, 2000)
           }

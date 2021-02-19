@@ -4,7 +4,7 @@
     <el-dialog
       class="dialog_pagination add_local_courseware"
       :visible.sync="isnewFilter"
-      width="600px"
+      width="500px"
     
     >
       <!--本地上传-->
