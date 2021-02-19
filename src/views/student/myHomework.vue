@@ -161,7 +161,7 @@
               >
             </div>
 
-            <div class="pic" v-if="item.picUrl.length > 0">
+            <div class="pic" v-if="item.picUrl">
               <span><img :src="pic_Url + item.picUrl" /></span>
             </div>
 

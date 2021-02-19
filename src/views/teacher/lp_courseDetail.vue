@@ -94,7 +94,7 @@
                 <!--课程课件-->
                 <courseware v-if="navindex==4"></courseware>
 
-                <coursework v-if="navindex==5"></coursework>
+                <coursework v-if="navindex==5" timeStatus='1'></coursework>
   
                 
             </div>
