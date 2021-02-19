@@ -134,6 +134,7 @@ export default{
             let classIds = [];
             obj.per_page = that.perPage
             obj.page = val
+           
             for(let i = 0;i<that.classList.length;i++){
                 classIds.push(that.classList[i].id)
             }
@@ -178,15 +179,7 @@ export default{
         }
     },
     mounted(){
-        //默认全选
-          this.$nextTick(() => {
-            for (let i = 0; i < this.studentsList.list.length; i++) {
-              this.$refs.multipleTable.toggleRowSelection(
-                this.studentsList.list[i],
-                true
-              );
-            }
-          });
+       
 
     }
 }
