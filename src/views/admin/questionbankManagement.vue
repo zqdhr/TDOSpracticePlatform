@@ -85,13 +85,13 @@
         >
           <el-table-column type="selection" width="55" v-if="showDel">
           </el-table-column>
-          
+
           <el-table-column prop="serial_number" label="题目序号" width="150">
             <template slot-scope="scope">
               <span>{{ (curPage - 1) * perPage + scope.$index + 1 }}</span>
             </template>
           </el-table-column>
-          
+
           <el-table-column prop="title" label="题目详情">
             <template slot-scope="scope">
               <div class="">
@@ -109,7 +109,7 @@
               </div>
             </template>
           </el-table-column>
-         
+
           <el-table-column prop="answer" label="题目答案">
             <template slot-scope="scope">
               <div class="">
@@ -146,7 +146,7 @@
           </el-table-column>
           <el-table-column prop="pictureAddress" label="题目图片">
             <template slot-scope="scope">
-              <div class="" v-if="scope.row.picUrl != null">
+              <div class="" v-if="scope.row.picUrl">
                 <span
                   class="s-text textline1 pointer"
                   @click="getPreview(scope.row.picUrl)"
@@ -157,7 +157,6 @@
           </el-table-column>
         </el-table>
       </div>
-
 
       <div class="tab-pagination">
         <el-pagination
@@ -371,7 +370,7 @@
             </el-form>
           </div>
           <div class="btnBox">
-            <a class="btnDefault pointer" @click="saveTilte">保存</a>
+            <a class="btnDefault pointer" @click="saveTilte(0)">保存</a>
           </div>
         </div>
       </template>
@@ -572,7 +571,7 @@ export default {
         obj.c_category_id = that.i_customClass.id;
       } else if (JSON.stringify(that.customClass) != "{}") {
         obj.category_id = that.customClass.id;
-      } 
+      }
 
       obj.perPage = that.perPage;
       obj.page = that.curPage;
@@ -584,7 +583,7 @@ export default {
         if (res.code == 200) {
           that.total = res.data.total;
           that.questionList = res.data.list;
-          console.log(res.data.list)
+          console.log(res.data.list);
         } else {
           this.$toast(res.message, 2000);
         }
@@ -722,9 +721,6 @@ export default {
         // remove
         console.log("remove", oldFile);
       }
-
-      //上传图片
-      that.upload(that.files1[0].file, 0);
     },
     //上传图片
     upload(file, type) {
@@ -736,6 +732,7 @@ export default {
       upload(obj).then((res) => {
         if (res.code == 200) {
           that.pic_upload_url = res.data.name;
+          that.saveTilte(1);
         } else {
           that.$toast(res.message, 3000);
         }
@@ -854,80 +851,83 @@ export default {
       that.question.answer = "";
     },
     //新增题目保存
-    saveTilte() {
+    saveTilte(flag) {
       let that = this;
 
-      // this.$refs.upload.active = true;
-      // this.isNew = false;
+      if (that.files1.length != 0 && flag == 0) {
+        //先上传图片
+        that.upload(that.files1[0].file, 0);
+      } else {
+        let obj = {};
+        obj.type = that.choseQuestionType;
+        if (that.addCategoryID == "") {
+          return that.$toast("请选择所属分类", 3000);
+        }
+        if (that.question.title == "") {
+          return that.$toast("请输入题目详情", 3000);
+        }
+        // alert(that.addCategoryID);
+        obj.content = that.question.title;
 
-      let obj = {};
-      obj.type = that.choseQuestionType;
-      if (that.addCategoryID == "") {
-        return that.$toast("请选择所属分类", 3000);
-      }
-      if (that.question.title == "") {
-        return that.$toast("请输入题目详情", 3000);
-      }
-      // alert(that.addCategoryID);
-      obj.content = that.question.title;
-
-      if (that.choseQuestionType == 0) {
-        let tmpArr = [];
-        for (let i = 0; i < that.question.options.length; i++) {
-          let aa = that.question.options[i];
-          if (aa.label == "") {
-            return that.$toast("题目选项存在空", 3000);
+        if (that.choseQuestionType == 0) {
+          let tmpArr = [];
+          for (let i = 0; i < that.question.options.length; i++) {
+            let aa = that.question.options[i];
+            if (aa.label == "") {
+              return that.$toast("题目选项存在空", 3000);
+            }
+            tmpArr.push(aa.label);
           }
-          tmpArr.push(aa.label);
-        }
-        obj.choice = JSON.stringify(tmpArr);
-      } else {
-        obj.choice = "";
-      }
-      if (that.question.answer == "") {
-        return that.$toast("请输入题目答案", 3000);
-      }
-      obj.answer = that.question.answer;
-      if (that.choseQuestionType == 0) {
-        //选择题答案处理下
-        let tmp = that.question.options[that.question.answer - 1];
-        obj.answer = tmp.label;
-      }
-      obj.pic_url = that.pic_upload_url;
-
-      if (that.addCategoryItem.length == 1) {
-        // obj.model_id = that.addCategoryItem[0];
-        // obj.category_id = "";
-        obj.model_id = "";
-        obj.category_id = that.addCategoryItem[0];
-      } else {
-        obj.model_id = "";
-        obj.category_id = that.addCategoryItem[1];
-      }
-
-      console.log(JSON.stringify(obj));
-
-      adminSubmitQuestions(obj).then((res) => {
-        console.log(JSON.stringify(res));
-        if (res.code == 200) {
-          that.files1 = [];
-          that.pic_upload_url = "";
-          let obj = {
-            title: "",
-            answer: "",
-            options: [
-              { value: 1, label: "" },
-              { value: 2, label: "" },
-            ],
-          };
-          that.question = obj;
-          this.isNew = false;
-          that.$toast("题目新增成功", 3000);
-          that.selectQuestionBackAll("");
+          obj.choice = JSON.stringify(tmpArr);
         } else {
-          that.$toast(res.message, 3000);
+          obj.choice = "";
         }
-      });
+        if (that.question.answer == "") {
+          return that.$toast("请输入题目答案", 3000);
+        }
+        obj.answer = that.question.answer;
+        if (that.choseQuestionType == 0) {
+          //选择题答案处理下
+          let tmp = that.question.options[that.question.answer - 1];
+          obj.answer = tmp.label;
+        }
+        obj.pic_url = that.pic_upload_url;
+
+        if (that.addCategoryItem.length == 1) {
+          // obj.model_id = that.addCategoryItem[0];
+          // obj.category_id = "";
+          obj.model_id = "";
+          obj.category_id = that.addCategoryItem[0];
+        } else {
+          obj.model_id = "";
+          obj.category_id = that.addCategoryItem[1];
+        }
+
+        console.log(JSON.stringify(obj));
+
+        adminSubmitQuestions(obj).then((res) => {
+          console.log(JSON.stringify(res));
+          if (res.code == 200) {
+            that.files1 = [];
+            that.pic_upload_url = "";
+            let obj = {
+              title: "",
+              answer: "",
+              options: [
+                { value: 1, label: "" },
+                { value: 2, label: "" },
+              ],
+            };
+            that.question = obj;
+            this.isNew = false;
+            that.$toast("题目新增成功", 3000);
+            that.selectQuestionBackAll("");
+          } else {
+            that.$toast(res.message, 3000);
+          }
+        });
+      }
+
       /*
            let obj ={
               title:'',

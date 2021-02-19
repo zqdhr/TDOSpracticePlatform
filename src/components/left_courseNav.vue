@@ -104,6 +104,7 @@ export default {
             console.log(item.sections)
             item.sections.sort(this.compare1('order'))
             that.$set(item,'show',!show)
+            that.sectionId = '';
             this.$emit('getData', {cindex:cid,sindex:''})
         },
 
@@ -111,8 +112,7 @@ export default {
         showSubsection(index,obj,show,cid,sid){
             let that = this;
             let temp =that.chapters[index].sections
-            that.sectionId = sid
-            
+            that.sectionId = sid            
             that.$set(obj,'show',!show)
             this.$emit('getData', {cindex:cid,sindex:sid})
             

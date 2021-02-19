@@ -6,7 +6,7 @@
       <div class="right_box">
         <!--小节下面有作业-->
         <noData v-if="sindex==''"></noData>
-        <div class="add_btn_box clearfix" v-if="!noData">
+        <div class="add_btn_box clearfix" v-if="!noData && sindex!=''">
           <div class="fl">
             <div class="sel-box">
               <el-select
@@ -32,9 +32,9 @@
           </div>
         </div>
         <!--课程题目-->
-        <div class="coursework_box" v-if="!noData && status != 1">
+        <div class="coursework_box" v-if="!noData && status != 1 && sindex!=''">
             <div class="coursework_name">
-                <p>{{courseWorkTitle}}</p>
+                <p>{{courseWork.name}}</p>
                 <a class="edit" @click="reset_homework"></a>
 
             </div>
@@ -53,8 +53,8 @@
                     <a class="btn-set pointer" @click="setNewScore(item)"></a>
                
                 </div>
-                <div class="pic">
-                  <span><img :src="item.picUrl" /></span>
+                <div class="pic"  v-if="item.picUrl!='' && item.picUrl">
+                  <span><img :src="state.pic_Url+item.picUrl"/></span>
                 </div>
           
                 <p class="answer_box" v-if="item.type == 0">
@@ -83,12 +83,12 @@
           </div>
              <div class="add_btn_box">
                <a class="btnDefault pointer" @click="addQuestionBack">保存</a>
-              <a class="btnDefault pointer" @click="addQuestionBack">确认</a>
+              <a class="btnDefault pointer " style="margin-left:20px" @click="addQuestionBack">确认</a>
             </div>
         </div>
         
         <!--小节作业不存在-->
-        <div class="noData_box" v-if="noData && status == 1">
+        <div class="noData_box" v-if="noData && status == 1 && sindex!=''">
             <p class="mess">当前节下暂无作业，请点击下方新增作业按钮。</p>
             <div><a class="btnDefault pointer"  @click="isnewJobName =true">新增作业</a></div>
         </div>
@@ -119,11 +119,11 @@
     <el-dialog :visible.sync="isnewJobName" width="500px" class="dialog_newJobName" v-if="sindex != ''">
        <div slot="title" class="dialog_header">请设置作业名称</div>
        <div class="setScope">
-           <el-input placeholder="输入作业名称" v-model="homework.name"></el-input>
+           <el-input placeholder="输入作业名称" v-model="homework.name"  maxlength="16"></el-input>
            <div class="set_endtime_box" v-if="timeStatus == 1">
                <el-date-picker
                type="datetime"
-                v-model="homework.endTime"    :picker-options="pickerOptions"
+                v-model="homework.endTime"    :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss"
                 style="width:100%"
                 placeholder="选择日期">
               </el-date-picker>
@@ -142,8 +142,8 @@
         <div class="set_endtime_box" v-if="timeStatus == 1">
           <el-date-picker
                   type="datetime"
-                  v-model="homework.endTime"    :picker-options="pickerOptions"
-                  style="width:100%"
+                  v-model="homework.endTime"  :picker-options="pickerOptions"
+                  style="width:100%" value-format="yyyy-MM-dd HH:mm:ss"
                   placeholder="选择日期">
           </el-date-picker>
         </div>
@@ -201,7 +201,7 @@
         <div class="fr">
          
           <div class="d-serach"> 
-            <input placeholder="请输入作业标题" type="text" autocomplete="off" v-model="searchText"/>
+            <input placeholder="请输入作业标题" type="text" autocomplete="off" v-model="searchText" v-emoji/>
             <!--<a class="searchBtn pointer"></a>-->
           </div>
           <a class="btn_finsh" @click="searchQuestionAll">完成</a>
@@ -211,13 +211,13 @@
         <ul class="choice_question">
         
           <li
-            class="li_choose"
+            class="li_choose" style="margin-bottom:15px"
             v-for="(item, index) in all_courseList"
             :key="index"
           >
             <div class="title">{{ item.content }}</div>
-            <div class="pic" v-if="item.picUrl!='' && item.picUrl">
-              <span><img :src="item.picUrl" /></span>
+            <div class="pic" v-if="item.picUrl!='' && item.picUrl" >
+              <span ><img :src="state.pic_Url+item.picUrl"  /></span>
             </div>
             <p class="answer_box" v-if="item.type == 0">
               <span
@@ -274,10 +274,12 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 import courseNav from "@/components/left_courseNav.vue";
 import noData from "@/components/noData.vue";
 import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId,addQuestionBackAssignmentList,getAssignmentNameBySectionId,modifyAssignmentNameById} from '@/API/api';
 export default {
+  inject:['reload'],
   data() {
     return {
       options: [
@@ -292,8 +294,8 @@ export default {
       showQuestionBank: false, //题库是否显示(弹出框)
       dialogWidth: 0,
       //作业列表参数根据具体实际情况来定
-      coursework: {
-        name: "",
+      courseWork: {
+        
       },
       courseList: [
       ],
@@ -309,7 +311,7 @@ export default {
       type:0,//题目类型
       curPage:1,
       perPage:6,
-      timeStatus:0,//默认管理员为0，不显示时间
+    
       noData:true,//小节没有内容
       isSetTime:false,//设置题目时间弹窗
       sindex:'',
@@ -334,12 +336,20 @@ export default {
       searchText:'',//搜索框
     };
   },
+   computed: {
+    ...mapState({
+      state: (state) => state,
+    }),
+  },
+  props:{
+     timeStatus:{ default:0}//默认管理员为0，不显示时间
+  },
   components: {
     courseNav,noData
   },
   created() {
     let that = this;
-    alert(this.options[0].value)
+    //alert(this.options[0].value)
     this.cate = this.options[0].label; //默认选中内置课件
     this.setDialogWidth();
     that.addState(that.courseList);
@@ -372,9 +382,18 @@ export default {
         if(res.code==200){
           that.totalAllCourse = res.data.total;
           for(let i =0;i<res.data.list.length;i++){
-            res.data.list[i].picUrl = that.$store.state.pic_Url+ res.data.list[i].picUrl;
+             res.data.list[i].checked = false;
+             for(let j = 0;j<that.courseList.length;j++){
+                if(res.data.list[i].id == that.courseList[j].id){
+                   res.data.list[i].checked = true;
+                   console.log(123)
+                }
+             }
           }
+          console.log(res.data.list)
+          console.log(that.courseList)
           that.all_courseList = res.data.list;
+
         }else{
           this.$toast(res.message,2000)
         }
@@ -385,28 +404,40 @@ export default {
       let obj = {};
       obj.section_id = that.sindex;
       obj.name = that.homework.name;
+      if(that.homework.name == ''){
+        return that.$toast('作业名称不可为空',2000)
+      }
       if(that.timeStatus == 1){
+        /*
         let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
         obj.end_at = new Date(datetime).toISOString();
+        */
+        if(that.homework.endTime == '' || that.homework.endTime == null){
+          return that.$toast('作业截止时间不为空',2000)
+        }
+        obj.end_at = that.homework.endTime
+      
       }else{
         var date = new Date();
         obj.end_at = date.toLocaleDateString();
-        console.log(obj.end_at)
+    
       }
       obj.qualified_score = 100;
+     
       addAssignment(JSON.stringify(obj)).then(res=> {
         if (res.code == 200) {
-          alert("添加题目名称成功")
-          that.assignmentId = res.data.assignmentId;
+          that.assignmentId = res.data.id;
           that.isnewJobName = false;
           that.status = 0;
           that.noData = false;
-          that.courseWorkTitle = res.data.name;
+          that.courseWork = res.data;
+          
           //that.getAssignmentBySectionId();
         } else {
           that.$toast(res.message, 3000)
         }
       })
+     
     },
     //获取父类
     findParentCategory() {
@@ -522,6 +553,7 @@ export default {
       this.$set(that.updateScore, 'score', that.score);
       that.isSetTime=false
     },
+    //新增题目，题目选择确认
     showQuestion() {
       let that = this;
       that.showQuestionBank = false;
@@ -545,7 +577,7 @@ export default {
         }
         that.courseList = res
       }
-      console.log(that.courseList)
+     
     },
 
     addQuestionBack(){
@@ -658,11 +690,14 @@ export default {
       let that = this;
       that.chooseList = [];
       that.showQuestionBank = true;
-      that.addState(that.all_courseList);
+      //that.addState(that.all_courseList);
       that.deleteList = [];
       that.getQuestionBackAll();
       that.findParentCategory();
     },
+
+
+
     getData(data){
       let that = this;
       that.sindex = data.sindex;
@@ -679,6 +714,8 @@ export default {
             } else {
               that.courseWorkTitle = res.data.name;
               that.assignmentId = res.data.id;
+              that.courseWork = res.data;
+
               let obj = {};
               obj.sectionId = data.sindex;
               obj.perPage = that.perPage;
