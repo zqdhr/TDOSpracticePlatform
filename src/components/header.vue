@@ -9,7 +9,7 @@
         </div>
 
         <div class="fr fr-info">
-          欢迎你,<span class="pointer" @click="resetDialog=true">陈友谅(工号:0056)</span>
+          欢迎你,<span class="pointer" @click="resetDialog=true">{{userinfo}}</span>
           <div class="hline"></div>
           <a class="btnexit" @click="logoutDialog=true">退出系统</a>
         </div>
@@ -92,6 +92,7 @@ export default {
       password:'',
       confirmPassword:'',
       logoutDialog:false,
+      userinfo:''
 
     }
   },
@@ -105,7 +106,7 @@ export default {
     if(this.$route.meta.navindex){
        that.$store.commit("updateNavindex", this.$route.meta.navindex);
     }
-    
+    that.getUserInfo()
   },
   mounted(){
       let that = this;
@@ -169,7 +170,18 @@ export default {
     //密码修改
     editPassword(){
 
-    }
+    },
+    //根据登录的账号显示对应的用户信息
+    getUserInfo(){
+      let that = this
+      console.log(sessionStorage.getItem('p_p-authority'))
+      if (sessionStorage.getItem('p_p-authority')==0) {
+        that.userinfo=sessionStorage.getItem('userName')+'(学号：'+sessionStorage.getItem('userId')+')'
+      }else {
+        that.userinfo=sessionStorage.getItem('userName')+'(工号：'+sessionStorage.getItem('userId')+')'
+      }
+
+    },
   },
 };
 </script>
