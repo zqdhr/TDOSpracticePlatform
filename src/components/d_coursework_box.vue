@@ -53,8 +53,8 @@
                     <a class="btn-set pointer" @click="setNewScore(item)"></a>
                
                 </div>
-                <div class="pic">
-                  <span><img :src="item.picUrl" /></span>
+                <div class="pic"  v-if="item.picUrl!='' && item.picUrl">
+                  <span><img :src="state.pic_Url+item.picUrl"/></span>
                 </div>
           
                 <p class="answer_box" v-if="item.type == 0">
@@ -201,7 +201,7 @@
         <div class="fr">
          
           <div class="d-serach"> 
-            <input placeholder="请输入作业标题" type="text" autocomplete="off" v-model="searchText"/>
+            <input placeholder="请输入作业标题" type="text" autocomplete="off" v-model="searchText" v-emoji/>
             <!--<a class="searchBtn pointer"></a>-->
           </div>
           <a class="btn_finsh" @click="searchQuestionAll">完成</a>
@@ -211,13 +211,13 @@
         <ul class="choice_question">
         
           <li
-            class="li_choose"
+            class="li_choose" style="margin-bottom:15px"
             v-for="(item, index) in all_courseList"
             :key="index"
           >
             <div class="title">{{ item.content }}</div>
-            <div class="pic" v-if="item.picUrl!='' && item.picUrl">
-              <span><img :src="item.picUrl" /></span>
+            <div class="pic" v-if="item.picUrl!='' && item.picUrl" >
+              <span ><img :src="state.pic_Url+item.picUrl"  /></span>
             </div>
             <p class="answer_box" v-if="item.type == 0">
               <span
@@ -274,6 +274,7 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 import courseNav from "@/components/left_courseNav.vue";
 import noData from "@/components/noData.vue";
 import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId,addQuestionBackAssignmentList,getAssignmentNameBySectionId,modifyAssignmentNameById} from '@/API/api';
@@ -335,6 +336,11 @@ export default {
       searchText:'',//搜索框
     };
   },
+   computed: {
+    ...mapState({
+      state: (state) => state,
+    }),
+  },
   props:{
      timeStatus:{ default:0}//默认管理员为0，不显示时间
   },
@@ -376,9 +382,18 @@ export default {
         if(res.code==200){
           that.totalAllCourse = res.data.total;
           for(let i =0;i<res.data.list.length;i++){
-            res.data.list[i].picUrl = that.$store.state.pic_Url+ res.data.list[i].picUrl;
+             res.data.list[i].checked = false;
+             for(let j = 0;j<that.courseList.length;j++){
+                if(res.data.list[i].id == that.courseList[j].id){
+                   res.data.list[i].checked = true;
+                   console.log(123)
+                }
+             }
           }
+          console.log(res.data.list)
+          console.log(that.courseList)
           that.all_courseList = res.data.list;
+
         }else{
           this.$toast(res.message,2000)
         }
@@ -538,6 +553,7 @@ export default {
       this.$set(that.updateScore, 'score', that.score);
       that.isSetTime=false
     },
+    //新增题目，题目选择确认
     showQuestion() {
       let that = this;
       that.showQuestionBank = false;
@@ -561,7 +577,7 @@ export default {
         }
         that.courseList = res
       }
-      console.log(that.courseList)
+     
     },
 
     addQuestionBack(){
@@ -674,7 +690,7 @@ export default {
       let that = this;
       that.chooseList = [];
       that.showQuestionBank = true;
-      that.addState(that.all_courseList);
+      //that.addState(that.all_courseList);
       that.deleteList = [];
       that.getQuestionBackAll();
       that.findParentCategory();
