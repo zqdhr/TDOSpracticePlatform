@@ -309,7 +309,6 @@ export default {
           sessionStorage.setItem("store",JSON.stringify(this.$store.state))
           that.showStudentList = false;
           that.reload()  
-
           sessionStorage.removeItem('show_courseOutline');
           sessionStorage.removeItem('show_courseSection');
   
@@ -336,7 +335,8 @@ export default {
     },
     filters: {
   
-      }
+      },
+
 }
 </script>
 
