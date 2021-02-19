@@ -13,7 +13,7 @@
             <div class="rightInfo">
                 <p class="p-name textline1">{{experiment.name}}</p>
                 <div class="p-ItsCourse">
-                    所属课程：
+                    <!-- 所属课程： -->
                 </div>
                 <div class="btnbox"><a class="btnDefault pointer" @click="startExperiment">进入实验</a></div>
             </div>
@@ -29,7 +29,7 @@
 
         <div class="info_main" v-if="activeIndex==1">
             <div><p>实验时长：{{experiment.duration}}分钟</p></div>
-            <div><p>引用虚机：3台虚拟机</p></div>
+            <div><p>引用虚机：{{experiment.images!=null?experiment.images.length:0}}台虚拟机</p></div>
             <div>
                 <p class="pt">实验简介：</p>
                 <p>{{experiment.introduce}}</p>

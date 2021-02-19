@@ -204,6 +204,10 @@ var addImage = function(data){
 var insertExperiment = function(data){
 	return axios.post('/insertExperiment', data,{headers: {'Content-Type':'application/json'}})
 }
+//更新实验
+var updateExperiment = function(data){
+	return axios.post('/updateExperiment', data,{headers: {'Content-Type':'application/json'}})
+}
 
 //管理员查询所有的题库
 var getQuestionBackAll = function(data){
@@ -461,7 +465,7 @@ export{
 	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
-	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById
+	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment
 }
 
 function getJson (data) {

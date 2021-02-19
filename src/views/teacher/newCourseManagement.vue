@@ -18,7 +18,7 @@
                <ul class="tab_box courseList_ul">
                     <li v-for="(item,index) in courseList" :key="index">
                         <div class="pic">
-                            <div class="pic_box"><img :src="item.pic_url"/></div>
+                            <img :src="item.pic_url"/>
                         </div>
                         <div class="course-info boxsizing">
                             <div class="info_box">

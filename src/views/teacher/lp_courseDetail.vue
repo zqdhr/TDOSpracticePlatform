@@ -186,6 +186,7 @@ export default {
             obj.course_id = course_id;
             getCourseById(obj).then(res=> {
                 if(res.code==200){
+                    console.log(res.data)
                     that.courseName = res.data.name
                     that.introduction = res.data.introduction
                     that.numbers = res.data.numbers==null?that.numbers = 0:res.data.numbers
@@ -205,6 +206,7 @@ export default {
                     that.status = res.data.status
                     that.classesList = res.data.classesList
                     that.courseChapters = res.data.chapters
+                    that.picurl = that.$store.state.pic_Url+ res.data.pic_url
                     that.addParamShow(that.courseChapters)
                 }else{
                     that.$toast(res.message,3000)

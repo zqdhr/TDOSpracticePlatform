@@ -16,14 +16,14 @@
                                    <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="getDelete(item.id)"></a>
                                 </el-tooltip>
                                 <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3 && role!=1">
-                                   <a class="icon icon_set pointer" @click.stop="isSet=true"></a>
+                                   <a class="icon icon_set pointer" @click.stop="isSet=true,experiment = item"></a>
                                 </el-tooltip>
                                  <div class="pic">
                                     <div class="pic_box"><img :src="item.pic_url"/></div>
                                 </div>
                                 <p class="p-text textline1">{{item.name}}</p>
-                                <p class="p-text textline1">实验时长：{{item.duration}}</p>
-                                <p class="p-text textline1">截止时间：{{item.endtime}}</p>
+                                <p class="p-text textline1">实验时长：{{item.duration}}分钟</p>
+                                <p class="p-text textline1">截止时间：{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'暂无设置时间'}}</p>
                             </div>
                         </li>
                     </ul>
@@ -90,13 +90,15 @@
                         <el-date-picker style="width:100%" :picker-options="pickerOptions"
                             v-model="endTime"
                             type="date"
+                            format="yyyy-MM-dd" 
+                            value-format="yyyy-MM-dd" 
                             placeholder="选择日期">
                         </el-date-picker>
                     </div>
                 </div>
             </div>
             <div slot="footer" class="dialog-footer">
-                <a class="btnDefault">确 认</a>
+                <a class="btnDefault" @click="updateExperiment">确 认</a>
                 <a class="btnDefault" @click="isSet = false">取 消</a>
             </div>
         </el-dialog>
@@ -108,7 +110,7 @@
 import courseNav from "@/components/left_courseNav.vue";
 import newdialog from "@/components/teacher_new_experiment.vue";
 import experimentDetail from '@/components/experimentDetail';
-import {findParentCategory,findChildCategory,findAllByCategoryId,findAllByType,unbindExperiments} from '@/API/api';
+import {findParentCategory,findChildCategory,findAllByCategoryId,findAllByType,unbindExperiments,updateExperiment} from '@/API/api';
 import nodata from '@/components/noData'
 export default {
     data(){
@@ -151,6 +153,7 @@ export default {
             endTime:'',
             sindex:'',
             experimentId:'',
+            experiment:{},
             total:1,
             count:0,
             isHasData:true,//是否有数据 默认有数据
@@ -203,6 +206,7 @@ export default {
             obj.page = page;
             findAllByType(obj).then(res=> {
                 if(res.code==200){
+                    console.log(res.data)
                     that.total = res.data.total
                      res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList  = res.data.list;
@@ -241,9 +245,35 @@ export default {
                 }
             })
         },
+        //设置截至时间
+        updateExperiment(){
+            let that = this
+            that.isSet=false
+            let obj={}
+            if (that.endTime=='') {
+                  return  that.$toast('请选择实验报告截止时间',2000)
+            }
+            obj.id=that.experiment.id
+            obj.duration = that.time
+            obj.end_at = that.endTime
+            
+            console.log(obj)
+            updateExperiment(obj).then(res=>{
+                if (res.code==200) {
+                  that.getAllExperiment()
+                 
+                } else {
+                    this.$toast(res.message,2000)
+                }
+               
+            })
+
+
+        },
          //底部分页
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
+            
         },
         click_new(){
             let that = this;
