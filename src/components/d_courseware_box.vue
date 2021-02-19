@@ -4,9 +4,9 @@
     <div class="exper_main">
       <courseNav @getData="getData"></courseNav>
       <div class="right_box">
-        <div class="add_btn_box clearfix">
+        <div class="add_btn_box clearfix" >
           <div class="sel-box">
-            <el-select
+            <el-select v-if="isHasData"
               v-model="cate"
               placeholder="请选择课件分类"
               @change="selectCate"
@@ -20,7 +20,7 @@
               </el-option>
             </el-select>
           </div>
-          <div class="sel-box">
+          <div class="sel-box" v-if="isHasData">
             <el-select
               v-model="type"
               placeholder="请选择课件类型"

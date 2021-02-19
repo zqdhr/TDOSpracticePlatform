@@ -315,7 +315,7 @@ export default {
       }
     }
   }
-  @media screen and (max-width: 1360px) {
+  @media screen and (max-width: 1380px) {
     .nav_ul {
       > li {
         padding: 0 20px;
