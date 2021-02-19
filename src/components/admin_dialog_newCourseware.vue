@@ -263,7 +263,9 @@ export default {
         return;
       }
       let obj= new FormData()
+      alert("asddd"+that.extension)
       let type = that.extension == 'pdf'?2:1
+      alert("asddd"+type)
       obj.append('type',type)
       obj.append('file',file)
       console.log(obj)

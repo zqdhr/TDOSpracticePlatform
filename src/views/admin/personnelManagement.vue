@@ -617,9 +617,11 @@ export default {
           console.log(this.files)
           if (response.code == 200) {
             this.$message.success("文件上传成功");
+            that.isUpload = false;
             that.searchUser(2, "", "", 1, 10);
             
           } else {
+            that.isUpload = false;
             this.$message.error("文件上传失败");
           }
           if (newFile.xhr) {

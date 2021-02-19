@@ -266,14 +266,15 @@ export default {
             list.push(that.multipleSelection[i].imageid)
         }
         obj.imagesID = list;
-        alert("111")
+        console.log(obj)
         deleteImages(obj).then(res=> {
             if(res.code==200){
                 that.isDelete = false;
-                that.getImagequoteList();
+                that.getImagequoteList(-1,'',1);
             }else{
+                that.isDelete = false;
                 this.$toast("删除失败",3000)
-                that.getImagequoteList();
+                that.getImagequoteList(-1,'',1);
             }
         })
         console.log('确认删除镜像'+that.multipleSelection[0].imageid)
@@ -310,8 +311,8 @@ export default {
           let response = newFile.response;
           console.log(this.files)
           if (response.code == 200) {
-            this.$message.success("文件上传成功");
-            that.searchUser(2, "", "", 1, 10);
+            // this.$message.success("文件上传成功");
+            // that.searchUser(2, "", "", 1, 10);
             
           } else {
             this.$message.error("文件上传失败");
@@ -352,10 +353,14 @@ export default {
         addImage(obj).then(res=> {
             that.kind = '';
             if(res.code==200){
-                that.getImagequoteList();
+                that.show_Add = false
+                that.showLoading = true
+                that.getImagequoteList(-1,'',1);
             }else{
+                that.show_Add = false
+                that.showLoading = true
                 this.$toast("上传失败",3000)
-                that.getImagequoteList();
+                that.getImagequoteList(-1,'',1);
             }
         })
     },
