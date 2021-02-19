@@ -205,7 +205,6 @@ export default {
             obj.type = type;
             obj.perPage = perPage;
             obj.page = page;
-         
             findAllByType(obj).then(res=> {
                 if(res.code==200){
 
