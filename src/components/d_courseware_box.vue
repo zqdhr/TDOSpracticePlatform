@@ -489,6 +489,26 @@ export default {
     },
     //底部分页
     handleCurrentChange(val) {
+      let that  =this
+       if (that.sindex == "" && that.cindex == "") {
+        that.getCoursewareByCourseId(that.perPage, val, that.kind, that.typeware);
+      } else if (that.sindex == "" && that.cindex != "") {
+        that.getCoursewareByChapterId(
+          that.cindex,
+          that.typeware,
+           that.kind,
+          that.perPage,
+          val
+        );
+      } else {
+        that.getCoursewareBySectionId(
+          that.sindex,
+          that.typeware,
+           that.kind,
+          that.perPage,
+          val
+        );
+      }
       console.log(`当前页: ${val}`);
     },
 

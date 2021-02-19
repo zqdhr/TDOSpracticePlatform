@@ -207,7 +207,7 @@
 
 </template>
 <script>
-import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,removeChapter,removeSection,removeSmallSection,addSection,addSmallSection} from '@/API/api';
+import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,removeChapter,removeSection,removeSmallSection,addSection,addSmallSection,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById} from '@/API/api';
 export default{
     inject:['reload'],
     data(){
@@ -549,15 +549,55 @@ export default{
             }
             //章
             if(that.num==1){
-                that.chapters[that.index].name = that.editValue;
+                let that = this;
+                alert(that.editId)
+                alert(that.iindex)
+                let obj = {};
+                obj.chapter_id = that.editId
+                obj.chapter_name = that.editValue;
+                obj.introduction = '';
+                modifyChapterNameById(JSON.stringify(obj)).then(res=> {
+                    if(res.code==200){
+                        that.reload();
+                    }else{
+                        that.$toast(res.message,3000)
+                    }
+                })
+                //that.chapters[that.index].name = that.editValue;
             }
             //节
             if(that.num==2){
-                that.chapters[that.index].sections[that.iindex].name = that.editValue;
+                let that = this;
+                alert(that.editId)
+                alert(that.iindex)
+                let obj = {};
+                obj.section_id = that.editId
+                obj.section_name = that.editValue;
+                modifySectionNameById(JSON.stringify(obj)).then(res=> {
+                    if(res.code==200){
+                        that.reload();
+                    }else{
+                        that.$toast(res.message,3000)
+                    }
+                })
+                //that.chapters[that.index].sections[that.iindex].name = that.editValue;
             }
             //小节
             if(that.num==3){
-                that.chapters[that.index].sections[that.iindex].small_sections[that.i_index].name = that.editValue;
+                let that = this;
+                alert(that.editId)
+                alert(that.iindex)
+                let obj = {};
+                obj.small_section_id = that.editId
+                obj.small_section_name = that.editValue;
+                modifySmallSectionNameById(JSON.stringify(obj)).then(res=> {
+                    if(res.code==200){
+                        that.reload();
+                    }else{
+                        that.$toast(res.message,3000)
+                    }
+                })
+                //that.chapters[that.index].sections[that.iindex].small_sections[that.i_index].name = that.editValue;
             }
             that.isEdit = false;
         }

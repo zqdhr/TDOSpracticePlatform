@@ -57,7 +57,7 @@
                                 <div class="cell-fun boxsizing">
                                     <!--点击归档课程状态是已结束-->
                                     <a class="btnDefault btn-fun pointer" v-if="coursetype==0" @click="linkDetail(item.id)">{{item.status==0?'待发布':'已发布'}}</a>
-                                    <a class="btnDefault btn-fun pointer" v-if="coursetype==1" @click="linkDetail">已结束</a>
+                                    <a class="btnDefault btn-fun pointer" v-if="coursetype==1" @click="linkDetail(item.id)">已结束</a>
                                 </div>
                             </div>
                         </div>
@@ -107,7 +107,7 @@ import nodata from '@/components/noData'
 export default {
     data(){
        return{
-            perPage: 10,//每页条数
+            perPage: 8,//每页条数
             curPage:1, //当前页
             total:1,
             inplaceholder:'请输入课程名称',
@@ -176,7 +176,7 @@ export default {
         getExpirCourseList(){
             let that = this;
             let obj = {};
-            obj.per_page = 10;
+            obj.per_page = that.perPage;
             obj.page = 1;
             getExpirCourseList(obj).then(res=> {
                 if(res.code==200){

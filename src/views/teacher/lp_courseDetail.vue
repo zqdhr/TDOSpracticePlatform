@@ -34,7 +34,7 @@
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
                                 <div class="btnbox">
-                                    <a class="btnDefault pointer btn-course" @click="openClass" v-if="status == 1">确认开课</a>
+                                    <a class="btnDefault pointer btn-course" @click="openClass" v-if="status != 1">确认开课</a>
                                 </div>
                              </div>
                          </div>
@@ -215,6 +215,7 @@ export default {
             obj.course_id = this.$route.query.courseId;
             obj.start = '';
             obj.end = '';
+            obj.status = 1;
             modifyCourseStatus(obj).then(res=> {
                 if(res.code==200){
                     alert("111")
@@ -275,7 +276,7 @@ export default {
             //that.endTime=that.endTime.getFullYear() + '-' + (that.endTime.getMonth() + 1) + '-' + that.endTime.getDate();
            
             obj.end = that.endTime;
-          
+            obj.status = 0;
             obj.user_id_list = [];
             console.log(JSON.stringify(obj))
             modifyCourseStatus(JSON.stringify(obj)).then(res=> {

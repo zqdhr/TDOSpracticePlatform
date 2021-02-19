@@ -343,9 +343,14 @@ var student_getJobDetail =function(data){
 }
 
 
-//管理员课程下上传节下的作业
+//管理员课程下上传节下的作业(保存按钮)
 var addQuestionBackAssignmentList =function(data){
 	return axios.post('/addQuestionBackAssignmentList',data, { headers: { 'Content-Type': 'application/json' } })
+}
+
+//管理员课程下上传节下的作业(确认按钮)
+var modifyAssignmentStatusById =function(data){
+	return axios.post('/modifyAssignmentStatusById',data, { headers: { 'Content-Type': 'application/json' } })
 }
 
 
@@ -384,7 +389,7 @@ var stduentSubmitHomework = function(data){
 }
 //查询实验报告列表
 var findByExperimentReportAll = function(data){
-	return axios.get('/findByExperimentReportAll?course_id='+data.course_id+'&status='+data.status+'&isCorrect='+data.isCorrect+'&name='+data.name+'&startTime='+data.startTime+'&endTime='+data.endTime+'&perPage=' + data.perPage+ '&page=' +data.page)
+	return axios.get('/findByExperimentReportAll?course_id='+data.course_id+'&user_id='+data.user_id+'&status='+data.status+'&isCorrect='+data.isCorrect+'&name='+data.name+'&startTime='+data.startTime+'&endTime='+data.endTime+'&perPage=' + data.perPage+ '&page=' +data.page)
 }
 //学生端提交实验报告和教师端批阅
 var updateExperimentReport = function(data){
@@ -429,6 +434,21 @@ var prepareCourse = function(data){
 	return axios.post('/prepare_course', data,{headers: {'Content-Type':'application/json'}})
 }
 
+//修改课程章名称
+var modifyChapterNameById = function(data){
+	return axios.post('/modify_chapter_name_by_id', data,{headers: {'Content-Type':'application/json'}})
+}
+
+//修改课程节名称
+var modifySectionNameById = function(data){
+	return axios.post('/modify_section_name_by_id', data,{headers: {'Content-Type':'application/json'}})
+}
+
+//修改课程小节名称
+var modifySmallSectionNameById = function(data){
+	return axios.post('/modify_small_section_name_by_id', data,{headers: {'Content-Type':'application/json'}})
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -441,7 +461,7 @@ export{
 	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
-	,prepareCourse
+	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById
 }
 
 function getJson (data) {

@@ -19,7 +19,7 @@
                                    <a class="icon icon_set pointer" @click.stop="isSet=true"></a>
                                 </el-tooltip>
                                  <div class="pic">
-                                    <div class="pic_box"><img src="../assets/pic/course.png"/></div>
+                                    <div class="pic_box"><img :src="item.pic_url"/></div>
                                 </div>
                                 <p class="p-text textline1">{{item.name}}</p>
                                 <p class="p-text textline1">实验时长：{{item.duration}}</p>
@@ -121,25 +121,25 @@ export default {
             isSet:false,//设置
             time:'',
             timeOptions: [{
-                value: '30分钟',
+                value: '30',
                 label: '30分钟'
                 }, {
-                value: '45分钟',
+                value: '45',
                 label: '45分钟'
                 }, {
-                value: '60分钟',
+                value: '60',
                 label: '60分钟'
                 }, {
-                value: '75分钟',
+                value: '75',
                 label: '75分钟'
                 }, {
-                value: '90分钟',
+                value: '90',
                 label: '90分钟'
                 },{
-                value: '105分钟',
+                value: '105',
                 label: '105分钟'
                 },{
-                value: '120分钟',
+                value: '120',
                 label: '120分钟'
                 }
             ],
@@ -206,6 +206,10 @@ export default {
                     that.total = res.data.total
                      res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList  = res.data.list;
+                    for (let index = 0; index <  that.experimentList.length; index++) {
+                    that.experimentList[index].pic_url = that.$store.state.pic_Url+ that.experimentList[index].pic_url
+
+                   }
                     that.count = res.data.total;
                 }else{
                     this.$toast(res.message,2000)
@@ -215,7 +219,7 @@ export default {
         getAllExperiment(){
             let that = this;
             let id = that.$route.query.courseId
-            that.findAllByType(id,1,10,1);
+            that.findAllByType(id,1,8,1);
         },
         getDelete(id){
           let that = this
@@ -239,7 +243,7 @@ export default {
         },
          //底部分页
         handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+            console.log(`当前页: ${val}`);
         },
         click_new(){
             let that = this;
@@ -262,11 +266,11 @@ export default {
             that.isdeleteStatus = '';
             if(data.sindex != "" && that.cindex != ''){
                 that.isdeleteStatus = 1;
-                that.findAllByType(data.sindex,3,10,1)
+                that.findAllByType(data.sindex,3,8,1)
             }else if(data.sindex == "" && that.cindex != ''){
-                that.findAllByType(data.cindex,2,10,1)
+                that.findAllByType(data.cindex,2,8,1)
             }else if(data.sindex == "" && that.cindex == ''){
-                that.findAllByType(that.$route.query.courseId,1,10,1)
+                that.findAllByType(that.$route.query.courseId,1,8,1)
             }
         },
     }
