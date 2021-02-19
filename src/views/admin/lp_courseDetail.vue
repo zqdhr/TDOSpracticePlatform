@@ -218,7 +218,7 @@ export default {
             obj.status = 1;
             modifyCourseStatus(obj).then(res=> {
                 if(res.code==200){
-                    alert("111")
+                   // alert("111")
                     that.resetDialog = true;
                 }else{
                     this.$toast(res.message,2000)
@@ -252,7 +252,7 @@ export default {
             for(var i=0;i<array.length;i++){
                 this.$set(array[i], 'show', false);
                 if(i == array.length-1){
-                    alert(i)
+                    //alert(i)
                     that.$set(array[i], 'lastNum', 0)
                 }
                 array[i].status = 1

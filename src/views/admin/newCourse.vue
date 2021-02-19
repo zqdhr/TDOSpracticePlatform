@@ -298,6 +298,7 @@ export default {
                     obj.name = that.course.name;
                     obj.introduction = that.course.intro
                     obj.pic_url = that.picUrl;
+                    //obj.chapters = that.chapters;
                     obj.chapters = [];
                     this.$refs.upload.active = true;
                     insertCourse(JSON.stringify(obj)).then((res) => {
