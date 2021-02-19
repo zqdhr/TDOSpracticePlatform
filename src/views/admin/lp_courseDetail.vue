@@ -47,7 +47,7 @@
                 </div>
 
                  <!--课程大纲-->
-                <chapter :courseId="courseId" v-if="navindex==0" :chapters="courseChapters" :isHasData="isHasData"></chapter>
+                <chapter :courseId="courseId" v-if="navindex==0" :chapters="courseChapters" :isHasData="isHasData" ></chapter>
 
                 
                
@@ -108,6 +108,7 @@ import courseware from "@/components/d_courseware_box.vue";//课程课件
 import coursework from "@/components/d_coursework_box.vue";//课程作业
 import {getCourseById,modifyCourseStatus} from '@/API/api';
 export default {
+   inject:['reload'],
     data(){
         return{
             coursrName:'',//课程名称
@@ -145,6 +146,8 @@ export default {
             role:1,//代表管理员端
             courseChapters:[],
             resetDialog:false,//重置密码是否弹出
+            show_courseOutline:{},//当前展示的课程章节，新建小节还是展示小节列表
+            show_courseSection:{},//当前展开的是哪个小节
         }
     },
     components:{chapter,experiment,courseware,coursework},
@@ -157,9 +160,14 @@ export default {
    beforeDestroy(){
         let that = this;
         that.$store.commit("updateAdminNavindex",0);
+      
+     
+  
     },
     mounted(){
         let that = this;
+        that.show_courseOutline = sessionStorage.getItem('show_courseOutline')?JSON.parse(sessionStorage.getItem('show_courseOutline')):{};
+        that.show_courseSection = sessionStorage.getItem('show_courseSection')?JSON.parse(sessionStorage.getItem('show_courseSection')):{};
        that.getCourseById();
     },
     methods:{
@@ -215,6 +223,7 @@ export default {
 
             obj.end = '';
             obj.user_id_list = [];
+            obj.status = 1;
             modifyCourseStatus(obj).then(res=> {
                 if(res.code==200){
                    // alert("111")
@@ -249,15 +258,28 @@ export default {
             let that = this;
             array.sort(this.compare('order'))
             for(var i=0;i<array.length;i++){
-                this.$set(array[i], 'show', false);
+
+            /*章节是否展开 */   
+            if( that.show_courseOutline.id == array[i].id){
+                this.$set(array[i], 'show', true);
+            }else{
+                  this.$set(array[i], 'show', false);
+            }
+      
                 if(i == array.length-1){
                     //alert(i)
                     that.$set(array[i], 'lastNum', 0)
                 }
                 array[i].status = 1
                 array[i].sections.sort(this.compare('order'))
-                for(var j=0;j<array[i].sections.length;j++){
-                    this.$set(array[i].sections[j], 'show', false);
+                for(var j=0;j<array[i].sections.length;j++){                    
+                    
+                    if(array[i].sections[j].id == that.show_courseSection.id){
+                        this.$set(array[i].sections[j], 'show', true);
+                    }else{
+                        this.$set(array[i].sections[j], 'show', false);
+                    }
+
                     if(j == array[i].sections.length - 1) {
                         that.$set(array[i].sections[j], 'lastNum', 0)
                     }
@@ -286,7 +308,11 @@ export default {
           that.navindex = num;
           that.$store.commit("updateAdminNavindex",num);
           sessionStorage.setItem("store",JSON.stringify(this.$store.state))
-          that.showStudentList = false
+          that.showStudentList = false;
+          that.reload()  
+          sessionStorage.removeItem('show_courseOutline');
+          sessionStorage.removeItem('show_courseSection');
+  
         },
        
 
@@ -310,7 +336,8 @@ export default {
     },
     filters: {
   
-      }
+      },
+
 }
 </script>
 

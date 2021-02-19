@@ -151,7 +151,9 @@ export default {
             course:'111',
             courseChapters:[],
             classesList:[],
-            status:0
+            status:0,
+            show_courseOutline:{},//当前展示的课程章节，新建小节还是展示小节列表
+            show_courseSection:{},//当前展开的是哪个小节
             
         }
     },
@@ -166,9 +168,12 @@ export default {
     beforeDestroy(){
         let that = this;
         that.$store.commit("updateTeacherNavindex",0);
+     
     }, 
     mounted(){
         let that = this;
+        that.show_courseOutline = sessionStorage.getItem('show_courseOutline')?JSON.parse(sessionStorage.getItem('show_courseOutline')):{};
+         that.show_courseSection = sessionStorage.getItem('show_courseSection')?JSON.parse(sessionStorage.getItem('show_courseSection')):{};
         that.getCourseById();
 
       
@@ -229,7 +234,14 @@ export default {
             let that = this;
             array.sort(this.compare('order'))
             for(var i=0;i<array.length;i++){
-                this.$set(array[i], 'show', false);
+                
+             /*章节是否展开 */          
+            if( that.show_courseOutline.id == array[i].id){
+                this.$set(array[i], 'show', true);
+            }else{
+                    this.$set(array[i], 'show', false);
+            }
+
                 if(i == array.length-1){
                     //alert(i)
                     that.$set(array[i], 'lastNum', 0)
@@ -237,7 +249,13 @@ export default {
                 array[i].status = 1
                 array[i].sections.sort(this.compare('order'))
                 for(var j=0;j<array[i].sections.length;j++){
-                    this.$set(array[i].sections[j], 'show', false);
+                    
+                    if(array[i].sections[j].id == that.show_courseSection.id){
+                        this.$set(array[i].sections[j], 'show', true);
+                    }else{
+                        this.$set(array[i].sections[j], 'show', false);
+                    }
+
                     if(j == array[i].sections.length - 1) {
                         that.$set(array[i].sections[j], 'lastNum', 0)
                     }
@@ -337,7 +355,11 @@ export default {
           that.navindex = num;
           that.$store.commit("updateTeacherNavindex",num);
           sessionStorage.setItem("store",JSON.stringify(this.$store.state))
-          that.showStudentList = false
+          that.reload()
+           sessionStorage.removeItem('show_courseOutline');
+          sessionStorage.removeItem('show_courseSection');
+
+          that.showStudentList = false;
         },
        
 

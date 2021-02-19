@@ -399,7 +399,9 @@ export default {
 
         //点击查看视频
         click_showDetail(num,item){
+            
           let that = this
+        //   alert(that.$store.state.pic_Url + item.url);
           that.showvideo = true
           that.detailType = num;
           that.show_name = item.name
@@ -407,10 +409,11 @@ export default {
           var mo=function(e){e.preventDefault();};
           document.body.style.overflow='hidden';
           document.addEventListener("touchmove",mo,false);//禁止页面滑动
-          if(num==2){
+          if(num==0){
+              
             that.$nextTick(function(){
+                that.playerOptions.sources[0].src= that.$store.state.pic_Url + item.url
                 that.videoPlay();
-                that.playerOptions.sources.src= that.$store.state.pic_Url + item.url
             })
           
           }else{

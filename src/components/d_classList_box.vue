@@ -92,14 +92,15 @@ export default{
                         objCount.classId= res.data[i].id
                         searchClassCount(objCount).then(res1=> {
                             if(res.code==200){
-                                console.log("asd"+that.classesList[0].class_id)
-                                for(let j = 0;j<that.classesList.length;j++){
-                                    if(res.data[i].id == that.classesList[j].class_id && that.classesList[j].completed == true){
-                                        that.$set(that.classList[i], 'checked', 1)
-                                    }else if (res.data[i].id == that.classesList[j].class_id && that.classesList[j].completed == false){
-                                        that.$set(that.classList[i], 'checked', 2)
-                                    }else{
-                                        that.$set(that.classList[i], 'checked', 0)
+                                if(that.classesList.length !=0 ) {
+                                    for (let j = 0; j < that.classesList.length; j++) {
+                                        if (res.data[i].id == that.classesList[j].class_id && that.classesList[j].completed == true) {
+                                            that.$set(that.classList[i], 'checked', 1)
+                                        } else if (res.data[i].id == that.classesList[j].class_id && that.classesList[j].completed == false) {
+                                            that.$set(that.classList[i], 'checked', 2)
+                                        } else {
+                                            that.$set(that.classList[i], 'checked', 0)
+                                        }
                                     }
                                 }
                                 that.$set(that.classList[i], "number", res1.data);

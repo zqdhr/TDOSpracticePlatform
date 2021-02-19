@@ -510,7 +510,7 @@ export default {
         return false;
       }
       var phone = that.userInfo.phoneNumber;
-      if(!(/^[1][3,4,5,7,8][0-9]{9}$/.test(phone))){
+      if(!(/^1\d{10}$/.test(phone))){
         this.$toast("手机号码错误",3000);
         return false;
       }
@@ -617,9 +617,11 @@ export default {
           console.log(this.files)
           if (response.code == 200) {
             this.$message.success("文件上传成功");
+            that.isUpload = false;
             that.searchUser(2, "", "", 1, 10);
             
           } else {
+            that.isUpload = false;
             this.$message.error("文件上传失败");
           }
           if (newFile.xhr) {
