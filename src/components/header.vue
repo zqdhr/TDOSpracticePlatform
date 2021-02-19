@@ -38,17 +38,22 @@
       :visible.sync="resetDialog"
       width="500px"
       class="personDialog"   
+      @close="password='',confirmPassword=''"
     >
     <div slot="title" class="dialog_header">密码修改</div>
 
       <div class="editMain" style="margin:0 50px" >
         <el-form ref="form" label-width="100px">
           <el-form-item label="输入新密码">
-            <el-input  type="text" placeholder="请输入新密码" maxlength="20" v-model="password"></el-input>
+            <el-input onKeyUp="value=value.replace(/[\W]/g,'')"
+                      type="password" 
+                      placeholder="请输入新密码" 
+                      maxlength="20"
+                      v-model="password"></el-input>
           </el-form-item>
          
           <el-form-item label="确认密码">
-            <el-input type="text" placeholder="请输入确认密码" maxlength="20" v-model="confirmPassword"></el-input>
+            <el-input  onKeyUp="value=value.replace(/[\W]/g,'')" type="password" placeholder="请输入确认密码" maxlength="20" v-model="confirmPassword"></el-input>
           </el-form-item>
 
         </el-form>
@@ -83,6 +88,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import {updateUserPassword} from '@/API/api';
 export default {
   data() {
     return {
@@ -173,13 +179,30 @@ export default {
       if (that.password=='') {
         return that.$toast('请输入新密码',2000)      
       }
+      if (that.password.length<6||that.password.length>20) {
+        return that.$toast('输入的密码需要为6-20位',2000)      
+      }
       if (that.confirmPassword=='') {
         return that.$toast('请输入确认密码',2000)      
       }
       if (that.password!=that.confirmPassword) {
         return that.$toast('两次输入的密码不一致',2000) 
       }
-
+      that.resetDialog = false
+      let list = []
+      list.push(sessionStorage.getItem("userId"))
+      let obj = {};
+      obj.user_id_list = list;
+      obj.password = that.password;
+      console.log(JSON.stringify(obj))
+      updateUserPassword(JSON.stringify(obj)).then(res=>{
+        if(res.code==200){
+           that.$toast("密码已修改",2000)
+           that.logOut()
+        }else{
+          this.$toast(res.message,3000)
+        }
+      })
 
     },
     //根据登录的账号显示对应的用户信息

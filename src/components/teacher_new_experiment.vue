@@ -53,7 +53,7 @@
                     
 
                        <div class="pic">
-                            <div class="pic_box"><img src="../assets/pic/course.png"/></div>
+                            <div class="pic_box"><img :src="item.pic_url"/></div>
                             <div class="trans"></div>
                         </div>
                       <p class="p-text textline1">{{item.name}}</p>
@@ -151,6 +151,9 @@ export default {
         if(res.code==200){
           that.total = res.data.total
           that.all_experimentList = res.data.list;
+          for (let index = 0; index <  that.all_experimentList.length; index++) {
+                  that.all_experimentList[index].pic_url = that.$store.state.pic_Url+ that.all_experimentList[index].pic_url
+               }
         }else{
           this.$toast(res.message,2000)
         }

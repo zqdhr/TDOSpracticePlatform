@@ -117,7 +117,7 @@
                      <div class="d5 d25">
                          <div class="cell"> 
                             <a class="pointer tab_atn" @click="showDetail(item.status,item.isCorrect,item),singleData=item">查看</a>
-                            <span class="space-line"></span>
+                            <span class="space-line" v-if="item.status!=1" @click="isCommit=true,singleData=item"></span>
                             <a class="pointer tab_atn" v-if="item.status!=1" @click="isCommit=true,singleData=item">提交</a>
                            
                          </div>
