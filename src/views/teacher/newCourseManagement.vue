@@ -17,7 +17,9 @@
             <div class="tea_list">
                <ul class="tab_box courseList_ul">
                     <li v-for="(item,index) in courseList" :key="index">
-                        <div class="pic"></div>
+                        <div class="pic">
+                            <div class="pic_box"><img :src="item.pic_url"/></div>
+                        </div>
                         <div class="course-info boxsizing">
                             <div class="info_box">
                                 <div class="cell-info boxsizing">
@@ -99,9 +101,13 @@ export default {
             obj.per_page = per_page;
             obj.page = page;
             obj.search = search;
+           
             getAdminCourseList(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list
+                    for (let index = 0; index <  that.courseList.length; index++) {
+                        that.courseList[index].pic_url = that.$store.state.pic_Url+ that.courseList[index].pic_url
+                    }
                     that.totalCourse = res.data.total
                 }else{
                     that.$toast(res.message,3000)

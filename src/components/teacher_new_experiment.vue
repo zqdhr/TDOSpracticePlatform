@@ -6,6 +6,7 @@
       :visible.sync="isnewFilter"
       :width="isnewFilterType == 1 ? '1100px' : '600px'"
       :class="{ newCourseware_dialog: isnewFilterType == 0 }"
+      @close="searchTx=''"
     >
       <!--实验库选择-->
       <template v-if="isnewFilterType == 1">
@@ -193,7 +194,7 @@ export default {
     //选择分类
     selectCate(val) {
       console.log(val);
-    },
+      },
 
     //本地上传确认上传
     confirmLocalUpload() {
@@ -205,6 +206,10 @@ export default {
     confirmChoose() {
 
       let that = this;
+
+      if (that.chooseList.length==0) {
+         return that.$toast('请选择实验',2000) 
+      }
       console.log(that.sid)
       console.log(that.chooseList)
       let obj = {};

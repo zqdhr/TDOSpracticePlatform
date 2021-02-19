@@ -261,7 +261,7 @@
         </div>
     </el-dialog>
     <!--单题设置时间弹出-->
-    <el-dialog :visible.sync="isSetTime" width="500px">
+    <el-dialog :visible.sync="isSetTime" width="500px" @close="score=''">
        <div slot="title" class="dialog_header">设置该题目分数</div>
        <div class="setScope">
          <el-input placeholder="请输入该题目的分数" v-model = 'score'></el-input>
@@ -587,6 +587,11 @@ export default {
       let list = [];
       alert(that.assignmentId)
       let totalscore = 0;
+      console.log(that.courseList.length)
+      if(that.courseList.length ==0){
+        this.$toast("请先新增题目",3000)
+        return;
+      }
       for(let i =0;i<that.courseList.length;i++){
         totalscore += parseInt(that.courseList[i].score)
       }

@@ -57,7 +57,7 @@
                   >
                     <a
                       class="icon icon_close pointer"
-                      @click="click_delete(item)"
+                      @click.stop="click_delete(item)"
                     ></a>
                   </el-tooltip>
                   <!--
