@@ -54,12 +54,20 @@ export default{
         let that = this;
         
         //班级列表添加班级是否被选中状态参数，checked 0未选中 1全部选中 2部分选中
-        
+
         that.searchClass();
     },
     props: {
         classesList: {
             default: 0,
+        },
+    },
+    watch: {
+        classesList: {
+            handler(val, olVal) {
+                console.log(this.classesList)
+            },
+
         },
     },
     methods:{
@@ -76,7 +84,6 @@ export default{
         //班级列表
         searchClass(){
             let that = this;
-            console.log("1213"+that.classesList)
             searchClass().then(res=> {
                 if(res.code==200){
                     that.classList = res.data
@@ -85,8 +92,17 @@ export default{
                         objCount.classId= res.data[i].id
                         searchClassCount(objCount).then(res1=> {
                             if(res.code==200){
+                                console.log("asd"+that.classesList[0].class_id)
+                                for(let j = 0;j<that.classesList.length;j++){
+                                    if(res.data[i].id == that.classesList[j].class_id && that.classesList[j].completed == true){
+                                        that.$set(that.classList[i], 'checked', 1)
+                                    }else if (res.data[i].id == that.classesList[j].class_id && that.classesList[j].completed == false){
+                                        that.$set(that.classList[i], 'checked', 2)
+                                    }else{
+                                        that.$set(that.classList[i], 'checked', 0)
+                                    }
+                                }
                                 that.$set(that.classList[i], "number", res1.data);
-                                that.$set(that.classList[i], 'checked', 0)
                             }else{
                                 that.$toast(res.message,3000)
                             }
