@@ -189,7 +189,6 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   //对于登录页面不拦截
   if (to.path === '/login') {
-    // 接下来的函数
     next();
   } else {
     //var会将作用域放大，let只是局部的作用域
@@ -200,30 +199,30 @@ router.beforeEach((to, from, next) => {
     if(to.path.indexOf("operation") != -1){
        next();
     }else{
-    if(!(user_id &&user_id!=null)){
-      next('/login');
-    }
-    if(to.path.indexOf("admin") != -1){
-        if (admin_username === null || admin_username === '') {
-          next('/login');
-        } else {
-          next();
-        }
-    }
-    if(to.path.indexOf("teacher") != -1){
-        if (teacher_username === null || teacher_username === '') {
-          next('/login');
-        } else {
-          next();
-        }
-    }
-    if(to.path.indexOf("student") != -1){
-      if (student_username === null || student_username === '') {
+      if(!(user_id &&user_id!=null)){
         next('/login');
-      } else {
-        next();
       }
-    }
+      if(to.path.indexOf("admin") != -1){
+          if (admin_username === null || admin_username === '') {
+            next('/login');
+          } else {
+            next();
+          }
+      }
+      if(to.path.indexOf("teacher") != -1){
+          if (teacher_username === null || teacher_username === '') {
+            next('/login');
+          } else {
+            next();
+          }
+      }
+      if(to.path.indexOf("student") != -1){
+        if (student_username === null || student_username === '') {
+          next('/login');
+        } else {
+          next();
+        }
+      }
     
     next();
   }
