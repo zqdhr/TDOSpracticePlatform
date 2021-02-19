@@ -114,7 +114,7 @@
         <a class="btnDefault" @click="isDelete = false">取 消</a>
       </div>
     </el-dialog>
-    <newdialog ref="newdialog" @getCoursewareBySectionId='subcomponent_getCoursewareBySectionId(params)'></newdialog>
+    <newdialog ref="newdialog" @getCoursewareBySectionId='subcomponent_getCoursewareBySectionId(arguments)'></newdialog>
 
     <!--视频弹出-->
     <div class="studetTrans" v-if="showvideo">
@@ -463,6 +463,7 @@ export default {
       obj.type = type;
       obj.perPage = perPage;
       obj.page = page;
+      console.log(obj)
       getCoursewareBySectionId(obj).then((res) => {
         if (res.code == 200) {
           that.count = res.data.total;
@@ -479,7 +480,7 @@ export default {
     //子组件调用结果
     subcomponent_getCoursewareBySectionId(params){
        let that = this;
-       that.getCoursewareBySectionId(params[0],params[1],params[2],params[3])
+       that.getCoursewareBySectionId(params[0],params[1],params[2],params[3],params[4])
     },
 
     getData(data) {
