@@ -83,7 +83,7 @@
           </div>
              <div class="add_btn_box">
                <a class="btnDefault pointer" @click="addQuestionBack">保存</a>
-              <a class="btnDefault pointer " style="margin-left:20px" @click="addQuestionBack">确认</a>
+              <a class="btnDefault pointer " style="margin-left:20px" @click="confirmQuestionBack">确认</a>
             </div>
         </div>
         
@@ -277,7 +277,7 @@
 import { mapState } from "vuex";
 import courseNav from "@/components/left_courseNav.vue";
 import noData from "@/components/noData.vue";
-import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId,addQuestionBackAssignmentList,getAssignmentNameBySectionId,modifyAssignmentNameById} from '@/API/api';
+import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId,addQuestionBackAssignmentList,getAssignmentNameBySectionId,modifyAssignmentNameById,modifyAssignmentStatusById} from '@/API/api';
 export default {
   inject:['reload'],
   data() {
@@ -618,6 +618,21 @@ export default {
       })
     },
 
+    confirmQuestionBack(){
+      let that = this;
+      let obj = {};
+      obj.id = that.assignmentId
+      obj.status =1
+      modifyAssignmentStatusById(JSON.stringify(obj)).then(res=> {
+        if(res.code==200){
+          alert("确认成功，不可修改")
+        }else{
+          alert("确认失败")
+          this.$toast(res.message,2000)
+        }
+      })
+    },
+
     //选择分类(选择，简答)
     selectCate(val) {
       console.log("asd"+val);
@@ -654,17 +669,15 @@ export default {
       let that = this;
       let obj = {};
       obj.id = that.assignmentId;
-      obj.section_id = that.sindex;
       obj.name = that.modifyName;
-      if(that.timeStatus == 1){
-        let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
-        obj.end_at = new Date(datetime).toISOString();
-      }else{
-        var date = new Date();
-        obj.end_at = date.toLocaleDateString();
-        console.log(obj.end_at)
-      }
-      obj.qualified_score = 100;
+      // if(that.timeStatus == 1){
+      //   let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
+      //   obj.end_at = new Date(datetime).toISOString();
+      // }else{
+      //   var date = new Date();
+      //   obj.end_at = date.toLocaleDateString();
+      //   console.log(obj.end_at)
+      // }
       console.log(JSON.stringify(obj))
       modifyAssignmentNameById(JSON.stringify(obj)).then(res=> {
         if (res.code == 200) {
@@ -672,6 +685,7 @@ export default {
           that.modifyJobName = false;
           that.noData = false;
           that.courseWorkTitle = that.modifyName;
+          that.reload();
           //that.getAssignmentBySectionId();
         } else {
           that.$toast(res.message, 3000)
