@@ -21,7 +21,7 @@
               </el-select>
             </div>
 
-            <div class="stSelTime" v-if="state.id == 1">
+            <!-- <div class="stSelTime" v-if="state.id == 1">
               <el-date-picker
                 v-model="value2"
                 type="daterange"
@@ -36,8 +36,22 @@
                 format="yyyy-MM-dd"
               >
               </el-date-picker>
-            </div>
-
+            </div> -->
+ <el-date-picker
+                            class="pageTab_date"
+                            v-if="state.id==1"
+                            v-model="value2"
+                            type="daterange"
+                            align="right"
+                            unlink-panels
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            :picker-options="pickerOptions"
+                             @change="changeDate"
+                             value-format="yyyy-MM-dd" format="yyyy-MM-dd"
+                            >
+                        </el-date-picker>
             <div class="sel-box">
               <el-select
                 v-model="level1Name"
@@ -57,14 +71,8 @@
           </div>
           <div class="fr">
             <div class="d-serach">
-              <input
-                :v-model="searchText"
-                :placeholder="inplaceholder"
-                type="text"
-                autocomplete="off"
-                v-emoji
-              />
-              <a class="searchBtn pointer" @click="searchAction()"></a>
+              <input v-model="searchText" :placeholder="inplaceholder" type="text" autocomplete="off" v-emoji />
+              <a class="searchBtn pointer" @click="searchAction"></a>
             </div>
           </div>
         </div>
@@ -76,7 +84,8 @@
           <ul class="tab_box">
             <li v-for="(item, index) in jobList" :key="index">
               <div class="d1 d15">
-                <div class="cell pnum">{{ (index + 1) | catIndex }}</div>
+                <!-- <div class="cell pnum">{{ (index + 1) | catIndex }}</div> -->
+                 <div class="cell textline1">班级：{{item.className}}</div>
               </div>
               <div class="d2 d28">
                 <div class="cell textline1">
@@ -258,6 +267,11 @@ export default {
       noDataType:1,  //没有数据展示的样式
       dataMess:'当前暂无作业',
       hasData:false,
+      timestart:'',//筛选起始时间
+      timeend:'',//筛选结束时间
+      pickerOptions: {
+          
+        },
     };
   },
   filters: {
@@ -281,10 +295,15 @@ export default {
     let that = this;
     that.state = that.stateList[0];
     that.getCourseListByUserId();
+    that.getStudentJobList(0);
   },
   methods: {
     changeDate(val) {
       let that = this;
+      that.timestart = val[0];
+      that.timeend = val[1];
+      that.getStudentJobList(0)
+      console.log(val) 
       // alert(that.value2.length);
     },
     //底部分页
@@ -420,15 +439,9 @@ export default {
       let obj = {};
       obj.perPage = that.perPage;
       obj.page = that.curPage;
-      if (val == "1") {
-        obj.name = that.searchText;
-      } else {
-        obj.name = "";
-      }
-
+      obj.name = that.searchText;
       obj.classId = "";
-      obj.courseId =
-        JSON.stringify(that.level1Name) != "{}" ? that.level1Name.id : "";
+      obj.courseId = JSON.stringify(that.level1Name) != "{}" ? that.level1Name.id : "";
       obj.chapterId = "";
       obj.sectionId = "";
 
@@ -437,11 +450,11 @@ export default {
       } else {
         obj.status = that.state.id;
       }
-      obj.startTime = "";
-      obj.endTime = "";
+      obj.startTime =that.timestart;
+      obj.endTime = that.timeend;
 
       // alert(JSON.stringify(obj));
-
+      console.log(obj)
       getStudentJobList(obj)
         .then((res) => {
           // alert(JSON.stringify(res));

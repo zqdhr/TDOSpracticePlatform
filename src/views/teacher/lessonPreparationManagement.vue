@@ -7,8 +7,8 @@
                     <div class="fr">
                        <a class="btnDefault pointer abtn"  @click="show_dialog_file=true;archiveManagementisSuccess=false">归档</a>
                        <div class="d-serach"> 
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off" />
-                            <a class="searchBtn pointer"></a>
+                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="searchTx" @keyup.enter="searchCourse" />
+                            <a class="searchBtn pointer" @click="searchCourse"></a>
                         </div>
                     </div>
                 </div>
@@ -102,6 +102,7 @@ export default {
             noDataType:1,  //没有数据展示的样式
             dataMess:'当前暂无课程',
             hasData:false,
+            searchTx:''
        }
     },
     components:{noData},
@@ -116,6 +117,7 @@ export default {
             obj.user_id = sessionStorage.getItem("userId");
             obj.page = that.curPage;
             obj.per_page = that.perPage;
+            obj.search = that.searchTx
             getCourseListByUserId(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
@@ -142,12 +144,16 @@ export default {
             obj.user_id = sessionStorage.getItem("userId");
             obj.page = val;
             obj.per_page = that.perPage;
+            obj.search = that.searchTx;
             getCourseListByUserId(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
                     for(let i = 0;i<res.data.list.length;i++){
                         res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
                         //res.data.list[i].time = res.data.list[i].start_at.replace('T',' ') +'-'+ res.data.list[i].end_at.replace('T',' ');
+                    }
+                      for (let index = 0; index <  that.courseList.length; index++) {
+                        that.courseList[index].pic_url = that.$store.state.pic_Url+ that.courseList[index].pic_url
                     }
                     that.total = res.data.total;
                 }else{
@@ -172,7 +178,30 @@ export default {
         successConfirm(){
             let that = this;
             that.show_dialog_file = false
-        }
+        },
+        searchCourse(){
+            let that = this;
+            let obj = {};
+            obj.user_id = sessionStorage.getItem("userId");
+            obj.page = that.curPage;
+            obj.per_page = that.perPage;
+            obj.search = that.searchTx;
+            getCourseListByUserId(obj).then(res=> {
+                if(res.code==200){
+                    that.courseList = res.data.list;
+                    for(let i = 0;i<res.data.list.length;i++){
+                        res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
+                        //res.data.list[i].time = res.data.list[i].start_at.replace('T',' ') +'-'+ res.data.list[i].end_at.replace('T',' ');
+                    }
+                      for (let index = 0; index <  that.courseList.length; index++) {
+                        that.courseList[index].pic_url = that.$store.state.pic_Url+ that.courseList[index].pic_url
+                    }
+                    that.total = res.data.total;
+                }else{
+                    this.$toast(res.message,2000)
+                }
+            })
+        },
     },
     mounted() {
         let that = this;

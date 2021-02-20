@@ -375,7 +375,7 @@ export default {
                     console.log(res)
                     that.hasReport=true
                 } else {
-                     that.$toast(res.message,3000) 
+                    that.hasReport=false
                 }
             })
 

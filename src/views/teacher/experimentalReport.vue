@@ -158,7 +158,7 @@
         </el-dialog>
 
         <!--实验报告批阅-->
-        <el-dialog width='1100px' :visible.sync="isReport" class="report_detail_dialog">
+        <el-dialog width='1100px' :visible.sync="isReport" @close=" source = ''" class="report_detail_dialog">
             <div slot="title" class="dialog_header">{{singleData.name}}实验---{{singleData.userName}}提交</div>
             <div class="reportMain">
                 <div class="ptext">

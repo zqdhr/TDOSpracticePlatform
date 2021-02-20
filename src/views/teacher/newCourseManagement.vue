@@ -6,7 +6,7 @@
                    
                     <div class="fr">
                        <div class="d-serach"> 
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off"  v-model="searchText" />
+                            <input :placeholder="inplaceholder" type="text" autocomplete="off"  v-model="searchText" @keyup.enter="searchCourse"/>
                             <a class="searchBtn pointer" @click="searchCourse"></a>
                         </div>
                     </div>
@@ -107,6 +107,7 @@ export default {
             obj.per_page = per_page;
             obj.page = page;
             obj.search = search;
+            console.log(obj)
            
             getAdminCourseList(obj).then(res=> {
                 if(res.code==200){
