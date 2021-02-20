@@ -96,8 +96,8 @@
                   <span
                     class="c_icon"
                     :class="{
-                      icon_video: item.type == 0,
-                      icon_pdf: item.type == 1,
+                      icon_video: item.kind == 0,
+                      icon_pdf: item.kind == 1,
                     }"
                   ></span>
                 </div>
