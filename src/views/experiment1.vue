@@ -230,22 +230,7 @@ export default {
         let data=event.data
         console.log('123')
       },
-        // vnc连接断开的回调函数
-        disconnectedFromServer (msg) {
-          console.log(msg)
-          console.log('连接断开的原因')
-            if(msg.detail.clean){
-                // 根据 断开信息的msg.detail.clean 来判断是否可以重新连接
-                this.connectVnc()
-            } else {
-                //这里做不可重新连接的一些操作
-            }
-        },
-        // 连接成功的回调函数
-        connectedToServer(msg) {
-            console.log('成功')
-            console.log('success',msg)
-        },
+
            //创建实验
         createContainers(userid,experimentId,courseId){
             let that = this
@@ -402,14 +387,16 @@ export default {
             const url='ws://120.76.101.153:6080/vnc.html'
             //const url ='ws://192.168.1.133:6080/'
             //const url ='ws://192.168.1.133:7002/vnc.html?password=123456&autoconnect=true'
+            /*
            this.socket = new WebSocket('ws://120.76.101.153:6080/vnc.html?password=123456&autoconnect=true');
             
             console.log(this.socket)
              console.log('78999')
+             */
             
             let rfb = new RFB(document.getElementById('screen'), url, { 
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等,wsProtocols:'binary'
-                credentials: {password: '123456'}
+                credentials: {'password': '123456'}
             });
             rfb.addEventListener('connect', this.connectedToServer);
             rfb.addEventListener('disconnect', this.disconnectedFromServer);
@@ -420,6 +407,23 @@ export default {
            
            
             
+        },
+                // vnc连接断开的回调函数
+        disconnectedFromServer (msg) {
+          console.log(msg)
+          console.log('连接断开的原因')
+            if(msg.detail.clean){
+                // 根据 断开信息的msg.detail.clean 来判断是否可以重新连接
+                this.connectVnc()
+            } else {
+                // this.connectVnc()
+                //这里做不可重新连接的一些操作
+            }
+        },
+        // 连接成功的回调函数
+        connectedToServer(msg) {
+            console.log('成功')
+            console.log('success',msg)
         },
 
         //头部点击返回
