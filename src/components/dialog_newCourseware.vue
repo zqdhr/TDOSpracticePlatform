@@ -128,30 +128,50 @@
       <!--本地上传-->
       <template v-if="isnewFilterType == 2">
         <div slot="title" class="dialog_header">本地上传</div>
-        <div class="confirm_dialog_body" style="padding: 60px 0 40px 0">
-          <ul class="fileList_name">
-            <li v-for="file in files" :key="file.id">
-              <span>{{ file.name }}</span>
-            </li>
-          </ul>
-          <div class="upload_person">
-            <file-upload
-              style="overflow: visible"
-              :maximum="1"
-              :multiple="true"
-              ref="upload"
-              v-model="files"
-              extensions="xlsx,xls"
-              :post-action="uploadUrl"
-              :auto-upload="false"
-              @input-file="inputFile"
-              @input-filter="inputFilter"
-              name="excel_file"
-              :headers="{ Authorization: jwt }"
-            >
-              <a class="a_upload pointer"><span>选择需要添加的课件</span></a>
-            </file-upload>
+        <div class="confirm_dialog_body" style="padding: 40px 0 20px 0">
+          <div class="classifyBox">
+            <el-form ref="form"  label-width="120px">
+              <el-form-item>
+                <span slot="label" class="s-label" ><span>*</span>所属分类：</span >
+                <el-cascader
+                        v-model="category"
+                        :options="categoryOptions"
+                        :props="{value: 'id', label: 'name',children: 'cates'}"
+                        @change="handleChange" clearable>
+                </el-cascader>
+              </el-form-item>
+            </el-form>
+            <el-form ref="form"  label-width="120px">
+              <el-form-item>
+                <span slot="label" class="s-label" ><span>*</span>选择文件：</span >
+                <ul class="fileList_name">
+                  <li v-for="file in files" :key="file.id">
+                    <span>{{ file.name }}</span>
+                  </li>
+                </ul>
+                <div class="upload_person">
+                  <file-upload
+                          style="overflow: visible"
+                          :maximum="1"
+                          :multiple="true"
+                          ref="upload"
+                          v-model="files"
+                          extensions=""
+                          :post-action="uploadUrl"
+                          :auto-upload="false"
+                          @input-file="inputFile"
+                          @input-filter="inputFilter"
+                          name="excel_file"
+                          :headers="{ 'Content-Type':'multipart/form-data'}"
+                          :data="{file: files.name}"
+                  >
+                    <a class="a_upload pointer"><span>选择需要添加的课件</span></a>
+                  </file-upload>
+                </div>
+              </el-form-item>
+            </el-form>
           </div>
+
         </div>
         <div slot="footer" class="dialog-footer">
           <a class="btnDefault pointer" @click="confirmLocalUpload">确认上传</a>
@@ -528,6 +548,7 @@ export default {
               console.log(resCourse.data.id)
               if (that.sindex !== '') {
                 console.log("节新增课件")
+                alert("aaa"+that.sindex)
                 let obj = {};
                 obj.courseware_id = resCourse.data.id;
                 obj.section_id = that.sindex;

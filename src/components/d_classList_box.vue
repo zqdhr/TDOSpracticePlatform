@@ -88,14 +88,17 @@ export default{
                 if(res.code==200){
                     that.classList = res.data
                     for(let i =0;i<res.data.length;i++){
-                        
-                        if(that.classesList.length > 0){
-                            if (res.data[i].id == that.classesList[i].class_id && that.classesList[i].completed == true) {
-                                that.$set(that.classList[i], 'checked', 0)
-                            } else if (res.data[i].id == that.classesList[i].class_id && that.classesList[i].completed == false) {
-                                that.$set(that.classList[i], 'checked', 1)
-                            } else {
-                                that.$set(that.classList[i], 'checked', 2)
+
+                        if(that.classesList.length > 0) {
+                            alert("asd")
+                            for (let j = 0; j < that.classesList.length; j++) {
+                                if (res.data[i].id == that.classesList[j].class_id && that.classesList[j].completed == "true") {
+                                    that.$set(that.classList[i], 'checked', 0)
+                                } else if (res.data[i].id == that.classesList[j].class_id && that.classesList[j].completed == "false") {
+                                    that.$set(that.classList[i], 'checked', 1)
+                                } else {
+                                    that.$set(that.classList[i], 'checked', 2)
+                                }
                             }
                         }else{
                              that.$set(that.classList[i], 'checked', 0)
@@ -121,11 +124,11 @@ export default{
             let that = this;
             console.log(obj)
             that.$set(obj,'checked',!checked)
-           
+
             let tmp = JSON.parse(JSON.stringify(that.checkedList))
             console.log(checked);
             if(checked!=0){
-              
+
                for(var i=0;i<that.checkedList.length;i++){
                    if(that.checkedList[i].id == obj.id){
                       tmp.splice(i,1)
@@ -133,11 +136,11 @@ export default{
                }
               that.checkedList = tmp;
               that.$set(obj,'checked',0)
-            
+
             }else{
                 that.checkedList.push(obj);
                 that.$set(obj,'checked',1)
-              
+
             }
         
         },
@@ -168,7 +171,7 @@ export default{
             getStudentsByClasses(obj).then(res=> {
                 if(res.code==200){
                     that.list = res.data;
-                   
+
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -178,7 +181,7 @@ export default{
         //班级选择确认
         sureCheckClass(){
             let that = this;
-        
+
             if(that.checkedList.length==0){
                 return that.$toast('请先选择班级',2000)
             }
