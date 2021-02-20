@@ -53,7 +53,7 @@
                     effect="dark"
                     content="删除"
                     placement="top"
-                    v-if="role != 3 && status != 1"
+                    v-if="role != 3"
                   >
                     <a
                       class="icon icon_close pointer"
@@ -319,7 +319,6 @@ export default {
       isHasData: true, //是否有数据 默认有数据
       count: "", //课程下章，节已经存在的课件数量
       isdeleteId: "", //删除的课件id
-      status:1//1代表课程下课件不能删
     };
   },
   props: {
@@ -351,18 +350,6 @@ export default {
       obj.courseware_id = that.momentMod.id;
       obj.course_id = that.$route.query.courseId;
       obj.user_id = sessionStorage.getItem("userId");
-      if (that.titleText == "") {
-        return that.$toast("笔记标题不能为空", 3000);
-      }
-
-      if (that.contentText == "") {
-        return that.$toast("笔记内容不能为空", 3000);
-      }
-
-      if(that.contentText.length >200)
-      {
-        return that.$toast("笔记内容字数不能超过200", 3000);
-      }
       obj.title = that.titleText;
       obj.content = that.contentText;
 
@@ -433,9 +420,9 @@ export default {
       getCoursewareByCourseId(obj).then((res) => {
         if (res.code == 200) {
           that.total = res.data.total;
-          // res.data.total == 0
-          //   ? (that.isHasData = false)
-          //   : (that.isHasData = true);
+          res.data.total == 0
+            ? (that.isHasData = false)
+            : (that.isHasData = true);
           that.experimentList = res.data.list;
         } else {
           this.$toast(res.message, 2000);
@@ -445,7 +432,7 @@ export default {
     getAllCoursewareByCourseId() {
       let that = this;
     //   alert(that.perPage);
-      that.getCoursewareByCourseId(that.perPage, 1, '', 0);
+      that.getCoursewareByCourseId(that.perPage, 1, 0, "");
     },
     getCoursewareByChapterId(chapterId, kind, type, perPage, page) {
       let that = this;
@@ -459,9 +446,9 @@ export default {
         if (res.code == 200) {
           that.count = res.data.total;
           that.total = res.data.total;
-          // res.data.total == 0
-          //   ? (that.isHasData = false)
-          //   : (that.isHasData = true);
+          res.data.total == 0
+            ? (that.isHasData = false)
+            : (that.isHasData = true);
           that.experimentList = res.data.list;
         } else {
           this.$toast(res.message, 2000);
@@ -479,12 +466,11 @@ export default {
       console.log(obj)
       getCoursewareBySectionId(obj).then((res) => {
         if (res.code == 200) {
-          alert(res.data.total)
           that.count = res.data.total;
           that.total = res.data.total;
-          // res.data.total == 0
-          //   ? (that.isHasData = false)
-          //   : (that.isHasData = true);
+          res.data.total == 0
+            ? (that.isHasData = false)
+            : (that.isHasData = true);
           that.experimentList = res.data.list;
         } else {
           this.$toast(res.message, 2000);
@@ -503,10 +489,8 @@ export default {
       that.sindex = data.sindex;
       console.log(that.sindex + that.cindex);
       if (data.sindex == "") {
-        that.status = 0
         that.getCoursewareByChapterId(data.cindex, "", 0, that.perPage, 1);
       } else {
-        that.status = 0
         that.getCoursewareBySectionId(data.sindex, "", 0, that.perPage, 1);
       }
     },
@@ -541,7 +525,7 @@ export default {
       let that = this;
       that.kind = val;
       if (that.sindex == "" && that.cindex == "") {
-        that.getCoursewareByCourseId(that.perPage, 1, that.typeware,val);
+        that.getCoursewareByCourseId(that.perPage, 1, val, that.typeware);
       } else if (that.sindex == "" && that.cindex != "") {
         that.getCoursewareByChapterId(
           that.cindex,
@@ -551,7 +535,6 @@ export default {
           1
         );
       } else {
-        console.log("asd"+that.typeware)
         that.getCoursewareBySectionId(
           that.sindex,
           that.typeware,
@@ -567,22 +550,21 @@ export default {
       console.log("类型" + val);
       let that = this;
       that.typeware = val;
-      alert(that.kind)
       if (that.sindex == "" && that.cindex == "") {
-        that.getCoursewareByCourseId(that.perPage, 1, val,that.kind);
+        that.getCoursewareByCourseId(that.perPage, 1, that.kind, val);
       } else if (that.sindex == "" && that.cindex != "") {
         that.getCoursewareByChapterId(
           that.cindex,
-          val,
           that.kind,
+          val,
           that.perPage,
           1
         );
       } else {
         that.getCoursewareBySectionId(
           that.sindex,
-          val,
           that.kind,
+          val,
           that.perPage,
           1
         );
@@ -620,9 +602,9 @@ export default {
         if (res.code == 200) {
           that.count = res.data.total;
           that.total = res.data.total;
-          // res.data.total == 0
-          //   ? (that.isHasData = false)
-          //   : (that.isHasData = true);
+          res.data.total == 0
+            ? (that.isHasData = false)
+            : (that.isHasData = true);
           that.experimentList = res.data.list;
         } else {
           this.$toast(res.message, 2000);

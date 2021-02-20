@@ -48,7 +48,7 @@
               <el-select
                 v-model="type"
                 placeholder="请选择课件类型"
-                @change="selectType"
+                @click="selectType"
               >
                 <el-option
                   v-for="item in typeList"
@@ -226,6 +226,7 @@ export default {
       category_id:'',//父分类id
       c_category_id:'',//子分类id
       kind:'',
+      type1:'',
       name:'',
       count:'',
     };
@@ -251,9 +252,8 @@ export default {
       if(that.sindex != '' && that.cindex != ''){
         that.cindex = '';
       }
-      alert(that.kind)
-      alert(that.type)
-      that.findCourseWareAll(that.perPage, 1, that.kind, that.cate,'', '', that.cindex, that.sindex,'');
+      alert(that.type1)
+      that.findCourseWareAll(that.perPage, 1, that.kind, that.type1,'', '', that.cindex, that.sindex,'');
     },
     //自定义父级分类
     findParentCategory() {
@@ -343,8 +343,8 @@ export default {
     //选择分类
     selectCate(val) {
       let that = this;
-      console.log("选择自定义分类a" + val);
-      that.type = val;
+      console.log("选择自定义分类1" + val);
+      that.type1 = val;
     },
 
     //选择课件类型
@@ -355,8 +355,9 @@ export default {
     },
     searchCoerseWare(){
       let that = this;
-      that.kind = that.kind == '2' ? '' : that.kind;
-      that.findCourseWareAll(10, 1, that.kind, that.cate, that.searchText, '', '', '',that.cateId);
+      console.log(that.searchText)
+      that.type = that.type1 == '2' ? '' : that.type1;
+      that.findCourseWareAll(10, 1, that.kind, that.type, that.searchText, that.category_id, '', '',that.c_category_id);
     },
     //本地上传确认上传
     confirmLocalUpload() {

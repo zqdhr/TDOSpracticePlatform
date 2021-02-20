@@ -8,7 +8,7 @@
 
             <div class="operationBox">
             
-                <a class="a-opera pointer"  @click="makeImg">
+                <a class="a-opera pointer"  @click="makeImg" v-if="isOpen">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
@@ -46,26 +46,9 @@
                    <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">点击开启全部虚拟机</a>
                    <!--<iframe src="http://192.168.1.133:6080/" ref="frameWrapper" />-->
                 </div>
-                <xterm :socketURI="socketURI" v-if="1==0"></xterm> 
-                <!--
-                <div  class="operation_box" ref="imageWrapper" id="imageWrapper" >
-                    
-                    <iframe src="http://192.168.1.54:2222/ssh/host/192.168.1.54/5001"  style="width:100%;height:100%"></iframe>
+                <div class="operation_box" ref="imageWrapper">
+                   <xterm :socketURI="socketURI" v-if="1==1"></xterm> 
                 </div>
-                -->
-            
-                  
-                <!--
-                <div class="operation_box" ref="imageWrapper" id="imageWrapper">
-              
-                  
-                     <iframe src="http://192.168.1.228:2222/ssh/host/192.168.1.228/5001?username=''&userpassword=''" frameborder="0" ></iframe>
-    
-
-                
-                    
-                </div>
-                -->
               
             </div>
             <div class="right_main" :class="{'changeWidth':isHide}">
@@ -84,8 +67,8 @@
                            </li>
                         </ul>
                     </div>
-                    <!--&& authority==0 v-if="curIndex==2"-->
-                    <template >
+                    <!--&& authority==0 -->
+                    <template v-if="curIndex==2 && authority==0">
                     <h3 class="htitle">填写实验报告</h3>
                     <div class="labReport_box"  >
                         <quill-editor 
@@ -179,7 +162,7 @@ export default {
 
              term: null,
 
-             socketURI:'ws://192.168.1.228:19585'+'/terminals/',
+             socketURI:'ws://192.168.1.167:4002'+'/terminals/',
 
              //socketURI:'http://192.168.1.54:2222/ssh/host/192.168.1.54/5001'
             userid:'',
@@ -375,7 +358,7 @@ export default {
                     console.log(res)
                     that.hasReport=true
                 } else {
-                    that.hasReport=false
+                     that.$toast(res.message,3000) 
                 }
             })
 
@@ -387,7 +370,7 @@ export default {
 
             //const url='ws://192.168.1.31:6901/vnc.html?password=123456&autoconnect=true'
             //const url ='ws://192.168.1.133:6080/'
-            const url ='ws://192.168.1.133:7002/vnc.html?password=123456&autoconnect=true'
+            const url ='ws://120.76.101.153:6080/vnc.html?password=123456&autoconnect=true'
 
             let rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
@@ -397,7 +380,7 @@ export default {
             rfb.addEventListener('disconnect', this.disconnectedFromServer);
             rfb.scaleViewport = true;  //scaleViewport指示是否应在本地扩展远程会话以使其适                    合其容器。禁用时，如果远程会话小于其容器，则它将居中，或者根据clipViewport它是否更大来处理。默认情况下禁用。
             rfb.resizeSession = true; //是一个boolean指示是否每当容器改变尺寸应被发送到调整远程会话的请求。默认情况下禁用
-            console.log(rfb)
+     
             this.rfb = rfb;
             
         },

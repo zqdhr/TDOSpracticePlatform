@@ -162,11 +162,7 @@ const routes = [
     name: 'experiment',
     component: () => import('../views/experiment.vue')
   },
-  {
-    path: '/experiment1',//操作界面
-    name: 'experiment1',
-    component: () => import('../views/experiment1.vue')
-  },
+
 
   {
     path: '/login',//页面登录

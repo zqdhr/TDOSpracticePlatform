@@ -68,12 +68,12 @@ var modifyUser = function(data){
 
 //老师获取管理员内置课程（开课管理页面的列表）
 var getAdminCourseList = function(data){
-	return axios.get('/get_admin_course_list?page='+data.page+'&per_page='+data.per_page+'&name='+data.search)
+	return axios.get('/get_admin_course_list?page='+data.page+'&per_page='+data.per_page)
 }
 
 //老师获取自己的课程（备课管理的列表）
 var getCourseListByUserId = function(data){
-	return axios.get('/get_course_list_by_user_id?user_id='+data.user_id+'&page='+data.page+'&per_page='+data.per_page+'&name='+data.search)
+	return axios.get('/get_course_list_by_user_id?user_id='+data.user_id+'&page='+data.page+'&per_page='+data.per_page)
 }
 
 //通过id获取课程
@@ -113,7 +113,7 @@ var getCoursewareByChapterId = function(data){
 
 //管理员查询课程节下的课件
 var getCoursewareBySectionId = function(data){
-	return axios.get('/getCoursewareBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page+'&kind='+data.kind+'&type='+data.type)
+	return axios.get('/getCoursewareBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page)
 }
 
 //管理员查询课程章下的作业
@@ -453,11 +453,6 @@ var modifySmallSectionNameById = function(data){
 	return axios.post('/modify_small_section_name_by_id', data,{headers: {'Content-Type':'application/json'}})
 }
 
-//课程归档
-var modifyExpiredCourseStatus = function(data){
-	return axios.post('/modify_expired_course_status', data,{headers: {'Content-Type':'application/json'}})
-}
-
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -470,7 +465,7 @@ export{
 	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
-	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment
+	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment,modifyAssignmentStatusById
 }
 
 function getJson (data) {
