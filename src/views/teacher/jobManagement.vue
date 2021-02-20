@@ -69,6 +69,8 @@
           </div>
         </div>
       </div>
+             <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
+               <template v-if="hasData">
       <div class="container">
         <div class="tea_list">
           <ul class="tab_box">
@@ -120,6 +122,7 @@
           </div>
         </div>
       </div>
+         </template>
     </div>
 
     <!--点击确定按钮弹出确认框-->
@@ -215,6 +218,7 @@
   </div>
 </template>
 <script>
+import noData from '@/components/noData.vue'
 import {
   getCourseListByUserId,
   getStudentJobList,
@@ -251,6 +255,9 @@ export default {
       all_courseList: [],
       momentJobMod: null,
       pic_Url: "",
+      noDataType:1,  //没有数据展示的样式
+      dataMess:'当前暂无作业',
+      hasData:false,
     };
   },
   filters: {
@@ -265,6 +272,7 @@ export default {
       return str;
     },
   },
+    components:{noData},
   mounted() {
     let that = this;
     that.pic_Url = that.$store.state.pic_Url;
@@ -440,6 +448,7 @@ export default {
           that.allJob_Nub = res.data.total;
           if (res.code == 200) {
             that.jobList = res.data.list;
+             that.hasData=res.data.list.length==0?false:true
           } else {
             that.$toast(res.message, 3000);
           }

@@ -6,7 +6,7 @@
       :visible.sync="isnewFilter"
       :width="isnewFilterType == 1 ? '1100px' : '600px'"
       :class="{ newCourseware_dialog: isnewFilterType == 0 }"
-      @close="searchTx=''"
+      @close="searchTx='',customClass='',i_customClass=''"
     >
       <!--实验库选择-->
       <template v-if="isnewFilterType == 1">
@@ -143,7 +143,7 @@ export default {
       let that= this;
       let obj = {}
       obj.f_category_id = f_category_id;
-      obj.name = '';
+      obj.name = name;
       obj.perPage = that.perPage;
       obj.page = page;
       obj.section_id = section_id;
@@ -163,19 +163,20 @@ export default {
     //新增时搜索实验名
     search(){
       let that = this;
-      let obj = {}
-      obj.category_id = that.parent_id;
-      obj.name = that.searchTx;
-      obj.perPage = 10;
-      obj.page = 1;
-      findAllByCategoryId(obj).then(res=> {
-        if(res.code==200){
-          that.total = res.data.total
-          that.all_experimentList = res.data.list;
-        }else{
-          this.$toast(res.message,2000)
-        }
-      })
+      // let obj = {}
+      // obj.category_id = that.parent_id;
+      // obj.name = that.searchTx;
+      // obj.perPage = 10;
+      // obj.page = 1;
+      // findAllByCategoryId(obj).then(res=> {
+      //   if(res.code==200){
+      //     that.total = res.data.total
+      //     that.all_experimentList = res.data.list;
+      //   }else{
+      //     this.$toast(res.message,2000)
+      //   }
+      // })
+       that.getAllExperiment(that.customClass,that.i_customClass,that.searchTx,1,that.sindex);
     },
     //点击选择实验
     click_new(sid,count,sindex) {
@@ -243,7 +244,7 @@ export default {
     handleCurrentChange1(val) {
       console.log(`当前页: ${val}`);
       let that= this;
-      that.getAllExperiment('','','',val,that.sindex);
+      that.getAllExperiment(that.customClass,that.i_customClass,that.searchTx,val,that.sindex);
     },
 
     //获取父类
@@ -276,7 +277,7 @@ export default {
     selectType(val) {
       let that = this;
       that.i_customClass = {};
-      console.log("11"+val)
+      console.log("11"+that.customClass)
       that.parentId = val;
       that.findChildCategory(val);
       that.getAllExperiment(val,'',that.searchTx,1,that.sindex);
@@ -284,8 +285,9 @@ export default {
     //子类
     selectType1(val) {
       let that = this;
-      that.childrenId = val.id;
-      that.getAllExperiment('',that.childrenId,that.searchTx,1,that.sindex);
+       console.log("22"+val)
+      that.childrenId = val;
+      that.getAllExperiment(that.customClass,that.childrenId,that.searchTx,1,that.sindex);
     },
     //数组新增checked元素
     array_addChecked(array) {

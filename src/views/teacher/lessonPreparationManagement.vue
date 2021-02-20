@@ -14,7 +14,8 @@
                 </div>
               
             </div>
-
+         <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
+               <template v-if="hasData">
             <div class="tea_list">
                <ul class="tab_box courseList_ul lp_courseList_ul">
                     <li v-for="(item,index) in courseList" :key="index">
@@ -59,7 +60,7 @@
                     >
                 </el-pagination>
             </div>
-
+            </template>
         </div>
           <!--归档弹出框-->
          <el-dialog
@@ -86,6 +87,7 @@
 </template>
 <script>
 import {getCourseListByUserId} from '@/API/api';
+import noData from '@/components/noData.vue'
 export default {
     data(){
        return{
@@ -97,8 +99,12 @@ export default {
             ],
             show_dialog_file:false,
             archiveManagementisSuccess:false,//归档是否成功
+            noDataType:1,  //没有数据展示的样式
+            dataMess:'当前暂无课程',
+            hasData:false,
        }
     },
+    components:{noData},
     methods:{
         getCourseListByUserId(){
             let that = this;
@@ -121,6 +127,7 @@ export default {
                      for (let index = 0; index <  that.courseList.length; index++) {
                         that.courseList[index].pic_url = that.$store.state.pic_Url+ that.courseList[index].pic_url
                     }
+                     that.hasData=res.data.list.length==0?false:true
                     that.total = res.data.total;
                 }else{
                     this.$toast(res.message,2000)
