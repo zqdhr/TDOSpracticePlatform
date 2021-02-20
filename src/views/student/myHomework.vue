@@ -42,8 +42,9 @@
                 :placeholder="inplaceholder"
                 type="text"
                 autocomplete="off"
+                v-model="searchText"
               />
-              <a class="searchBtn pointer"></a>
+              <a class="searchBtn pointer" @click="student_getJobList(1)"></a>
             </div>
           </div>
         </div>
@@ -77,7 +78,7 @@
               <div class="cell pname">{{ item.assignmentName }}</div>
             </div>
             <div class="d2 d15">
-              <div class="cell textline1">{{ item.endAt }}</div>
+              <div class="cell textline1">{{ item.endAt | dateFormat}}</div>
             </div>
             <div class="d3 d18">
               <div class="cell">
@@ -234,9 +235,11 @@ export default {
     let that = this;
     that.state = that.stateList[0].value;
     that.getCourse();
+    that.student_getJobList(0);
   },
   data() {
     return {
+      searchText:"",
       isSubmitJob: false,
       totalNum: 0,
       perPage: 10, //用户列表每页条数
@@ -291,11 +294,14 @@ export default {
       let obj = {};
       obj.perPage = that.perPage;
       obj.page = 1;
-      obj.courseId = that.level1Name; //"13d0567f-a196-43ab-a7ac-d72f5b2915e5";
+      obj.courseId = that.level1Name;
       obj.userId = sessionStorage.getItem("userId");
       obj.chapterId = "";
       obj.sectionId = "";
       obj.name = "";
+      if(val == 1){
+        obj.name = that.searchText;
+      }
       obj.status = that.state == "-1" ? "" : that.state;
 
       // alert(JSON.stringify(obj));
