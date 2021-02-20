@@ -636,7 +636,7 @@ export default{
            .s_name{color:@fontColor; background: url(../assets/img/d_chapter.png) left center no-repeat; padding: 5px 0 5px 35px; }
            .s_intro{color: @hnavcolor; padding-left: 20px;}
            .chapter_name_box{
-               display: inline-block; width:60%; vertical-align: middle;
+               display: inline-block; width:58%; vertical-align: middle;
 
            }
            .s-state{right:130px;position: absolute;}
@@ -709,7 +709,7 @@ export default{
             .arrow_up{
                 .a_arrow{background: url(../assets/img/d_arrow_u.png)  center no-repeat;cursor: pointer;}
             }
-            .sec_name{display: inline-block; width:60%; vertical-align:middle; position: relative;}
+            .sec_name{display: inline-block; width:50%; vertical-align:middle; position: relative;}
             .sec_name p{padding-left:30px;}
 
 

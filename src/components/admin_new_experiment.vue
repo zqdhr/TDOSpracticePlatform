@@ -695,7 +695,7 @@ export default {
 @import url(../assets/less/admin.less);
 .newdialog_body {
   .new_nav {
-    padding: 20px 0;
+    padding: 20px 0; font-size: 0px;
     a {
       font-size: 18px; color: @tabcolor; display: inline-block; width: 22%; text-align: center; margin: 0 1.5%; background: @dialog_nav; padding: 10px 0; line-height: 22px;
     }

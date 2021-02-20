@@ -149,7 +149,7 @@
                     <span>{{ file.name }}</span>
                   </li>
                 </ul>
-                <div class="upload_person">
+                <div class="upload_person" style="text-align:left">
                   <file-upload
                           style="overflow: visible"
                           :maximum="1"
