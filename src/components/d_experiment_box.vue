@@ -16,7 +16,7 @@
                                    <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="getDelete(item.id)"></a>
                                 </el-tooltip>
                                 <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3 && role!=1">
-                                   <a class="icon icon_set pointer" @click.stop="isSet=true,experiment = item"></a>
+                                   <a class="icon icon_set pointer" @click.stop="setinfo(item),experiment = item"></a>
                                 </el-tooltip>
                                  <div class="pic">
                                     <div class="pic_box"><img :src="item.pic_url"/></div>
@@ -62,7 +62,7 @@
         </el-dialog>
 
         <!--设置时间-->
-        <el-dialog :visible.sync="isSet" width="500px">
+        <el-dialog :visible.sync="isSet" width="500px" @close="time='',reportinfo='',endTime=''">
             <div slot="title" class="dialog_header">请设置时间!</div>
             <div class="setform">
                 
@@ -82,7 +82,7 @@
                  <div class="set-col">
                     <p class="ptitle">报告要求：</p>
                     <div class="dselect">
-                        <el-input type="textarea" :rows="5" resize="none"/>
+                        <el-input type="textarea" :rows="5" v-model="reportinfo" resize="none"/>
                     </div>
                 </div>
                  <div class="set-col">
@@ -152,7 +152,9 @@ export default {
                 },
             } ,
             endTime:'',
+            reportinfo:'',//报告要求
             sindex:'',
+            cindex:'',
             experimentId:'',
             experiment:{},
             total:1,
@@ -258,11 +260,20 @@ export default {
             obj.id=that.experiment.id
             obj.duration = that.time
             obj.end_at = that.endTime
+            obj.report_requirement = that.reportinfo
             
             console.log(obj)
             updateExperiment(obj).then(res=>{
                 if (res.code==200) {
-                  that.getAllExperiment()
+                    that.isdeleteStatus = '';
+                    if(that.sindex != "" && that.cindex != ''){
+                        that.isdeleteStatus = 1;
+                        that.findAllByType(that.sindex,3,8,1)
+                    }else if(that.sindex == "" && that.cindex != ''){
+                        that.findAllByType(that.cindex,2,8,1)
+                    }else if(that.sindex == "" && that.cindex == ''){
+                        that.findAllByType(that.$route.query.courseId,1,8,1)
+                    }
                  
                 } else {
                     this.$toast(res.message,2000)
@@ -275,7 +286,16 @@ export default {
          //底部分页
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
-            
+            let that = this
+            that.isdeleteStatus = '';
+            if(that.sindex != "" && that.cindex != ''){
+                that.isdeleteStatus = 1;
+                that.findAllByType(that.sindex,3,8,val)
+            }else if(that.sindex == "" && that.cindex != ''){
+                that.findAllByType(that.cindex,2,8,val)
+            }else if(that.sindex == "" && that.cindex == ''){
+                that.findAllByType(that.$route.query.courseId,1,8,val)
+            }
         },
         click_new(){
             let that = this;
@@ -308,7 +328,22 @@ export default {
         sectionExperment(array){
           let that = this;
            that.findAllByType(array[0],array[1],array[2],array[3])
-        }
+        },
+        //设置需要的参数复制
+        setinfo(item){
+            let that = this
+            that.isSet=true
+            for (let index = 0; index < that.timeOptions.length; index++) {
+              if (that.timeOptions[index].value==item.duration) {
+                  that.time = that.timeOptions[index].value
+                  break
+              }
+                
+            }
+            that.endTime=item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):''
+            that.reportinfo = item.report_requirement
+
+        },
     }
 }
 </script>

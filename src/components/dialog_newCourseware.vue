@@ -342,6 +342,11 @@ export default {
     //本地上传确认上传
     confirmLocalUpload() {
       let that = this;
+      console.log(that.files.length)
+      if (that.files.length==0) {
+        return that.$toast('请选择课件',2000)
+        
+      }
 
       that.isnewFilter = false
       console.log("111")

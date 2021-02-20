@@ -74,7 +74,7 @@
             
             <div>
                 <p class="pt">实验报告需求：</p>
-                <p></p>
+                <p>{{experiment.report_requirement}}</p>
             </div>
             
         </div>
