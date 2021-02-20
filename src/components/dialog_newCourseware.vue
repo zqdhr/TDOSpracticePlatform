@@ -252,6 +252,7 @@ export default {
       if(that.sindex != '' && that.cindex != ''){
         that.cindex = '';
       }
+      alert(that.type1)
       that.findCourseWareAll(that.perPage, 1, that.kind, that.type1,'', '', that.cindex, that.sindex,'');
     },
     //自定义父级分类
@@ -393,6 +394,7 @@ export default {
         console.log(JSON.stringify(obj))
         addChapterSectionCourseware(JSON.stringify(obj)).then(res => {
           if (res.code == 200) {
+            alert("111")
             that.isnewFilter = false;
             this.$toast("新增成功", 2000)
             //that.reload();
@@ -417,6 +419,7 @@ export default {
         console.log(JSON.stringify(obj))
         addChapterSectionCourseware(JSON.stringify(obj)).then(res => {
           if (res.code == 200) {
+            //alert("111")
             that.isnewFilter = false;
             this.$toast("新增成功", 2000)
             that.reload();
@@ -485,13 +488,11 @@ export default {
     },
     //上传前的钩子函数
     inputFilter(newFile, oldFile, prevent) {
-      let that = this;
       if (newFile && !oldFile) {
         const extension = newFile.name.substring(
                 newFile.name.lastIndexOf(".") + 1
         );
         console.log(extension);
-        that.extension = extension
         if (extension != "pdf" && extension != "mp4") {
           this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
           return prevent();
@@ -531,6 +532,7 @@ export default {
       let type = that.extension == 'pdf' ?2 : 1
       obj.append('type', type)
       obj.append('file', file)
+      alert(that.files[0].file.name)
       upload(obj).then(res => {
         if (res.code == 200) {
           that.picUrl = res.data.name;
@@ -543,38 +545,36 @@ export default {
           obj.url = that.picUrl;
           obj.duration = that.time;
           obj.size = that.size;
-          obj.category_id = that.cateId;
+          obj.category_id = that.addCategoryID;
           this.$refs.upload.active = true;
           addCourseware(JSON.stringify(obj)).then((resCourse) => {
             if (resCourse.code == 200) {
+              alert("新建成功");
               console.log(resCourse.data.id)
               if (that.sindex !== '') {
-                let list1 = {};
-                let list = [];
+                console.log("节新增课件")
+                alert("aaa"+that.sindex)
                 let obj = {};
-                list1.courseware_id = resCourse.data.id;
-                list1.section_id = that.sindex;
-                list1.chapter_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
-                list.push(list1)
-                obj.chapter_section_courseware_list = list
+                obj.courseware_id = resCourse.data.id;
+                obj.section_id = that.sindex;
+                obj.chapter_id = that.cindex;
                 addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
                   if (resadd.code == 200) {
+                    alert("111")
                     that.isnewFilter = false;
                   } else {
                     this.$toast(resadd.message, 2000)
                   }
                 })
               } else {
-                let list1 = {};
-                let list = [];
+                console.log("章新增课件")
                 let obj = {};
                 obj.courseware_id = resCourse.data.id;
                 obj.section_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
                 obj.chapter_id = that.cindex;
-                list.push(list1)
-                obj.chapter_section_courseware_list = list
                 addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
                   if (resadd.code == 200) {
+                    alert("111")
                     that.isnewFilter = false;
                   } else {
                     this.$toast(resadd.message, 2000)

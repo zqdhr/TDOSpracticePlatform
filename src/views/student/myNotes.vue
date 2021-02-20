@@ -212,7 +212,7 @@
               v-model="contentText"
               type="textarea"
               :rows="5"
-              placeholder="请输入该段笔记的简介..."
+              placeholder="请输入该段笔记内容..."
             />
           </el-form-item>
         </el-form>
@@ -316,6 +316,7 @@ export default {
     let that = this;
     that.url = pdf.createLoadingTask(that.url);
     that.getCourse();
+    that.getNote("");
   },
 
   methods: {
@@ -354,6 +355,18 @@ export default {
       obj.courseware_id = that.momentMod.courseware_id;
       obj.course_id = that.level1Name;
       obj.user_id = sessionStorage.getItem("userId");
+      if (that.titleText == "") {
+        return that.$toast("笔记标题不能为空", 3000);
+      }
+
+      if (that.contentText == "") {
+        return that.$toast("笔记内容不能为空", 3000);
+      }
+
+      if (that.contentText.length > 200) {
+        return that.$toast("笔记内容字数不能超过200", 3000);
+      }
+
       obj.title = that.titleText;
       obj.content = that.contentText;
 
