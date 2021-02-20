@@ -31,7 +31,17 @@ Vue.prototype.$Base64 = Base64;
 Vue.config.productionTip = false
 
 
-Vue.filter('dateFormat', function(originVal) {
+Vue.filter('dateFormatYMD', function(originVal) {
+  const dt = new Date(originVal)
+
+  const y = dt.getFullYear()
+  const m = (dt.getMonth() + 1 + '').padStart(2, '0')
+  const d = (dt.getDate() + '').padStart(2, '0')
+  
+  return `${y}-${m}-${d}`
+})
+
+Vue.filter('dateFormatYMDhms', function(originVal) {
   const dt = new Date(originVal)
 
   const y = dt.getFullYear()

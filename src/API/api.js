@@ -113,7 +113,7 @@ var getCoursewareByChapterId = function(data){
 
 //管理员查询课程节下的课件
 var getCoursewareBySectionId = function(data){
-	return axios.get('/getCoursewareBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page)
+	return axios.get('/getCoursewareBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page+'&kind='+data.kind+'&type='+data.type)
 }
 
 //管理员查询课程章下的作业
@@ -451,6 +451,11 @@ var modifySectionNameById = function(data){
 //修改课程小节名称
 var modifySmallSectionNameById = function(data){
 	return axios.post('/modify_small_section_name_by_id', data,{headers: {'Content-Type':'application/json'}})
+}
+
+//课程归档
+var modifyExpiredCourseStatus = function(data){
+	return axios.post('/modify_expired_course_status', data,{headers: {'Content-Type':'application/json'}})
 }
 
 export{

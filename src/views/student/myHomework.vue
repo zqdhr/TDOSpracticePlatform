@@ -78,7 +78,7 @@
               <div class="cell pname">{{ item.assignmentName }}</div>
             </div>
             <div class="d2 d15">
-              <div class="cell textline1">{{ item.endAt | dateFormat}}</div>
+              <div class="cell textline1">{{ item.endAt | dateFormatYMD}}</div>
             </div>
             <div class="d3 d18">
               <div class="cell">
@@ -248,7 +248,7 @@ export default {
 
       stateList: [
         { label: "全部", value: "-1" },
-        { label: "未提交", value: "" },
+        { label: "未提交", value: "0" },
         { label: "已提交", value: "1" },
       ], //作业状态list
       state: "", //作业选中状态

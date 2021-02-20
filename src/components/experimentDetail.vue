@@ -29,7 +29,7 @@
 
         <div class="info_main" v-if="activeIndex==1">
             <div><p>实验时长：{{experiment.duration}}分钟</p></div>
-            <div><p>引用虚机：{{experiment.imagesinfo!=null?experiment.imagesinfo.length:0}}台虚拟机</p></div>
+            <div><p>引用虚拟机：{{experiment.imagesinfo!=null?experiment.imagesinfo.length:0}}台虚拟机</p></div>
             <div>
                 <p class="pt">实验简介：</p>
                 <p>{{experiment.introduce}}</p>

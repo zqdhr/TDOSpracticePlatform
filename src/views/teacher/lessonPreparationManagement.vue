@@ -41,7 +41,7 @@
                                     </div>
                                 </div>
                                 <div class="cell-fun boxsizing">
-                                    <a class="btnDefault btn-fun pointer" @click="linkDetail(item.id)">{{item.status==0?'待开课':'已开课'}}</a>
+                                    <a class="btnDefault btn-fun pointer" @click="linkDetail(item.id)">{{item.status==0?'待开课':item.status==1?'已开课':'已结束'}}</a>
                                 </div>
                             </div>
                         </div>
