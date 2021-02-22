@@ -153,7 +153,7 @@
            </div>
        </div>
 
-   <newdialog   ref="newdialog"></newdialog>
+   <newdialog   ref="newdialog" @getCourseAll="getCourseAll"></newdialog>
 
 </div>
 </template>
@@ -203,7 +203,7 @@ export default {
             isHasData:false,
 
             paramData:{
-                perPage:10,
+                perPage:15,
                 page:1,
                 kind:'', //种类 0视频 1pdf
                 type:0 ,//0内置课件 1教师上传
@@ -297,7 +297,7 @@ export default {
         //获取课件列表方法
         getCourseAll(){
             let that = this;
-         console.log(that.paramData)
+      
             getCoursewareAll(that.paramData).then((res) => {                
                 if (res.code == 200) {
                     for(let i = 0;i<res.data.list.length;i++){
@@ -360,16 +360,18 @@ export default {
             deleteCoursewareById(obj).then((res) => {
                 that.coueseWareId = '';
                 if (res.code == 200) {
-                    if(res.data.reason.indexOf('课件已关联到章节')!=-1){
+                    if(res.data.reason){
+                    
                         that.$toast(res.data.reason+'无法删除', 3000);
+                       
                     }else{
-                    if(that.paramData.page!=1){
-                        if(list.length == that.total){
-                            that.paramData.page = that.paramData.page - 1
+                       if(that.paramData.page!=1){
+                             if(list.length == that.total){
+                                that.paramData.page = that.paramData.page - 1
+                            }
                         }
-                    }
-                    that.$toast('删除成功', 2000);
-                    that.getCourseAll();
+                        that.$toast('删除成功', 2000);
+                        that.getCourseAll();
                     }
                 } else {
                     that.$toast(res.message, 3000);
