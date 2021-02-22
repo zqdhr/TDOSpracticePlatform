@@ -2,13 +2,13 @@
 <template>
   <div class="experiment_box">
     <div class="exper_main">
-      <courseNav @getData = "getData"></courseNav>
+      <courseNav @getData="getData"></courseNav>
       <div class="right_box">
         <!--小节下面有作业-->
-        <noData v-if="sindex==''"></noData>
-        <div class="add_btn_box clearfix" v-if="!noData && sindex!=''">
+        <noData v-if="sindex == ''"></noData>
+        <div class="add_btn_box clearfix" v-if="!noData && sindex != ''">
           <div class="fl">
-            <div class="sel-box">
+            <div class="sel-box" v-if="1 == -1">
               <el-select
                 v-model="cate"
                 placeholder="请选择作业类型"
@@ -25,72 +25,81 @@
             </div>
           </div>
           <div class="fr">
-          <a class="btnDefault pointer mr20" @click="deleteOperation"
-            >删除题目</a
-          >
-          <a class="btnDefault pointer" @click="click_new">新增题目</a>
+            <a class="btnDefault pointer mr20" @click="deleteOperation"
+              >删除题目</a
+            >
+            <a class="btnDefault pointer" @click="click_new">新增题目</a>
           </div>
         </div>
         <!--课程题目-->
-        <div class="coursework_box" v-if="!noData && status != 1 && sindex!=''">
-            <div class="coursework_name">
-                <p>{{courseWork.name}}</p>
-                <a class="edit" @click="reset_homework"></a>
-
-            </div>
-          <div class="course_list">
-            <el-scrollbar style="height:100%">  
-            <!--选择题-->
-            <ul class="choice_question">
-              
-              <li
-                :class="{ li_choose: isShow }"
-                v-for="(item, index) in courseList"
-                :key="index"
-              > 
-                <div class="title">{{ item.content }}
-                   <span> ({{item.score}}分) </span>
-                    <a class="btn-set pointer" @click="setNewScore(item)"></a>
-               
-                </div>
-                <div class="pic"  v-if="item.picUrl!='' && item.picUrl">
-                  <span><img :src="state.pic_Url+item.picUrl"/></span>
-                </div>
-          
-                <p class="answer_box" v-if="item.type == 0">
-                  <span
-                    class="s_radio"
-                    :class="{ 's_radio_answer': iitem == item.answer }"
-                    v-for="(iitem, iindex) in JSON.parse(item.choice)"
-                    :key="iindex"
-                  >
-                  {{iitem}}
-                  </span>
-                </p>
-                <p class="answer_box" v-if="item.type == 1">
-                  {{ item.answer }}
-                </p>
-                <!--选中的状态添加class   li_radio_h-->
-                <span
-                  class="li_radio"
-                  @click="cheeckedList(1,item, index, item.checked)"
-                  :class="{ li_radio_h: item.checked }"
-                ></span>
-              </li>
-                
-            </ul>
-        </el-scrollbar>
+        <div
+          class="coursework_box"
+          v-if="!noData && status != 1 && sindex != ''"
+        >
+          <div class="coursework_name">
+            <p>{{ courseWork.name }}</p>
+            <a class="edit" @click="reset_homework"></a>
           </div>
-             <div class="add_btn_box">
-               <a class="btnDefault pointer" @click="addQuestionBack">保存</a>
-              <a class="btnDefault pointer " style="margin-left:20px" @click="confirmQuestionBack">确认</a>
-            </div>
+          <div class="course_list">
+            <el-scrollbar style="height: 100%">
+              <!--选择题-->
+              <ul class="choice_question">
+                <li
+                  :class="{ li_choose: isShow }"
+                  v-for="(item, index) in courseList"
+                  :key="index"
+                >
+                  <div class="title">{{index+1}}.
+                    {{  item.content }}
+                    <span> ({{ item.score }}分) </span>
+                    <a class="btn-set pointer" v-if="1==-1" @click="setNewScore(item)"></a>
+                  </div>
+                  <div class="pic" v-if="item.picUrl != '' && item.picUrl">
+                    <span><img :src="state.pic_Url + item.picUrl" /></span>
+                  </div>
+
+                  <p class="answer_box" v-if="item.type == 0">
+                    <span
+                      class="s_radio"
+                      :class="{ s_radio_answer: iitem == item.answer }"
+                      v-for="(iitem, iindex) in JSON.parse(item.choice)"
+                      :key="iindex"
+                    >
+                      {{ iitem }}
+                    </span>
+                  </p>
+                  <p class="answer_box" v-if="item.type == 1">
+                    {{ item.answer }}
+                  </p>
+                  <!--选中的状态添加class   li_radio_h-->
+                  <span
+                    class="li_radio"
+                    @click="cheeckedList(1, item, index, item.checked)"
+                    :class="{ li_radio_h: item.checked }"
+                  ></span>
+                </li>
+              </ul>
+            </el-scrollbar>
+          </div>
+          <div class="add_btn_box">
+            <a class="btnDefault pointer" @click="addQuestionBack">保存</a>
+            <a
+              class="btnDefault pointer"
+              style="margin-left: 20px"
+              @click="confirmQuestionBack"
+              >确认</a
+            >
+          </div>
         </div>
-        
+
         <!--小节作业不存在-->
-        <div class="noData_box" v-if="noData && status == 1 && sindex!=''">
-            <p class="mess">当前节下暂无作业，请点击下方新增作业按钮。</p>
-            <div><a class="btnDefault pointer"  @click="isnewJobName =true">新增作业</a></div>
+        <div class="noData_box" v-if="noData && status == 1 && sindex != ''">
+          <p class="mess">当前节下暂无作业，请点击下方新增作业按钮。</p>
+          <div>
+            <a class="btnDefault pointer" @click="isnewJobName = true"
+              >新增作业</a
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -116,108 +125,146 @@
     </el-dialog>
 
     <!--新增作业弹窗-->
-    <el-dialog :visible.sync="isnewJobName" width="500px" class="dialog_newJobName" v-if="sindex != ''">
-       <div slot="title" class="dialog_header">请设置作业名称</div>
-       <div class="setScope">
-           <el-input placeholder="输入作业名称" v-model="homework.name"  maxlength="16"></el-input>
-           <div class="set_endtime_box" v-if="timeStatus == 1">
-               <el-date-picker
-               type="datetime"
-                v-model="homework.endTime"    :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss"
-                style="width:100%"
-                placeholder="选择日期">
-              </el-date-picker>
-           </div>
-       </div>
-       <div slot="footer" class="dialog-footer" >
-           <a class="btnDefault" @click="addCourseWork">确 认</a>
+    <el-dialog
+      :visible.sync="isnewJobName"
+      width="500px"
+      class="dialog_newJobName"
+      v-if="sindex != ''"
+    >
+      <div slot="title" class="dialog_header">请设置作业名称</div>
+      <div class="setScope">
+        <el-input
+          placeholder="输入作业名称"
+          v-model="homework.name"
+          maxlength="16"
+        ></el-input>
+        <div class="set_endtime_box" v-if="timeStatus == 1">
+          <el-date-picker
+            type="datetime"
+            v-model="homework.endTime"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            style="width: 100%"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <a class="btnDefault" @click="addCourseWork">确 认</a>
       </div>
     </el-dialog>
 
     <!--修改作业名称-->
-    <el-dialog :visible.sync="modifyJobName" width="500px" class="dialog_newJobName" v-if="sindex != ''">
+    <el-dialog
+      :visible.sync="modifyJobName"
+      width="500px"
+      class="dialog_newJobName"
+      v-if="sindex != ''"
+    >
       <div slot="title" class="dialog_header">请设置作业名称</div>
       <div class="setScope">
         <el-input placeholder="输入作业名称" v-model="modifyName"></el-input>
         <div class="set_endtime_box" v-if="timeStatus == 1">
           <el-date-picker
-                  type="datetime"
-                  v-model="homework.endTime"  :picker-options="pickerOptions"
-                  style="width:100%" value-format="yyyy-MM-dd HH:mm:ss"
-                  placeholder="选择日期">
+            type="datetime"
+            v-model="homework.endTime"
+            :picker-options="pickerOptions"
+            style="width: 100%"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="选择日期"
+          >
           </el-date-picker>
         </div>
       </div>
-      <div slot="footer" class="dialog-footer" >
+      <div slot="footer" class="dialog-footer">
         <a class="btnDefault" @click="modifyCourseName">确 认</a>
       </div>
     </el-dialog>
 
     <!--题库选择弹出框-->
-    <el-dialog :visible.sync="showQuestionBank" width="1100px" class="dialog_pagination teacher_add_coursework">
+    <el-dialog
+      :visible.sync="showQuestionBank"
+      width="1100px"
+      class="dialog_pagination teacher_add_coursework"
+    >
       <div slot="title" class="dialog_header">新增题目（题目库选择）</div>
       <div class="course_list dialog_course_list">
-        <div class="pageTab clearfix ">
-        <div class="fl">
-          <div class="sel-box">
-            <el-select
-                    v-model="customClass"
-                    value-key="id"
-                    placeholder="自定义分类"
-                    @change="selectType"
-            >
-              <el-option
-                      v-for="item in options2"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item"
+        <div class="pageTab clearfix">
+          <div class="fl">
+            <div class="sel-box">
+              <el-select
+                v-model="customClass"
+                value-key="id"
+                placeholder="自定义分类"
+                @change="selectType"
               >
-              </el-option>
-            </el-select>
-          </div>
-          <div class="sel-box" v-if="options1.length > 0">
-            <el-select
-                    v-model="i_customClass"
-                    value-key="id"
-                    placeholder="自定义分类"
-                    @change="selectType1"
-            >
-              <el-option
-                      v-for="item in options1"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item"
+                <el-option
+                  v-for="item in options2"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item"
+                >
+                </el-option>
+              </el-select>
+            </div>
+            <div class="sel-box" v-if="options1.length > 0">
+              <el-select
+                v-model="i_customClass"
+                value-key="id"
+                placeholder="自定义分类"
+                @change="selectType1"
               >
-              </el-option>
-            </el-select>
+                <el-option
+                  v-for="item in options1"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item"
+                >
+                </el-option>
+              </el-select>
+            </div>
+            <div class="sel-box">
+              <el-select
+                v-model="cate"
+                placeholder="题目类型"
+                @change="selectQuestionType"
+              >
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </div>
           </div>
-          <div class="sel-box">
-            <el-select v-model="cate" placeholder="题目类型" @change="selectQuestionType" >
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
-            </el-select>
+          <div class="fr">
+            <div class="d-serach">
+              <input
+                placeholder="请输入作业标题"
+                type="text"
+                autocomplete="off"
+                v-model="searchText"
+                v-emoji
+              />
+              <!--<a class="searchBtn pointer"></a>-->
+            </div>
+            <a class="btn_finsh" @click="searchQuestionAll">完成</a>
           </div>
-       
         </div>
-        <div class="fr">
-         
-          <div class="d-serach"> 
-            <input placeholder="请输入作业标题" type="text" autocomplete="off" v-model="searchText" v-emoji/>
-            <!--<a class="searchBtn pointer"></a>-->
-          </div>
-          <a class="btn_finsh" @click="searchQuestionAll">完成</a>
-        </div>
-      </div>
         <!--选择题-->
         <ul class="choice_question">
-        
           <li
-            class="li_choose" style="margin-bottom:15px"
+            class="li_choose"
+            style="margin-bottom: 15px"
             v-for="(item, index) in all_courseList"
             :key="index"
           >
             <div class="title">{{ item.content }}</div>
-            <div class="pic" v-if="item.picUrl!='' && item.picUrl" >
-              <span ><img :src="state.pic_Url+item.picUrl"  /></span>
+            <div class="pic" v-if="item.picUrl != '' && item.picUrl">
+              <span><img :src="state.pic_Url + item.picUrl" /></span>
             </div>
             <p class="answer_box" v-if="item.type == 0">
               <span
@@ -226,49 +273,45 @@
                 v-for="(iitem, iindex) in JSON.parse(item.choice)"
                 :key="iindex"
               >
-               {{iitem}}
+                {{ iitem }}
               </span>
-             
             </p>
             <p class="answer_box" v-if="item.type == 1">{{ item.answer }}</p>
             <!--选中的状态添加class   li_radio_h-->
             <span
               class="li_radio"
               :class="{ li_radio_h: item.checked }"
-              @click="cheeckedList(2,item, index, item.checked)"
+              @click="cheeckedList(2, item, index, item.checked)"
             >
             </span>
           </li>
-      
         </ul>
       </div>
 
+      <div class="choseFooter clearfix">
+        <a class="btnDefault fl pointer" @click="showQuestion" v-if="1==-1">确认</a>
 
-      <div  class="choseFooter clearfix">
-          <a class="btnDefault fl pointer" @click=" showQuestion">确认</a>
-
-          <div class="tab-pagination fr">
-            <el-pagination
-              background
-              :current-page="curPage"
-              :page-size="perPage"
-              @current-change="handleCurrentChange"
-              layout="prev, pager, next,jumper"
-              :total="totalAllCourse"
-            >
-            </el-pagination>
-          </div>
+        <div class="tab-pagination fr">
+          <el-pagination
+            background
+            :current-page="curPage"
+            :page-size="perPage_All"
+            @current-change="handleCurrentChange"
+            layout="prev, pager, next,jumper"
+            :total="totalAllCourse"
+          >
+          </el-pagination>
         </div>
+      </div>
     </el-dialog>
     <!--单题设置时间弹出-->
-    <el-dialog :visible.sync="isSetTime" width="500px" @close="score=''">
-       <div slot="title" class="dialog_header">设置该题目分数</div>
-       <div class="setScope">
-         <el-input placeholder="请输入该题目的分数" v-model = 'score'></el-input>
-       </div>
-       <div slot="footer" class="dialog-footer">
-           <a class="btnDefault" @click="setScore">确 认</a>
-        
+    <el-dialog :visible.sync="isSetTime" width="500px" @close="score = ''">
+      <div slot="title" class="dialog_header">设置该题目分数</div>
+      <div class="setScope">
+        <el-input placeholder="请输入该题目的分数" v-model="score"></el-input>
+      </div>
+      <div slot="footer" class="dialog-footer" >
+        <a class="btnDefault" @click="setScore">确 认</a>
       </div>
     </el-dialog>
   </div>
@@ -277,9 +320,19 @@
 import { mapState } from "vuex";
 import courseNav from "@/components/left_courseNav.vue";
 import noData from "@/components/noData.vue";
-import {findParentCategory,findChildCategory,getQuestionBackAll,addAssignment,getAssignmentBySectionId,addQuestionBackAssignmentList,getAssignmentNameBySectionId,modifyAssignmentNameById,modifyAssignmentStatusById} from '@/API/api';
+import {
+  findParentCategory,
+  findChildCategory,
+  getQuestionBackAll,
+  addAssignment,
+  getAssignmentBySectionId,
+  addQuestionBackAssignmentList,
+  getAssignmentNameBySectionId,
+  modifyAssignmentNameById,
+  modifyAssignmentStatusById,
+} from "@/API/api";
 export default {
-  inject:['reload'],
+  inject: ["reload"],
   data() {
     return {
       options: [
@@ -294,58 +347,56 @@ export default {
       showQuestionBank: false, //题库是否显示(弹出框)
       dialogWidth: 0,
       //作业列表参数根据具体实际情况来定
-      courseWork: {
-        
-      },
-      courseList: [
-      ],
+      courseWork: {},
+      courseList_Org: [],
+      courseList: [],
       //全部题目
-      all_courseList:[
-      ],
-      status:'',
-      courseWorkTitle:'',
+      all_courseList: [],
+      status: "",
+      // courseWorkTitle:'',
       isShow: false,
       deleteList: [], //选中需要删除的题目列表
-      chooseList:[],//新增题目选中
+      chooseList: [], //新增题目选中
       isDelete: false,
-      type:0,//题目类型
-      curPage:1,
-      perPage:6,
-    
-      noData:true,//小节没有内容
-      isSetTime:false,//设置题目时间弹窗
-      sindex:'',
-      totalAllCourse:1,
-      isnewJobName:false,
-      modifyJobName:false,
-      modifyName:'',//修改作业名称
+      type: 0, //题目类型
+      curPage: 1,
+      perPage: 100,
+      perPage_All: 5,
+      noData: true, //小节没有内容
+      isSetTime: false, //设置题目时间弹窗
+      sindex: "",
+      totalAllCourse: 1,
+      isnewJobName: false,
+      modifyJobName: false,
+      modifyName: "", //修改作业名称
       pickerOptions: {
-         disabledDate(time) {
-            return time.getTime() < Date.now() - 8.64e7;
-          },
-        },  
-      homework:{
-        name:'',//作业名称
-        endTime:''//作业的截止时间
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7;
+        },
       },
-      assignmentId:'',
-      score:'',
-      updateScore:{},
-      parentId:'',//父类id
-      childrenId:'',//子类id
-      searchText:'',//搜索框
+      homework: {
+        name: "", //作业名称
+        endTime: "", //作业的截止时间
+      },
+      assignmentId: "",
+      score: "",
+      updateScore: {},
+      parentId: "", //父类id
+      childrenId: "", //子类id
+      searchText: "", //搜索框
     };
   },
-   computed: {
+  computed: {
     ...mapState({
       state: (state) => state,
     }),
   },
-  props:{
-     timeStatus:{ default:0}//默认管理员为0，不显示时间
+  props: {
+    timeStatus: { default: 0 }, //默认管理员为0，不显示时间
   },
   components: {
-    courseNav,noData
+    courseNav,
+    noData,
   },
   created() {
     let that = this;
@@ -364,80 +415,84 @@ export default {
   },
   methods: {
     //查题库
-    getQuestionBackAll(){
+    getQuestionBackAll() {
       let that = this;
-      that.findQuestionBackAll(that.type,'','',1,that.assignmentId,'')
+      that.findQuestionBackAll(that.type, "", "", 1, that.assignmentId, "");
     },
-    findQuestionBackAll(type,content,category_id,page,assignment_id,c_category_id){
+    findQuestionBackAll(
+      type,
+      content,
+      category_id,
+      page,
+      assignment_id,
+      c_category_id
+    ) {
       let that = this;
       let obj = {};
       obj.type = type;
       obj.content = content;
       obj.category_id = category_id;
       obj.c_category_id = c_category_id;
-      obj.perPage = that.perPage;
+      obj.perPage = that.perPage_All;
       obj.page = page;
       obj.assignment_id = assignment_id;
-      getQuestionBackAll(obj).then(res=> {
-        if(res.code==200){
+      getQuestionBackAll(obj).then((res) => {
+        if (res.code == 200) {
           that.totalAllCourse = res.data.total;
-          for(let i =0;i<res.data.list.length;i++){
-             res.data.list[i].checked = false;
-             for(let j = 0;j<that.courseList.length;j++){
-                if(res.data.list[i].id == that.courseList[j].id){
-                   res.data.list[i].checked = true;
-                   console.log(123)
-                }
-             }
+          // alert(that.totalAllCourse);
+          for (let i = 0; i < res.data.list.length; i++) {
+            res.data.list[i].checked = false;
+            for (let j = 0; j < that.courseList.length; j++) {
+              if (res.data.list[i].id == that.courseList[j].id) {
+                res.data.list[i].checked = true;
+                console.log(123);
+              }
+            }
           }
-          console.log(res.data.list)
-          console.log(that.courseList)
+          console.log(res.data.list);
+          console.log(that.courseList);
           that.all_courseList = res.data.list;
-
-        }else{
-          this.$toast(res.message,2000)
+        } else {
+          this.$toast(res.message, 2000);
         }
-      })
+      });
     },
-    addCourseWork(){
+    addCourseWork() {
       let that = this;
       let obj = {};
       obj.section_id = that.sindex;
       obj.name = that.homework.name;
-      if(that.homework.name == ''){
-        return that.$toast('作业名称不可为空',2000)
+      if (that.homework.name == "") {
+        return that.$toast("作业名称不可为空", 2000);
       }
-      if(that.timeStatus == 1){
+      if (that.timeStatus == 1) {
         /*
         let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
         obj.end_at = new Date(datetime).toISOString();
         */
-        if(that.homework.endTime == '' || that.homework.endTime == null){
-          return that.$toast('作业截止时间不为空',2000)
+        if (that.homework.endTime == "" || that.homework.endTime == null) {
+          return that.$toast("作业截止时间不为空", 2000);
         }
-        obj.end_at = that.homework.endTime
-      
-      }else{
+        obj.end_at = that.homework.endTime;
+      } else {
         var date = new Date();
         obj.end_at = date.toLocaleDateString();
-    
       }
       obj.qualified_score = 100;
-     
-      addAssignment(JSON.stringify(obj)).then(res=> {
+
+      addAssignment(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
           that.assignmentId = res.data.id;
           that.isnewJobName = false;
           that.status = 0;
           that.noData = false;
           that.courseWork = res.data;
-          
+
           //that.getAssignmentBySectionId();
         } else {
-          that.$toast(res.message, 3000)
+          that.$toast(res.message, 3000);
         }
-      })
-     
+      });
     },
     //获取父类
     findParentCategory() {
@@ -468,7 +523,7 @@ export default {
     selectType(val) {
       let that = this;
       that.i_customClass = {};
-      console.log(val)
+      console.log(val);
       that.parentId = val.id;
       that.findChildCategory(val);
     },
@@ -482,47 +537,52 @@ export default {
       console.log(`当前页: ${val}`);
       let that = this;
       that.curPage = val;
-      alert(that.parentId)
-      that.findQuestionBackAll(that.type,that.searchText,that.parentId,val,that.assignmentId,that.childrenId)
+      // alert(that.parentId);
+      that.findQuestionBackAll(
+        that.type,
+        that.searchText,
+        that.parentId,
+        val,
+        that.assignmentId,
+        that.childrenId
+      );
     },
     //选中事件
-    cheeckedList(num,obj, index, checked) {
+    cheeckedList(num, obj, index, checked) {
       let that = this;
       //删除选中
-      if(num==1){
+      if (num == 1) {
         if (!checked) {
-            if (!(that.deleteList.indexOf(obj.id) != -1)) {
+          if (!(that.deleteList.indexOf(obj.id) != -1)) {
             that.deleteList.push(obj.id);
-            }
-            that.$set(that.courseList[index], "checked", true);
-            
+          }
+          that.$set(that.courseList[index], "checked", true);
         } else {
-            that.$set(that.courseList[index], "checked", false);
-            let  i = that.deleteList.indexOf(obj.id);
-            that.deleteList.splice(i, 1);
+          that.$set(that.courseList[index], "checked", false);
+          let i = that.deleteList.indexOf(obj.id);
+          that.deleteList.splice(i, 1);
         }
-      }else{
+      } else {
         //新增选中
-        
+
         if (!checked) {
-            if (!(that.chooseList.indexOf(obj.id) != -1)) {
-            that.chooseList.push(obj);
-            }
-            that.$set(that.all_courseList[index], "checked", true);
-            
+          that.$set(that.all_courseList[index], "checked", true);
+          that.chooseList.push(obj);
         } else {
-            that.$set(that.all_courseList[index], "checked", false);
-            let i = that.chooseList.indexOf(obj.id);
-            that.chooseList.splice(i, 1);
+          that.$set(that.all_courseList[index], "checked", false);
+          for (let i = 0; i < that.chooseList.length; i++) {
+            let tmp = that.chooseList[i];
+            if (obj.id == tmp.id) {
+              that.chooseList.splice(i, 1);
+            }
+          }
         }
-          
+        that.showQuestion(1);
       }
     },
-    
+
     //数组列表添加是否选中字段
     addState(array) {
-     
-
       let that = this;
       for (var i = 0; i < array.length; i++) {
         that.$set(array[i], "checked", false);
@@ -543,101 +603,99 @@ export default {
       let that = this;
       that.showQuestionBank = false;
     },
-    setNewScore(item){
-      let that = this
-      that.isSetTime=true
+    setNewScore(item) {
+      let that = this;
+      that.isSetTime = true;
       that.updateScore = item;
     },
-    setScore(){
+    setScore() {
       let that = this;
-      this.$set(that.updateScore, 'score', that.score);
-      that.isSetTime=false
+      this.$set(that.updateScore, "score", that.score);
+      that.isSetTime = false;
     },
     //新增题目，题目选择确认
-    showQuestion() {
+    showQuestion(flag) {
       let that = this;
-      that.showQuestionBank = false;
-      var temp = []; //一个新的临时数组
-      var res = [];
-      console.log(that.courseList)
-      if (that.courseList.length == 0) {
-        that.courseList = that.chooseList
-      } else {
-        for(let i = 0; i < that.courseList.length; i++){
-          if(temp.indexOf(that.courseList[i].id) == -1){
-            temp.push(that.courseList[i].id);
-            res.push(that.courseList[i]);
-          }
-        }
-        for(let i = 0; i < that.chooseList.length; i++){
-          if(temp.indexOf(that.chooseList[i].id) == -1){
-            temp.push(that.chooseList[i].id);
-            res.push(that.chooseList[i]);
-          }
-        }
-        that.courseList = res
+      if (flag != 1) {
+        that.showQuestionBank = false;
       }
-     
+      console.log(that.courseList);
+
+      if (that.courseList.length == 0) {
+        that.courseList = that.chooseList;
+      } else {
+        that.courseList = [];
+
+        for (let i = 0; i < that.courseList_Org.length; i++) {
+          that.courseList.push(that.courseList_Org[i]);
+        }
+        // alert(JSON.stringify(that.chooseList));
+        for (let i = 0; i < that.chooseList.length; i++) {
+          that.courseList.push(that.chooseList[i]);
+        }
+      }
     },
 
-    addQuestionBack(){
-      alert("111")
+    addQuestionBack() {
+      // alert("111");
       let that = this;
       let obj = {};
       let list = [];
-      alert(that.assignmentId)
+      // alert(that.assignmentId);
       let totalscore = 0;
-      console.log(that.courseList.length)
-      if(that.courseList.length ==0){
-        this.$toast("请先新增题目",3000)
+      console.log(that.courseList.length);
+      if (that.courseList.length == 0) {
+        this.$toast("请先新增题目", 3000);
         return;
       }
-      for(let i =0;i<that.courseList.length;i++){
-        totalscore += parseInt(that.courseList[i].score)
+      for (let i = 0; i < that.courseList.length; i++) {
+        totalscore += parseInt(that.courseList[i].score);
       }
-      if(totalscore > 100){
-        this.$toast("总分值大于100,请修改",3000)
+      if (totalscore > 100) {
+        this.$toast("总分值大于100,请修改", 3000);
         return;
       }
-      for(let i =0;i<that.courseList.length;i++){
+      for (let i = 0; i < that.courseList.length; i++) {
         let objques = {};
         objques.assignment_id = that.assignmentId;
         objques.question_id = that.courseList[i].id;
-        objques.score = that.courseList[i].score;
-        list.push(objques)
+        objques.score = 0;//that.courseList[i].score
+        list.push(objques);
       }
       obj.question_back_assignment_list = list;
-      console.log(JSON.stringify(obj))
-      addQuestionBackAssignmentList(JSON.stringify(obj)).then(res=> {
-        if(res.code==200){
-          alert("新增成功")
-        }else{
-          alert("新增失败")
-          this.$toast(res.message,2000)
+      console.log(JSON.stringify(obj));
+      addQuestionBackAssignmentList(JSON.stringify(obj)).then((res) => {
+        if (res.code == 200) {
+          // alert("新增成功");
+          this.$toast("新增成功", 2000);
+        } else {
+          // alert("新增失败");
+          this.$toast(res.message, 2000);
         }
-      })
+      });
     },
 
-    confirmQuestionBack(){
+    confirmQuestionBack() {
       let that = this;
       let obj = {};
-      obj.id = that.assignmentId
-      obj.status =1
-      modifyAssignmentStatusById(JSON.stringify(obj)).then(res=> {
-        if(res.code==200){
-          alert("确认成功，不可修改")
-        }else{
-          alert("确认失败")
-          this.$toast(res.message,2000)
+      obj.id = that.assignmentId;
+      obj.status = 1;
+      modifyAssignmentStatusById(JSON.stringify(obj)).then((res) => {
+        if (res.code == 200) {
+          this.$toast("确认成功，不可修改", 2000);
+          // alert("确认成功，不可修改");
+        } else {
+          // alert("确认失败");
+          this.$toast(res.message, 2000);
         }
-      })
+      });
     },
 
     //选择分类(选择，简答)
     selectCate(val) {
-      console.log("asd"+val);
+      console.log("asd" + val);
       let that = this;
-      that.getAssignmentBySectionId(val-1)
+      that.getAssignmentBySectionId(val - 1);
     },
 
     //删除题目
@@ -649,23 +707,28 @@ export default {
       } else {
         that.isShow = !that.isShow;
         that.addState(that.courseList);
-
         that.deleteList = [];
       }
     },
     //修改作业
-    reset_homework(){
-        let that = this;
-        that.modifyJobName = true
-
+    reset_homework() {
+      let that = this;
+      that.modifyJobName = true;
     },
     //查询课件库
-    searchQuestionAll(){
+    searchQuestionAll() {
       let that = this;
-      alert(that.parentId)
-      that.findQuestionBackAll(that.type,that.searchText,that.parentId,1,that.assignmentId,that.childrenId)
+      // alert(that.parentId);
+      that.findQuestionBackAll(
+        that.type,
+        that.searchText,
+        that.parentId,
+        1,
+        that.assignmentId,
+        that.childrenId
+      );
     },
-    modifyCourseName(){
+    modifyCourseName() {
       let that = this;
       let obj = {};
       obj.id = that.assignmentId;
@@ -678,60 +741,72 @@ export default {
       //   obj.end_at = date.toLocaleDateString();
       //   console.log(obj.end_at)
       // }
-      console.log(JSON.stringify(obj))
-      modifyAssignmentNameById(JSON.stringify(obj)).then(res=> {
+      console.log(JSON.stringify(obj));
+      modifyAssignmentNameById(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
-          alert("修改题目名称成功")
+          // alert("修改题目名称成功");
           that.modifyJobName = false;
           that.noData = false;
-          that.courseWorkTitle = that.modifyName;
-          that.reload();
+          // that.courseWorkTitle = that.modifyName;
+          that.courseWork.name = that.modifyName;
+          // that.$set(that.homework, 'name', that.modifyName);
+          that.modifyName = "";
+          // that.reload();
           //that.getAssignmentBySectionId();
         } else {
-          that.$toast(res.message, 3000)
+          that.$toast(res.message, 3000);
         }
-      })
+      });
     },
     //选择题目类型（选择，简答）
-    selectQuestionType(val){
-       console.log('选择题类型'+val)
+    selectQuestionType(val) {
+      console.log("选择题类型" + val);
       let that = this;
-       that.type = val-1;
+      that.type = val - 1;
     },
     //删除确认
     confirmDeleteCourseWork() {
       let that = this;
       that.isDelete = false;
       that.isShow = false;
+      alert(JSON.stringify(that.deleteList))
+
+
     },
     //点击新增题目
     click_new() {
       let that = this;
-      that.chooseList = [];
+      // that.chooseList = [];
       that.showQuestionBank = true;
+      that.curPage = 1;
       //that.addState(that.all_courseList);
       that.deleteList = [];
       that.getQuestionBackAll();
       that.findParentCategory();
     },
 
-
-
-    getData(data){
+    getData(data) {
       let that = this;
+      that.courseList = [];
+      that.courseList_Org = [];
+      that.all_courseList = [];
+      that.chooseList = [];
+
       that.sindex = data.sindex;
-      console.log(data.sindex)
-      if(data.sindex != '') {
+      console.log(data.sindex);
+      if (data.sindex != "") {
         let obj1 = {};
         obj1.sectionId = data.sindex;
-        getAssignmentNameBySectionId(obj1).then(res => {
+        getAssignmentNameBySectionId(obj1).then((res) => {
           if (res.code == 200) {
-            if (res.data.name == '' || res.data.name == null) {
-              alert("123")
+            if (res.data.name == "" || res.data.name == null) {
+              // alert("123");
               that.status = 1;
               that.noData = true;
+              // that.courseList = [];
+              // that.chooseList = [];
             } else {
-              that.courseWorkTitle = res.data.name;
+              // that.courseWorkTitle = res.data.name;
               that.assignmentId = res.data.id;
               that.courseWork = res.data;
 
@@ -739,74 +814,110 @@ export default {
               obj.sectionId = data.sindex;
               obj.perPage = that.perPage;
               obj.page = 1;
-              obj.type = that.type;
-              getAssignmentBySectionId(obj).then(res => {
-                that.status = '';
-                that.courseList = '';
+              obj.type = "";
+              getAssignmentBySectionId(obj).then((res) => {
+                that.status = "";
+                that.courseList = "";
                 if (res.code == 200) {
-                  console.log("asd"+res.data.list[0])
+                  console.log("asd" + res.data.list[0]);
                   if (res.data.list.length > 0) {
                     that.courseList = res.data.list;
+                    that.courseList_Org = res.data.list;
                   }
                   that.noData = false;
                   // alert(that.status)
                   // console.log(res.data.list)
-                  alert("查询题目成功")
+                  // alert("查询题目成功");
                 } else {
-                  that.$toast(res.message, 3000)
+                  that.$toast(res.message, 3000);
                 }
-              })
+              });
             }
           } else {
-            that.$toast(res.message, 3000)
+            that.$toast(res.message, 3000);
           }
-        })
+        });
       }
     },
-    getAssignmentBySectionId(type){
+    getAssignmentBySectionId(type) {
       let that = this;
       let obj = {};
       obj.sectionId = that.sindex;
       obj.perPage = that.perPage;
-      obj.page = that.curPage;
-      obj.type = type;
-      getAssignmentBySectionId(obj).then(res => {
+      obj.page = 1;
+      obj.type = "";
+      getAssignmentBySectionId(obj).then((res) => {
         if (res.code == 200) {
           that.courseList = res.data.list;
-          console.log(res.data.list)
-          alert("查询题目成功")
+          that.courseList_Org = res.data.list;
+          console.log(res.data.list);
+          // alert("查询题目成功");
         } else {
-          that.$toast(res.message, 3000)
+          that.$toast(res.message, 3000);
         }
-      })
-    }
+      });
+    },
   },
 };
 </script>
 <style lang="less" scoped>
 @import url(../assets/less/admin.less);
 @import url(../assets/less/coursework.less);
-.setScope{margin: 0 50px;}
-.coursework_box{position: relative;
-
+.setScope {
+  margin: 0 50px;
 }
-.coursework_name{
-  padding-right: 60px; position: relative;
-  >p { font-size: 18px;}
-  .edit{position: absolute;right:0px; top:50%;margin-top: -9px;}
+.coursework_box {
+  position: relative;
 }
-.add_btn_box{text-align: center; }
-.coursework_box .course_list{height: 460px; padding: 20px 0;}
+.coursework_name {
+  padding-right: 60px;
+  position: relative;
+  > p {
+    font-size: 18px;
+  }
+  .edit {
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    margin-top: -9px;
+  }
+}
+.add_btn_box {
+  text-align: center;
+}
+.coursework_box .course_list {
+  height: 460px;
+  padding: 20px 0;
+}
 </style>
 <style lang="less">
-.dialog_newJobName{
-  .el-dialog__footer{padding-top: 0px;}
+.dialog_newJobName {
+  .el-dialog__footer {
+    padding-top: 0px;
+  }
 }
 
-.pageTab .sel-box{width:180px;}
-.pageTab .fr .d-serach{padding-left: 12px;padding-right: 12px; width: 170px; margin-right: 20px;}
-.btn_finsh{background: @basecolor; font-size:16px;color:#fff; display: inline-block; padding: 5px 8px; .borderRadius(5px,5px,5px,5px);
-vertical-align: middle; cursor: pointer;}
+.pageTab .sel-box {
+  width: 180px;
+}
+.pageTab .fr .d-serach {
+  padding-left: 12px;
+  padding-right: 12px;
+  width: 170px;
+  margin-right: 20px;
+}
+.btn_finsh {
+  background: @basecolor;
+  font-size: 16px;
+  color: #fff;
+  display: inline-block;
+  padding: 5px 8px;
+  .borderRadius(5px,5px,5px,5px);
+  vertical-align: middle;
+  cursor: pointer;
+}
 
-.set_endtime_box{margin-top:20px;}
+.set_endtime_box {
+  margin-top: 20px;
+}
 </style>
