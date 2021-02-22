@@ -26,7 +26,7 @@
              <el-form ref="form"  label-width="120px">
               <el-form-item>
                 <span slot="label" class="s-label" ><span>*</span>选择文件：</span >
-                      <ul class="fileList_name">
+                      <ul class="fileList_name" style="padding:0px;width:304px">
                   <li v-for="file in files" :key="file.id">
                     <span>{{ file.name }}</span>
                   </li>
@@ -47,7 +47,7 @@
                     :headers="{ 'Content-Type':'multipart/form-data'}"
                     :data="{file: files.name}"
                   >
-                    <a class="a_upload pointer"><span>选择需要添加的课件</span></a>
+                    <a class="a_upload pointer" style="padding:0px 55px"><span>选择需要添加的课件</span></a>
                   </file-upload>
                 </div>
               </el-form-item>
@@ -60,12 +60,14 @@
         </div>
       </template>
     </el-dialog>
+    <loading></loading>>
   </div>
 </template>
 <script>
 import FileUpload from "vue-upload-component";
 import toastVue from "./toast/toast.vue";
 import { findParentCategory,findChildCategory,upload,addCourseware} from "@/API/api";
+import loading from '@/components/uploadLoading.vue'
 export default {
   data() {
     return {
@@ -107,7 +109,7 @@ export default {
     };
   },
   components: {
-    FileUpload,
+    FileUpload,loading
   },
   props: {},
   created() {
