@@ -12,7 +12,7 @@
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" @click="execContainer(0)" v-if="!isOpen">
+                <a class="a-opera pointer" v-if="isOpen">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -41,14 +41,14 @@
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
                 <div class="operation_box"  v-if="!isOpen"  ref="imageWrapper" >
-                   <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">点击开启全部虚拟机</a>  
+                   <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">开启全部虚拟机</a>  
                 </div>
                 <div class="operation_box" id="screen" ref="imageWrapper" v-if="isOpen">
 
                 </div>
                 <div class="operation_box" ref="imageWrapper">
                    <xterm :socketURI="socketURI" v-if="1==1"></xterm> 
-                   <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">点击开启全部虚拟机</a>
+                   <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">开启全部虚拟机</a>
                 </div>
               
             </div>
@@ -176,7 +176,8 @@ export default {
             isClose:false,
             type:'',//0是START,1是 STOP,2是 RESTART
             hasReport:false,//是否已上传过实验报告
-            isHas:false
+            isHas:false,
+            container:{}//用来存放选中的虚拟机
 
            
         }
@@ -229,10 +230,11 @@ export default {
                     that.containers = res.data
                  
                     if (that.containers!=null&& that.containers.length>0&&that.containers[0]!=null) {
-                        if (that.containers[0].status==1) {
+                        if (that.containers[0].status==1||that.containers[0].status==2) {
                             that.isOpen=true
                             that.virtualMachine=0
                         }
+                        that.container = that.containers[0]
                         
                     }
                 } else {
@@ -339,7 +341,7 @@ export default {
             insertExperimentRepor(obj).then(res=>{
                 if (res.code==200) {
                     that.$toast("实验报告上传成功",3000)
-                    that.yourContent='' 
+                    // that.yourContent='' 
                     that.hasReport=true
                 } else {
                     that.$toast(res.message,3000) 
@@ -374,7 +376,7 @@ export default {
 
             this.isOpen = true;
             this.$nextTick(function(){
-            const url ='ws://120.76.101.153:6080/vnc.html?password=123456&autoconnect=true'
+            const url ='ws://192.168.1.28:10018/vnc.html?password=123456&autoconnect=true'
 
             let rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
