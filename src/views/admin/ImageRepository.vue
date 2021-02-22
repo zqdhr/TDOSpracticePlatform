@@ -71,7 +71,7 @@
     </div>
 
      <!--删除镜像弹出框-->
-    <el-dialog :visible.sync="isDelete" width="600px">
+    <el-dialog :visible.sync="isDelete" width="500px">
       <div slot="title" class="dialog_header">请注意!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">

@@ -37,7 +37,7 @@
         <div class="fr">
           <a class="btnDefault pointer abtn" @click="delUser">删除人员</a>
 
-          <a class="btnDefault pointer abtn" @click="isUpload = true;"
+          <a class="btnDefault pointer abtn" @click="isUpload = true;files=[]"
             >上传人员</a
           >
 
@@ -217,7 +217,7 @@
     </el-dialog>
 
     <!--删除人员弹出框-->
-    <el-dialog :visible.sync="isDelete" width="600px">
+    <el-dialog :visible.sync="isDelete" width="500px">
       <div slot="title" class="dialog_header">请注意!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
@@ -595,7 +595,7 @@ export default {
 
     // 文件上传成功
     handleSuccess(res, file, fileList) {
-      this.$message.success("文件上传成功");
+      this.$message.success("上传成功");
     },
 
     //上传的回调函数，每次上传回调都不一样
@@ -614,15 +614,15 @@ export default {
         if (newFile && oldFile && !newFile.active && oldFile.active) {
           //console.log('response', newFile.response)
           let response = newFile.response;
-          console.log(this.files)
+          console.log(newFile.response)
           if (response.code == 200) {
-            this.$message.success("文件上传成功");
+            this.$message.success("上传成功");
             that.isUpload = false;
-            that.searchUser(2, "", "", 1, 10);
+            that.searchUser(2, "", "",that.curPage, that.perPage);
             
           } else {
             that.isUpload = false;
-            this.$message.error("文件上传失败");
+            this.$message.error(response.message);
           }
           if (newFile.xhr) {
             //  Get the response status code
