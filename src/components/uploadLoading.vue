@@ -3,7 +3,7 @@
       <div class="table-div">
         <div class="align-middle">
           <div><img class="roteimg" src="../assets/img/loading.png" /></div>
-          <p>文件上传请稍后...</p>
+          <p>{{mess}}</p>
         </div>
       </div>
     </div>
@@ -11,8 +11,13 @@
 <script>
 export default {
     data(){
-
-    }
+      return {}
+    },
+    props:{
+      mess:{
+          default:'文件正在上传，请稍候...'
+      }
+    },
 }
 </script>
 <style lang="less" scoped>
@@ -23,7 +28,7 @@ export default {
   height: 100%;
   left: 0px;
   top: 0px;
-  z-index: 999;
+  z-index: 9999;
   background: rgba(0, 0, 0, 0.6);
 
 .table-div {

@@ -60,7 +60,7 @@
         </div>
       </template>
     </el-dialog>
-    <loading></loading>>
+    <loading v-if="loading" @hideloading="hideloading" mess='文件正在上传,请稍候...'></loading>>
   </div>
 </template>
 <script>
@@ -69,6 +69,7 @@ import toastVue from "./toast/toast.vue";
 import { findParentCategory,findChildCategory,upload,addCourseware} from "@/API/api";
 import loading from '@/components/uploadLoading.vue'
 export default {
+
   data() {
     return {
       inplaceholder: "请输入课件名",
@@ -106,6 +107,7 @@ export default {
       size:'',
       time:'',
       addCategoryID:'',//自定义分类ID
+      loading:false,//课件库是否在上传
     };
   },
   components: {
@@ -183,8 +185,18 @@ export default {
     //本地上传确认上传
     confirmLocalUpload() {
       let that = this;
-      that.isnewFilter= false
-      console.log("111")
+      //
+      if(that.addCategoryID == '' || that.addCategoryID == null ){
+        this.$toast("请选择自定义分类", 3000);
+        return;
+      }
+      
+      if(that.files.length==0){
+        this.$toast("请先上传课件", 3000);
+        return;
+      }
+
+
       if (!this.$refs.upload.active) {
         that.upload(that.files[0].file)
       }
@@ -245,7 +257,7 @@ export default {
         if (newFile && oldFile && !newFile.active && oldFile.active) {
           //console.log('response', newFile.response)
           let response = newFile.response;
-          alert(this.files)
+          //alert(this.files)
 
           if (newFile.xhr) {
             //  Get the response status code
@@ -265,16 +277,19 @@ export default {
         return;
       }
       let obj= new FormData()
-      alert("asddd"+that.extension)
+      //alert("asddd"+that.extension)
       let type = that.extension == 'pdf'?2:1
-      alert("asddd"+type)
+      //alert("asddd"+type)
       obj.append('type',type)
       obj.append('file',file)
-      console.log(obj)
-      alert(that.files[0].file.name)
+    
+      //alert(that.files[0].file.name)
+      
+      that.loading = true;
+      
       upload(obj).then(res=>{
         if (res.code==200) {
-          alert("上传服务器成功")
+          that.loading = false;
           that.picUrl = res.data.name;
           that.size = res.data.size;
           that.time = res.data.time;
@@ -289,8 +304,9 @@ export default {
           this.$refs.upload.active = true;
           addCourseware(JSON.stringify(obj)).then((res) => {
             if (res.code == 200) {
-              alert("新建成功");
-              window.location.reload();
+              that.isnewFilter =false ; //上传弹窗消失
+             
+              that.$emit('getCourseAll')
             } else {
               that.$toast(res.message, 3000);
             }
@@ -299,9 +315,15 @@ export default {
         }else {
           that.$toast(res.message,3000)
         }
-      }).catch(res => {alert(JSON.stringify(res))})
+      }).catch(res => {console.log(JSON.stringify(res))})
 
     },
+
+    //文件上传成功隐藏loading
+    hideloading(){
+      let that = this;
+      that.loading = false
+    }
 
 
   },
