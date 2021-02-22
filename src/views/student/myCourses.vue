@@ -44,7 +44,9 @@
         <div class="tea_list">
           <ul class="tab_box courseList_ul lp_courseList_ul">
             <li v-for="(item, index) in courseList" :key="index">
-              <div class="pic"></div>
+              <div class="pic">
+                <img :src="item.pic_url"/>
+              </div>
               <div class="course-info boxsizing">
                 <div class="info_box">
                   <div class="cell-info boxsizing">
@@ -181,6 +183,9 @@ export default {
         if (res.code == 200) {
           that.courseList = res.data.list;
           that.total = res.data.total;
+             for (let index = 0; index <  that.courseList.length; index++) {
+                        that.courseList[index].pic_url = that.$store.state.pic_Url+ that.courseList[index].pic_url
+                    }
           if (res.data.list.length == 0) {
             that.hasData = false;
           } else {

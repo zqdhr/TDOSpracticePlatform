@@ -40,11 +40,11 @@
 
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
-                <div class="operation_box" id="screen" v-if="1==1"  ref="imageWrapper" >
-                    <!--@click="connectVnc()"-->
-                    <!--<a class="btn-open pointer" v-if="!isOpen" @click="isOpen=true">点击开启全部虚拟机</a>-->
-                   <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">点击开启全部虚拟机</a>
-                   <!--<iframe src="http://192.168.1.133:6080/" ref="frameWrapper" />-->
+                <div class="operation_box"  v-if="!isOpen"  ref="imageWrapper" >
+                   <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">点击开启全部虚拟机</a>  
+                </div>
+                <div class="operation_box" id="screen" ref="imageWrapper" v-if="isOpen">
+
                 </div>
                 <div class="operation_box" ref="imageWrapper">
                    <xterm :socketURI="socketURI" v-if="1==1"></xterm> 
@@ -370,6 +370,9 @@ export default {
 
             //const url='ws://192.168.1.31:6901/vnc.html?password=123456&autoconnect=true'
             //const url ='ws://192.168.1.133:6080/'
+
+            this.isOpen = true;
+            this.$nextTick(function(){
             const url ='ws://120.76.101.153:6080/vnc.html?password=123456&autoconnect=true'
 
             let rfb = new RFB(document.getElementById('screen'), url, {
@@ -380,8 +383,9 @@ export default {
             rfb.addEventListener('disconnect', this.disconnectedFromServer);
             rfb.scaleViewport = true;  //scaleViewport指示是否应在本地扩展远程会话以使其适                    合其容器。禁用时，如果远程会话小于其容器，则它将居中，或者根据clipViewport它是否更大来处理。默认情况下禁用。
             rfb.resizeSession = true; //是一个boolean指示是否每当容器改变尺寸应被发送到调整远程会话的请求。默认情况下禁用
-     
+            
             this.rfb = rfb;
+            })
             
         },
 

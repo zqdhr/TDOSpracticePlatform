@@ -165,7 +165,7 @@
                           :headers="{ 'Content-Type':'multipart/form-data'}"
                           :data="{file: files.name}"
                   >
-                    <a class="a_upload pointer"><span>选择需要添加的课件</span></a>
+                    <a class="a_upload pointer" style="padding:0px 55px"><span>选择需要添加的课件</span></a>
                   </file-upload>
                 </div>
               </el-form-item>
@@ -204,8 +204,8 @@ export default {
       total: 100,
       perPage: 10, //8个实验一页
       curPage: 1, //设备列表
-      cate: "内置课件", //课件分类默认内置课件
-      type: '全部', //课件类型默认全部
+      cate: '0', //课件分类默认内置课件
+      type: '2', //课件类型默认全部
 
       customClass: [
         { value: "1", label: "场景篇" },
