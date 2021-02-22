@@ -12,7 +12,7 @@
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen">
+                <a class="a-opera pointer" @click="execContainer(0)" v-if="!isOpen">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -48,6 +48,7 @@
                 </div>
                 <div class="operation_box" ref="imageWrapper">
                    <xterm :socketURI="socketURI" v-if="1==1"></xterm> 
+                   <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">点击开启全部虚拟机</a>
                 </div>
               
             </div>
@@ -162,7 +163,7 @@ export default {
 
              term: null,
 
-             socketURI:'ws://192.168.1.167:4002'+'/terminals/',
+             socketURI:'ws://192.168.1.28:10004'+'/terminals/',
 
              //socketURI:'http://192.168.1.54:2222/ssh/host/192.168.1.54/5001'
             userid:'',
@@ -253,7 +254,7 @@ export default {
                     that.experiment = res.data          
                     let time= that.experiment.duration*60
                     that.formatSecToDate(time)
-                    that.daojishi(time)
+                    // that.daojishi(time)
                 }else {
                     that.$toast(res.message,3000)
                 }
