@@ -107,7 +107,7 @@
                         <div class="cell textline1">班级：{{item.className}}</div>
                      </div>
                      <div class="d2 d28">
-                        <div class="cell textline1">学号：{{item.user_id}} {{item.userName}}</div>
+                        <div class="cell textline1">学号：{{item.user_id}} 姓名：{{item.userName}}</div>
                      </div>
                      <div class="d3 d30">
                         <div class="cell">提交时间：{{item.submit_at}}</div>
