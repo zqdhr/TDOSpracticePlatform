@@ -113,7 +113,7 @@ var getCoursewareByChapterId = function(data){
 
 //管理员查询课程节下的课件
 var getCoursewareBySectionId = function(data){
-	return axios.get('/getCoursewareBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page)
+	return axios.get('/getCoursewareBySectionId?sectionId='+data.sectionId+'&perPage='+data.perPage+'&page='+data.page+'&kind='+data.kind+'&type='+data.type)
 }
 
 //管理员查询课程章下的作业
