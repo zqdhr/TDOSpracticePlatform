@@ -18,7 +18,7 @@ import 'quill/dist/quill.bubble.css';
 import './assets/less/common.less'
 import toastRegistry from './components/toast/index'
 //ElementUI.Dialog.props.lockScroll.default = false;
-import Base64 from './util/base64.js' 
+import Base64 from './util/base64.js'
 
 
 import htmlToPdf from '@/util/htmlToPdf'
@@ -29,6 +29,31 @@ Vue.use(toastRegistry)
 
 Vue.prototype.$Base64 = Base64;
 Vue.config.productionTip = false
+
+
+Vue.filter('dateFormatYMD', function(originVal) {
+  const dt = new Date(originVal)
+
+  const y = dt.getFullYear()
+  const m = (dt.getMonth() + 1 + '').padStart(2, '0')
+  const d = (dt.getDate() + '').padStart(2, '0')
+
+  return `${y}-${m}-${d}`
+})
+
+Vue.filter('dateFormatYMDhms', function(originVal) {
+  const dt = new Date(originVal)
+
+  const y = dt.getFullYear()
+  const m = (dt.getMonth() + 1 + '').padStart(2, '0')
+  const d = (dt.getDate() + '').padStart(2, '0')
+
+  const hh = (dt.getHours() + '').padStart(2, '0')
+  const mm = (dt.getMinutes() + '').padStart(2, '0')
+  const ss = (dt.getSeconds() + '').padStart(2, '0')
+
+  return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+})
 
 import Directives from './util/directives'
 Vue.use(Directives)

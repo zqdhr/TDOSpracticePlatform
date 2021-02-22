@@ -48,7 +48,7 @@
               <el-select
                 v-model="type"
                 placeholder="请选择课件类型"
-                @click="selectType"
+                @change="selectType"
               >
                 <el-option
                   v-for="item in typeList"
@@ -69,7 +69,7 @@
                 autocomplete="off"
                 v-model = "searchText"
               />
-            
+
             </div>
             <a class="btn_finsh" @click="searchCoerseWare">完成</a>
           </div>
@@ -204,8 +204,8 @@ export default {
       total: 100,
       perPage: 10, //8个实验一页
       curPage: 1, //设备列表
-      cate: '0', //课件分类默认内置课件
-      type: '2', //课件类型默认全部
+      cate: '内置课件', //课件分类默认内置课件
+      type: '全部', //课件类型默认全部
 
       customClass: [
         { value: "1", label: "场景篇" },
@@ -226,7 +226,6 @@ export default {
       category_id:'',//父分类id
       c_category_id:'',//子分类id
       kind:'',
-      type1:'',
       name:'',
       count:'',
     };
@@ -253,7 +252,7 @@ export default {
         that.cindex = '';
       }
       alert(that.type1)
-      that.findCourseWareAll(that.perPage, 1, that.kind, that.type1,'', '', that.cindex, that.sindex,'');
+      that.findCourseWareAll(that.perPage, 1, that.kind, that.cate,'', '', that.cindex, that.sindex,'');
     },
     //自定义父级分类
     findParentCategory() {
@@ -344,7 +343,7 @@ export default {
     selectCate(val) {
       let that = this;
       console.log("选择自定义分类1" + val);
-      that.type1 = val;
+      that.type = val;
     },
 
     //选择课件类型
@@ -356,8 +355,8 @@ export default {
     searchCoerseWare(){
       let that = this;
       console.log(that.searchText)
-      that.type = that.type1 == '2' ? '' : that.type1;
-      that.findCourseWareAll(10, 1, that.kind, that.type, that.searchText, that.category_id, '', '',that.c_category_id);
+      that.kind = that.kind == '2' ? '' : that.kind;
+      that.findCourseWareAll(10, 1, that.kind, that.cate, that.searchText, that.category_id, '', '',that.cateId);
     },
     //本地上传确认上传
     confirmLocalUpload() {
@@ -365,7 +364,7 @@ export default {
       console.log(that.files.length)
       if (that.files.length==0) {
         return that.$toast('请选择课件',2000)
-        
+
       }
 
       that.isnewFilter = false
@@ -399,7 +398,7 @@ export default {
             this.$toast("新增成功", 2000)
             //that.reload();
             that.$emit('getCoursewareBySectionId',that.sindex, "", 0, that.perPage, 1)
-            
+
           } else {
             this.$toast(res.message, 2000)
           }
@@ -488,11 +487,12 @@ export default {
     },
     //上传前的钩子函数
     inputFilter(newFile, oldFile, prevent) {
+      let that = this;
       if (newFile && !oldFile) {
         const extension = newFile.name.substring(
                 newFile.name.lastIndexOf(".") + 1
         );
-        console.log(extension);
+        that.extension = extension;
         if (extension != "pdf" && extension != "mp4") {
           this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
           return prevent();
@@ -545,7 +545,7 @@ export default {
           obj.url = that.picUrl;
           obj.duration = that.time;
           obj.size = that.size;
-          obj.category_id = that.addCategoryID;
+          obj.category_id = that.cateId;
           this.$refs.upload.active = true;
           addCourseware(JSON.stringify(obj)).then((resCourse) => {
             if (resCourse.code == 200) {
@@ -555,9 +555,13 @@ export default {
                 console.log("节新增课件")
                 alert("aaa"+that.sindex)
                 let obj = {};
-                obj.courseware_id = resCourse.data.id;
-                obj.section_id = that.sindex;
-                obj.chapter_id = that.cindex;
+                let list = [];
+                let ware = {};
+                ware.courseware_id = resCourse.data.id;
+                ware.section_id = that.sindex;
+                ware.chapter_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
+                list.push(ware);
+                obj.chapter_section_courseware_list = list
                 addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
                   if (resadd.code == 200) {
                     alert("111")
