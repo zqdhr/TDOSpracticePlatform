@@ -597,15 +597,15 @@ export default {
       obj1.chapter_id = that.cindex;
       list.push(obj1);
       obj.chapter_section_courseware_list = list;
-      console.log(JSON.stringify(obj));
+      //console.log(JSON.stringify(obj));
       deleteChapterSectionCourseById(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
           that.count = res.data.total;
           that.total = res.data.total;
-          res.data.total == 0
-            ? (that.isHasData = false)
-            : (that.isHasData = true);
-          that.experimentList = res.data.list;
+          res.data.total == 0?(that.isHasData = false):(that.isHasData = true);
+          //that.experimentList = res.data.list;
+          //删除成功，节课件查询   
+          that.getCoursewareBySectionId(that.sindex,that.kind,'',that.perPage,1);
         } else {
           this.$toast(res.message, 2000);
         }
