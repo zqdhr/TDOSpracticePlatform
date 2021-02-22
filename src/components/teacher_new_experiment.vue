@@ -33,11 +33,15 @@
                 type="text"
                 autocomplete="off"
                 v-model="searchTx"
+                v-emoji
+                @keyup.enter="search"
               />
               <a class="searchBtn pointer" @click="search"></a>
             </div>
           </div>
         </div>
+        <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
+        <template v-if="hasData">
         <div class="list_box">
           <div class="div_checked">
             <span v-for="(item, index) in chooseList" :key="index">
@@ -85,6 +89,7 @@
             </el-pagination>
           </div>
         </div>
+        </template>
       </template>
     </el-dialog>
   </div>
@@ -93,6 +98,7 @@
 
 import toastVue from "./toast/toast.vue";
 import {findParentCategory,findChildCategory,findAllByCategoryId,bindExperiments,findAllExperimentByCategoryId} from '@/API/api';
+import noData from '@/components/noData.vue'
 export default {
   inject:['reload'],
   data() {
@@ -124,9 +130,12 @@ export default {
       parent_id:'',
       count:'',//节下已有的实验，不能超过五个
       sindex:'',//节id
+      noDataType:1,  //没有数据展示的样式
+      dataMess:'当前暂无实验',
+      hasData:false,
     };
   },
-  components: {
+  components: {noData
   },
   created() {
   },
@@ -152,7 +161,19 @@ export default {
         if(res.code==200){
           that.total = res.data.total
           that.all_experimentList = res.data.list;
+          that.hasData=res.data.list.length==0?false:true
+          let ids=[]
+          for (let index = 0; index < that.chooseList.length; index++) {
+            ids.push(that.chooseList[index].id)
+            
+          }
+
           for (let index = 0; index <  that.all_experimentList.length; index++) {
+                  if (ids.includes(that.all_experimentList[index].id)==true) {
+                     that.$set(that.all_experimentList[index], "checked", true);
+                  }else {
+                     that.$set(that.all_experimentList[index], "checked", false);
+                  }
                   that.all_experimentList[index].pic_url = that.$store.state.pic_Url+ that.all_experimentList[index].pic_url
                }
         }else{

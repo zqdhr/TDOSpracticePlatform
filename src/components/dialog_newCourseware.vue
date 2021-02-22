@@ -74,6 +74,8 @@
             <a class="btn_finsh" @click="searchCoerseWare">完成</a>
           </div>
         </div>
+        <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
+        <template v-if="hasData">
         <div class="list_box">
           <div class="div_checked">
             <span v-for="(item, index) in chooseList" :key="index">
@@ -124,6 +126,7 @@
             </el-pagination>
           </div>
         </div>
+        </template>
       </template>
       <!--本地上传-->
       <template v-if="isnewFilterType == 2">
@@ -183,6 +186,7 @@
 <script>
 import FileUpload from "vue-upload-component";
 import toastVue from "./toast/toast.vue";
+import noData from '@/components/noData.vue'
 import {getCoursewareAll,addChapterSectionCourseware,findParentCategory,findChildCategory,upload,addCourseware} from '@/API/api';
 export default {
   inject:['reload'],
@@ -229,10 +233,13 @@ export default {
       type1:'',
       name:'',
       count:'',
+      noDataType:1,  //没有数据展示的样式
+      dataMess:'当前暂无课件',
+      hasData:false,
     };
   },
   components: {
-    FileUpload,
+    FileUpload,noData,
   },
   props: {},
   created() {
@@ -308,15 +315,29 @@ export default {
       obj.kind = kind;
       obj.type = type;
       obj.name = name;
-      obj.name = name;
       obj.category_id = category_id;
       obj.chapter_id = chapter_id;
       obj.section_id = section_id;
       obj.c_category_id = c_category_id;
+      console.log(obj)
       getCoursewareAll(obj).then((res) => {
         if (res.code == 200) {
           that.all_experimentList = res.data.list;
+          that.hasData=res.data.list.length==0?false:true
           that.total = res.data.total
+          let ids=[]
+          for (let index = 0; index < that.chooseList.length; index++) {
+            ids.push(that.chooseList[index].id)
+            
+          }
+          for (let index = 0; index <  that.all_experimentList.length; index++) {
+               if (ids.includes(that.all_experimentList[index].id)==true) {
+                     that.$set(that.all_experimentList[index], "checked", true);
+                  }else {
+                     that.$set(that.all_experimentList[index], "checked", false);
+                  }
+            
+          }
         } else {
           that.$toast(res.message, 3000);
         }
@@ -590,6 +611,9 @@ export default {
           that.$toast(res.message, 3000)
         }
       })
+    },
+    cleanData(){
+
     },
   }
 };
