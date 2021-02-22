@@ -147,7 +147,7 @@
             <el-form ref="form"  label-width="120px">
               <el-form-item>
                 <span slot="label" class="s-label" ><span>*</span>选择文件：</span >
-                <ul class="fileList_name">
+                <ul class="fileList_name" style="width:304px">
                   <li v-for="file in files" :key="file.id">
                     <span>{{ file.name }}</span>
                   </li>
