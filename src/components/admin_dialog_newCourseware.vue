@@ -236,9 +236,18 @@ export default {
           newFile.name.lastIndexOf(".") + 1
         );
         that.extension = extension;
+        const isLt100M = newFile.size / 1024 / 1024 < 100;
+        const isLt500M = newFile.size / 1024 / 1024 < 500;
+
         if (extension != "pdf" && extension != "mp4") {
           this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
           return prevent();
+        }
+        if(extension == 'pdf' && !isLt100M){       
+           return  this.$toast("上传的pdf不能大于100M", 3000);
+        }
+        if(extension == 'mp4' && !isLt500M){       
+           return  this.$toast("上传的视频不能大于500M", 3000);
         }
       }
     },

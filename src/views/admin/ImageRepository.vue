@@ -96,18 +96,18 @@
           <div class="dialog_add_body">
           <el-form ref="form" label-width="100px">
                 <el-form-item label="镜像名称:">
-                    <el-input v-model="Mirroring.name"></el-input>
+                    <el-input v-model="Mirroring.name" maxlength='100'></el-input>
                 </el-form-item>
                  <el-form-item label="镜像简介:">
-                    <el-input v-model="Mirroring.introduction" type="textarea"></el-input>
+                    <el-input v-model="Mirroring.introduction" type="textarea" rows="3" resize="none" maxlength='200'></el-input>
                 </el-form-item>
               <el-form-item label="输入类型:">
-              <el-select v-model="type" @change="selectKind" >
+              <el-select v-model="kind" @change="selectKind" >
                   <el-option v-for="item in optionsKind" :key="item.value" :label="item.label" :value="item.value" > </el-option>
               </el-select>
               </el-form-item>
                   <el-form-item label="镜像路径:">
-                      <el-input v-model="Mirroring.url" type="textarea"></el-input>
+                      <el-input v-model="Mirroring.url" type="textarea" rows="3" resize="none" maxlength='100'></el-input>
                   </el-form-item>
                 <!--
                 <el-form-item label="">
@@ -159,8 +159,8 @@ import nodata from '@/components/noData'
 export default {
   data() {
     return {
-     options: [ { value: "0", label: "命令行"}, { value: "1", label: "图形化界面"} ],
-        optionsKind: [ { value: "0", label: "命令行"}, { value: "1", label: "图形化界面"} ],
+     options: [{ value: "-1", label: "全部"},{ value: "0", label: "命令行"}, { value: "1", label: "图形化界面"} ],
+      optionsKind: [ { value: "0", label: "命令行"}, { value: "1", label: "图形化界面"} ],
      type: "", //
       className: "", //
       inplaceholder: "请输入镜像名称",
@@ -217,7 +217,7 @@ export default {
       },
       selectKind(val){
         let that = this;
-        console.log(val)
+       
           that.kind = val
       },
       findAllImagequoteList(){
@@ -343,13 +343,29 @@ export default {
     //镜像确认上传
     confiremNew(){
       let that = this;
+      if(that.Mirroring.name == ''){
+         return that.$toast('请输入镜像名称',2000)
+      }
+
+      if(that.Mirroring.introduction == ''){
+         return that.$toast('请输入镜像简介',2000)
+      }
+
+      if(that.kind ==-1 || that.kind ==''){
+         return that.$toast('请选择镜像类型',2000)
+      }
+
+      
+      if(that.Mirroring.url==''){
+         return that.$toast('请输入镜像类型',2000)
+      }
       that.show_Add = false
       that.showLoading = true
       let obj = {};
       obj.imageName = that.Mirroring.name;
       obj.introduction = that.Mirroring.introduction;
-        obj.kind = 0;
-        obj.url = that.Mirroring.url;
+      obj.kind = that.kind ;
+      obj.url = that.Mirroring.url;
         addImage(obj).then(res=> {
             that.kind = '';
             if(res.code==200){

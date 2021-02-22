@@ -59,6 +59,7 @@
                   type="textarea"
                   :rows=3
                    resize="none" 
+                   maxLength = '200'
                 ></el-input>
               </el-form-item>
               <!--
