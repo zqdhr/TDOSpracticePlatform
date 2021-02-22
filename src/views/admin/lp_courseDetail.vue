@@ -9,8 +9,8 @@
         </div>
         <div class="container container_info">
             <div class="info_box">
-               
-                
+
+
                 <!--头部课程详细信息-->
                 <div class="top_info ">
                      <div class="c_pic"><img :src="picurl"/></div>
@@ -35,7 +35,7 @@
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
                                 <div class="btnbox">
-                                    <a class="btnDefault pointer btn-course" @click="modifyCourseStatus">确认发布</a>
+                                    <a class="btnDefault pointer btn-course" @click="modifyCourseStatus" v-if="status != 1">确认发布</a>
                                 </div>
                              </div>
                          </div>
@@ -49,21 +49,21 @@
                  <!--课程大纲-->
                 <chapter :courseId="courseId" v-if="navindex==0" :chapters="courseChapters" :isHasData="isHasData" ></chapter>
 
-                
-               
-                
+
+
+
                 <!--课程实验-->
                 <experiment :role="role" v-if="navindex==1"></experiment>
-                
+
                 <!--课程课件-->
                 <courseware v-if="navindex==2"></courseware>
 
                 <coursework v-if="navindex==3"></coursework>
-  
-                
+
+
             </div>
 
-       
+
         </div>
 
         <!--重置-->
@@ -113,6 +113,7 @@ export default {
         return{
             coursrName:'',//课程名称
             introduction:'',
+            status:'',
             time:'',
             chapter_number:'',
             section_number:'',
@@ -122,14 +123,14 @@ export default {
            navindex:0,
            menu:[
                {name:'课程大纲'},
-      
+
                {name:'实验库'},
                {name:'课件库'},
                {name:'作业'}
             ],
            isHasData:true,//传给课程大纲组件默认有数据
            picurl:null,
-           
+
             startTime:'',//课程开始时间
             endTime:'',//课程结束时间
               // 开始日期 :picker-options 中引用
@@ -160,9 +161,9 @@ export default {
    beforeDestroy(){
         let that = this;
         that.$store.commit("updateAdminNavindex",0);
-      
-     
-  
+
+
+
     },
     mounted(){
         let that = this;
@@ -189,6 +190,7 @@ export default {
                     that.numbers = res.data.numbers == null ? 0 : res.data.numbers
                     that.introduction = res.data.introduction;
                     that.course = res.data
+                    that.status = res.data.status
                     that.courseChapters = res.data.chapters
                     that.addParamShow(that.courseChapters)
                 }else{
@@ -247,7 +249,7 @@ export default {
         back(){
             //返回课堂管理
             let that = this;
-            
+
             that.$router.push({path:'/admin/courseManagement'}).catch((err)=>{
                 console.log(err)
             })
@@ -259,21 +261,21 @@ export default {
             array.sort(this.compare('order'))
             for(var i=0;i<array.length;i++){
 
-            /*章节是否展开 */   
+            /*章节是否展开 */
             if( that.show_courseOutline.id == array[i].id){
                 this.$set(array[i], 'show', true);
             }else{
                   this.$set(array[i], 'show', false);
             }
-      
+
                 if(i == array.length-1){
                     //alert(i)
                     that.$set(array[i], 'lastNum', 0)
                 }
                 array[i].status = 1
                 array[i].sections.sort(this.compare('order'))
-                for(var j=0;j<array[i].sections.length;j++){                    
-                    
+                for(var j=0;j<array[i].sections.length;j++){
+
                     if(array[i].sections[j].id == that.show_courseSection.id){
                         this.$set(array[i].sections[j], 'show', true);
                     }else{
@@ -309,24 +311,24 @@ export default {
           that.$store.commit("updateAdminNavindex",num);
           sessionStorage.setItem("store",JSON.stringify(this.$store.state))
           that.showStudentList = false;
-          that.reload()  
+          that.reload()
           sessionStorage.removeItem('show_courseOutline');
           sessionStorage.removeItem('show_courseSection');
-  
+
         },
-       
+
 
         //学生选择确认
         sureStudent(){
           let that = this;
           that.showStudentList = false
           console.log('选择学生确认')
-          
+
         },
         //学生列表返回班级列表
         backClass(){
           this.showStudentList = false;
-       
+
         },
         //班级选择确认
         sureCheckClass(){
@@ -335,7 +337,7 @@ export default {
 
     },
     filters: {
-  
+
       },
 
 }

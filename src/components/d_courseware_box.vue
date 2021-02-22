@@ -53,7 +53,7 @@
                     effect="dark"
                     content="删除"
                     placement="top"
-                    v-if="role != 3"
+                    v-if="role != 3 && status == 1"
                   >
                     <a
                       class="icon icon_close pointer"
@@ -319,6 +319,7 @@ export default {
       isHasData: true, //是否有数据 默认有数据
       count: "", //课程下章，节已经存在的课件数量
       isdeleteId: "", //删除的课件id
+      status:0
     };
   },
   props: {
@@ -502,8 +503,10 @@ export default {
       that.sindex = data.sindex;
       console.log(that.sindex + that.cindex);
       if (data.sindex == "") {
+        that.status = 1
         that.getCoursewareByChapterId(data.cindex, "", 0, that.perPage, 1);
       } else {
+        that.status = 1
         that.getCoursewareBySectionId(data.sindex, "", 0, that.perPage, 1);
       }
     },
@@ -511,12 +514,12 @@ export default {
     handleCurrentChange(val) {
       let that  =this
        if (that.sindex == "" && that.cindex == "") {
-        that.getCoursewareByCourseId(that.perPage, val, that.kind, that.cate);
+        that.getCoursewareByCourseId(that.perPage, val, that.typeware, that.cate);
       } else if (that.sindex == "" && that.cindex != "") {
         that.getCoursewareByChapterId(
           that.cindex,
           that.typeware,
-           that.kind,
+           that.cate,
           that.perPage,
           val
         );
@@ -524,7 +527,7 @@ export default {
         that.getCoursewareBySectionId(
           that.sindex,
           that.typeware,
-           that.kind,
+           that.cate,
           that.perPage,
           val
         );
@@ -617,7 +620,7 @@ export default {
           that.total = res.data.total;
           res.data.total == 0?(that.isHasData = false):(that.isHasData = true);
           //that.experimentList = res.data.list;
-          //删除成功，节课件查询   
+          //删除成功，节课件查询
           that.getCoursewareBySectionId(that.sindex,that.kind,'',that.perPage,1);
         } else {
           this.$toast(res.message, 2000);

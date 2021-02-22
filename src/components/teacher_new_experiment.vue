@@ -55,7 +55,7 @@
           <ul class="list_ul clearfix">
               <li v-for="(item,index) in all_experimentList" :key="index">
                   <div class="info">
-                    
+
 
                        <div class="pic">
                             <div class="pic_box"><img :src="item.pic_url"/></div>
@@ -72,7 +72,7 @@
                   </div>
               </li>
           </ul>
-          
+
         </div>
         <div slot="footer" class="clearfix">
           <a class="btnDefault fl pointer" @click="confirmChoose">确认选择</a>
@@ -106,7 +106,7 @@ export default {
       inplaceholder: "请输入实验名",
         all_experimentList:[
           ],
-     
+
       total: 1,
       searchTx:'',
       perPage: 10, //8个实验一页
@@ -165,7 +165,7 @@ export default {
           let ids=[]
           for (let index = 0; index < that.chooseList.length; index++) {
             ids.push(that.chooseList[index].id)
-            
+
           }
 
           for (let index = 0; index <  that.all_experimentList.length; index++) {
@@ -197,6 +197,7 @@ export default {
       //     this.$toast(res.message,2000)
       //   }
       // })
+      alert("11")
        that.getAllExperiment(that.customClass,that.i_customClass,that.searchTx,1,that.sindex);
     },
     //点击选择实验
@@ -212,7 +213,7 @@ export default {
       that.findAllExperiment();
       that.findParentCategory();
     },
-  
+
     //选择分类
     selectCate(val) {
       console.log(val);
@@ -230,7 +231,7 @@ export default {
       let that = this;
 
       if (that.chooseList.length==0) {
-         return that.$toast('请选择实验',2000) 
+         return that.$toast('请选择实验',2000)
       }
       console.log(that.sid)
       console.log(that.chooseList)
@@ -349,7 +350,7 @@ export default {
         }
       }
     },
-    
+
   },
 };
 </script>
