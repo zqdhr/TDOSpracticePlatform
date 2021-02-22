@@ -231,7 +231,7 @@ var findExperiment = function(data){
 
 //教师获取作业列表
 var getStudentJobList = function (data) {
-    return axios.get('/getAssignmentAll?classId=' + data.classId + '&page=' + data.page + '&perPage=' + data.perPage+ '&name=' + data.name+ '&courseId=' + data.courseId+ '&status=' + data.status+ '&chapterId=' + data.chapterId+ '&sectionId=' + data.sectionId+ '&startTime=' + data.startTime+ '&endTime=' + data.endTime)
+    return axios.get('/getAssignmentAll?classId=' + data.classId + '&page=' + data.page + '&perPage=' + data.perPage+ '&name=' + data.name+ '&courseId=' + data.courseId+ '&status=' + data.status+ '&chapterId=' + data.chapterId+ '&sectionId=' + data.sectionId+ '&startTime=' + data.startTime+ '&endTime=' + data.endTime+'&ownerId='+data.ownerId)
 }
 
 //教师获取作业详情

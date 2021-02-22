@@ -89,7 +89,7 @@
               </div>
               <div class="d2 d28">
                 <div class="cell textline1">
-                  学号：{{ item.userId }} {{ item.userName }}
+                  学号：{{ item.userId }} 姓名：{{ item.userName }}
                 </div>
               </div>
               <div class="d3 d30">
@@ -256,7 +256,7 @@ export default {
       level1List: [],
       level1Name: {}, //选中课程对象
 
-      inplaceholder: "请输入学号/姓名/作业名称",
+      inplaceholder: "请输入学号/姓名",
 
       isHomework: false,
       isReport_num: 0,
@@ -452,6 +452,7 @@ export default {
       }
       obj.startTime =that.timestart;
       obj.endTime = that.timeend;
+      obj.ownerId = sessionStorage.getItem("userId")
 
       // alert(JSON.stringify(obj));
       console.log(obj)
