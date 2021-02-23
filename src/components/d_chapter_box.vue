@@ -28,7 +28,7 @@
                     </el-tooltip>
                     <a class=" a_delete a_delete_exist" @click="deleteChapter(index,item)" v-if="item.lastNum == 0 && status==0"></a>
                     <a class="icon_edit pointer" @click="edit(1,item.id,item.name,index,iindex,i_index)" v-if="status==0"></a>
-                    <a class="a_arrow" @click="showSection(item,item.show)" v-if="item.sections"></a>
+                    <a class="a_arrow" @click="showSection(item,item.show)" v-if="item.sections && item.sections.length > 0 || status == 0"></a>
                 </div>
                 <!--新建章节样式-->
                 <div  class="textline1 cha_title new_cha_title" :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="!item.id" >
@@ -69,7 +69,7 @@
 
                                 <a class=" a_delete a_delete_exist" @click="deleteSection(index,iindex,iitem)" v-if="iitem.lastNum == 0 && status==0"></a>
                                 <a class="icon_edit pointer" @click="edit(2,iitem.id,iitem.name,index,iindex,i_index)" v-if="status==0"></a>
-                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)" v-if="iitem.small_sections"></a>
+                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)" v-if="iitem.small_sections && iitem.small_sections .length > 0 || status == 0"></a>
                             </div>
                             </template>>
                             <template v-if="!iitem.id">
