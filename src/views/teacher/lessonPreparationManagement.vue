@@ -118,10 +118,10 @@ export default {
             obj.page = that.curPage;
             obj.per_page = that.perPage;
             obj.search = that.searchTx
+            console.log(obj)
             getCourseListByUserId(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
-                    alert("asd"+res.data.list.length)
                     for(let i = 0;i<res.data.list.length;i++){
                         res.data.list[i].numbers==null?res.data.list[i].numbers = 0:res.data.list[i].numbers
                         //res.data.list[i].time = res.data.list[i].start_at.replace('T',' ') +'-'+ res.data.list[i].end_at.replace('T',' ');
@@ -155,6 +155,7 @@ export default {
                       for (let index = 0; index <  that.courseList.length; index++) {
                         that.courseList[index].pic_url = that.$store.state.pic_Url+ that.courseList[index].pic_url
                     }
+                     that.hasData=res.data.list.length==0?false:true
                     that.total = res.data.total;
                 }else{
                     this.$toast(res.message,2000)
@@ -196,6 +197,7 @@ export default {
                       for (let index = 0; index <  that.courseList.length; index++) {
                         that.courseList[index].pic_url = that.$store.state.pic_Url+ that.courseList[index].pic_url
                     }
+                     that.hasData=res.data.list.length==0?false:true
                     that.total = res.data.total;
                 }else{
                     this.$toast(res.message,2000)

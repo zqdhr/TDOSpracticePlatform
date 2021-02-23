@@ -68,12 +68,12 @@ var modifyUser = function(data){
 
 //老师获取管理员内置课程（开课管理页面的列表）
 var getAdminCourseList = function(data){
-	return axios.get('/get_admin_course_list?page='+data.page+'&per_page='+data.per_page)
+	return axios.get('/get_admin_course_list?page='+data.page+'&per_page='+data.per_page+'&name='+data.search)
 }
 
 //老师获取自己的课程（备课管理的列表）
 var getCourseListByUserId = function(data){
-	return axios.get('/get_course_list_by_user_id?user_id='+data.user_id+'&page='+data.page+'&per_page='+data.per_page)
+	return axios.get('/get_course_list_by_user_id?user_id='+data.user_id+'&page='+data.page+'&per_page='+data.per_page+'&name='+data.search)
 }
 
 //通过id获取课程

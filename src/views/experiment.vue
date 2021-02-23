@@ -45,8 +45,10 @@
                    <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>  
                 </div>
 
-                <div class="operation_box" id="screen" ref="imageWrapper" v-if="isOpen">
+                <div class="operation_box" id="screen" ref="imageWrapper" v-if="isOpen&&containerstate=='2'">
                 </div>
+
+   
 
 
                 <div class="operation_box" ref="imageWrapper" v-if="isOpen&&containerstate=='1'">
@@ -117,7 +119,7 @@
             </div>
             </el-dialog>
 
-            <transLoading mess="正在关闭实验，请稍候..." v-if="1==1"></transLoading>
+            <transLoading mess="正在关闭实验，请稍候..." v-if="remove"></transLoading>
     </div>
 </template>
 <script>
@@ -183,6 +185,10 @@ export default {
             isHas:false,
             container:{},//用来存放选中的虚拟机
             containerstate:'',//1 命令行 2图文
+            remove:false,
+
+            connect_url:'',//图形化界面url
+            rfb:''
 
            
         }
@@ -213,9 +219,11 @@ export default {
           console.log(msg)
             if(msg.detail.clean){
                 // 根据 断开信息的msg.detail.clean 来判断是否可以重新连接
-                this.contentVnc()
+                this.connectVnc(this.connect_url)
             } else {
                 //这里做不可重新连接的一些操作
+                this.connectVnc(this.connect_url)
+                
             }
         },
         // 连接成功的回调函数
@@ -276,7 +284,8 @@ export default {
                 //重启实验
                 that.execContainer(2)
                 
-            }else if (that.type==1) {                     
+            }else if (that.type==1) {       
+                that.remove=true              
                 if (that.authority==0) {
                    //学生关闭实验 
                    that.execContainer(1)
@@ -334,6 +343,7 @@ export default {
             console.log(obj)
             removeContainers(obj).then(res=>{
                   console.log('返回参数'+res)
+                  that.remove=false
                   that.click_back()
              })
         },
@@ -385,6 +395,8 @@ export default {
 
         //连接vnc的函数      
         connectVnc (uri) {
+            let that = this;
+            that.rfb = ''
             const PASSWORD = '';
 
             //const url='ws://192.168.1.31:6901/vnc.html?password=123456&autoconnect=true'
@@ -396,17 +408,16 @@ export default {
           
             const url =uri
             this.$nextTick(function(){
-            let rfb = new RFB(document.getElementById('screen'), url, {
+            that.rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
                 credentials: {password: '123456' }
             });
-            rfb.addEventListener('connect', this.connectedToServer);
-            rfb.addEventListener('disconnect', this.disconnectedFromServer);
-            rfb.scaleViewport = true;  //scaleViewport指示是否应在本地扩展远程会话以使其适                    合其容器。禁用时，如果远程会话小于其容器，则它将居中，或者根据clipViewport它是否更大来处理。默认情况下禁用。
-            rfb.resizeSession = true; //是一个boolean指示是否每当容器改变尺寸应被发送到调整远程会话的请求。默认情况下禁用
+            that.rfb.addEventListener('connect', this.connectedToServer);
+            that.rfb.addEventListener('disconnect', this.disconnectedFromServer);
+            that.rfb.scaleViewport = true;  //scaleViewport指示是否应在本地扩展远程会话以使其适                    合其容器。禁用时，如果远程会话小于其容器，则它将居中，或者根据clipViewport它是否更大来处理。默认情况下禁用。
+            that.rfb.resizeSession = true; //是一个boolean指示是否每当容器改变尺寸应被发送到调整远程会话的请求。默认情况下禁用
             
-            this.rfb = rfb;
-            console.log( this.rfb)
+         
             
             
             })
@@ -521,14 +532,18 @@ export default {
 
         //判断打开虚拟机
         openXuniji(item){
+            
             let that = this
             if (that.isOpen) {
                 if (item.url.indexOf("vnc.html")==-1) {
+                     that.containerstate='1'
                     that.socketURI = item.url
-                    that.containerstate='1'
+                   
                 }else {
-                    that.connectVnc(item.url)
                     that.containerstate='2'
+                    that.connectVnc(item.url)
+                    that.connect_url = item.url
+                  
                 }
             }
             
