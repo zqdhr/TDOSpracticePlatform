@@ -3,16 +3,16 @@
         <div class="container">
             <div class="pageTab">
                 <div class="clearfix">
-                   
+
                     <div class="fr">
                        <a class="btnDefault pointer abtn"  @click="show_dialog_file=true;archiveManagementisSuccess=false">归档</a>
-                       <div class="d-serach"> 
+                       <div class="d-serach">
                             <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="searchTx" @keyup.enter="searchCourse" />
                             <a class="searchBtn pointer" @click="searchCourse"></a>
                         </div>
                     </div>
                 </div>
-              
+
             </div>
          <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
                <template v-if="hasData">
@@ -47,7 +47,7 @@
                         </div>
                     </li>
                </ul>
-              
+
             </div>
             <div class="tab-pagination">
                 <el-pagination
@@ -64,7 +64,7 @@
         </div>
           <!--归档弹出框-->
          <el-dialog
-           
+
             :visible.sync="show_dialog_file"
             width="600px">
             <div slot="title" class="dialog_header">
@@ -80,13 +80,13 @@
             </div>
              <div slot="footer" class="dialog-footer " v-if="archiveManagementisSuccess">
                 <a class="btnDefault"  @click="successConfirm">确 认</a>
-         
+
             </div>
             </el-dialog>
     </div>
 </template>
 <script>
-import {getCourseListByUserId} from '@/API/api';
+import {getCourseListByUserId,modifyExpiredCourseStatus} from '@/API/api';
 import noData from '@/components/noData.vue'
 export default {
     data(){
@@ -173,7 +173,17 @@ export default {
         //归档管理弹出框确认
         archiveManagement(){
             let that = this;
-            that.archiveManagementisSuccess = true
+            let obj = {}
+            obj.owner_id = sessionStorage.getItem("userId")
+            modifyExpiredCourseStatus(obj).then(res=> {
+              if(res.code==200){
+                alert("成功")
+                that.archiveManagementisSuccess = true
+              }else{
+                this.$toast("归档失败",2000)
+              }
+          })
+
         },
         //归档成功确认
         successConfirm(){
