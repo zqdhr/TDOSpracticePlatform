@@ -36,19 +36,20 @@
         <div class="experiment_container clearfix boxsizing">
             <div class="left-noVNc boxsizing " :class="{'changeWidth':isHide}">
                 <div class="l-nav" >
-                  <span class="pointer" :class="{'active':virtualMachine==index}" v-for="(item,index) in containers" :key="index">虚拟机{{index+1}}{{item.status==0?'(已创建)':'(运行中)'}}</span>
-
+                  <span class="pointer" @click="openXuniji(item), virtualMachine=index" :class="{'active':virtualMachine==index}" v-for="(item,index) in containers" :key="index">虚拟机{{index+1}}{{item.status==0?'(已创建)':'(运行中)'}}</span>
+            
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
-                <div class="operation_box"  v-if="!isOpen"  ref="imageWrapper" >
-                   <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">开启全部虚拟机</a>  
-                </div>
-                <div class="operation_box" id="screen" ref="imageWrapper" v-if="isOpen">
 
+                <div class="operation_box"  v-if="!isOpen"  ref="imageWrapper" >
+                   <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>  
                 </div>
-                <div class="operation_box" ref="imageWrapper">
-                   <xterm :socketURI="socketURI" v-if="1==1"></xterm> 
-                   <a class="btn-open pointer" v-if="!isOpen" @click="connectVnc()">开启全部虚拟机</a>
+
+                <div class="operation_box" id="screen" ref="imageWrapper" v-if="isOpen&&containerstate=='2'">
+                </div>
+
+                <div class="operation_box" ref="imageWrapper" v-if="isOpen&&containerstate=='1'">
+                   <xterm :socketURI="socketURI" ></xterm> 
                 </div>
               
             </div>
@@ -163,7 +164,7 @@ export default {
 
              term: null,
 
-             socketURI:'ws://192.168.1.28:10004'+'/terminals/',
+             socketURI:'ws://192.168.1.28:10003',
 
              //socketURI:'http://192.168.1.54:2222/ssh/host/192.168.1.54/5001'
             userid:'',
@@ -177,7 +178,8 @@ export default {
             type:'',//0是START,1是 STOP,2是 RESTART
             hasReport:false,//是否已上传过实验报告
             isHas:false,
-            container:{}//用来存放选中的虚拟机
+            container:{},//用来存放选中的虚拟机
+            containerstate:'',//1 命令行 2图文
 
            
         }
@@ -235,7 +237,9 @@ export default {
                             that.virtualMachine=0
                         }
                         that.container = that.containers[0]
-                        
+                        if (that.isOpen==true) {
+                             that.openXuniji(that.container)               
+                        }
                     }
                 } else {
                      console.log(res.data)
@@ -291,9 +295,19 @@ export default {
             }
             obj.containerId = containerId
             obj.type = type
+              console.log(obj)
             execContainer(obj).then(res=>{
                 if (res.code==200) {
                     console.log(res.data)
+                    if(type==0){
+                        that.isOpen=true
+                        that.openXuniji(that.container)
+                        for (let index = 0; index < that.containers.length; index++) {
+                            that.containers[index].status=1
+                            
+                        }
+                        that.virtualMachine=0
+                    }
                     if (type==1) {
                         that.click_back()
                     }
@@ -312,14 +326,12 @@ export default {
             for (let index = 0; index <  that.containers.length; index++) {
                 containerId.push( that.containers[index].containerId)
             }
-            obj.containerId = containerId
+            obj.containerIds = containerId
+            console.log(obj)
             removeContainers(obj).then(res=>{
-                if (res.code==200) {
-                    that.click_back()
-                } else {
-                    that.$toast(res.message,3000) 
-                }
-            })
+                  console.log('返回参数'+res)
+                  that.click_back()
+             })
         },
         //添加实验报告
         insertExperimentRepor(hasReport){
@@ -368,15 +380,17 @@ export default {
         },
 
         //连接vnc的函数      
-        connectVnc () {
+        connectVnc (uri) {
             const PASSWORD = '';
 
             //const url='ws://192.168.1.31:6901/vnc.html?password=123456&autoconnect=true'
             //const url ='ws://192.168.1.133:6080/'
+           
+           console.log(uri)
 
-            this.isOpen = true;
-            this.$nextTick(function(){
-            const url ='ws://192.168.1.28:10018/vnc.html?password=123456&autoconnect=true'
+         
+          
+            const url =uri
 
             let rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
@@ -388,7 +402,8 @@ export default {
             rfb.resizeSession = true; //是一个boolean指示是否每当容器改变尺寸应被发送到调整远程会话的请求。默认情况下禁用
             
             this.rfb = rfb;
-            })
+            console.log( this.rfb)
+          
             
         },
 
@@ -495,6 +510,22 @@ export default {
                 that.yourContent =that.yourContent+ '<p><img src="'+that.dataURL+'"/></p>'
                 console.log(that.yourContent)
             })
+        },
+
+        //判断打开虚拟机
+        openXuniji(item){
+            let that = this
+            if (that.isOpen) {
+                if (item.url.indexOf("vnc.html")==-1) {
+                    that.socketURI = item.url
+                    that.containerstate='1'
+                }else {
+                    that.connectVnc(item.url)
+                    that.containerstate='2'
+                }
+            }
+            
+
         },
         // http图片转成base64，防止解决不了的图片跨域问题
         getBase64Image(img) {
