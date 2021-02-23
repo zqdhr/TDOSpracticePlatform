@@ -68,8 +68,6 @@
                 </el-option>
               </el-select>
             </div>
-
-            
           </div>
           <div class="fr">
             <div class="d-serach">
@@ -95,7 +93,7 @@
                 </div>
               </div>
               <div class="d3 d30">
-                <div class="cell">提交时间：{{ item.committedAt }}</div>
+                <div class="cell">提交时间：{{ item.committedAt | dateFormatYMDhms}}</div>
               </div>
               <div class="d4 d14">
                 <div class="cell">
@@ -302,15 +300,8 @@ export default {
   methods: {
     changeDate(val) {
       let that = this;
-      console.log(val)
-      if (val!=null) {
-        that.timestart = val[0];
-        that.timeend = val[1];
-      }else {
-        that.timestart ='';
-        that.timeend = '';
-      }
- 
+      that.timestart = val[0];
+      that.timeend = val[1];
       that.getStudentJobList(0)
       console.log(val) 
       // alert(that.value2.length);
@@ -326,7 +317,11 @@ export default {
     //选择状态
     changeState(val) {
       let that = this;
+      that.timestart = "";
+      that.timeend = "";
+      that.value2 = [];
       that.getStudentJobList(0);
+
     },
     //选择课程
     changeLevel1(val) {
@@ -414,7 +409,6 @@ export default {
       let obj = {};
       obj.per_page = 100;
       obj.page = 1;
-         obj.search = ''
       obj.user_id = sessionStorage.getItem("userId");
       getCourseListByUserId(obj).then((res) => {
         // alert(JSON.stringify(res));
