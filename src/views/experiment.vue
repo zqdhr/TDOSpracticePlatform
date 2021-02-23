@@ -8,7 +8,7 @@
 
             <div class="operationBox">
             
-                <a class="a-opera pointer"  @click="makeImg" v-if="isOpen">
+                <a class="a-opera pointer"  @click="makeImg"  v-if="!isOpen">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
@@ -41,17 +41,15 @@
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
 
-                <div class="operation_box"  v-if="!isOpen"  ref="imageWrapper" >
+                <div class="operation_box 22"  v-if="!isOpen"  ref="imageWrapper" >
                    <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>  
                 </div>
 
-                <div class="operation_box" id="screen" ref="imageWrapper" v-if="isOpen&&containerstate=='2'">
+                <div class="operation_box"  ref="imageWrapper" v-if="isOpen && containerstate=='2'" id="Screenshots">
+                    <div class="operation_box" id="screen"></div>
                 </div>
-
-   
-
-
-                <div class="operation_box" ref="imageWrapper" v-if="isOpen&&containerstate=='1'">
+ 
+                <div class="operation_box" ref="imageWrapper" v-if="isOpen && containerstate=='1'" id="Screenshots">
                    <xterm :socketURI="socketURI" ></xterm> 
                 </div>
               
@@ -507,17 +505,17 @@ export default {
                 backgroundColor: null, // 解决生成的图片有白边
                 useCORS: true, // 如果截图的内容里有图片,解决文件跨域问题
                 scale:2,
-                height: document.getElementById('screen').offsetHeight,
-                width:document.getElementById('screen').offsetWidth,
+                height: document.getElementById('Screenshots').offsetHeight,
+                width:document.getElementById('Screenshots').offsetWidth,
                 //windowHeight: document.getElementById('imageWrapper').scrollHeight,
                 //windowWidth: document.getElementById('imageWrapper').scrollWidth,
                 x:0,
                 scrollX: 0,    //设置这两个scrollX/Y即可
-			scrollY: 0,
+			    scrollY: 0,
              
                
             }
-            console.log(document.getElementById('screen').offsetWidth)
+       
             // eslint-disable-next-line no-undef
             //const iframeHtml = this.$refs.frameWrapper.contentWindow // 获取iframe内容
             //const iframeBody = iframeHtml.document.getElementsByTagName('body')[0]
