@@ -91,7 +91,7 @@
                                      <template v-if="i_item.id">
                                         <div class="sec_name textline1">
                                             <p class="textline1">第{{i_index+1}}小节：{{i_item.name}}</p>
-                                            <a class=" a_delete a_delete_exist" @click="deleteSmallSection(index,iindex,i_index,i_index)"  v-if="i_item.lastNum == 0 && status==0"></a>
+                                            <a class=" a_delete a_delete_exist" @click="deleteSmallSection(index,iindex,i_index,i_item)"  v-if="i_item.lastNum == 0 && status==0"></a>
                                               <a class="icon_edit pointer" @click="edit(3,i_item.id,i_item.name,index,iindex,i_index)" v-if="status==0"></a>
                                         </div>
                                     </template>>
@@ -314,10 +314,8 @@ export default{
             that.smallSectionNum=num2;
             that.isDelete=true;
             that.chaptersOrsectio=3;
-            if(item.status == 1){
-                that.deleteStatus = 1;
-                that.smallSectionId = item.id;
-            }
+            that.deleteStatus = 1;
+            that.smallSectionId = item.id;
         },
         //删除章
         removeChapter(chapterId){
