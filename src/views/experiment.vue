@@ -12,7 +12,7 @@
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen">
+                <a class="a-opera pointer" v-if="isOpen" @click="isEdit=true">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -118,6 +118,28 @@
             </el-dialog>
 
             <transLoading mess="正在关闭实验，请稍候..." v-if="remove"></transLoading>
+
+            <el-dialog
+            :visible.sync="isEdit"
+            width="500px"
+            class="personDialog"
+
+            >
+            <div slot="title" class="dialog_header">下载名称填写</div>
+
+            <div class="editMain" >
+                <el-form ref="form" label-width="60px">
+                <el-form-item label="名称">
+                    <el-input v-model="editValue" placeholder="请输入文件名称" :maxlength="16" v-emoji></el-input>
+                </el-form-item>
+
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <button class="btnDefault" @click="isEdit = false">取消</button>
+                <button class="btnDefault" @click="isEdit = false">确认</button>
+            </span>
+            </el-dialog>
     </div>
 </template>
 <script>
@@ -187,7 +209,9 @@ export default {
 
             connect_url:'',//图形化界面url
             rfb:'',
-            timeInterval:null //倒计时定时器
+            timeInterval:null, //倒计时定时器
+
+            isEdit:false,//点击文件下载名称输入显示
 
            
         }
