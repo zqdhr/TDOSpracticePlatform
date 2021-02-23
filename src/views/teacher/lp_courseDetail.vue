@@ -177,8 +177,8 @@ export default {
             show_courseOutline:{},//当前展示的课程章节，新建小节还是展示小节列表
             show_courseSection:{},//当前展开的是哪个小节
 
-            isEdit:false //课程名称修改是否显示
-            
+            isEdit:false ,//课程名称修改是否显示
+            editValue:''//
         }
     },
     components:{classList,chapter,experiment,courseware,coursework},
