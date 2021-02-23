@@ -267,7 +267,7 @@
     </el-dialog>
        <!--点击新建实验按钮前确认弹框-->
            <el-dialog :visible.sync="innerVisible" width="600px">
-              <div slot="title" class="dialog_header"></div>
+              <div slot="title" class="dialog_header">新建实验</div>
               <div class="confirm_dialog_body">
               <p class="dialog_mess">
               <!--成功span的class为icon_success-->

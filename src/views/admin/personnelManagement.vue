@@ -489,7 +489,7 @@ export default {
         updateUserPassword(JSON.stringify(obj)).then(res=>{
           if(res.code==200){
             that.resetDialog = false;
-            this.$toast("重置成功",2000)
+            this.$toast("密码已重置",2000)
            that.searchUser(that.type, that.searchText, that.className, that.curPage, 10);
           }else{
             this.$toast(res.message,3000)
@@ -502,6 +502,14 @@ export default {
       let that = this;
       if(that.userInfo.name == null || that.userInfo.name == ''){
         this.$toast("姓名不能为空",3000);
+        return false;
+      }
+      if(that.userInfo.identificationNumber == null || that.userInfo.identificationNumber == ''){
+        this.$toast("请输入身份证",3000);
+        return false;
+      }
+       if(that.userInfo.phoneNumber == null || that.userInfo.phoneNumber == ''){
+        this.$toast("请输入手机号",3000);
         return false;
       }
       var p = /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
@@ -524,7 +532,7 @@ export default {
       console.log(JSON.stringify(obj));
       modifyUser(JSON.stringify(obj)).then(res=>{
         if(res.code==200){
-          this.$toast("信息确认修改成功",2000)
+          this.$toast("信息修改成功",2000)
           that.editDialog = false;
           that.searchUser(that.type, that.searchText, that.className, that.curPage, 10);
         }else{
