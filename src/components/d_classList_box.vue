@@ -68,8 +68,8 @@ export default{
                 console.log(this.classesList)
                 this.classesList = val
                 this.searchClass();
-            },
-            deep:true
+            }
+          
 
         },
     },
