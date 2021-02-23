@@ -45,8 +45,9 @@
                    <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>  
                 </div>
 
-                <div class="operation_box" id="screen" ref="imageWrapper" v-if="isOpen&&containerstate=='2'">
+                <div class="operation_box" id="screen" ref="imageWrapper" v-if="isOpen">
                 </div>
+
 
                 <div class="operation_box" ref="imageWrapper" v-if="isOpen&&containerstate=='1'">
                    <xterm :socketURI="socketURI" ></xterm> 
@@ -88,7 +89,7 @@
 
         </div>
                 <!--弹窗-->
-            <el-dialog :visible.sync="isClose" width="600px">
+            <el-dialog :visible.sync="isClose" width="500px">
             <div slot="title" class="dialog_header">请注意!</div>
             <div class="confirm_dialog_body">
                 <p class="dialog_mess">
@@ -102,7 +103,7 @@
             </div>
             </el-dialog>
             <!--再次上传实验报告弹出框-->
-              <el-dialog :visible.sync="isHas" width="600px">
+              <el-dialog :visible.sync="isHas" width="500px">
             <div slot="title" class="dialog_header">请注意!</div>
             <div class="confirm_dialog_body">
                 <p class="dialog_mess">
@@ -115,6 +116,8 @@
                 <a class="btnDefault" @click="isHas=false">取 消</a>
             </div>
             </el-dialog>
+
+            <transLoading mess="正在关闭实验，请稍候..." v-if="1==1"></transLoading>
     </div>
 </template>
 <script>
@@ -126,7 +129,7 @@ import html2canvas from 'html2canvas';
 import xterm from '@/components/Xterminal.vue'
 import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor,hasExperimentReport} from "@/API/api";
 
-
+import transLoading from '@/components/uploadLoading.vue'
 
 export default {
     data(){
@@ -191,7 +194,7 @@ export default {
     beforeDestroy(){
         document.body.removeAttribute("class","equipment-body");
     },
-    components:{quillEditor,xterm},
+    components:{quillEditor,xterm,transLoading},
     created(){
         let that = this;
         that.authority = that.$route.query.authority?that.$Base64.decode(that.$route.query.authority):0;
@@ -293,6 +296,7 @@ export default {
             for (let index = 0; index <  that.containers.length; index++) {
                 containerId.push( that.containers[index].containerId)
             }
+            that.isOpen = true
             obj.containerId = containerId
             obj.type = type
               console.log(obj)
@@ -391,7 +395,7 @@ export default {
          
           
             const url =uri
-
+            this.$nextTick(function(){
             let rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
                 credentials: {password: '123456' }
@@ -403,6 +407,9 @@ export default {
             
             this.rfb = rfb;
             console.log( this.rfb)
+            
+            
+            })
           
             
         },
