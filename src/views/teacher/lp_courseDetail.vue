@@ -17,7 +17,7 @@
                      <div class="c_info">
                          <div class="right_info">
                              <div class="info_detail_box">
-                                <p class="r_name">{{courseName}}</p>
+                                <p class="r_name">{{courseName}}<img class="pointer course_edit" @click="isEdit=true" src="../../assets/img/icon_edit.png"/></p>
 
                                 <div class="d-cel">
                                     共有{{chapterNumber}}个章节，{{sectionNumber}}个知识点
@@ -95,6 +95,28 @@
                 <courseware v-if="navindex==4"></courseware>
 
                 <coursework v-if="navindex==5" timeStatus='1'></coursework>
+
+                  <el-dialog
+                    :visible.sync="isEdit"
+                    width="500px"
+                    class="personDialog"
+
+                    >
+                    <div slot="title" class="dialog_header">课程名称修改</div>
+
+                    <div class="editMain" >
+                        <el-form ref="form" label-width="60px">
+                        <el-form-item label="名称">
+                            <el-input v-model="editValue" :placeholder="edit_placeholder" :maxlength="16" v-emoji></el-input>
+                        </el-form-item>
+
+                        </el-form>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <button class="btnDefault" @click="isEdit = false">取消</button>
+                        <button class="btnDefault" @click="">确认修改</button>
+                    </span>
+                    </el-dialog>
   
                 
             </div>
@@ -154,6 +176,8 @@ export default {
             status:0,
             show_courseOutline:{},//当前展示的课程章节，新建小节还是展示小节列表
             show_courseSection:{},//当前展开的是哪个小节
+
+            isEdit:false //课程名称修改是否显示
             
         }
     },
@@ -380,4 +404,5 @@ export default {
 
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
+.course_edit{margin-left: 15px; vertical-align: top; margin-top: 6px;}
 </style>
