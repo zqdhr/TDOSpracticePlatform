@@ -68,6 +68,8 @@
                 </el-option>
               </el-select>
             </div>
+
+            
           </div>
           <div class="fr">
             <div class="d-serach">
@@ -300,8 +302,15 @@ export default {
   methods: {
     changeDate(val) {
       let that = this;
-      that.timestart = val[0];
-      that.timeend = val[1];
+      console.log(val)
+      if (val!=null) {
+        that.timestart = val[0];
+        that.timeend = val[1];
+      }else {
+        that.timestart ='';
+        that.timeend = '';
+      }
+ 
       that.getStudentJobList(0)
       console.log(val) 
       // alert(that.value2.length);
@@ -405,6 +414,7 @@ export default {
       let obj = {};
       obj.per_page = 100;
       obj.page = 1;
+         obj.search = ''
       obj.user_id = sessionStorage.getItem("userId");
       getCourseListByUserId(obj).then((res) => {
         // alert(JSON.stringify(res));

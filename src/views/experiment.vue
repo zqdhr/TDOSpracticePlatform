@@ -8,7 +8,7 @@
 
             <div class="operationBox">
             
-                <a class="a-opera pointer"  @click="makeImg"  v-if="!isOpen">
+                <a class="a-opera pointer"  @click="makeImg"  v-if="isOpen">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
@@ -385,7 +385,7 @@ export default {
                     console.log(res)
                     that.hasReport=true
                 } else {
-                     that.$toast(res.message,3000) 
+                      console.log(res)
                 }
             })
 
