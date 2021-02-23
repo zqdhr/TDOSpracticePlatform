@@ -169,7 +169,7 @@
               </el-table-column>
               <el-table-column prop="type" label="镜像类型">
                 <template slot-scope="scope">
-                  <span>{{ scope.row.type == 1 ? "KVM" : "Docker" }}</span>
+                  <span>{{ scope.row.kind == 1 ? "图形化界面" : "命令行" }}</span>
                 </template>
               </el-table-column>
               <el-table-column prop="size" label="容量"> </el-table-column>
@@ -338,9 +338,11 @@ export default {
       files: [],
       options: [
         // { value: "1", label: "KVM" },
-        { value: "0", label: "Docker" },
+        { value: "-1", label: "全部"},
+        { value: "0", label: "命令行" },
+        { value: "1", label: "图形化界面"} ,
       ],
-      type: "0", //镜像类型
+      type: "-1", //镜像类型
       //新增镜像
       Imagelibraries: [
         { id: "ddddoogk", name: "c7_k_2c4g50g_bigdate_linux", type: 0, size: "2.5GB", Introduction: "简介文本简介文本简介文本简介文本 简介文本简介文本简介文本", applicationNumber: "6", },
@@ -455,6 +457,9 @@ export default {
                   console.log(res.data)
                   that.Imagelibraries = res.data.list;
                   that.total = res.data.total
+                   for(let i = 0;i<res.data.list.length;i++){
+                        res.data.list[i].size = (res.data.list[i].size/(1024 * 1024)).toFixed(2) + "MB"
+                    }
               }else{
                   this.$toast(res.message,2000)
               }
@@ -462,6 +467,8 @@ export default {
       },
     //选择实验类型
     selectType(val) {
+      let that =this
+      that.getImagequoteList()
       console.log(val);
     },
     click_new() {

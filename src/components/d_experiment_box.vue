@@ -82,7 +82,7 @@
                  <div class="set-col">
                     <p class="ptitle">报告要求：</p>
                     <div class="dselect">
-                        <el-input type="textarea" :rows="5" v-model="reportinfo" resize="none"/>
+                        <el-input type="textarea" :rows="5" maxlength="200" v-model="reportinfo" resize="none"/>
                     </div>
                 </div>
                  <div class="set-col">
