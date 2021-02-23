@@ -28,7 +28,7 @@
                     </el-tooltip>
                     <a class=" a_delete a_delete_exist" @click="deleteChapter(index,item)" v-if="item.lastNum == 0 && status==0"></a>
                     <a class="icon_edit pointer" @click="edit(1,item.id,item.name,index,iindex,i_index)" v-if="status==0"></a>
-                    <a class="a_arrow" @click="showSection(item,item.show)" v-if="item.sections && item.sections.length>0"></a>
+                    <a class="a_arrow" @click="showSection(item,item.show)" v-if="item.sections"></a>
                 </div>
                 <!--新建章节样式-->
                 <div  class="textline1 cha_title new_cha_title" :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="!item.id" >
@@ -69,7 +69,7 @@
 
                                 <a class=" a_delete a_delete_exist" @click="deleteSection(index,iindex,iitem)" v-if="iitem.lastNum == 0 && status==0"></a>
                                 <a class="icon_edit pointer" @click="edit(2,iitem.id,iitem.name,index,iindex,i_index)" v-if="status==0"></a>
-                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)" v-if="iitem.small_sections && iitem.small_sections.length>0"></a>
+                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)" v-if="iitem.small_sections"></a>
                             </div>
                             </template>>
                             <template v-if="!iitem.id">
@@ -447,7 +447,7 @@ export default{
             let that = this
             let obj ={};
             if(that.addValue==''){
-                return that.$toast(that.addTitle==1?'新建节不能为空':'新建小节不能为空',2000)
+                return that.$toast(that.addTitle==1?'节名称不能为空':'小节名称不能为空',2000)
             }
 
             if(that.index !== '' && that.iindex === ''){
@@ -535,8 +535,24 @@ export default{
             let obj = {};
             obj.course_id = that.courseId
             obj.chapter = that.chapters[index];
+            console.log(that.chapters[index])
             if(obj.chapter.name==''){
-               return that.$toast('新建章不能为空',2000)
+               return that.$toast('新建章名称不能为空',2000)
+            }
+            if(that.chapters[index].sections.length > 0) {
+              for (let i = 0; i < that.chapters[index].sections.length; i++) {
+                if (that.chapters[index].sections[i].name == '') {
+                  return that.$toast('新建节名称不能为空', 2000)
+                }else{
+                  for (let j = 0; j < that.chapters[index].sections[i].small_sections.length; j++) {
+                    if (that.chapters[index].sections[i].small_sections[j].name == '') {
+                      return that.$toast('新建小节名称不能为空', 2000)
+                    }
+                  }
+                }
+              }
+            }else{
+              return that.$toast('新建节名称不能为空', 2000)
             }
             insertCourseChapterCompleted(JSON.stringify(obj)).then(res=> {
                 if(res.code==200){
