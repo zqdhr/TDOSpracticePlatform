@@ -139,11 +139,13 @@ export default {
                 if(res.code==200){
                     that.$toast("备课成功",2000)
                     that.$store.commit("updateNavindex", 1);
-                    that.$router.push({path:'/teacher/couseDetail',
-                        query:{back:this.$Base64.encode(1), courseId: that.id}
+                    
+                    that.$router.push({path:'/teacher/lessonPreparationManagement'
+                        //,query:{back:this.$Base64.encode(1), courseId: that.id}
                     }).catch((err)=>{
                         console.log(err)
                     })
+                    
                 }else{
                     that.$toast("备课失败",3000)
                 }

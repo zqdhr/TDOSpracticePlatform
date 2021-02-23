@@ -35,7 +35,7 @@
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
                                 <div class="btnbox">
-                                    <a class="btnDefault pointer btn-course" @click="modifyCourseStatus" v-if="status != 1">确认发布</a>
+                                    <a class="btnDefault pointer btn-course" @click="resetDialog = true" v-if="status != 1">确认发布</a>
                                 </div>
                              </div>
                          </div>
@@ -94,7 +94,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
         <button class="btnDefault" @click="resetDialog = false">取消</button>
-        <button class="btnDefault" @click="back">确认</button>
+        <button class="btnDefault" @click="modifyCourseStatus">确认</button>
       </span>
         </el-dialog>
 
@@ -229,7 +229,11 @@ export default {
             modifyCourseStatus(obj).then(res=> {
                 if(res.code==200){
                    // alert("111")
-                    that.resetDialog = true;
+                    that.resetDialog = false;
+                    that.$toast('课程已发布')
+                    that.$router.push({path:'/admin/courseManagement'}).catch((err)=>{
+                        console.log(err)
+                    })
                 }else{
                     this.$toast(res.message,2000)
                 }
