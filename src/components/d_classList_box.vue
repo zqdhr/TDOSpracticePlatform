@@ -55,7 +55,7 @@ export default{
         
         //班级列表添加班级是否被选中状态参数，checked 0未选中 1全部选中 2部分选中
 
-        that.searchClass();
+        //that.searchClass();
     },
     props: {
         classesList: {
@@ -64,9 +64,12 @@ export default{
     },
     watch: {
         classesList: {
-            handler(val, olVal) {
+            handler:function(val, olVal) {
                 console.log(this.classesList)
+                this.classesList = val
+                this.searchClass();
             },
+            deep:true
 
         },
     },
@@ -84,6 +87,7 @@ export default{
         //班级列表
         searchClass(){
             let that = this;
+           console.log(this.classesList)
             searchClass().then(res=> {
                 if(res.code==200){
                     that.classList = res.data

@@ -107,14 +107,14 @@
                     <div class="editMain" >
                         <el-form ref="form" label-width="60px">
                         <el-form-item label="名称">
-                            <el-input v-model="editValue" :placeholder="edit_placeholder" :maxlength="16" v-emoji></el-input>
+                            <el-input v-model="editValue" placeholder="请输入修改的课程名称" :maxlength="16" v-emoji></el-input>
                         </el-form-item>
 
                         </el-form>
                     </div>
                     <span slot="footer" class="dialog-footer">
                         <button class="btnDefault" @click="isEdit = false">取消</button>
-                        <button class="btnDefault" @click="">确认修改</button>
+                        <button class="btnDefault" @click="isEdit = false">确认修改</button>
                     </span>
                     </el-dialog>
   
