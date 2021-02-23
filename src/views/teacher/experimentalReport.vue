@@ -359,8 +359,14 @@ export default {
         //选择日期
         changeDate(val){
             let that = this;
-            that.timestart = val[0];
-            that.timeend = val[1];
+            if (val!=null) {
+                that.timestart = val[0];
+                that.timeend = val[1];
+            }else {
+                that.timestart ='';
+                that.timeend = '';
+            }
+ 
             that.findByExperimentReportAll(1)
             console.log(val) 
         },
@@ -413,6 +419,7 @@ export default {
             obj.user_id = sessionStorage.getItem("userId");
             obj.page=1;
             obj.per_page=100;
+               obj.search = ''
              getCourseListByUserId(obj).then(res=> {
                 if(res.code==200){
                     console.log(res.data)
