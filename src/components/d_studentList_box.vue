@@ -107,12 +107,16 @@ export default{
         },
         classList:{
             default: []
-        }
+        },
+      chooseList:{
+        default: []
+      },
     },
 
      watch: {
       studentsList: {
         handler: function(newV, oldV) {
+          console.log(this.chooseList)
           this.studentList = newV.list
          this.$nextTick(() => {
           for (let i = 0; i < newV.list.length; i++) {
@@ -151,14 +155,13 @@ export default{
         },
 
         handleSelectionChange(val) {
+          console.log(this.studentList)
+
           this.multipleSelection  = val;
-          console.log(val);
         },
 
         //选择学生确认
         chooseStudent(){
-          console.log(this.multipleSelection.length)
-          console.log("asw")
             this.$emit('sureStudent');
             let that = this;
             let obj = {}
@@ -173,7 +176,6 @@ export default{
             obj.end = '';
             obj.course_id = this.$route.query.courseId;
             obj.status = 0;
-            console.log(obj)
             modifyCourseStatus(obj).then(res=> {
             if(res.code==200){
                 alert("111")
