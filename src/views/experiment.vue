@@ -8,11 +8,11 @@
 
             <div class="operationBox">
             
-                <a class="a-opera pointer"  @click="makeImg"  v-if="!isOpen">
+                <a class="a-opera pointer"  @click="makeImg"  v-if="isOpen">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen">
+                <a class="a-opera pointer" v-if="isOpen" @click="isEdit=true">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -118,6 +118,28 @@
             </el-dialog>
 
             <transLoading mess="正在关闭实验，请稍候..." v-if="remove"></transLoading>
+
+            <el-dialog
+            :visible.sync="isEdit"
+            width="500px"
+            class="personDialog"
+
+            >
+            <div slot="title" class="dialog_header">下载名称填写</div>
+
+            <div class="editMain" >
+                <el-form ref="form" label-width="60px">
+                <el-form-item label="名称">
+                    <el-input v-model="editValue" placeholder="请输入文件名称" :maxlength="16" v-emoji></el-input>
+                </el-form-item>
+
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <button class="btnDefault" @click="isEdit = false">取消</button>
+                <button class="btnDefault" @click="isEdit = false">确认</button>
+            </span>
+            </el-dialog>
     </div>
 </template>
 <script>
@@ -186,17 +208,26 @@ export default {
             remove:false,
 
             connect_url:'',//图形化界面url
-            rfb:''
+            rfb:'',
+            timeInterval:null, //倒计时定时器
+
+            isEdit:false,//点击文件下载名称输入显示
 
            
         }
     },
-    beforeCreate() {
-      
+    beforeCreate() {  
        document.getElementsByTagName("body")[0].className="equipment-body";
     },
     beforeDestroy(){
         document.body.removeAttribute("class","equipment-body");
+
+        //离开页面的时候清除定时器
+        if(this.timeInterval!=null){
+       
+           clearInterval(this.timeInterval)
+           sessionStorage.setItem('experiment_time',this.time)
+        }
     },
     components:{quillEditor,xterm,transLoading},
     created(){
@@ -266,10 +297,24 @@ export default {
             obj.page=1
             findAllByType(obj).then(res=>{
                 if (res.code==200) {
-                    that.experiment = res.data          
-                    let time= that.experiment.duration*60
-                    that.formatSecToDate(time)
-                    // that.daojishi(time)
+                    that.experiment = res.data    
+                    let time = ''      
+                    console.log(sessionStorage.getItem('experiment_time'))
+                    console.log('123')
+                    if(sessionStorage.getItem('experiment_time')!=undefined && sessionStorage.getItem('experiment_time')!=null){
+                        let experiment_time = sessionStorage.getItem('experiment_time').split(':')
+                        //time = parseInt(experiment_time[0])*3600+parseInt(experiment_time[1])*60+parseInt(experiment_time[2])
+                        time =  sessionStorage.getItem('experiment_time');
+                        sessionStorage.removeItem('experiment_time');
+                        that.time = time
+                        that.daojishi(1,time)
+                    }else{
+                        time= that.experiment.duration*60
+                        that.formatSecToDate(time)
+                        that.daojishi(2,time)
+                    }
+                    
+                    
                 }else {
                     that.$toast(res.message,3000)
                 }
@@ -385,7 +430,7 @@ export default {
                     console.log(res)
                     that.hasReport=true
                 } else {
-                     that.$toast(res.message,3000) 
+                      console.log(res)
                 }
             })
 
@@ -458,20 +503,35 @@ export default {
         },
 
       //倒计时
-        daojishi(time){
+        daojishi(type,time){
             let that = this
-            var min = Math.floor(time%3600)
-            //时
-            var h = parseInt(time / 3600) > 0 ? parseInt(time / 3600) : 0
-            //分
-            var m = parseInt( min /60)
-            //秒
-            var s = time%60
+            that.timeInterval = null;
+            
+            let min = null;
+            let h = null;
+            let m = null;
+            let s = null;
+            
+            if(type==1){
+                h = time.split(':')[0];
+                m = time.split(':')[1];
+                s = time.split(':')[1]
+            }
+
+            if(type==2){
+                min = Math.floor(time%3600)
+                //时
+                 h = parseInt(time / 3600) > 0 ? parseInt(time / 3600) : 0
+                //分
+                 m = parseInt( min /60)
+                //秒
+                 s = time%60
+            }
 
             //开始执行倒计时
-            var timeInterval = setInterval(function () {
+            that.timeInterval = setInterval(function () {
             //如果时、分、秒都为0时将停止当前的倒计时
-            if (h == 0 && m == 0 && s == 0) { clearInterval(timeInterval); return; }
+            if (h == 0 && m == 0 && s == 0) { clearInterval(that.timeInterval); return; }
              //当秒走到0时，再次为60秒
             if (s == 0) { s = 60; }
             if (s == 60) {
@@ -490,11 +550,13 @@ export default {
             //秒继续跳动，减一
             s -= 1;
             //小时赋值
-            that.time= (h<10?"0"+ h:h )+ ":" +( m<10?"0"+m:m) + ":"+ (s<10?"0"+s:s) ;
+            
+            type==2?that.time= (h<10?"0"+ h:h )+ ":" +( m<10?"0"+m:m) + ":"+ (s<10?"0"+s:s):that.time=h+':'+m+':'+s ;
             that.second = h*3600+m*60+s
          
             }, 1000);
         },
+
 
         // 将dom转成canvas
         makeImg() {

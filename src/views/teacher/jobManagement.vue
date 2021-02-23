@@ -93,7 +93,7 @@
                 </div>
               </div>
               <div class="d3 d30">
-                <div class="cell">提交时间：{{ item.committedAt }}</div>
+                <div class="cell">提交时间：{{ item.committedAt | dateFormatYMDhms}}</div>
               </div>
               <div class="d4 d14">
                 <div class="cell">
@@ -317,7 +317,11 @@ export default {
     //选择状态
     changeState(val) {
       let that = this;
+      that.timestart = "";
+      that.timeend = "";
+      that.value2 = [];
       that.getStudentJobList(0);
+
     },
     //选择课程
     changeLevel1(val) {
