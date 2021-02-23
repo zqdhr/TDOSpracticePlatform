@@ -53,12 +53,12 @@
 
 
                 <!--课程实验-->
-                <experiment :role="role" v-if="navindex==1"></experiment>
+                <experiment :role="role" v-if="navindex==1" :status="status"></experiment>
 
                 <!--课程课件-->
-                <courseware v-if="navindex==2"></courseware>
+                <courseware v-if="navindex==2" :status="status"></courseware>
 
-                <coursework v-if="navindex==3"></coursework>
+                <coursework v-if="navindex==3" :status="status"></coursework>
 
 
             </div>

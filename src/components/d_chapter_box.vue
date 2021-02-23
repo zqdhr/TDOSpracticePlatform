@@ -34,7 +34,7 @@
                 <div  class="textline1 cha_title new_cha_title" :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="!item.id" >
                      <span class="s_name">章节{{index+1}}：</span>
                      <div class="din">
-                         <input type="text" placeholder="请输入章最多16个字符"   v-model="item.name" maxlength="16" autocomplete="off"/>
+                         <input type="text" placeholder="请输入章最多16个字符"  v-emoji  v-model="item.name" maxlength="16" autocomplete="off"/>
                          <!--已保存添加s-saved-->
                          <span class="s-state s-Not_saved" :class="{'s-saved':1==0}">未保存</span>
                      </div>
@@ -77,7 +77,7 @@
                                 <div class="sec_name textline1 new_sec_name">
                                     <span class="textline1">第{{iindex+1}}节：</span>
                                     <div class="din">
-                                        <input placeholder="请输入节最多14个字符" type="text"  v-model="iitem.name" maxlength="14" autocomplete="off"/>
+                                        <input placeholder="请输入节最多14个字符" type="text" v-emoji  v-model="iitem.name" maxlength="14" autocomplete="off"/>
                                     </div>
                                 </div>
                                 <a class=" a_delete" @click="deleteSection(index,iindex)"></a>
@@ -167,7 +167,7 @@
       <div class="editMain" >
         <el-form ref="form" label-width="60px">
           <el-form-item label="名称">
-            <el-input v-model="editValue" :placeholder="edit_placeholder" :maxlength="editTitle==1?16:editTitle==2?14:12"></el-input>
+            <el-input v-model="editValue" :placeholder="edit_placeholder" :maxlength="editTitle==1?16:editTitle==2?14:12" v-emoji></el-input>
           </el-form-item>
         
         </el-form>
@@ -191,7 +191,7 @@
             <div class="editMain" >
                 <el-form ref="form" label-width="60px">
                     <el-form-item label="名称">
-                        <el-input v-model="addValue" :maxlength='addTitle==1?14:12' :placeholder='addTitle==1?"请输入节最多14个字符":"请输入小节最多12个字符"'></el-input>
+                        <el-input v-model="addValue" :maxlength='addTitle==1?14:12' :placeholder='addTitle==1?"请输入节最多14个字符":"请输入小节最多12个字符"' v-emoji></el-input>
                     </el-form-item>
 
                 </el-form>

@@ -24,7 +24,7 @@
               </el-select>
             </div>
           </div>
-          <div class="fr">
+          <div class="fr" v-if="canEdit == 1">
             <a class="btnDefault pointer mr20" @click="deleteOperation"
               >删除题目</a
             >
@@ -38,7 +38,7 @@
         >
           <div class="coursework_name">
             <p>{{ courseWork.name }}</p>
-            <a class="edit" @click="reset_homework"></a>
+            <a class="edit" @click="reset_homework" v-if="canEdit == 1"></a>
           </div>
           <div class="course_list">
             <el-scrollbar style="height: 100%">
@@ -49,10 +49,15 @@
                   v-for="(item, index) in courseList"
                   :key="index"
                 >
-                  <div class="title">{{index+1}}.
-                    {{  item.content }}
+                  <div class="title">
+                    {{ index + 1 }}.
+                    {{ item.content }}
                     <span> ({{ item.score }}分) </span>
-                    <a class="btn-set pointer" v-if="1==-1" @click="setNewScore(item)"></a>
+                    <a
+                      class="btn-set pointer"
+                      v-if="1 == -1"
+                      @click="setNewScore(item)"
+                    ></a>
                   </div>
                   <div class="pic" v-if="item.picUrl != '' && item.picUrl">
                     <span><img :src="state.pic_Url + item.picUrl" /></span>
@@ -81,12 +86,12 @@
               </ul>
             </el-scrollbar>
           </div>
-          <div class="add_btn_box">
+          <div class="add_btn_box" v-if="canEdit == 1">
             <a class="btnDefault pointer" @click="addQuestionBack">保存</a>
             <a
               class="btnDefault pointer"
               style="margin-left: 20px"
-              @click="confirmQuestionBack"
+              @click="isConfirmWork = true"
               >确认</a
             >
           </div>
@@ -118,6 +123,26 @@
           @click="
             isDelete = false;
             isShow = false;
+          "
+          >取 消</a
+        >
+      </div>
+    </el-dialog>
+
+        <!--确认作业弹框-->
+    <el-dialog :visible.sync="isConfirmWork" width="600px">
+      <div slot="title" class="dialog_header">请注意!</div>
+      <div class="confirm_dialog_body">
+        <p class="dialog_mess">
+          <span class="span_icon icon_waring">确定要确认作业吗？确认过后将无法修改</span>
+        </p>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <a class="btnDefault" @click="confirmQuestionBack">确 认</a>
+        <a
+          class="btnDefault"
+          @click="
+            isConfirmWork = false;
           "
           >取 消</a
         >
@@ -289,7 +314,9 @@
       </div>
 
       <div class="choseFooter clearfix">
-        <a class="btnDefault fl pointer" @click="showQuestion" v-if="1==-1">确认</a>
+        <a class="btnDefault fl pointer" @click="showQuestion" v-if="1 == -1"
+          >确认</a
+        >
 
         <div class="tab-pagination fr">
           <el-pagination
@@ -310,7 +337,7 @@
       <div class="setScope">
         <el-input placeholder="请输入该题目的分数" v-model="score"></el-input>
       </div>
-      <div slot="footer" class="dialog-footer" >
+      <div slot="footer" class="dialog-footer">
         <a class="btnDefault" @click="setScore">确 认</a>
       </div>
     </el-dialog>
@@ -335,6 +362,8 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      canEdit: 0,
+      nowData:{},
       options: [
         { value: "1", label: "选择题" },
         { value: "2", label: "简答题" },
@@ -358,6 +387,7 @@ export default {
       deleteList: [], //选中需要删除的题目列表
       chooseList: [], //新增题目选中
       isDelete: false,
+      isConfirmWork:false,
       type: 0, //题目类型
       curPage: 1,
       perPage: 100,
@@ -636,7 +666,7 @@ export default {
       }
     },
 
-    addQuestionBack() {
+    addQuestionBack(flag) {
       // alert("111");
       let that = this;
       let obj = {};
@@ -659,7 +689,7 @@ export default {
         let objques = {};
         objques.assignment_id = that.assignmentId;
         objques.question_id = that.courseList[i].id;
-        objques.score = 0;//that.courseList[i].score
+        objques.score = 0; //that.courseList[i].score
         list.push(objques);
       }
       obj.question_back_assignment_list = list;
@@ -667,7 +697,14 @@ export default {
       addQuestionBackAssignmentList(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
           // alert("新增成功");
-          this.$toast("新增成功", 2000);
+          if (flag == 1) {
+            this.$toast("删除成功", 2000);
+          } else {
+            this.$toast("保存成功", 2000);
+          }
+          //这边要刷新下作业
+          that.getData(that.nowData);
+
         } else {
           // alert("新增失败");
           this.$toast(res.message, 2000);
@@ -677,12 +714,15 @@ export default {
 
     confirmQuestionBack() {
       let that = this;
+      that.isConfirmWork = false;
       let obj = {};
       obj.id = that.assignmentId;
       obj.status = 1;
+      // alert(that.assignmentId);
       modifyAssignmentStatusById(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
           this.$toast("确认成功，不可修改", 2000);
+          that.canEdit = 0;
           // alert("确认成功，不可修改");
         } else {
           // alert("确认失败");
@@ -769,9 +809,26 @@ export default {
       let that = this;
       that.isDelete = false;
       that.isShow = false;
-      alert(JSON.stringify(that.deleteList))
+      //       alert(JSON.stringify(that.deleteList));
+      // console.log(JSON.stringify(that.courseList))
+      let tmpArr = [];
+      for (let i = 0; i < that.courseList.length; i++) {
+        let q1 = that.courseList[i];
+        let isExist = 0;
+        for (let j = 0; j < that.deleteList.length; j++) {
+          let q2 = that.deleteList[j];
 
-
+          if (q1.id == q2) {
+            isExist = 1;
+          }
+        }
+        if (isExist == 0) {
+          tmpArr.push(q1);
+        }
+      }
+      that.courseList = tmpArr;
+      //保存
+      that.addQuestionBack(1);
     },
     //点击新增题目
     click_new() {
@@ -787,6 +844,7 @@ export default {
 
     getData(data) {
       let that = this;
+      that.nowData = data;
       that.courseList = [];
       that.courseList_Org = [];
       that.all_courseList = [];
@@ -798,17 +856,23 @@ export default {
         let obj1 = {};
         obj1.sectionId = data.sindex;
         getAssignmentNameBySectionId(obj1).then((res) => {
+          console.log(JSON.stringify(res))
           if (res.code == 200) {
             if (res.data.name == "" || res.data.name == null) {
               // alert("123");
               that.status = 1;
               that.noData = true;
-              // that.courseList = [];
-              // that.chooseList = [];
+              that.courseList = [];
+              that.chooseList = [];
             } else {
               // that.courseWorkTitle = res.data.name;
               that.assignmentId = res.data.id;
               that.courseWork = res.data;
+              if(res.data.status == 1){
+                that.canEdit = 0;
+              }else{
+                that.canEdit = 1;
+              }
 
               let obj = {};
               obj.sectionId = data.sindex;
@@ -848,6 +912,7 @@ export default {
       obj.type = "";
       getAssignmentBySectionId(obj).then((res) => {
         if (res.code == 200) {
+          // alert(111)
           that.courseList = res.data.list;
           that.courseList_Org = res.data.list;
           console.log(res.data.list);
