@@ -37,7 +37,8 @@
               >
               </el-date-picker>
             </div> -->
- <el-date-picker
+            <div class="sel-box" style="width:350px">
+ <el-date-picker 
                             class="pageTab_date"
                             v-if="state.id==1"
                             v-model="value2"
@@ -52,6 +53,7 @@
                              value-format="yyyy-MM-dd" format="yyyy-MM-dd"
                             >
                         </el-date-picker>
+              </div>
             <div class="sel-box">
               <el-select
                 v-model="level1Name"

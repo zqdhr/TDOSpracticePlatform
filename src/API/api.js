@@ -452,6 +452,10 @@ var modifySectionNameById = function(data){
 var modifySmallSectionNameById = function(data){
 	return axios.post('/modify_small_section_name_by_id', data,{headers: {'Content-Type':'application/json'}})
 }
+//下载代码
+var downloadCode=function(data){
+	return axios.post('/downloadCode?containerId='+data.containerId+'&fileName='+data.fileName)
+}
 
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
@@ -465,7 +469,7 @@ export{
 	,addAssignment,student_getJobList,student_getJobDetail,addQuestionBackAssignmentList,removeCourseById,insertExperimentRepor,hasExperimentReport
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
-	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment,modifyAssignmentStatusById
+	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment,modifyAssignmentStatusById,downloadCode
 }
 
 function getJson (data) {

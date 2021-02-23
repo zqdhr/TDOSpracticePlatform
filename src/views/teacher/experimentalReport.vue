@@ -401,6 +401,7 @@ export default {
             obj.endTime = that.timeend
             obj.perPage=that.perPage
             obj.page = page
+            console.log(obj)
             findByExperimentReportAll(obj).then(res=>{
                 if (res.code==200) {
                     console.log(res.data)

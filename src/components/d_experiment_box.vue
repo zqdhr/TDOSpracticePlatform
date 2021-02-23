@@ -300,14 +300,18 @@ export default {
         click_new(){
             let that = this;
             that.sid = that.sindex;
+            console.log(that.cindex+'节'+that.sindex)
+            
             that.$refs.newdialog.click_new(that.sid,that.count,that.sindex);
+            
         },
          //查看实验详情
         link_Detail(id){
           let that = this;
           that.isNewExperiment = true;
+          if(that.cindex!=''&&that.sindex!=''){
           that.$refs.experimentDetail.click_Detail(id);
-
+}
         },
         getData(data){
             let that = this;

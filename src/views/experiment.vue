@@ -36,7 +36,7 @@
         <div class="experiment_container clearfix boxsizing">
             <div class="left-noVNc boxsizing " :class="{'changeWidth':isHide}">
                 <div class="l-nav" >
-                  <span class="pointer" @click="openXuniji(item), virtualMachine=index" :class="{'active':virtualMachine==index}" v-for="(item,index) in containers" :key="index">虚拟机{{index+1}}{{item.status==0?'(已创建)':'(运行中)'}}</span>
+                  <span class="pointer" @click="isOpen?(openXuniji(item), virtualMachine=index,container=item):''" :class="{'active':virtualMachine==index}" v-for="(item,index) in containers" :key="index">虚拟机{{index+1}}{{item.status==1?'(运行中)':'(已创建)'}}</span>
             
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
@@ -137,7 +137,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <button class="btnDefault" @click="isEdit = false">取消</button>
-                <button class="btnDefault" @click="isEdit = false">确认</button>
+                <button class="btnDefault" @click="downloadCode">确认</button>
             </span>
             </el-dialog>
     </div>
@@ -149,7 +149,7 @@ import RFB from '@novnc/novnc/core/rfb';
 import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import html2canvas from 'html2canvas';
 import xterm from '@/components/Xterminal.vue'
-import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor,hasExperimentReport} from "@/API/api";
+import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor,hasExperimentReport,downloadCode} from "@/API/api";
 
 import transLoading from '@/components/uploadLoading.vue'
 
@@ -212,6 +212,7 @@ export default {
             timeInterval:null, //倒计时定时器
 
             isEdit:false,//点击文件下载名称输入显示
+            editValue:'',//下载要输入的文件名称
 
            
         }
@@ -226,7 +227,10 @@ export default {
         if(this.timeInterval!=null){
        
            clearInterval(this.timeInterval)
-           sessionStorage.setItem('experiment_time',this.time)
+           sessionStorage.setItem(this.experimentId,this.second)
+        }else {
+            sessionStorage.removeItem(this.experimentId);
+            console.log('关闭')
         }
     },
     components:{quillEditor,xterm,transLoading},
@@ -236,7 +240,6 @@ export default {
         that.userid = that.$route.query.userid
         that.experimentId=that.$route.query.experimentId
         that.courseId =that.$route.query.courseId
-        that.createContainers(that.userid,that.experimentId,that.courseId)
         that.findAllByType(that.experimentId)
         if (that.authority==0) {
             that.hasExperimentReport()
@@ -272,9 +275,10 @@ export default {
                     that.containers = res.data
                  
                     if (that.containers!=null&& that.containers.length>0&&that.containers[0]!=null) {
-                        if (that.containers[0].status==1||that.containers[0].status==2) {
+                        if (that.containers[0].status==1) {
                             that.isOpen=true
                             that.virtualMachine=0
+                            that.daojishi(that.second)
                         }
                         that.container = that.containers[0]
                         if (that.isOpen==true) {
@@ -297,24 +301,18 @@ export default {
             obj.page=1
             findAllByType(obj).then(res=>{
                 if (res.code==200) {
-                    that.experiment = res.data    
-                    let time = ''      
-                    console.log(sessionStorage.getItem('experiment_time'))
-                    console.log('123')
-                    if(sessionStorage.getItem('experiment_time')!=undefined && sessionStorage.getItem('experiment_time')!=null){
-                        let experiment_time = sessionStorage.getItem('experiment_time').split(':')
+                    that.experiment = res.data
+                   if(sessionStorage.getItem(that.experimentId)!=undefined && sessionStorage.getItem(that.experimentId)!=null){
+                        let experiment_time = sessionStorage.getItem(that.experimentId).split(':')
                         //time = parseInt(experiment_time[0])*3600+parseInt(experiment_time[1])*60+parseInt(experiment_time[2])
-                        time =  sessionStorage.getItem('experiment_time');
-                        sessionStorage.removeItem('experiment_time');
-                        that.time = time
-                        that.daojishi(1,time)
+                        that.second =  sessionStorage.getItem(that.experimentId);
+                        sessionStorage.removeItem(that.experimentId);                       
                     }else{
-                        time= that.experiment.duration*60
-                        that.formatSecToDate(time)
-                        that.daojishi(2,time)
+                        that.second= that.experiment.duration*60
                     }
-                    
-                    
+                     console.log(that.second)
+                    that.formatSecToDate( that.second)
+                    that.createContainers(that.userid,that.experimentId,that.courseId)
                 }else {
                     that.$toast(res.message,3000)
                 }
@@ -357,6 +355,7 @@ export default {
                     console.log(res.data)
                     if(type==0){
                         that.isOpen=true
+                        that.daojishi(that.second)
                         that.openXuniji(that.container)
                         for (let index = 0; index < that.containers.length; index++) {
                             that.containers[index].status=1
@@ -365,6 +364,7 @@ export default {
                         that.virtualMachine=0
                     }
                     if (type==1) {
+                        that.remove=false
                         that.click_back()
                     }
                 } else {
@@ -387,6 +387,8 @@ export default {
             removeContainers(obj).then(res=>{
                   console.log('返回参数'+res)
                   that.remove=false
+                  clearInterval(that.timeInterval)
+                 
                   that.click_back()
              })
         },
@@ -425,12 +427,10 @@ export default {
             obj.experiment_id = that.experimentId
             obj.user_id =  that.userid
             hasExperimentReport(obj).then(res=>{
-                   console.log(res)
                 if (res.code==200) {
-                    console.log(res)
                     that.hasReport=true
                 } else {
-                      console.log(res)
+                    that.hasReport=false
                 }
             })
 
@@ -503,7 +503,7 @@ export default {
         },
 
       //倒计时
-        daojishi(type,time){
+        daojishi(time){
             let that = this
             that.timeInterval = null;
             
@@ -512,13 +512,13 @@ export default {
             let m = null;
             let s = null;
             
-            if(type==1){
-                h = time.split(':')[0];
-                m = time.split(':')[1];
-                s = time.split(':')[1]
-            }
+            // if(type==1){
+            //     h = time.split(':')[0];
+            //     m = time.split(':')[1];
+            //     s = time.split(':')[1]
+            // }
 
-            if(type==2){
+            // if(type==2){
                 min = Math.floor(time%3600)
                 //时
                  h = parseInt(time / 3600) > 0 ? parseInt(time / 3600) : 0
@@ -526,7 +526,7 @@ export default {
                  m = parseInt( min /60)
                 //秒
                  s = time%60
-            }
+            // }
 
             //开始执行倒计时
             that.timeInterval = setInterval(function () {
@@ -551,7 +551,7 @@ export default {
             s -= 1;
             //小时赋值
             
-            type==2?that.time= (h<10?"0"+ h:h )+ ":" +( m<10?"0"+m:m) + ":"+ (s<10?"0"+s:s):that.time=h+':'+m+':'+s ;
+            that.time= (h<10?"0"+ h:h )+ ":" +( m<10?"0"+m:m) + ":"+ (s<10?"0"+s:s);
             that.second = h*3600+m*60+s
          
             }, 1000);
@@ -607,6 +607,25 @@ export default {
                 }
             }
             
+
+        },
+
+        downloadCode(){
+            let that =this
+            if (that.editValue=='') {
+               return that.$toast("请输入文件名称",3000) 
+            }
+            let obj={}
+            obj.containerId = that.container.containerId
+            obj.fileName = '/root/Downloads/'+that.editValue
+            console.log(obj)
+            downloadCode(obj).then(res=>{
+                if (res.code==200) {
+                    console.log(res.msg)
+                } else {
+                    console.log(res.msg)
+                }
+            })
 
         },
         // http图片转成base64，防止解决不了的图片跨域问题
