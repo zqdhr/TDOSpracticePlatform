@@ -89,7 +89,7 @@ export default {
                {name:'课程课件'},
             ],
 
-           picurl:require('../../assets/pic/course.png'),
+           picurl:'',
            
             startTime:'',//课程开始时间
             endTime:'',//课程结束时间
@@ -137,6 +137,7 @@ export default {
                     that.coursrName = res.data.name;
                     that.chapter_number = res.data.chapter_number
                     that.section_number = res.data.section_number;
+                    that.picurl = that.$store.state.pic_Url+ res.data.pic_url;
                     if(res.data.start_at != null && res.data.end_at != null){
                         that.time = res.data.start_at.replace('T', ' ') + '-' + res.data.end_at.replace('T', ' ');
                     }else{

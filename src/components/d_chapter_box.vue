@@ -1,7 +1,7 @@
 <template>
     <div class="chapter_box">
         <ul class="chapter_ul">
-            <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}">
+            <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}" :style="{'padding-bottom':status==1?'20px':'0px'}">
                 <!--已有章节内容-->
 
                 <div class="textline1 cha_title " :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="item.id">
@@ -126,6 +126,7 @@
 
 
         </ul>
+         <nodata dataMess="暂无课程大纲" v-if="!isHasData"></nodata>
         <div class="add-btn-box">
             <a class="btnDefault add-btn pointer" @click="click_newChapter" v-if="status==0">+ 新建章节</a>
         </div>
@@ -208,6 +209,7 @@
 </template>
 <script>
 import {getCourseById,getCoursewareBySectionId,insertCourseChapterCompleted,removeChapter,removeSection,removeSmallSection,addSection,addSmallSection,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById} from '@/API/api';
+import nodata from "@/components/noData";
 export default{
     inject:['reload'],
     data(){
@@ -242,8 +244,12 @@ export default{
             smallSectionId:'',
             sectionId:'',
 
+
+            isHasData:false,//是否有数据显示
+
         }
     },
+    components:{nodata},
     props:{
         courseId:{
             default:''
@@ -258,7 +264,19 @@ export default{
     watch: {
         status(newValue, oldValue) {
            // console.log(newValue)
-        }
+        },
+        chapters: {
+            handler:function(val, olVal) {
+                 if(val.length>0){
+                    this.isHasData = true;
+                 }else{
+                    this.isHasData = false;
+                 }
+                
+            }
+
+
+        },
     },
     /*
     watch:{
