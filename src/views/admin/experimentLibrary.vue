@@ -77,7 +77,7 @@
         </div>
     </div>
     <!--删除实验弹出框-->
-    <el-dialog :visible.sync="isDelete" width="600">
+    <el-dialog :visible.sync="isDelete" width="500px">
       <div slot="title" class="dialog_header">请注意!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
