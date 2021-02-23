@@ -47,7 +47,7 @@
             ></span>
             <div class="name-box">
               <div class="d-name textline1">{{ item.title }}</div>
-              <div class="d-time">{{ item.created_at }}</div>
+              <div class="d-time">{{ item.created_at | dateFormatYMDhms}}</div>
             </div>
             <p class="intro">{{ item.content }}</p>
             <div class="link-courseware">
@@ -172,7 +172,7 @@
                   </div>
                   <a
                     class="pointer pdf_btnrecord"
-                    @click="isRecordNotes = true"
+                    @click="isRecordNotes = true,titleText ='',contentText ='' "
                   ></a>
                   <p>{{ currentPage }} / {{ pageCount }}</p>
                 </div>
@@ -343,7 +343,7 @@ export default {
           }
         })
         .catch((err) => {
-          alert(JSON.stringify(err));
+          // alert(JSON.stringify(err));
         });
     },
     //保存笔记
@@ -353,7 +353,7 @@ export default {
       // alert(JSON.stringify(that.momentMod))
       let obj = {};
       obj.courseware_id = that.momentMod.courseware_id;
-      obj.course_id = that.level1Name;
+      obj.course_id = that.momentMod.course_id;
       obj.user_id = sessionStorage.getItem("userId");
       if (that.titleText == "") {
         return that.$toast("笔记标题不能为空", 3000);
@@ -393,7 +393,7 @@ export default {
           }
         })
         .catch((err) => {
-          alert(JSON.stringify(err));
+          // alert(JSON.stringify(err));
         });
     },
     //获取笔记
@@ -419,7 +419,7 @@ export default {
           }
         })
         .catch((err) => {
-          alert(JSON.stringify(err));
+          // alert(JSON.stringify(err));
         });
     },
     //获取课程

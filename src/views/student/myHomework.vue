@@ -98,11 +98,11 @@
                 <div class="cell">
                   <a class="pointer tab_atn" @click="showDetail(item)">查看</a>
                   <!--这两个属性只有在未提交的时候显示-->
-                  <span class="space-line" v-if="item.status != 1"></span>
+                  <span class="space-line" v-if="item.status == 0"></span>
                   <a
                     class="pointer tab_atn"
                     @click="submitHomework(item)"
-                    v-if="item.status != 1"
+                    v-if="item.status == 0"
                     >提交</a
                   >
                 </div>
@@ -126,7 +126,7 @@
 
     <!--点击确定按钮弹出确认框-->
     <el-dialog :visible.sync="isSubmitJob" width="600px">
-      <div slot="title" class="dialog_header"></div>
+      <div slot="title" class="dialog_header">请注意!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <!--成功span的class为icon_success-->
@@ -136,6 +136,22 @@
       <div slot="footer" class="dialog-footer">
         <a class="btnDefault" @click="submitHomeworkConfirm()">确 认</a>
         <a class="btnDefault" @click="isSubmitJob = false">取 消</a>
+      </div>
+    </el-dialog>
+
+
+        <!--点击保存按钮弹出确认框-->
+    <el-dialog :visible.sync="isExistNoAnswar" width="600px">
+      <div slot="title" class="dialog_header">请注意!</div>
+      <div class="confirm_dialog_body">
+        <p class="dialog_mess">
+          <!--成功span的class为icon_success-->
+          <span class="span_icon icon_success">作业第{{noWorkStr}}尚未作答，是否保存？</span>
+        </p>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <a class="btnDefault" @click="confirm1()()">确 认</a>
+        <a class="btnDefault" @click="isExistNoAnswar = false">取 消</a>
       </div>
     </el-dialog>
 
@@ -239,6 +255,8 @@ export default {
   },
   data() {
     return {
+      noWorkStr:"",
+      isExistNoAnswar:false,
       searchText:"",
       isSubmitJob: false,
       totalNum: 0,
@@ -310,7 +328,7 @@ export default {
           if (res.code == 200) {
             that.totalNum = res.data.total;
             that.jobList = res.data.list;
-            // alert(JSON.stringify(res));
+            console.log(JSON.stringify(res));
           } else {
             that.$toast(res.message, 3000);
           }
@@ -396,17 +414,18 @@ export default {
     },
 
     showDetail(item) {
-      //status:0 未提交 state:1 已提交
+      //status: -1未保存   0 已保存   1 已提交
       //score:-1 待老师批阅  >=0老师已批阅
+      //curStatus: 0-->未提交可编辑   1-->已提交未批改   2-->已提交已批改
       let that = this;
 
       that.momentJob = item;
 
-      if (item.status == 0) {
+      if (item.status == -1 || item.status == 0) {
         that.curStatus = 0;
-      } else if (item.score == -1) {
+      } else if (item.score == -1 && item.status == 1) {
         that.curStatus = 1;
-      } else {
+      } else if(item.score != -1 && item.status == 1){
         that.curStatus = 2;
       }
 
@@ -455,6 +474,7 @@ export default {
 
       let obj = {};
       let answerArr = [];
+      that.noWorkStr = "";
       for (var i = 0; i < that.all_courseList.length; i++) {
         let tmpDic = that.all_courseList[i];
         let dic = {};
@@ -472,7 +492,24 @@ export default {
         }
         dic.answer = tmpDic.studentAnswer;
         answerArr.push(dic);
+
+        if(dic.answer == null || dic.answer == "")
+        {
+          if(that.noWorkStr == ""){
+            that.noWorkStr = parseInt(i+1);
+          }else{
+            that.noWorkStr = that.noWorkStr + ','+parseInt(i+1)
+          }
+        }
+        
       }
+
+      if(that.noWorkStr != "")
+      {
+        //显示提示
+        return that.isExistNoAnswar = true;
+      }
+
       // obj.student_score_list = JSON.stringify(answerArr);
       obj.student_answer_list = answerArr;
 
@@ -484,6 +521,54 @@ export default {
           if (res.code == 200) {
             that.$toast("作业保存成功", 3000);
             that.isHomework = false;
+            that.student_getJobList(0);
+            
+          } else {
+            that.$toast(res.message, 3000);
+          }
+        })
+        .catch((ero) => {
+          alert(JSON.stringify(ero));
+        });
+    },
+    confirm1(val) {
+      let that = this;
+
+      that.isExistNoAnswar = false;
+      let obj = {};
+      let answerArr = [];
+      for (var i = 0; i < that.all_courseList.length; i++) {
+        let tmpDic = that.all_courseList[i];
+        let dic = {};
+        dic.question_id = tmpDic.id;
+        dic.assignment_id = that.momentJob.assignmentId;
+        dic.user_id = sessionStorage.getItem("userId");
+        if (tmpDic.type == 0) {
+          if (tmpDic.studentAnswer == tmpDic.answer) {
+            dic.score = tmpDic.totalScore;
+          } else {
+            dic.score = 0;
+          }
+        } else {
+          dic.score = 0;
+        }
+        dic.answer = tmpDic.studentAnswer;
+        answerArr.push(dic);
+        
+      }
+
+      // obj.student_score_list = JSON.stringify(answerArr);
+      obj.student_answer_list = answerArr;
+
+      // alert(JSON.stringify(obj));
+
+      stduentSaveHomework(obj)
+        .then((res) => {
+          // alert(JSON.stringify(res));
+          if (res.code == 200) {
+            that.$toast("作业保存成功", 3000);
+            that.isHomework = false;
+            that.student_getJobList(0);
           } else {
             that.$toast(res.message, 3000);
           }
