@@ -249,7 +249,7 @@ export default {
     this.cate = this.options[0].value; //默认选中内置课件
     this.type = this.typeList[0].value; //课件类型默认选中全部
 
-    this.findParentCategory();
+    
   },
   mounted() {
     let that = this;
@@ -272,8 +272,8 @@ export default {
           that.categoryOptions = res.data;
           for (let index = 0; index < that.categoryOptions.length; index++) {
             that.findChildCategory(that.categoryOptions[index].id)
-
           }
+          
         } else {
           this.$toast(res.message, 2000)
         }
@@ -355,6 +355,7 @@ export default {
       that.sindex = sid;
       that.cindex = cid;
       that.count = count;
+      this.findParentCategory();
       that.getCoursewareAll();
     },
     //点击课件库选择
@@ -583,48 +584,50 @@ export default {
           this.$refs.upload.active = true;
           addCourseware(JSON.stringify(obj)).then((resCourse) => {
             if (resCourse.code == 200) {
-              alert("新建成功");
+              //alert("新建成功");
               console.log(resCourse.data.id)
-              if (that.sindex !== '') {
-                console.log("节新增课件")
-                alert("aaa"+that.sindex)
-                let obj = {};
-                let list = [];
-                let ware = {};
-                ware.courseware_id = resCourse.data.id;
-                ware.section_id = that.sindex;
-                ware.chapter_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
-                list.push(ware);
-                obj.chapter_section_courseware_list = list
-                addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
-                  if (resadd.code == 200) {
-                    alert("111")
-                    that.isnewFilter = false;
+                  if (that.sindex !== '') {
+                    //console.log("节新增课件")
+                    alert("aaa"+that.sindex)
+                    let obj = {};
+                    let list = [];
+                    let ware = {};
+                    ware.courseware_id = resCourse.data.id;
+                    ware.section_id = that.sindex;
+                    ware.chapter_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
+                    list.push(ware);
+                    obj.chapter_section_courseware_list = list
+                    addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
+                      if (resadd.code == 200) {
+                        alert("111")
+                        that.isnewFilter = false;
+                      } else {
+                        this.$toast(resadd.message, 2000)
+                      }
+                    })
                   } else {
-                    this.$toast(resadd.message, 2000)
+                    console.log("章新增课件")
+                    let obj = {};
+                    obj.courseware_id = resCourse.data.id;
+                    obj.section_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
+                    obj.chapter_id = that.cindex;
+                    addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
+                      if (resadd.code == 200) {
+                        alert("111")
+                        that.isnewFilter = false;
+                      } else {
+                        this.$toast(resadd.message, 2000)
+                      }
+                    })
                   }
-                })
-              } else {
-                console.log("章新增课件")
-                let obj = {};
-                obj.courseware_id = resCourse.data.id;
-                obj.section_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
-                obj.chapter_id = that.cindex;
-                addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
-                  if (resadd.code == 200) {
-                    alert("111")
-                    that.isnewFilter = false;
-                  } else {
-                    this.$toast(resadd.message, 2000)
-                  }
-                })
-              }
             } else {
-              that.$toast(res.message, 3000);
+             
+              that.$toast(resCourse.message, 3000);
             }
           });
 
         } else {
+         
           that.$toast(res.message, 3000)
         }
       })
