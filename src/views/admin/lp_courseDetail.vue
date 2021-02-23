@@ -47,7 +47,7 @@
                 </div>
 
                  <!--课程大纲-->
-                <chapter :courseId="courseId" v-if="navindex==0" :chapters="courseChapters" :isHasData="isHasData" ></chapter>
+                <chapter :courseId="courseId" v-if="navindex==0" :chapters="courseChapters" :isHasData="isHasData"  :status="status"></chapter>
 
 
 

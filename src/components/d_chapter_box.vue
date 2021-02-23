@@ -1,7 +1,7 @@
 <template>
     <div class="chapter_box">
         <ul class="chapter_ul">                         
-            <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}">
+            <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}" :style="{'padding-bottom':item.show?'20px':'0px'}">
                 <!--已有章节内容-->
                
                 <div class="textline1 cha_title " :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="item.id">
@@ -26,9 +26,9 @@
                     <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
                       <a class="a_save pointer" @click="addChapters(index)"  v-if="item.id == ''"></a>
                     </el-tooltip>
-                    <a class=" a_delete a_delete_exist" @click="deleteChapter(index,item)" v-if="item.lastNum == 0"></a>
-                    <a class="icon_edit pointer" @click="edit(1,item.id,item.name,index,iindex,i_index)"></a>
-                    <a class="a_arrow" @click="showSection(item,item.show)"></a>
+                    <a class=" a_delete a_delete_exist" @click="deleteChapter(index,item)" v-if="item.lastNum == 0 && status==0"></a>
+                    <a class="icon_edit pointer" @click="edit(1,item.id,item.name,index,iindex,i_index)" v-if="status==0"></a>
+                    <a class="a_arrow" @click="showSection(item,item.show)" v-if="item.sections && item.sections.length>0"></a>
                 </div>
                 <!--新建章节样式-->
                 <div  class="textline1 cha_title new_cha_title" :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="!item.id" >
@@ -67,9 +67,9 @@
                                     </div>
                                 </div>
 
-                                <a class=" a_delete a_delete_exist" @click="deleteSection(index,iindex,iitem)" v-if="iitem.lastNum == 0"></a>
-                                <a class="icon_edit pointer" @click="edit(2,iitem.id,iitem.name,index,iindex,i_index)"></a>
-                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)"></a>
+                                <a class=" a_delete a_delete_exist" @click="deleteSection(index,iindex,iitem)" v-if="iitem.lastNum == 0 && status==0"></a>
+                                <a class="icon_edit pointer" @click="edit(2,iitem.id,iitem.name,index,iindex,i_index)" v-if="status==0"></a>
+                                <a class="a_arrow" @click="showSection_children(index,iitem,iitem.show)" v-if="iitem.small_sections && iitem.small_sections.length>0"></a>
                             </div>
                             </template>>
                             <template v-if="!iitem.id">
@@ -91,8 +91,8 @@
                                      <template v-if="i_item.id">
                                         <div class="sec_name textline1">
                                             <p class="textline1">第{{i_index+1}}小节：{{i_item.name}}</p>
-                                            <a class=" a_delete a_delete_exist" @click="deleteSmallSection(index,iindex,i_index,iitem)"  v-if="i_item.lastNum == 0"></a>
-                                              <a class="icon_edit pointer" @click="edit(3,i_item.id,i_item.name,index,iindex,i_index)"></a>
+                                            <a class=" a_delete a_delete_exist" @click="deleteSmallSection(index,iindex,i_index,iitem)"  v-if="i_item.lastNum == 0 && status==0"></a>
+                                              <a class="icon_edit pointer" @click="edit(3,i_item.id,i_item.name,index,iindex,i_index)" v-if="status==0"></a>
                                         </div>
                                     </template>>
                                     <template v-if="!i_item.id">
@@ -106,8 +106,8 @@
                                     </template>
 
                                 </li>
-                                 <div class="add-btn-box">
-                                    <a class="btnDefault add-btn pointer" @click="click_new_section(index,iindex,item)">+ 新建小节</a>
+                                 <div class="add-btn-box"  v-if="status!=1">
+                                    <a class="btnDefault add-btn pointer" @click="click_new_section(index,iindex,item)" v-if="status==0">+ 新建小节</a>
                                 </div>
                             </ul>
                             </el-collapse-transition>
@@ -116,8 +116,8 @@
 
 
                     </ul>
-                    <div class="add-btn-box">
-                        <a class="btnDefault add-btn pointer" @click="click_section(index,item)">+ 新建节</a>
+                    <div class="add-btn-box" v-if="status==0">
+                        <a class="btnDefault add-btn pointer" @click="click_section(index,item)" >+ 新建节</a>
                     </div>
                 </div>
                 </el-collapse-transition>
@@ -127,7 +127,7 @@
 
         </ul>
         <div class="add-btn-box">
-            <a class="btnDefault add-btn pointer" @click="click_newChapter">+ 新建章节</a>
+            <a class="btnDefault add-btn pointer" @click="click_newChapter" v-if="status==0">+ 新建章节</a>
         </div>
         <!--
         <div class="add-btn-box last-btn-box">
@@ -250,6 +250,14 @@ export default{
         },
         chapters:{
             default:[]
+        },
+        status:{
+            default:-2
+        }
+    },
+    watch: {
+        status(newValue, oldValue) {
+           // console.log(newValue)
         }
     },
     /*

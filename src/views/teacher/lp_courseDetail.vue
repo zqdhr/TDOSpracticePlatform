@@ -46,7 +46,7 @@
                 </div>
 
                  <!--课程大纲-->
-                <chapter :courseId="courseId" v-if="navindex==0" :chapters="courseChapters"></chapter>
+                <chapter :courseId="courseId" v-if="navindex==0" :chapters="courseChapters" :status="status"></chapter>
 
                 
                 <!--开课时间-->
