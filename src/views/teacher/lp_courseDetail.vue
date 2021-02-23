@@ -426,5 +426,5 @@ export default {
 
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
-.course_edit{margin-left: 15px; vertical-align: top; margin-top: 6px;}
+.course_edit{margin-left: 15px; vertical-align:middle; margin-top: -3px;}
 </style>
