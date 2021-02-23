@@ -185,7 +185,7 @@ export default {
       files:[],
       showLoading:false,
       isHasData:true,//是否有数据 默认有数据
-      kind:-1,
+      kind:'',
       searchText:''
     };
   },

@@ -276,7 +276,7 @@
               />
               <!--<a class="searchBtn pointer"></a>-->
             </div>
-            <a class="btn_finsh" @click="searchQuestionAll">完成</a>
+            <a class="btn_finsh" @click="searchQuestionAll">查询</a>
           </div>
         </div>
         <!--选择题-->
@@ -512,6 +512,7 @@ export default {
 
       addAssignment(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
+          that.canEdit = 1;
           that.assignmentId = res.data.id;
           that.isnewJobName = false;
           that.status = 0;
@@ -674,10 +675,10 @@ export default {
       // alert(that.assignmentId);
       let totalscore = 0;
       console.log(that.courseList.length);
-      if (that.courseList.length == 0) {
-        this.$toast("请先新增题目", 3000);
-        return;
-      }
+      // if (that.courseList.length == 0) {
+      //   this.$toast("请先新增题目", 3000);
+      //   return;
+      // }
       for (let i = 0; i < that.courseList.length; i++) {
         totalscore += parseInt(that.courseList[i].score);
       }
@@ -844,6 +845,8 @@ export default {
 
     getData(data) {
       let that = this;
+
+      that.canEdit = 1;//设置能编辑
       that.nowData = data;
       that.courseList = [];
       that.courseList_Org = [];

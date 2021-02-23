@@ -68,7 +68,7 @@
           </el-table-column>
           <el-table-column prop="name" label="姓名" width="180">
           </el-table-column>
-          <el-table-column prop="gender" label="性别">
+          <el-table-column prop="gender" label="性别" width="80">
             <template slot-scope="scope">
               <span>{{
                 scope.row.gender == 0
@@ -105,7 +105,7 @@
           </el-table-column>
           <el-table-column prop="name" label="姓名" width="180">
           </el-table-column>
-          <el-table-column prop="gender" label="性别">
+          <el-table-column prop="gender" label="性别"  width="80">
             <template slot-scope="scope">
               <span>{{
                 scope.row.gender == 0
@@ -142,7 +142,7 @@
           </el-table-column>
           <el-table-column prop="name" label="姓名" width="180">
           </el-table-column>
-          <el-table-column prop="gender" label="性别">
+          <el-table-column prop="gender" label="性别" width="80">
             <template slot-scope="scope">
               <span>{{
                 scope.row.gender == 0
@@ -408,6 +408,7 @@ export default {
             ? (that.teacherList = res.data.list)
             : (that.studentList = res.data.list);
           that.total = res.data.total;
+     
         } else {
           that.$toast(res.message, 3000);
         }
@@ -451,7 +452,16 @@ export default {
       console.log(JSON.stringify(obj));
       deleteUser(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
-          that.searchUser(that.type, that.searchText, that.className, 1, 10);
+          
+          if(that.curPage==1){
+            that.curPage=1
+          }else{
+            that.multipleSelection.length == that.total?that.curPage = that.curPage-1:that.curPage = that.curPage;
+            
+          }
+          that.searchUser(that.type, that.searchText, that.className,that.curPage, 10);
+          
+
           that.showDel = !that.showDel;
           that.isDelete = false;
         } else {

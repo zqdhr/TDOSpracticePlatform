@@ -34,7 +34,7 @@
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
                                 <div class="btnbox">
-                                    <a class="btnDefault pointer btn-course" @click="openClass" v-if="status != 1">确认开课</a>
+                                    <a class="btnDefault pointer btn-course" @click="sure_newCourse=true" v-if="status != 1">确认开课</a>
                                 </div>
                              </div>
                          </div>
@@ -95,7 +95,26 @@
                 <courseware v-if="navindex==4"></courseware>
 
                 <coursework v-if="navindex==5" timeStatus='1'></coursework>
-
+                
+                <!--老师课程开课确认框-->
+                <el-dialog
+                    :visible.sync="sure_newCourse"
+                    width="500px"
+                    class="personDialog"
+                >
+                    <div slot="title" class="dialog_header">课程开课</div>
+            
+                    <div class="confirm_dialog_body" style="padding-bottom:20px">
+                        <p class="dialog_mess">
+                            <span class="span_icon icon_waring">该课程是否确定开课！</span>
+                        </p>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                <button class="btnDefault" @click="resetDialog = false">取消</button>
+                <button class="btnDefault" @click="openClass">确认</button>
+            </span>
+                </el-dialog>
+                <!--课程名称修改弹出框-->
                   <el-dialog
                     :visible.sync="isEdit"
                     width="500px"
@@ -178,7 +197,8 @@ export default {
             show_courseSection:{},//当前展开的是哪个小节
 
             isEdit:false ,//课程名称修改是否显示
-            editValue:''//
+            editValue:'',//
+            sure_newCourse:false,//教师端是否开课弹窗显示
         }
     },
     components:{classList,chapter,experiment,courseware,coursework},
@@ -249,7 +269,9 @@ export default {
             obj.status = 1;
             modifyCourseStatus(obj).then(res=> {
                 if(res.code==200){
-                    alert("111")
+                    that.$toast('开课成功',3000)
+                    
+                    that.reload();
                 }else{
                     that.$toast(res.message,3000)
                 }

@@ -3,7 +3,7 @@
         <div class="back_box">
            <a class="back pointer" @click="backClass"></a>
            <div class="fr">
-              <el-select v-model="class_value" placeholder="请选择班级">
+              <el-select v-model="class_value" placeholder="请选择班级" >
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -18,8 +18,9 @@
                 :data="studentList"
                 stripe
                 ref="multipleTable"
-                style="width: 100%">
-                    <el-table-column type="selection" width="60" ></el-table-column>
+                style="width: 100%"
+                      @selection-change="handleSelectionChange">
+                    <el-table-column type="selection" width="60"></el-table-column>
                     <el-table-column
                     prop="userId"
                     label="学号"
@@ -79,7 +80,7 @@
 <script>
 import {modifyCourseStatus,getStudentsByClasses} from '@/API/api';
 export default{
-  
+
     data(){
         return{
          studentList:[],
@@ -97,7 +98,7 @@ export default{
           class_value:'',//下拉选中的班级
           multipleSelection: [],
           perPage: 10,//用户列表每页条数
-          curPage:1, 
+          curPage:1,
         }
     },
     props:{
@@ -115,7 +116,7 @@ export default{
           this.studentList = newV.list
          this.$nextTick(() => {
           for (let i = 0; i < newV.list.length; i++) {
-        
+
               this.$refs.multipleTable.toggleRowSelection(
                   this.studentList[i],
                   true
@@ -134,7 +135,7 @@ export default{
             let classIds = [];
             obj.per_page = that.perPage
             obj.page = val
-           
+
             for(let i = 0;i<that.classList.length;i++){
                 classIds.push(that.classList[i].id)
             }
@@ -148,16 +149,24 @@ export default{
                 }
             })
         },
+
+        handleSelectionChange(val) {
+          this.multipleSelection  = val;
+          console.log(val);
+        },
+
         //选择学生确认
         chooseStudent(){
+          console.log(this.multipleSelection.length)
+          console.log("asw")
             this.$emit('sureStudent');
             let that = this;
             let obj = {}
             obj.owner_id = sessionStorage.getItem("userId")
             let user_id_list = [];
-            console.log(that.studentsList.list)
-            for(let i = 0;i<that.studentsList.list.length;i++){
-                user_id_list.push(that.studentsList.list[i].userId);
+            alert(this.multipleSelection.length)
+            for(let i = 0;i<that.multipleSelection.length;i++){
+                user_id_list.push(that.multipleSelection[i].userId);
             }
             obj.user_id_list =  user_id_list;
             obj.start = '';
@@ -179,7 +188,7 @@ export default{
         }
     },
     mounted(){
-       
+
 
     }
 }
