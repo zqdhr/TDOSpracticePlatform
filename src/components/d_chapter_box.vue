@@ -1,7 +1,7 @@
 <template>
     <div class="chapter_box">
         <ul class="chapter_ul">
-            <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}" :style="{'padding-bottom':status==1?'20px':'0px'}">
+            <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}" :style="{'padding-bottom':status==1 && item.show?'20px':'0px'}">
                 <!--已有章节内容-->
 
                 <div class="textline1 cha_title " :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="item.id">
