@@ -1,9 +1,9 @@
 <template>
     <div class="chapter_box">
-        <ul class="chapter_ul">                         
-            <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}" :style="{'padding-bottom':item.show?'20px':'0px'}">
+        <ul class="chapter_ul">
+            <li class="chapter_li" v-for="(item,index) in chapters" :key="index" :class="{'li_focus':item.show}">
                 <!--已有章节内容-->
-               
+
                 <div class="textline1 cha_title " :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="item.id">
                     <div class="chapter_name_box textline1">
                         <span class="s_name">章节{{index+1}}：{{item.name}}</span>
@@ -17,8 +17,8 @@
                              <span class="icon s-pdf" v-if="item.chapter_has_pdf"></span>
                              <span class="icon s-video" v-if="item.chapter_has_video"></span>
                          </div>
-                        
-                        
+
+
                     </div>
                      <!--已保存添加s-saved-->
                      <span class="s-state s-Not_saved" :class="{'s-saved':1==1}" >已保存</span>
@@ -34,11 +34,11 @@
                 <div  class="textline1 cha_title new_cha_title" :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="!item.id" >
                      <span class="s_name">章节{{index+1}}：</span>
                      <div class="din">
-                         <input type="text" placeholder="请输入章最多16个字符"  v-emoji  v-model="item.name" maxlength="16" autocomplete="off"/>
+                         <input type="text" placeholder="请输入章名称，最多支持16个字符"   v-model="item.name" maxlength="16" autocomplete="off"/>
                          <!--已保存添加s-saved-->
                          <span class="s-state s-Not_saved" :class="{'s-saved':1==0}">未保存</span>
                      </div>
-                      
+
                       <el-tooltip class="item" effect="light" content="章节保存" placement="top-start">
                         <a class="a_save pointer" @click="addNewChapters(index)"></a>
                       </el-tooltip>
@@ -77,7 +77,7 @@
                                 <div class="sec_name textline1 new_sec_name">
                                     <span class="textline1">第{{iindex+1}}节：</span>
                                     <div class="din">
-                                        <input placeholder="请输入节最多14个字符" type="text" v-emoji  v-model="iitem.name" maxlength="14" autocomplete="off"/>
+                                        <input placeholder="请输入节名称，最多支持14个字符" type="text" v-emoji v-model="iitem.name" maxlength="14" autocomplete="off"/>
                                     </div>
                                 </div>
                                 <a class=" a_delete" @click="deleteSection(index,iindex)"></a>
@@ -91,7 +91,7 @@
                                      <template v-if="i_item.id">
                                         <div class="sec_name textline1">
                                             <p class="textline1">第{{i_index+1}}小节：{{i_item.name}}</p>
-                                            <a class=" a_delete a_delete_exist" @click="deleteSmallSection(index,iindex,i_index,iitem)"  v-if="i_item.lastNum == 0 && status==0"></a>
+                                            <a class=" a_delete a_delete_exist" @click="deleteSmallSection(index,iindex,i_index,i_index)"  v-if="i_item.lastNum == 0 && status==0"></a>
                                               <a class="icon_edit pointer" @click="edit(3,i_item.id,i_item.name,index,iindex,i_index)" v-if="status==0"></a>
                                         </div>
                                     </template>>
@@ -99,9 +99,9 @@
                                             <div class="sec_name textline1 ">
                                                 <span class="textline1">第{{i_index+1}}小节：</span>
                                                 <div class="din">
-                                                    <input placeholder="请输入小节名称最多12个字符" type="text" v-model="i_item.name" maxlength="12" autocomplete="off"/>
+                                                    <input placeholder="请输入小节名称，最多支持12个字符" type="text" v-model="i_item.name" maxlength="12" autocomplete="off"/>
                                                 </div>
-                                                <a class=" a_delete" @click="deleteSmallSection(index,iindex,i_index)"></a>
+                                                <a class=" a_delete" @click="deleteSmallSection(index,iindex,i_index,iitem)"></a>
                                             </div>
                                     </template>
 
@@ -121,7 +121,7 @@
                     </div>
                 </div>
                 </el-collapse-transition>
-                
+
             </li>
 
 
@@ -156,11 +156,11 @@
         <!--编辑弹出框-->
          <!--修改编辑弹出框-->
     <el-dialog
-     
+
       :visible.sync="isEdit"
       width="600px"
       class="personDialog"
-      
+
     >
     <div slot="title" class="dialog_header">{{num==1?'章修改':num==2?'节修改':'小节修改'}}</div>
 
@@ -169,7 +169,7 @@
           <el-form-item label="名称">
             <el-input v-model="editValue" :placeholder="edit_placeholder" :maxlength="editTitle==1?16:editTitle==2?14:12" v-emoji></el-input>
           </el-form-item>
-        
+
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -241,7 +241,7 @@ export default{
             chaptersId:'',
             smallSectionId:'',
             sectionId:'',
-          
+
         }
     },
     props:{
@@ -274,11 +274,11 @@ export default{
         let that = this;
     },
     mounted(){
-        let that = this       
-      
-        
-     
-    
+        let that = this
+
+
+
+
     },
 
     methods:{
@@ -331,7 +331,7 @@ export default{
                     that.smallSectionId = '';
                     //that.$emit('getCourseById')
                     that.reload();
-                   
+
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -380,13 +380,13 @@ export default{
             if(that.deleteStatus == 1){
                 that.deleteStatus = '';
                 if( that.smallSectionNum === '' && that.sectionNum === ''){
-                    
+
                     that.removeChapter(that.chaptersId)
                 }else  if( that.smallSectionNum === '' && that.sectionNum !== ''){
-                    
+
                     that.removeSection(that.sectionId)
                 } else  if( that.smallSectionNum !== ''){
-                    
+
                     that.removeSmallSection(that.smallSectionId)
                 }
             }else {
@@ -418,12 +418,12 @@ export default{
                that.$set(that.chapters[i],'show',false)
             }
             that.$set(item,'show',!show)
-            
+
             //把当前展开的章节保存到缓存中，新建小节后展示，而不是刷新页面之后不展示
             if(!show){
                sessionStorage.setItem('show_courseOutline',JSON.stringify(item))
             }
-           
+
         },
         //新建章节
         click_newChapter(){
@@ -456,7 +456,7 @@ export default{
                 obj.section_name = that.addValue;
                 obj.chapter_id = that.chapters[that.index].id;
                 obj.course_id = this.$route.query.courseId;
-                
+
                 addSection(JSON.stringify(obj)).then(res=> {
                     that.index = '';
                     that.addValue = '';
@@ -493,7 +493,7 @@ export default{
             //console.log(index)
            let that = this;
            let tmp = that.chapters[index].sections;
-  
+
            for(var i =0;i<tmp.length;i++){
                that.$set(that.chapters[index].sections[i],'show',false)
            }
@@ -510,7 +510,7 @@ export default{
           that.iindex = iindex;
             let tmp = that.chapters[index].sections[iindex].small_sections.length;
             if(item.status==1){
-                
+
                 that.addTitle = 2
                 that.isAdd = true;
             }else{
@@ -520,10 +520,10 @@ export default{
         addChapters(index){
             let that = this;
             let obj = {};
-           
+
             obj.course_id = that.courseId
             obj.chapter = that.chapters[index];
-           
+
             insertCourseChapterCompleted(JSON.stringify(obj)).then(res=> {
                 if(res.code==200){
                    that.reload();
@@ -533,13 +533,13 @@ export default{
             })
         },
         addNewChapters(index){
-            let that = this;  
+            let that = this;
             let obj = {};
             obj.course_id = that.courseId
             obj.chapter = that.chapters[index];
             if(obj.chapter.name==''){
                return that.$toast('新建章不能为空',2000)
-            }          
+            }
             insertCourseChapterCompleted(JSON.stringify(obj)).then(res=> {
                 if(res.code==200){
                    that.reload();
@@ -547,7 +547,7 @@ export default{
                     that.$toast(res.message,3000)
                 }
             })
-            
+
         },
         //点击编辑
         edit(num,id,text,index,iindex,i_index){
@@ -560,9 +560,9 @@ export default{
             that.i_index = i_index
             that.num = num
             //num 1章  2节   3小节
-        
+
             num==1?that.edit_placeholder = '章名称最多16个字符':num==2?that.edit_placeholder = '节名称最多14个字符':that.edit_placeholder = '小节名称最多12个字符'
-          
+
         },
         modify(text){
             let that = this;
@@ -630,7 +630,7 @@ export default{
 /*备课课程详情*/
 .detail_main{
     /*章节列表*/
-     .a_save{width:20px;height: 20px;display: block;background: url(../assets/img/chapter_save.png) center no-repeat; 
+     .a_save{width:20px;height: 20px;display: block;background: url(../assets/img/chapter_save.png) center no-repeat;
        position:absolute;top:50%;margin-top: -10px;right:86px;
        background-size: 20px 20px; -webkit-background-size: 20px 20px;
      }
@@ -650,7 +650,7 @@ export default{
            .s-state{right:130px;position: absolute;}
         }
         .a_arrow{
-           width:20px;height:20px;display: block;position: absolute;right:20px;top:50%;margin-top: -10px; 
+           width:20px;height:20px;display: block;position: absolute;right:20px;top:50%;margin-top: -10px;
             background: url(../assets/img/d_arrow_d.png)  center no-repeat;cursor: pointer;
         }
 
@@ -670,7 +670,7 @@ export default{
 
         .new_cha_title{padding-right:180px;}
 
-  
+
 
     }
     /*添加按钮样式*/
@@ -735,7 +735,7 @@ export default{
         .line1{width:30px;height: 1px;background: @linecoloe; position: absolute; top:50%; margin-top: -0.5px;}
         .line2{width:1px;height:60px;background: @linecoloe;position: absolute;left:0px; top:-31px}
 
-        
+
     }
     /*小节列表*/
     .i_section_ul{
@@ -753,7 +753,7 @@ export default{
            .sec_name{ display: block; padding-left: 30px; width:auto;}
            .a_delete{right:20px}
         }
-        
+
     }
 
     .icon_edit{width:20px;height:20px;display: block;
@@ -763,6 +763,6 @@ export default{
    }
    .editMain{margin:0 30px}
 
-   
+
 }
 </style>

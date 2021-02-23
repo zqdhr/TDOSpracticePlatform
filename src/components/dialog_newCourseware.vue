@@ -106,7 +106,7 @@
                 <p class="p-text textline1 p-name">{{ item.name }}</p>
                 <div class="line"></div>
                 <p class="p-text textline1">课件大小：{{ item.size }}</p>
-                <p class="p-text textline1">视频时长：{{ item.duration }}</p>
+<!--                <p class="p-text textline1">视频时长：{{ item.duration }}</p>-->
               </div>
             </li>
           </ul>
@@ -181,11 +181,13 @@
         </div>
       </template>
     </el-dialog>
+    <loading v-if="loading" @hideloading="hideloading" mess='文件正在上传,请稍候...'></loading>>
   </div>
 </template>
 <script>
 import FileUpload from "vue-upload-component";
 import toastVue from "./toast/toast.vue";
+import loading from '@/components/uploadLoading.vue'
 import noData from '@/components/noData.vue'
 import {getCoursewareAll,addChapterSectionCourseware,findParentCategory,findChildCategory,upload,addCourseware} from '@/API/api';
 export default {
@@ -229,16 +231,18 @@ export default {
       cindex:'',
       category_id:'',//父分类id
       c_category_id:'',//子分类id
-      kind:'',
+      kind1:'',
+      type1:'',
       name:'',
       count:'',
       noDataType:1,  //没有数据展示的样式
       dataMess:'当前暂无课件',
       hasData:false,
+      loading:false,//课件库是否在上传
     };
   },
   components: {
-    FileUpload,noData,
+    FileUpload,noData,loading
   },
   props: {},
   created() {
@@ -258,8 +262,7 @@ export default {
       if(that.sindex != '' && that.cindex != ''){
         that.cindex = '';
       }
-      alert(that.type1)
-      that.findCourseWareAll(that.perPage, 1, that.kind, that.cate,'', '', that.cindex, that.sindex,'');
+      that.findCourseWareAll(that.perPage, 1, '', 0,'', '', that.cindex, that.sindex,'');
     },
     //自定义父级分类
     findParentCategory() {
@@ -327,7 +330,7 @@ export default {
           let ids=[]
           for (let index = 0; index < that.chooseList.length; index++) {
             ids.push(that.chooseList[index].id)
-            
+
           }
           for (let index = 0; index <  that.all_experimentList.length; index++) {
                if (ids.includes(that.all_experimentList[index].id)==true) {
@@ -335,7 +338,7 @@ export default {
                   }else {
                      that.$set(that.all_experimentList[index], "checked", false);
                   }
-            
+
           }
         } else {
           that.$toast(res.message, 3000);
@@ -514,9 +517,18 @@ export default {
                 newFile.name.lastIndexOf(".") + 1
         );
         that.extension = extension;
+        const isLt100M = newFile.size / 1024 / 1024 < 100;
+        const isLt500M = newFile.size / 1024 / 1024 < 500;
+
         if (extension != "pdf" && extension != "mp4") {
           this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
           return prevent();
+        }
+        if(extension == 'pdf' && !isLt100M){
+          return  this.$toast("上传的pdf不能大于100M", 3000);
+        }
+        if(extension == 'mp4' && !isLt500M){
+          return  this.$toast("上传的视频不能大于500M", 3000);
         }
       }
     },
@@ -553,15 +565,16 @@ export default {
       let type = that.extension == 'pdf' ?2 : 1
       obj.append('type', type)
       obj.append('file', file)
-      alert(that.files[0].file.name)
+      that.loading = true;
       upload(obj).then(res => {
         if (res.code == 200) {
+          that.loading = false;
           that.picUrl = res.data.name;
           that.size = res.data.size;
           that.time = res.data.time;
           let obj = {};
           obj.name = that.files[0].file.name;
-          obj.type = 0;
+          obj.type = 1;
           obj.kind = that.extension == 'pdf' ?1 : 0;
           obj.url = that.picUrl;
           obj.duration = that.time;
@@ -619,6 +632,11 @@ export default {
     cleanData(){
 
     },
+    //文件上传成功隐藏loading
+    hideloading(){
+      let that = this;
+      that.loading = false
+    }
   }
 };
 </script>
