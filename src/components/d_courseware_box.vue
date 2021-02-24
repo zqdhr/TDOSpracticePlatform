@@ -39,7 +39,7 @@
           <a
             class="btnDefault pointer"
             @click="click_new"
-            v-if="(sindex != '' || cindex != '') &&role!=3"
+            v-if="(sindex != '' || cindex != '') &&role!=3 && typeData != 0"
             >新增课件</a
           >
         </div>
@@ -53,7 +53,7 @@
                     effect="dark"
                     content="删除"
                     placement="top"
-                    v-if="role != 3 && status == 1"
+                    v-if="role != 3 && status == 1 && typeData != 0"
                   >
                     <a
                       class="icon icon_close pointer"
@@ -316,6 +316,7 @@ export default {
       typeware: "",
       cindex: "",
       sindex: "",
+      typeData:'',
       isHasData: true, //是否有数据 默认有数据
       count: "", //课程下章，节已经存在的课件数量
       isdeleteId: "", //删除的课件id
@@ -325,6 +326,9 @@ export default {
   props: {
     role: {
       default: 0, //默认是0传过来3表示是学生点击课程详情
+    },
+    typeData: {
+      default: 0,
     },
   },
   components: {

@@ -109,9 +109,9 @@
                 <experiment v-if="navindex==3" :type = type></experiment>
 
                 <!--课程课件-->
-                <courseware v-if="navindex==4" :type = type></courseware>
+                <courseware v-if="navindex==4" :typeData = type></courseware>
 
-                <coursework v-if="navindex==5" timeStatus='1' :type = type></coursework>
+                <coursework v-if="navindex==5" timeStatus='1' :noEdit = type></coursework>
 
                 <!--老师课程开课确认框-->
                 <el-dialog
