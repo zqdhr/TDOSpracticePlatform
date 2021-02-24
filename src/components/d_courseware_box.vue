@@ -6,7 +6,7 @@
       <div class="right_box">
         <div class="add_btn_box clearfix" >
           <div class="sel-box">
-            <el-select 
+            <el-select
               v-model="cate"
               placeholder="请选择课件分类"
               @change="selectCate"
@@ -435,7 +435,7 @@ export default {
         if (res.code == 200) {
           that.total = res.data.total;
            for(let i = 0;i<res.data.list.length;i++){
-                        res.data.ligitst[i].size = (res.data.list[i].size/(1024 * 1024)).toFixed(2) + "MB"
+                        res.data.list[i].size = (res.data.list[i].size/(1024 * 1024)).toFixed(2) + "MB"
                     }
           // res.data.total == 0
           //   ? (that.isHasData = false)

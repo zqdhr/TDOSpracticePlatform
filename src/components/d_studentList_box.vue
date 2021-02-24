@@ -116,6 +116,7 @@ export default{
      watch: {
       studentsList: {
         handler: function(newV, oldV) {
+          let that = this
           this.studentList = newV.list
 
 
@@ -123,15 +124,21 @@ export default{
 
           console.log("+==================")
           console.log(this.chooseList)
-          console.log(newV)
+          console.log(newV.list)
          this.$nextTick(() => {
           for (let i = 0; i < newV.list.length; i++) {
+              for(let j = 0;j<this.chooseList.length;j++){
+                if(newV.list[i].userId == this.chooseList[j]){
+                  console.log(newV.list[i].userId)
+                  this.$refs.multipleTable.toggleRowSelection(
+                    this.studentList[i],
+                    true
+                  );
+                }
+              }
 
-              this.$refs.multipleTable.toggleRowSelection(
-                  this.studentList[i],
-                  true
-              );
             }
+          that.total = newV.list.length
          })
         },
         deep: true
@@ -153,7 +160,20 @@ export default{
             getStudentsByClasses(obj).then(res=> {
                 if(res.code==200){
                     alert("qwe")
-                    that.studentList = res.data
+                  console.log(res.data)
+                    that.studentList = res.data.list
+                  for (let i = 0; i < res.data.list.length; i++) {
+                    for(let j = 0;j<this.chooseList.length;j++){
+                      if(res.data.list[i].userId == this.chooseList[j]){
+                        console.log(res.data.list[i].userId)
+                        this.$refs.multipleTable.toggleRowSelection(
+                          this.studentList[i],
+                          true
+                        );
+                      }
+                    }
+
+                  }
                 }else{
                     that.$toast(res.message,3000)
                 }

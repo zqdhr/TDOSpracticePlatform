@@ -146,7 +146,7 @@ export default{
                       tmp.splice(i,1)
                    }
                }
-              that.checkedList = tmp;
+              that.checkedList.push(obj);
               //that.$set(obj,'checked',0)
 
             }else{
@@ -180,9 +180,11 @@ export default{
                 classIds.push(list[i].id)
             }
             obj.classIds = classIds
+          console.log(obj)
             getStudentsByClasses(obj).then(res=> {
                 if(res.code==200){
                     that.list = res.data;
+                    console.log(res.data)
                 }else{
                     that.$toast(res.message,3000)
                 }
