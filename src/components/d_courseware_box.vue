@@ -470,6 +470,9 @@ export default {
             ? (that.isHasData = false)
             : (that.isHasData = true);
           that.experimentList = res.data.list;
+                  for(let i = 0;i<that.experimentList.length;i++){
+                       that.experimentList[i].size = (that.experimentList[i].size/(1024 * 1024)).toFixed(2) + "MB"
+                    }
         } else {
           this.$toast(res.message, 2000);
         }
@@ -492,6 +495,9 @@ export default {
             ? (that.isHasData = false)
             : (that.isHasData = true);
           that.experimentList = res.data.list;
+                      for(let i = 0;i<that.experimentList.length;i++){
+                       that.experimentList[i].size = (that.experimentList[i].size/(1024 * 1024)).toFixed(2) + "MB"
+                    }
         } else {
           this.$toast(res.message, 2000);
         }
@@ -627,7 +633,26 @@ export default {
           res.data.total == 0?(that.isHasData = false):(that.isHasData = true);
           //that.experimentList = res.data.list;
           //删除成功，节课件查询
-          that.getCoursewareBySectionId(that.sindex,that.kind,'',that.perPage,1);
+          // that.getCoursewareBySectionId(that.sindex,that.kind,'',that.perPage,1);
+          if (that.sindex == "" && that.cindex == "") {
+        that.getCoursewareByCourseId(that.perPage, 1, that.typeware, that.cate);
+      } else if (that.sindex == "" && that.cindex != "") {
+        that.getCoursewareByChapterId(
+          that.cindex,
+          that.typeware,
+           that.cate,
+          that.perPage,
+          1
+        );
+      } else {
+        that.getCoursewareBySectionId(
+          that.sindex,
+          that.typeware,
+           that.cate,
+          that.perPage,
+          1
+        );
+      }
         } else {
           this.$toast(res.message, 2000);
         }

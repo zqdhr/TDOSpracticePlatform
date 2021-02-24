@@ -201,7 +201,7 @@ export default {
        that.getAllExperiment(that.customClass,that.i_customClass,that.searchTx,1,that.sindex);
     },
     //点击选择实验
-    click_new(sid,count,sindex) {
+    click_new(sid,count,sindex,) {
       let that = this;
       that.isnewFilter = true;
       that.chooseList = [];
@@ -335,7 +335,7 @@ export default {
       if (!checked) {
         if (!(that.chooseList.indexOf(obj.id) != -1)) {
           alert(that.count)
-          if (that.chooseList.length + parseInt(that.count) > 4) {
+          if (that.chooseList.length+that.count  > 4) {
             return this.$toast("最多上传5个实验，还需添加请删除", 3000);
           }
           that.chooseList.push(obj);

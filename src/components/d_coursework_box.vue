@@ -448,7 +448,14 @@ export default {
     //查题库
     getQuestionBackAll() {
       let that = this;
-      that.findQuestionBackAll(that.type, "", "", 1, that.assignmentId, "");
+     that.findQuestionBackAll(
+        that.type,
+        that.searchText,
+        that.parentId,
+        1,
+        that.assignmentId,
+        that.childrenId
+      );
     },
     findQuestionBackAll(
       type,
@@ -467,6 +474,7 @@ export default {
       obj.perPage = that.perPage_All;
       obj.page = page;
       obj.assignment_id = assignment_id;
+      console.log(obj)
       getQuestionBackAll(obj).then((res) => {
         if (res.code == 200) {
           that.totalAllCourse = res.data.total;
@@ -849,7 +857,16 @@ export default {
       let that = this;
       // that.chooseList = [];
       that.showQuestionBank = true;
+      that.customClass='';
+      that.i_customClass='';
+      that.cate='';
+      that.parentId='';
+      that.childrenId='';
+      that.searchText='';
+      that.options1=[];
+      that.options2=[];
       that.curPage = 1;
+      that.type=0;
       //that.addState(that.all_courseList);
       that.deleteList = [];
       that.getQuestionBackAll();

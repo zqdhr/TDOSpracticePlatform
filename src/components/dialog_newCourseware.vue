@@ -196,12 +196,12 @@ export default {
     return {
       inplaceholder: "请输入课件名",
       options: [
-        { value: "2", label: "全部" },
+        { value: "", label: "全部" },
         { value: "0", label: "内置课件" },
         { value: "1", label: "教师上传" },
       ],
       typeList: [
-        { value: "2", label: "全部" },
+        { value: "", label: "全部" },
         { value: "1", label: "文档" },
         { value: "0", label: "视频" },
       ],
@@ -263,7 +263,7 @@ export default {
       if(that.sindex != '' && that.cindex != ''){
         that.cindex = '';
       }
-      that.findCourseWareAll(that.perPage, 1, '', 0,'', '', that.cindex, that.sindex,'');
+      that.findCourseWareAll(that.perPage, 1, that.kind, that.type, that.searchText, that.category_id, that.cindex, that.sindex,that.c_category_id);
     },
     //自定义父级分类
     findParentCategory() {
@@ -354,12 +354,14 @@ export default {
       that.isnewFilterType = 0;
       that.isnewFilter = true;
       that.chooseList = [];
+      that.searchText='';
+      that.category='';
       that.sindex = sid;
       that.cindex = cid;
       that.count = count;
-      that.kind = '';
-      that.type = '';
-      this.findParentCategory();
+      that.type = ''; //默认选中内置课件
+      that.kind = ''; //课件类型默认选中全部
+      that.findParentCategory();
       that.getCoursewareAll();
     },
     //点击课件库选择
