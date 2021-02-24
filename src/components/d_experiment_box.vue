@@ -5,7 +5,7 @@
             <courseNav @getData = "getData"></courseNav>
             <div class="right_box">
                 <div class="add_btn_box">
-                    <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''&&role!=3&&type!=0">新增实验</a>
+                    <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''&&role!=3&&status!=1&&type!=0">新增实验</a>
                 </div>
                 <template v-if="isHasData">
                 <div class="list_box">
@@ -23,7 +23,7 @@
                                 </div>
                                 <p class="p-text textline1">{{item.name}}</p>
                                 <p class="p-text textline1">实验时长：{{item.duration}}分钟</p>
-                                <p class="p-text textline1">截止时间：{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'暂无设置时间'}}</p>
+                                <p class="p-text textline1" v-if="role != 1">截止时间：{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'暂无设置时间'}}</p>
                             </div>
                         </li>
                     </ul>
@@ -168,6 +168,9 @@ export default {
         role:{
             default:0, //默认是0传过来3表示是学生点击课程详情
         },
+        status:{
+          default:0,
+        },
         type:{
           default:0,
         }
@@ -183,6 +186,7 @@ export default {
     },
     mounted(){
         let that = this;
+        alert("sss"+that.role)
         that.getAllExperiment();
     },
     methods:{

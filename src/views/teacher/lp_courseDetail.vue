@@ -94,7 +94,7 @@
                                 </el-date-picker>
                             </div>
                             <div class="btnbox">
-                                <a class="btnDefault pointer" @click="modifyCourseTime()" v-if="status ==0" :course_info = myData>确认</a>
+                                <a class="btnDefault pointer" @click="modifyCourseTime()" v-if="status ==0" >确认</a>
                             </div>
                        </div>
                    </div>
@@ -111,7 +111,7 @@
                 <!--课程课件-->
                 <courseware v-if="navindex==4" :typeData = type></courseware>
 
-                <coursework v-if="navindex==5" timeStatus='1' :noEdit = type></coursework>
+                <coursework v-if="navindex==5" timeStatus='1' :noEdit = type :course_info = myData></coursework>
 
                 <!--老师课程开课确认框-->
                 <el-dialog
