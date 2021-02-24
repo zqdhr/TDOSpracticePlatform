@@ -94,24 +94,24 @@
                                 </el-date-picker>
                             </div>
                             <div class="btnbox">
-                                <a class="btnDefault pointer" @click="modifyCourseTime()" v-if="status ==1" :course_info = myData>确认</a>
+                                <a class="btnDefault pointer" @click="modifyCourseTime()" v-if="status ==0" :course_info = myData>确认</a>
                             </div>
                        </div>
                    </div>
                 </div>
 
                 <!--班级列表-->
-                <classList v-if="navindex==2" @sureCheckClass="sureCheckClass" :classesList = "classesList"></classList>
+                <classList v-if="navindex==2" @sureCheckClass="sureCheckClass" :classesList = "classesList" :status = status></classList>
 
 
 
                 <!--课程实验-->
-                <experiment v-if="navindex==3" ></experiment>
+                <experiment v-if="navindex==3" :type = type></experiment>
 
                 <!--课程课件-->
-                <courseware v-if="navindex==4"></courseware>
+                <courseware v-if="navindex==4" :type = type></courseware>
 
-                <coursework v-if="navindex==5" timeStatus='1'></coursework>
+                <coursework v-if="navindex==5" timeStatus='1' :type = type></coursework>
 
                 <!--老师课程开课确认框-->
                 <el-dialog

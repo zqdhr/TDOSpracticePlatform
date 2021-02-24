@@ -5,7 +5,7 @@
             <courseNav @getData = "getData"></courseNav>
             <div class="right_box">
                 <div class="add_btn_box">
-                    <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''&&role!=3">新增实验</a>
+                    <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''&&role!=3&&type!=0">新增实验</a>
                 </div>
                 <template v-if="isHasData">
                 <div class="list_box">
@@ -46,7 +46,7 @@
          <!--新增实验弹窗-->
          <newdialog  ref="newdialog"  @findAllByType='sectionExperment(arguments)'></newdialog>
          <experimentDetail ref="experimentDetail"></experimentDetail>
-        
+
          <!--是否删除-->
         <el-dialog :visible.sync="isDelete" width="500px">
             <div slot="title" class="dialog_header">请注意!</div>
@@ -65,7 +65,7 @@
         <el-dialog :visible.sync="isSet" width="500px" @close="time='',reportinfo='',endTime=''">
             <div slot="title" class="dialog_header">请设置时间!</div>
             <div class="setform">
-                
+
                 <div class="set-col">
                     <p class="ptitle">课程时间：</p>
                     <div class="dselect">
@@ -91,8 +91,8 @@
                         <el-date-picker style="width:100%" :picker-options="pickerOptions"
                             v-model="endTime"
                             type="date"
-                            format="yyyy-MM-dd" 
-                            value-format="yyyy-MM-dd" 
+                            format="yyyy-MM-dd"
+                            value-format="yyyy-MM-dd"
                             placeholder="选择日期">
                         </el-date-picker>
                     </div>
@@ -103,7 +103,7 @@
                 <a class="btnDefault" @click="isSet = false">取 消</a>
             </div>
         </el-dialog>
-        
+
 
     </div>
 </template>
@@ -159,6 +159,7 @@ export default {
             experiment:{},
             total:1,
             count:0,
+            type:'',
             isHasData:true,//是否有数据 默认有数据
             isdeleteStatus:0,//节下面才能删除实验，默认节下面是1
         }
@@ -166,13 +167,16 @@ export default {
     props:{
         role:{
             default:0, //默认是0传过来3表示是学生点击课程详情
+        },
+        type:{
+          default:0,
         }
     },
     created(){
         let that = this;
         that.time = that.timeOptions[1].value
         that.sid = 1
-       
+
     },
     components:{
         courseNav,newdialog,experimentDetail,nodata
@@ -261,7 +265,7 @@ export default {
             obj.duration = that.time
             obj.end_at = that.endTime
             obj.report_requirement = that.reportinfo
-            
+
             console.log(obj)
             updateExperiment(obj).then(res=>{
                 if (res.code==200) {
@@ -274,11 +278,11 @@ export default {
                     }else if(that.sindex == "" && that.cindex == ''){
                         that.findAllByType(that.$route.query.courseId,1,8,1)
                     }
-                 
+
                 } else {
                     this.$toast(res.message,2000)
                 }
-               
+
             })
 
 
@@ -301,9 +305,9 @@ export default {
             let that = this;
             that.sid = that.sindex;
             console.log(that.cindex+'节'+that.sindex)
-            
+
             that.$refs.newdialog.click_new(that.sid,that.count,that.sindex);
-            
+
         },
          //查看实验详情
         link_Detail(id){
@@ -342,7 +346,7 @@ export default {
                   that.time = that.timeOptions[index].value
                   break
               }
-                
+
             }
             that.endTime=item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):''
             that.reportinfo = item.report_requirement
@@ -364,11 +368,11 @@ export default {
 /*列表*/
 .list_box{ overflow: hidden; min-height:500px;
     .list_ul{ margin-left: -10px; margin-right: -10px;
-        li{width:25%;min-height: 40px;float: left; margin-bottom: 20px; }    
+        li{width:25%;min-height: 40px;float: left; margin-bottom: 20px; }
         .pic{width:100%; margin-bottom: 10px;
           .pic_box{padding-bottom:50%; background:blanchedalmond;.borderRadius(5px,5px,0,0); position: relative;}
           img{width:100%;height:100%;position: absolute;}
-        }  
+        }
         /*.trans{position: absolute;width:100%;height: 100%;left:0px;top:0px; background: rgba(0,0,0,.1);} */
         .info{margin: 0 10px; min-height: 30px;background: @background; padding: 40px 0 20px 0; position:relative;}
         .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px; line-height:20px;}

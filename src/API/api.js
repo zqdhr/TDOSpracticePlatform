@@ -71,6 +71,12 @@ var getAdminCourseList = function(data){
 	return axios.get('/get_admin_course_list?page='+data.page+'&per_page='+data.per_page+'&name='+data.search)
 }
 
+//老师获取管理员内置课程（不含名称）
+var getAdminNoNameCourseList = function(data){
+  return axios.get('/get_admin_course_list?page='+data.page+'&per_page='+data.per_page)
+}
+
+
 //老师获取自己的课程（备课管理的列表）
 var getCourseListByUserId = function(data){
 	return axios.get('/get_course_list_by_user_id?user_id='+data.user_id+'&page='+data.page+'&per_page='+data.per_page+'&name='+data.search)
@@ -490,7 +496,7 @@ export{
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
 	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment,modifyAssignmentStatusById,downloadCode,modifyExpiredCourseStatus
-	,getChangedCourseList,modifyCourseName,
+	,getChangedCourseList,modifyCourseName,getAdminNoNameCourseList,
   getStudentsByClasseId
 }
 
