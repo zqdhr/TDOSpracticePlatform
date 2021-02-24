@@ -16,19 +16,19 @@
                                 :value="item.value">
                                 </el-option>
                             </el-select>
-                         
+
                         </div>
                     </div>
-                   
+
                     <div class="fr">
                        <a class="btnDefault pointer abtn"  @click="linkNewCourse">新建课程</a>
-                       <div class="d-serach"> 
+                       <div class="d-serach">
                             <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="paramData.name"/>
                             <a class="searchBtn pointer" @click="searchCourse"></a>
                         </div>
                     </div>
                 </div>
-              
+
             </div>
             <template v-if="isHasData">
             <div class="tea_list">
@@ -64,7 +64,7 @@
                         <a class="icon_delete pointer" @click="isDeleteCourse(item)" v-if="item.status==0"></a>
                     </li>
                </ul>
-              
+
             </div>
             <div class="tab-pagination">
                 <el-pagination
@@ -93,16 +93,16 @@
         </p>
       </div>
       <div slot="footer" class="dialog-footer">
-        
+
         <a class="btnDefault" @click="isDelete = false">取 消</a>
         <a class="btnDefault" @click="confirmDeleterCourse">确 认</a>
       </div>
     </el-dialog>
-       
+
     </div>
 </template>
 <script>
-import {getAdminUnpublishedCourseList,getExpirCourseList,removeCourseById} from '@/API/api';
+import {getAdminUnpublishedCourseList,getExpirCourseList,removeCourseById,getChangedCourseList} from '@/API/api';
 import nodata from '@/components/noData'
 export default {
     data(){
@@ -112,7 +112,7 @@ export default {
             total:1,
             inplaceholder:'请输入课程名称',
             courseList:[
-              
+
             ],
             coursetypeList:[{value:0,label:'我的课程'},{value:1,label:'归档课程'}],
             coursetype:'我的课程',
@@ -135,14 +135,14 @@ export default {
     created(){
       this.coursetype = this.coursetypeList[0].value
        this.paramData.user_id=sessionStorage.getItem("userId")
-       
+
     },
     methods:{
         getAdminUnpublishedCourseList(){
             let that = this;
             that.getAdminCourseList();
         },
-        
+
         //获取管理员未发布课程
         getAdminCourseList(){
             let that = this;
@@ -160,7 +160,7 @@ export default {
 
                     that.total = res.data.total;
 
-                  
+
                 }else{
                     this.$toast(res.message,2000)
                 }
@@ -175,13 +175,14 @@ export default {
         getExpirCourseList(){
             let that = this;
             let obj = {};
-            obj.per_page = that.perPage;
-            obj.page = 1;
-            getExpirCourseList(obj).then(res=> {
+            obj.per_page = that.paramData.per_page;
+            obj.page = that.paramData.page;
+            obj.name = that.searchText;
+            getChangedCourseList(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
-                    res.data.total==0 ? that.isHasData = false :that.isHasData = true              
-                    that.total = res.data.list.length;
+                    res.data.total==0 ? that.isHasData = false :that.isHasData = true
+                    that.total = res.data.total;
                 }else{
                     this.$toast(res.message,2000)
                 }
@@ -199,8 +200,8 @@ export default {
         handleCurrentChange(val) {
             let that = this;
             that.paramData.page = val
-            that.getAdminCourseList();
-       
+           that.coursetype ==0 ? that.getAdminCourseList() : that.getExpirCourseList();
+
         },
         //点击备课跳转详情
         linkDetail(id){
@@ -218,7 +219,7 @@ export default {
             })
         },
 
-        //课程确认删除    
+        //课程确认删除
         confirmDeleterCourse(){
             let that = this;
             console.log(that.courseId)
@@ -232,16 +233,16 @@ export default {
                         if(that.total == 1){
                             that.paramData.page = that.paramData.page-1;
                         }
-                        
+
                     }
-                    
+
                     that.getAdminCourseList();
                 }else{
                     this.$toast(res.message,2000)
                 }
             })
         }
-            
+
     },
     mounted() {
         let that = this;
