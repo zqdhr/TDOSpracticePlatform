@@ -313,7 +313,7 @@ export default {
       }else {
         that.cateId = ''
       }
-      
+
     },
 
     findCourseWareAll(per_page, page, kind, type, name, category_id, chapter_id, section_id,c_category_id) {
@@ -413,10 +413,11 @@ export default {
     //课件库选择确认选择
     confirmChoose() {
       let that = this;
-      console.log(that.sindex)
-      console.log(that.chooseList)
+      if(that.chooseList.length == 0){
+        this.$toast("请选择课件", 3000)
+        return
+      }
       if (that.sindex !== '') {
-        console.log("节新增课件")
         let obj = {};
         let list = [];
         for(let i = 0;i<that.chooseList.length;i++){

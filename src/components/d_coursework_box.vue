@@ -24,8 +24,11 @@
               </el-select>
             </div>
           </div>
-          <div class="fr" v-if="canEdit == 1">
-            <a class="btnDefault pointer mr20" @click="deleteOperation"
+          <div class="fr" v-if="canEdit == 1 && noEdit != 0">
+            <a
+              v-if="courseList.length > 0"
+              class="btnDefault pointer mr20"
+              @click="deleteOperation"
               >删除题目</a
             >
             <a class="btnDefault pointer" @click="click_new">新增题目</a>
@@ -38,7 +41,11 @@
         >
           <div class="coursework_name">
             <p>{{ courseWork.name }}</p>
-            <a class="edit" @click="reset_homework" v-if="canEdit == 1"></a>
+            <a
+              class="edit"
+              @click="reset_homework"
+              v-if="canEdit == 1 && noEdit != 0"
+            ></a>
           </div>
           <div class="course_list">
             <el-scrollbar style="height: 100%">
@@ -86,30 +93,31 @@
               </ul>
             </el-scrollbar>
           </div>
-          <div class="add_btn_box" v-if="canEdit == 1">
-            <a class="btnDefault pointer" @click="addQuestionBack">保存</a>
+          <div class="add_btn_box" v-if="canEdit == 1 && noEdit != 0">
+            <a
+              v-if="courseList.length > 0"
+              class="btnDefault pointer"
+              @click="addQuestionBack"
+              >保存</a
+            >
             <a
               class="btnDefault pointer"
               style="margin-left: 20px"
-              @click="isConfirmWork = true"
-              >确认</a
+              v-if="courseList.length > 0"
+              @click="(isConfirmWork = true), addQuestionBack(2)"
+              >发布</a
             >
           </div>
         </div>
 
         <!--小节作业不存在-->
-        <div class="noData_box" v-if="noData && status == 1 && sindex != ''">
+        <div
+          class="noData_box"
+          v-if="noData && status == 1 && sindex != '' && noEdit != 0"
+        >
           <p class="mess">当前节下暂无作业，请点击下方新增作业按钮。</p>
           <div>
-            <a
-              class="btnDefault pointer"
-              @click="
-                (isnewJobName = true),
-                  (homework.name = ''),
-                  (homework.endTime = '')
-              "
-              >新增作业</a
-            >
+            <a class="btnDefault pointer" @click="addNewHomework">新增作业</a>
           </div>
         </div>
       </div>
@@ -143,12 +151,12 @@
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <span class="span_icon icon_waring"
-            >确定要确认作业吗？确认过后将无法修改</span
+            >确定要发布作业吗？发布过后将无法修改</span
           >
         </p>
       </div>
       <div slot="footer" class="dialog-footer">
-        <a class="btnDefault" @click="confirmQuestionBack">确 认</a>
+        <a class="btnDefault" @click="confirmQuestionBack">发 布</a>
         <a class="btnDefault" @click="isConfirmWork = false">取 消</a>
       </div>
     </el-dialog>
@@ -367,6 +375,7 @@ import {
   getAssignmentNameBySectionId,
   modifyAssignmentNameById,
   modifyAssignmentStatusById,
+  deleteAssignmentById,
 } from "@/API/api";
 export default {
   inject: ["reload"],
@@ -435,6 +444,7 @@ export default {
   props: {
     timeStatus: { default: 0 }, //默认管理员为0，不显示时间
     course_info: {},
+    noEdit: "",
   },
   components: {
     courseNav,
@@ -462,6 +472,17 @@ export default {
     };
   },
   methods: {
+    addNewHomework() {
+      let that = this;
+      if (that.timeStatus == 1) {
+        that.setNameOrTimeTitle = "请设置作业名称/截止时间";
+      } else {
+        that.setNameOrTimeTitle = "请设置作业名称";
+      }
+      that.isnewJobName = true;
+      that.homework.name = "";
+      that.homework.endTime = "";
+    },
     //查题库
     getQuestionBackAll() {
       let that = this;
@@ -524,6 +545,11 @@ export default {
           return that.$toast("作业截止时间不为空", 2000);
         }
 
+        if(that.course_info.end_at == "" || that.course_info.end_at ==null)
+        {
+          return that.$toast("该课程尚未设置起止时间，请先进行设置！", 3000);
+        }
+        
         let dates1 = new Date(that.homework.endTime);
         let dates2 = new Date(that.course_info.end_at);
         let dates3 = new Date(that.course_info.start_at);
@@ -533,7 +559,7 @@ export default {
         if (dates1 < dates3) {
           return that.$toast("作业截止时间不能小于课程开始时间", 3000);
         }
-        
+
         obj.end_at = that.homework.endTime;
       } else {
         var date = new Date();
@@ -706,10 +732,7 @@ export default {
       // alert(that.assignmentId);
       let totalscore = 0;
       console.log(that.courseList.length);
-      // if (that.courseList.length == 0) {
-      //   this.$toast("请先新增题目", 3000);
-      //   return;
-      // }
+
       for (let i = 0; i < that.courseList.length; i++) {
         totalscore += parseInt(that.courseList[i].score);
       }
@@ -729,6 +752,11 @@ export default {
       addQuestionBackAssignmentList(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
           // alert("新增成功");
+
+          if (flag == 2) {
+            return;
+          }
+
           if (flag == 1) {
             this.$toast("删除成功", 2000);
           } else {
@@ -743,8 +771,10 @@ export default {
       });
     },
 
+    //确认当前作业
     confirmQuestionBack() {
       let that = this;
+
       that.isConfirmWork = false;
       let obj = {};
       obj.id = that.assignmentId;
@@ -752,7 +782,7 @@ export default {
       // alert(that.assignmentId);
       modifyAssignmentStatusById(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
-          this.$toast("确认成功，不可修改", 2000);
+          this.$toast("发布成功，不可修改", 2000);
           that.canEdit = 0;
           // alert("确认成功，不可修改");
         } else {
@@ -761,6 +791,28 @@ export default {
         }
       });
     },
+
+    //删除当前作业
+    deleteAssignmentById() {
+      let that = this;
+      
+      let obj = {};
+      let arr = [];
+      arr.push(that.assignmentId);
+      obj.assignment_id_list = arr;
+      deleteAssignmentById(JSON.stringify(obj)).then((res) => {
+        if (res.code == 200) {
+          this.$toast("删除作业成功！", 2000);
+          //这边要刷新下作业
+          that.getData(that.nowData);
+        
+        } else {
+          // alert("确认失败");
+          this.$toast(res.message, 2000);
+        }
+      });
+    },
+
 
     //选择分类(选择，简答)
     selectCate(val) {
@@ -784,6 +836,13 @@ export default {
     //修改作业
     reset_homework() {
       let that = this;
+
+      if (that.timeStatus == 1) {
+        that.setNameOrTimeTitle = "请设置作业名称/截止时间";
+      } else {
+        that.setNameOrTimeTitle = "请设置作业名称";
+      }
+
       that.modifyJobName = true;
       that.modifyName = that.courseWork.name;
     },
@@ -819,6 +878,11 @@ export default {
         if (that.homework.endTime == "" || that.homework.endTime == null) {
           return that.$toast("作业截止时间不为空", 2000);
         }
+        if(that.course_info.end_at == "" || that.course_info.end_at ==null)
+        {
+          return that.$toast("该课程尚未设置起止时间，请先进行设置！", 3000);
+        }
+
         let dates1 = new Date(that.homework.endTime);
         let dates2 = new Date(that.course_info.end_at);
         let dates3 = new Date(that.course_info.start_at);
@@ -880,6 +944,12 @@ export default {
           tmpArr.push(q1);
         }
       }
+
+      if (tmpArr.length == 0) {
+        this.$toast("作业题目不能为空，删除失败！", 3000);
+        return;
+      }
+
       that.courseList = tmpArr;
       //保存
       that.addQuestionBack(1);

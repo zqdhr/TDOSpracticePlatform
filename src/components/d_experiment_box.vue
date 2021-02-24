@@ -5,17 +5,17 @@
             <courseNav @getData = "getData"></courseNav>
             <div class="right_box">
                 <div class="add_btn_box">
-                    <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''&&role!=3&&status!=1&&type!=0">新增实验</a>
+                    <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''&&role!=3&&(typeData==1 || status == 0)">新增实验</a>
                 </div>
                 <template v-if="isHasData">
                 <div class="list_box">
                     <ul class="list_ul clearfix " :class="{'student_list_ul':role==3}">
                         <li v-for="(item,index) in experimentList" :key="index">
                             <div class="info pointer"  @click="link_Detail(item.id)">
-                                <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3 && isdeleteStatus == 1 &&type!=0">
+                                <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3 && isdeleteStatus == 1 &&(typeData==1 || status == 0)">
                                    <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="getDelete(item.id)"></a>
                                 </el-tooltip>
-                                <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3 && role!=1 && isdeleteStatus == 1 &&type!=0">
+                                <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3 && role!=1 && isdeleteStatus == 1 &&(typeData==1 || status == 0)">
                                    <a class="icon icon_set pointer" @click.stop="setinfo(item),experiment = item"></a>
                                 </el-tooltip>
                                  <div class="pic">
@@ -172,14 +172,25 @@ export default {
         status:{
           default:0,
         },
-        type:{
+        typeData:{
           default:0,
         }
+    },
+    watch: {
+      status: {
+        handler:function(val, olVal) {
+
+
+        }
+
+
+      },
     },
     created(){
         let that = this;
         that.time = that.timeOptions[1].value
         that.sid = 1
+
     },
     components:{
         courseNav,newdialog,experimentDetail,nodata

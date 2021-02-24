@@ -311,7 +311,7 @@ export default {
       let that = this;
       let obj = {};
       obj.perPage = that.perPage;
-      obj.page = 1;
+      obj.page = that.curPage;
       obj.courseId = that.level1Name;
       obj.userId = sessionStorage.getItem("userId");
       obj.chapterId = "";
@@ -344,7 +344,7 @@ export default {
       let that = this;
       let obj = {};
       obj.perPage = 100;
-      obj.page = that.curPage;
+      obj.page = 1;
       obj.assignmentId = val.assignmentId;
       obj.userId = sessionStorage.getItem("userId");
 

@@ -39,7 +39,7 @@
           <a
             class="btnDefault pointer"
             @click="click_new"
-            v-if="(sindex != '' || cindex != '') &&role!=3 && typeData != 0"
+            v-if="(sindex != '' || cindex != '') &&role!=3 && (typeData==1 || status == 0)"
             >新增课件</a
           >
         </div>
@@ -53,7 +53,7 @@
                     effect="dark"
                     content="删除"
                     placement="top"
-                    v-if="role != 3 && status == 1 && typeData != 0"
+                    v-if="role != 3 && isEdit == 1 && (typeData==1 || status == 0)"
                   >
                     <a
                       class="icon icon_close pointer"
@@ -316,11 +316,10 @@ export default {
       typeware: "",
       cindex: "",
       sindex: "",
-      typeData:'',
       isHasData: true, //是否有数据 默认有数据
       count: "", //课程下章，节已经存在的课件数量
       isdeleteId: "", //删除的课件id
-      status:0
+      isEdit:0
     };
   },
   props: {
@@ -328,6 +327,9 @@ export default {
       default: 0, //默认是0传过来3表示是学生点击课程详情
     },
     typeData: {
+      default: 0,
+    },
+    status: {
       default: 0,
     },
   },
@@ -345,6 +347,8 @@ export default {
   },
   mounted() {
     let that = this;
+    alert(that.typeData)
+    alert(that.status)
   },
   methods: {
       //保存笔记
@@ -519,10 +523,10 @@ export default {
       that.sindex = data.sindex;
       console.log(that.sindex + that.cindex);
       if (data.sindex == "") {
-        that.status = 1
+        that.isEdit = 1
         that.getCoursewareByChapterId(data.cindex, "", 0, that.perPage, 1);
       } else {
-        that.status = 1
+        that.isEdit = 1
         that.getCoursewareBySectionId(data.sindex, "", 0, that.perPage, 1);
       }
     },

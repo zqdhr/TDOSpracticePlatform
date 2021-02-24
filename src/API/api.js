@@ -487,6 +487,11 @@ var createAndRunContainers = function(data){
 
 }
 
+//管理员教师删除作业
+var deleteAssignmentById = function(data){
+  return axios.post('/deleteAssignmentById', data,{headers: {'Content-Type':'application/json'}})
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -500,7 +505,7 @@ export{
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
 	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment,modifyAssignmentStatusById,downloadCode,modifyExpiredCourseStatus
-	,getChangedCourseList,modifyCourseName,getCourseListNoNameByUserId,
+	,getChangedCourseList,modifyCourseName,getCourseListNoNameByUserId,deleteAssignmentById,
   getStudentsByClasseId,createAndRunContainers
 }
 
