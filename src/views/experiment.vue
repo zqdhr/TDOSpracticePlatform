@@ -64,9 +64,9 @@
                     <div v-if="curIndex==1">
                         <h3 class="htitle">实验步骤说明</h3>
                         <ul class="step-ul">
-                           <li>
+                           <li style="border-bottom:0 none">
                                <!-- <p class="pt">1、实验步骤</p> -->
-                               <p class="ptext" v-html="experiment.step">步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容步骤内容</p>
+                               <p class="ptext" v-html="experiment.step"></p>
                            </li>
                         </ul>
                     </div>
@@ -181,7 +181,7 @@ export default {
                         [{ 'font': [] }],     //字体
                         [{ 'align': [] }],    //对齐方式
                         ['clean'],    //清除字体样式
-                        ['image','link']    //上传图片、上传视频'video'
+                        ['image']    //上传图片、上传视频'video'
                         ]
                 }
             },
