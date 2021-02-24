@@ -317,7 +317,8 @@ export default {
           let that = this;
           that.isNewExperiment = true;
           if(that.cindex!=''&&that.sindex!=''){
-          that.$refs.experimentDetail.click_Detail(id);
+              console.log()
+          that.$refs.experimentDetail.click_Detail(id,that.$route.query.courseId);
 }
         },
         getData(data){

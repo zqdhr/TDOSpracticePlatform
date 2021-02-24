@@ -407,7 +407,7 @@ export default {
             //that.endTime=that.endTime.getFullYear() + '-' + (that.endTime.getMonth() + 1) + '-' + that.endTime.getDate();
 
             obj.end = that.endTime;
-            obj.status = 0;
+            obj.status = '';
             obj.user_id_list = [];
             console.log(JSON.stringify(obj))
             modifyCourseStatus(JSON.stringify(obj)).then(res=> {

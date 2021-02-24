@@ -481,6 +481,11 @@ var getChangedCourseList = function(data){
 var modifyCourseName = function(data){
   return axios.post('/modify_course_name', data,{headers: {'Content-Type':'application/json'}})
 }
+//重新开启镜像
+var createAndRunContainers = function(data){
+	return axios.get('/createAndRunContainers?userId='+data.userId+'&experimentId='+data.experimentId+'&courseId='+data.courseId+'&imageId='+data.imageId)
+
+}
 
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
@@ -496,7 +501,7 @@ export{
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
 	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment,modifyAssignmentStatusById,downloadCode,modifyExpiredCourseStatus
 	,getChangedCourseList,modifyCourseName,getCourseListNoNameByUserId,
-  getStudentsByClasseId
+  getStudentsByClasseId,createAndRunContainers
 }
 
 function getJson (data) {

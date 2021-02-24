@@ -12,7 +12,7 @@
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen && authority==0" @click="isEdit=true">
+                <a class="a-opera pointer" v-if="isOpen " @click="isEdit=true">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -20,15 +20,15 @@
                     <i><img src="../assets/img/exper_back.png"/></i>
                     <span>返回</span>
                 </a>
-                 <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=1">
-                    <i><img src="../assets/img/exper_end.png"/></i>
-                    <span>结束</span>
-                </a>
+               
                 <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=2">
                     <i><img src="../assets/img/exper_restart.png"/></i>
                     <span>重新开始</span>
                 </a>
-                
+                  <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=1">
+                    <i><img src="../assets/img/exper_end.png"/></i>
+                    <span>结束所有</span>
+                </a>
         
             </div>
             
@@ -36,7 +36,7 @@
         <div class="experiment_container clearfix boxsizing">
             <div class="left-noVNc boxsizing " :class="{'changeWidth':isHide}">
                 <div class="l-nav" >
-                  <span class="pointer" @click="isOpen?(openXuniji(item), virtualMachine=index,container=item):''" :class="{'active':virtualMachine==index}" v-for="(item,index) in containers" :key="index">虚拟机{{index+1}}{{item.status==1?'(运行中)':'(已创建)'}}</span>
+                  <span class="pointer" @click="isOpen?(openXuniji(item), virtualMachine=index,container=item,tagid=item.containerId):''" :class="{'active':virtualMachine==index}" v-for="(item,index) in containers" :key="index">虚拟机{{index+1}}{{item.status==1?'(运行中)':'(已创建)'}}</span>
             
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
@@ -44,14 +44,21 @@
                 <div class="operation_box 22"  v-if="!isOpen"  ref="imageWrapper" >
                    <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>  
                 </div>
+            
+                <div class="operation_box"  ref="imageWrapper" v-show="isOpen " id="Screenshots" 
+                     v-for="(item,iindex) in containers" :key="iindex"> 
+                     <template v-if="item.url.indexOf('html')>0">
+                         <div class="operation_box" id="screen" ></div>
+                     </template>
+                    <template v-else> 
+                        <xterm :socketURI="socketURI" ></xterm>
+                    </template> 
+                   
+                </div>
 
-                <div class="operation_box"  ref="imageWrapper" v-if="isOpen && containerstate=='2'" id="Screenshots">
-                    <div class="operation_box" id="screen"></div>
-                </div>
- 
-                <div class="operation_box" ref="imageWrapper" v-if="isOpen && containerstate=='1'" id="Screenshots">
-                   <xterm :socketURI="socketURI" ></xterm> 
-                </div>
+              
+                  
+               
               
             </div>
             <div class="right_main" :class="{'changeWidth':isHide}">
@@ -149,7 +156,7 @@ import RFB from '@novnc/novnc/core/rfb';
 import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import html2canvas from 'html2canvas';
 import xterm from '@/components/Xterminal.vue'
-import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor,hasExperimentReport,downloadCode} from "@/API/api";
+import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor,hasExperimentReport,downloadCode,createAndRunContainers} from "@/API/api";
 
 import transLoading from '@/components/uploadLoading.vue'
 
@@ -213,7 +220,7 @@ export default {
 
             isEdit:false,//点击文件下载名称输入显示
             editValue:'',//下载要输入的文件名称
-
+            tagid:'',
            
         }
     },
@@ -236,7 +243,8 @@ export default {
         that.authority = that.$route.query.authority?that.$Base64.decode(that.$route.query.authority):0;
         that.userid = that.$route.query.userid
         that.experimentId=that.$route.query.experimentId
-        that.courseId =that.$route.query.courseId
+        that.courseId =that.authority==0?that.$route.query.courseId:''
+        console.log('课程id:'+that.courseId)
         that.findAllByType(that.experimentId)
         if (that.authority==0) {
             that.hasExperimentReport()
@@ -356,14 +364,8 @@ export default {
                 if (res.code==200) {
                     console.log(res.data)
                     if(type==0){
-                        that.isOpen=true
-                        that.daojishi(that.second)
-                        that.openXuniji(that.container)
-                        for (let index = 0; index < that.containers.length; index++) {
-                            that.containers[index].status=1
-                            
-                        }
-                        that.virtualMachine=0
+                      that.createContainers(that.userid,that.experimentId,that.courseId)
+                        
                     }
                     if (type==1) {
                         that.remove=false
@@ -393,6 +395,19 @@ export default {
                  
                   that.click_back()
              })
+        },
+        //重启镜像
+        restartContainers(){
+            let that=this
+            that.remove=true              
+            if (that.authority==0) {
+                   //学生关闭实验 
+                that.execContainer(1)
+            }else{
+             //教师与管理员关闭实验
+                that.removeContainers()
+            }
+        createAndRunContainers
         },
         //添加实验报告
         insertExperimentRepor(hasReport){
@@ -616,7 +631,9 @@ export default {
                    
                 }else {
                     that.containerstate='2'
-                    that.connectVnc(item.url)
+                    if (that.rfb=='') {
+                      that.connectVnc(item.url)
+                    }
                     that.connect_url = item.url
                   
                 }
@@ -630,15 +647,22 @@ export default {
             if (that.editValue=='') {
                return that.$toast("请输入文件名称",3000) 
             }
+            that.isEdit=false
             let obj={}
             obj.containerId = that.container.containerId
             obj.fileName = that.editValue
             console.log(obj)
             downloadCode(obj).then(res=>{
                 if (res.code==200) {
-                    console.log(res.msg)
+                    if (res.data!=null) {
+                        
+                    }else {
+                        that.$toast("输入的文件不存在",3000)  
+                    }
+                    console.log(res.data)
+                    console.log(that.binaryToStr(res.data))
                 } else {
-                    console.log(res.msg)
+                    console.log(res.message)
                 }
             })
 
