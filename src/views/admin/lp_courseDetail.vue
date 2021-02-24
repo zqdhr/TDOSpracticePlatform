@@ -53,10 +53,10 @@
 
 
                 <!--课程实验-->
-                <experiment :role="role" v-if="navindex==1" :status="status"></experiment>
+                <experiment :role="role" v-if="navindex==1" :status="status" :type = type></experiment>
 
                 <!--课程课件-->
-                <courseware v-if="navindex==2" :status="status"></courseware>
+                <courseware v-if="navindex==2" :status="status" :typeData = type></courseware>
 
                 <coursework v-if="navindex==3" :status="status"></coursework>
 
@@ -118,6 +118,7 @@ export default {
             chapter_number:'',
             section_number:'',
             numbers:'',
+            type:0,
 
            backNum:1,
            navindex:0,

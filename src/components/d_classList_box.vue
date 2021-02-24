@@ -24,7 +24,7 @@
         </div>
         <!--已开课班级列表不可编辑-->
         <div class="btnbox">
-            <a class="btnDefault pointer" @click="sureCheckClass" >查看</a>
+            <a class="btnDefault pointer" @click="sureCheckClass" v-if="status ==0" >查看</a>
         </div>
    </div>
    </template>
@@ -64,6 +64,9 @@ export default{
         classesList: {
             default: 0,
         },
+      status: {
+        default: 0,
+      },
     },
     watch: {
         classesList: {
