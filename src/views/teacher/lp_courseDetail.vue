@@ -109,7 +109,7 @@
                 <experiment v-if="navindex==3" :typeData = type :status = status></experiment>
 
                 <!--课程课件-->
-                <courseware v-if="navindex==4" :typeData = type :status = status></courseware>
+                <courseware v-if="navindex==4" :typeData = type :status = status  ></courseware>
 
                 <coursework v-if="navindex==5" timeStatus='1' :noEdit = type :course_info = myData></coursework>
 
@@ -262,7 +262,7 @@ export default {
                     that.numbers = res.data.numbers==null?that.numbers = 0:res.data.numbers
                     that.chapterNumber = res.data.chapter_number
                     that.sectionNumber = res.data.small_section_number
-              
+
                     if(res.data.start_at !='' && res.data.end_at != '' && res.data.start_at !=null && res.data.end_at != null){
                         let ipos1 = res.data.start_at.indexOf("T");
                         let ipos2 = res.data.start_at.indexOf("T");
