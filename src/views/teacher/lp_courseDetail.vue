@@ -106,10 +106,10 @@
 
 
                 <!--课程实验-->
-                <experiment v-if="navindex==3" :type = type></experiment>
+                <experiment v-if="navindex==3" :typeData = type :status = status></experiment>
 
                 <!--课程课件-->
-                <courseware v-if="navindex==4" :typeData = type></courseware>
+                <courseware v-if="navindex==4" :typeData = type :status = status></courseware>
 
                 <coursework v-if="navindex==5" timeStatus='1' :noEdit = type :course_info = myData></coursework>
 
