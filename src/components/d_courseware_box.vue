@@ -434,6 +434,9 @@ export default {
       getCoursewareByCourseId(obj).then((res) => {
         if (res.code == 200) {
           that.total = res.data.total;
+           for(let i = 0;i<res.data.list.length;i++){
+                        res.data.list[i].size = (res.data.list[i].size/(1024 * 1024)).toFixed(2) + "MB"
+                    }
           // res.data.total == 0
           //   ? (that.isHasData = false)
           //   : (that.isHasData = true);

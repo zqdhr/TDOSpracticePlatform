@@ -333,6 +333,7 @@ export default {
 
           }
           for (let index = 0; index <  that.all_experimentList.length; index++) {
+               that.all_experimentList[index].size = (that.all_experimentList[index].size/(1024 * 1024)).toFixed(2) + "MB"
                if (ids.includes(that.all_experimentList[index].id)==true) {
                      that.$set(that.all_experimentList[index], "checked", true);
                   }else {
