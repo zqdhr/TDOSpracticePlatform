@@ -23,7 +23,7 @@
                                 </div>
                                 <p class="p-text textline1">{{item.name}}</p>
                                 <p class="p-text textline1">实验时长：{{item.duration}}分钟</p>
-                                <p class="p-text textline1">截止时间：{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'暂无设置时间'}}</p>
+                                <p class="p-text textline1">实验报告截至时间：{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'未设置'}}</p>
                             </div>
                         </li>
                     </ul>
@@ -67,7 +67,7 @@
             <div class="setform">
                 
                 <div class="set-col">
-                    <p class="ptitle">课程时间：</p>
+                    <p class="ptitle">实验时长：</p>
                     <div class="dselect">
                         <el-select v-model="time" placeholder="请选择" style="width:100%">
                             <el-option
@@ -161,17 +161,20 @@ export default {
             count:0,
             isHasData:true,//是否有数据 默认有数据
             isdeleteStatus:0,//节下面才能删除实验，默认节下面是1
+            authority:0
         }
     },
     props:{
         role:{
             default:0, //默认是0传过来3表示是学生点击课程详情
-        }
+        },
     },
     created(){
         let that = this;
         that.time = that.timeOptions[1].value
         that.sid = 1
+        that.authority = that.$route.query.authority?that.$Base64.decode(that.$route.query.authority):0;
+        
        
     },
     components:{
@@ -191,7 +194,6 @@ export default {
             obj.page = page;
             findAllByCategoryId(obj).then(res=> {
                 if(res.code==200){
-
                     that.total = res.data.total
                     res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList = res.data.list;

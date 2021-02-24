@@ -306,8 +306,14 @@ export default {
     //课件所属分类选择
     handleChange(value) {
       let that = this
+      console.log(value)
       console.log(value.length==1?value[0]:value[1]);
-      that.cateId = value.length==1?value[0]:value[1]
+      if (value!=null&&value.length==2) {
+        that.cateId = value.length==1?value[0]:value[1]
+      }else {
+        that.cateId = ''
+      }
+      
     },
 
     findCourseWareAll(per_page, page, kind, type, name, category_id, chapter_id, section_id,c_category_id) {

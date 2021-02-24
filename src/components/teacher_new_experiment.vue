@@ -6,7 +6,7 @@
       :visible.sync="isnewFilter"
       :width="isnewFilterType == 1 ? '1100px' : '600px'"
       :class="{ newCourseware_dialog: isnewFilterType == 0 }"
-      @close="searchTx='',customClass='',i_customClass=''"
+      @close="searchTx='',customClass='',i_customClass='',curPage=1"
     >
       <!--实验库选择-->
       <template v-if="isnewFilterType == 1">
@@ -62,8 +62,8 @@
                             <div class="trans"></div>
                         </div>
                       <p class="p-text textline1">{{item.name}}</p>
-                      <p class="p-text textline1">实验时长：{{item.duration}}</p>
-                      <p class="p-text textline1">截止时间：{{item.endtime}}</p>
+                      <p class="p-text textline1">实验时长：{{item.duration}}分钟</p>
+                      <!-- <p class="p-text textline1">截止时间：{{item.endtime}}</p> -->
                        <a
                       class="icon icon_radio pointer"
                       :class="{ icon_radio_h: item.checked }"
@@ -80,7 +80,7 @@
           <div class="tab-pagination fr">
             <el-pagination
               background
-              :current-page="curPage"
+              :current-page.sync="curPage"
               :page-size="perPage"
               @current-change="handleCurrentChange1"
               layout="prev, pager, next,jumper"
@@ -209,6 +209,8 @@ export default {
       that.sindex = sid;
       that.count = count;
       that.sindex = sindex;
+      
+      console.log(that.curPage)
       that.array_addChecked(that.all_experimentList);
       that.findAllExperiment();
       that.findParentCategory();

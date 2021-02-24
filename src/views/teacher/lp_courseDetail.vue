@@ -89,7 +89,7 @@
         
                 
                 <!--课程实验-->
-                <experiment v-if="navindex==3" ></experiment>
+                <experiment v-if="navindex==3" :course="courseDetail"></experiment>
                 
                 <!--课程课件-->
                 <courseware v-if="navindex==4"></courseware>
@@ -199,6 +199,7 @@ export default {
             isEdit:false ,//课程名称修改是否显示
             editValue:'',//
             sure_newCourse:false,//教师端是否开课弹窗显示
+            courseDetail:{},//课程详情
         }
     },
     components:{classList,chapter,experiment,courseware,coursework},
@@ -231,11 +232,12 @@ export default {
             getCourseById(obj).then(res=> {
                 if(res.code==200){
                     console.log(res.data)
+                    that.courseDetail =res.data
                     that.courseName = res.data.name
                     that.introduction = res.data.introduction
                     that.numbers = res.data.numbers==null?that.numbers = 0:res.data.numbers
                     that.chapterNumber = res.data.chapter_number
-                    that.sectionNumber = res.data.section_number
+                    that.sectionNumber = res.data.small_section_number
               
                     if(res.data.start_at !='' && res.data.end_at != '' && res.data.start_at !=null && res.data.end_at != null){
                         let ipos1 = res.data.start_at.indexOf("T");
