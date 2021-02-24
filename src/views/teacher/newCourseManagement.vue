@@ -52,22 +52,22 @@
 
 
         </div>
-        <!--备课弹出框-->
-        <el-dialog
+<!--        &lt;!&ndash;备课弹出框&ndash;&gt;-->
+<!--        <el-dialog-->
 
-                :visible.sync="show_dialog_file"
-                width="500px">
-            <div slot="title" class="dialog_header">
-                备课
-            </div>
-            <div class="confirm_dialog_body">
-                <p class="dialog_mess"><span class="span_icon icon_waring">确认备课吗</span></p>
-            </div>
-            <div slot="footer" class="dialog-footer ">
-                <a class="btnDefault" @click="archiveManagement">确 认</a>
-                <a class="btnDefault"   @click="show_dialog_file = false">取 消</a>
-            </div>
-        </el-dialog>
+<!--                :visible.sync="show_dialog_file"-->
+<!--                width="500px">-->
+<!--            <div slot="title" class="dialog_header">-->
+<!--                备课-->
+<!--            </div>-->
+<!--            <div class="confirm_dialog_body">-->
+<!--                <p class="dialog_mess"><span class="span_icon icon_waring">确认备课吗</span></p>-->
+<!--            </div>-->
+<!--            <div slot="footer" class="dialog-footer ">-->
+<!--                <a class="btnDefault" @click="archiveManagement">确 认</a>-->
+<!--                <a class="btnDefault"   @click="show_dialog_file = false">取 消</a>-->
+<!--            </div>-->
+<!--        </el-dialog>-->
     </div>
 </template>
 <script>
@@ -130,35 +130,40 @@ export default {
             that.getAdminCourseList(10,val,search);
         },
 
-        archiveManagement(){
-
-            let that = this;
-          that.$router.push({path:'/teacher/couseDetail'
-            ,query:{back:this.$Base64.encode(1), courseId: that.id}
-          }).catch((err)=>{
-            console.log(err)
-          })/*
-            let obj = {};
-            obj.user_id = sessionStorage.getItem("userId");
-            obj.course_id = that.id;
-            prepareCourse(obj).then(res=> {
-                if(res.code==200){
-                    that.$toast("备课成功",2000)
-                    that.$store.commit("updateNavindex", 1);
-
-
-
-                }else{
-                    that.$toast("备课失败",3000)
-                }
-            })*/
-        },
+        // archiveManagement(){
+        //
+        //     let that = this;
+        //   that.$router.push({path:'/teacher/couseDetail'
+        //     ,query:{back:this.$Base64.encode(1), courseId: that.id}
+        //   }).catch((err)=>{
+        //     console.log(err)
+        //   })/*
+        //     let obj = {};
+        //     obj.user_id = sessionStorage.getItem("userId");
+        //     obj.course_id = that.id;
+        //     prepareCourse(obj).then(res=> {
+        //         if(res.code==200){
+        //             that.$toast("备课成功",2000)
+        //             that.$store.commit("updateNavindex", 1);
+        //
+        //
+        //
+        //         }else{
+        //             that.$toast("备课失败",3000)
+        //         }
+        //     })*/
+        // },
 
         //点击备课跳转详情
         linkDetail(id){
             let that = this
-            this.show_dialog_file = true;
+            // this.show_dialog_file = true;
             that.id = id;
+          that.$router.push({path:'/teacher/couseDetail'
+            ,query:{back:this.$Base64.encode(1), courseId: that.id}
+          }).catch((err)=>{
+            console.log(err)
+          })
         }
     },
     mounted() {

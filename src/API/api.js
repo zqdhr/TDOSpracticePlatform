@@ -472,6 +472,11 @@ var getChangedCourseList = function(data){
   return axios.get('/get_changed_course_list?name='+data.name+ '&per_page=' + data.per_page+ '&page=' + data.page)
 }
 
+//修改课程名称
+var modifyCourseName = function(data){
+  return axios.post('/modify_course_name', data,{headers: {'Content-Type':'application/json'}})
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -485,7 +490,7 @@ export{
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
 	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment,modifyAssignmentStatusById,downloadCode,modifyExpiredCourseStatus
-	,getChangedCourseList,
+	,getChangedCourseList,modifyCourseName,
   getStudentsByClasseId
 }
 
