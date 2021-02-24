@@ -117,6 +117,13 @@ export default{
       studentsList: {
         handler: function(newV, oldV) {
           this.studentList = newV.list
+
+
+          //console.log(this.studentList)
+
+          console.log("+==================")
+          console.log(this.chooseList)
+          console.log(newV)
          this.$nextTick(() => {
           for (let i = 0; i < newV.list.length; i++) {
 
@@ -154,14 +161,7 @@ export default{
         },
 
         handleSelectionChange(val) {
-          //console.log(this.studentList)
 
-          console.log("+==================")
-          console.log(this.chooseList)
-          console.log(this.studentsList.list)
-          for(){
-
-          }
           this.multipleSelection  = val;
         },
 
