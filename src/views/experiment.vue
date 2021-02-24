@@ -8,11 +8,11 @@
 
             <div class="operationBox">
             
-                <a class="a-opera pointer"  @click="makeImg"  v-if="isOpen">
+                <a class="a-opera pointer"  @click="makeImg"  v-if="isOpen && authority==0">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen" @click="isEdit=true">
+                <a class="a-opera pointer" v-if="isOpen && authority==0" @click="isEdit=true">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -58,7 +58,7 @@
                 <el-scrollbar style="height:100%">
                     <div class="nav">
                         <a class="pointer" :class="{'active_index':curIndex==1}" @click="curIndex=1">实验步骤</a>
-                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" v-if="authority==0">实验报告</a>
+                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" v-if="authority==0&&experiment.end_at!=null">实验报告</a>
                         <!--<a class="icon_jm pointer" @click="isHide=!isHide"></a>-->
                     </div>
                     <div v-if="curIndex==1">
@@ -227,10 +227,7 @@ export default {
         if(this.timeInterval!=null){
        
            clearInterval(this.timeInterval)
-           sessionStorage.setItem(this.experimentId,this.second)
-        }else {
-            sessionStorage.removeItem(this.experimentId);
-            console.log('关闭')
+           sessionStorage.setItem(this.userid+this.experimentId,this.second)
         }
     },
     components:{quillEditor,xterm,transLoading},
@@ -301,12 +298,13 @@ export default {
             obj.page=1
             findAllByType(obj).then(res=>{
                 if (res.code==200) {
+                       console.log(res.data)
                     that.experiment = res.data
-                   if(sessionStorage.getItem(that.experimentId)!=undefined && sessionStorage.getItem(that.experimentId)!=null){
-                        let experiment_time = sessionStorage.getItem(that.experimentId).split(':')
+                   if(sessionStorage.getItem(that.userid+that.experimentId)!=undefined && sessionStorage.getItem(that.userid+that.experimentId)!=null){
+                        let experiment_time = sessionStorage.getItem(that.userid+that.experimentId).split(':')
                         //time = parseInt(experiment_time[0])*3600+parseInt(experiment_time[1])*60+parseInt(experiment_time[2])
-                        that.second =  sessionStorage.getItem(that.experimentId);
-                        sessionStorage.removeItem(that.experimentId);                       
+                        that.second =  sessionStorage.getItem(that.userid+that.experimentId);
+                        sessionStorage.removeItem(that.userid+that.experimentId);                       
                     }else{
                         that.second= that.experiment.duration*60
                     }
@@ -326,6 +324,10 @@ export default {
                 that.execContainer(2)
                 
             }else if (that.type==1) {       
+                clearInterval(that.timeInterval)
+                that.timeInterval=null
+                sessionStorage.removeItem(that.userid+that.experimentId);
+                console.log('关闭')
                 that.remove=true              
                 if (that.authority==0) {
                    //学生关闭实验 
@@ -395,10 +397,18 @@ export default {
         //添加实验报告
         insertExperimentRepor(hasReport){
             let that = this
+            let endTime = that.experiment.end_at!=null? that.experiment.end_at.substring(0, that.experiment.end_at.indexOf("T")):''
+            let nowTime=new Date().toLocaleDateString().replace(/\//g,'-')
+
+            if (new Date(nowTime).getTime()>new Date(endTime).getTime()) {
+                 return that.$toast("已超过实验报告的最晚提交时间，不能提交报告",3000) 
+            }
+
+             console.log('当前时间：'+new Date().toLocaleDateString().replace(/\//g,'-')+'截至时间：'+endTime)
             if (that.yourContent=='') {
                return that.$toast("请输入实验报告内容",3000) 
             }
-            console.log(hasReport)
+            
             if ( hasReport==true) {
                  that.isHas=true           
                 return
@@ -531,7 +541,12 @@ export default {
             //开始执行倒计时
             that.timeInterval = setInterval(function () {
             //如果时、分、秒都为0时将停止当前的倒计时
-            if (h == 0 && m == 0 && s == 0) { clearInterval(that.timeInterval); return; }
+            if (h == 0 && m == 0 && s == 0) {
+                 clearInterval(that.timeInterval); 
+                 that.type=1;
+                 that.stopOrrestart();
+                 return; 
+                 }
              //当秒走到0时，再次为60秒
             if (s == 0) { s = 60; }
             if (s == 60) {
@@ -553,7 +568,7 @@ export default {
             
             that.time= (h<10?"0"+ h:h )+ ":" +( m<10?"0"+m:m) + ":"+ (s<10?"0"+s:s);
             that.second = h*3600+m*60+s
-         
+            sessionStorage.setItem(that.userid+that.experimentId,that.second)
             }, 1000);
         },
 
@@ -617,7 +632,7 @@ export default {
             }
             let obj={}
             obj.containerId = that.container.containerId
-            obj.fileName = '/root/Downloads/'+that.editValue
+            obj.fileName = that.editValue
             console.log(obj)
             downloadCode(obj).then(res=>{
                 if (res.code==200) {

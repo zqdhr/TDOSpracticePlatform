@@ -67,7 +67,7 @@
             <div class="setform">
 
                 <div class="set-col">
-                    <p class="ptitle">课程时间：</p>
+                    <p class="ptitle">实验时长：</p>
                     <div class="dselect">
                         <el-select v-model="time" placeholder="请选择" style="width:100%">
                             <el-option
@@ -162,6 +162,7 @@ export default {
             type:'',
             isHasData:true,//是否有数据 默认有数据
             isdeleteStatus:0,//节下面才能删除实验，默认节下面是1
+            authority:0
         }
     },
     props:{
@@ -189,8 +190,6 @@ export default {
         let that = this;
         that.time = that.timeOptions[1].value
         that.sid = 1
-      alert(this.status)
-      alert(this.typeData)
 
     },
     components:{
@@ -198,6 +197,7 @@ export default {
     },
     mounted(){
         let that = this;
+        alert("sss"+that.role)
         that.getAllExperiment();
     },
     methods:{
@@ -210,7 +210,6 @@ export default {
             obj.page = page;
             findAllByCategoryId(obj).then(res=> {
                 if(res.code==200){
-
                     that.total = res.data.total
                     res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList = res.data.list;

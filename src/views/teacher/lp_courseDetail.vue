@@ -256,11 +256,13 @@ export default {
             getCourseById(obj).then(res=> {
                 if(res.code==200){
                     console.log(res.data)
+                    that.courseDetail =res.data
                     that.courseName = res.data.name
                     that.introduction = res.data.introduction
                     that.numbers = res.data.numbers==null?that.numbers = 0:res.data.numbers
                     that.chapterNumber = res.data.chapter_number
-                    that.sectionNumber = res.data.section_number
+                    that.sectionNumber = res.data.small_section_number
+              
                     if(res.data.start_at !='' && res.data.end_at != '' && res.data.start_at !=null && res.data.end_at != null){
                         let ipos1 = res.data.start_at.indexOf("T");
                         let ipos2 = res.data.start_at.indexOf("T");
