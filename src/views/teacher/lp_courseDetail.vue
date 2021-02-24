@@ -317,9 +317,7 @@ export default {
 
                     that.reload();
                 }else{
-                    if(res.message == "course name has been existed"){
-                      that.$toast("课程名称已存在，请先修改课程名称",3000)
-                    }
+                    that.$toast(res.message,3000)
                 }
             })
         },
