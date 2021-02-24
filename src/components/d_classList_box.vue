@@ -121,7 +121,9 @@ export default{
                 that.$set(that.classList[j], 'checked', 2)
               }
             }
-            that.chooseList.push(that.classesList[i].user_id_list)
+            for(let j = 0;j<that.classesList[i].user_id_list.length;j++){
+              that.chooseList.push(that.classesList[i].user_id_list[j])
+            }
             that.checkedList.push(obj)
           }
         }else{
@@ -136,7 +138,7 @@ export default{
             that.$set(obj,'checked',!checked)
 
             let tmp = JSON.parse(JSON.stringify(that.checkedList))
-            console.log(that.checkList.length);
+
             if(checked!=0){
 
                for(var i=0;i<that.checkedList.length;i++){
@@ -144,8 +146,8 @@ export default{
                       tmp.splice(i,1)
                    }
                }
-              that.checkedList = tmp;
-              that.$set(obj,'checked',0)
+              that.checkedList.push(obj);
+              //that.$set(obj,'checked',0)
 
             }else{
                 that.checkedList.push(obj);
@@ -178,9 +180,11 @@ export default{
                 classIds.push(list[i].id)
             }
             obj.classIds = classIds
+          console.log(obj)
             getStudentsByClasses(obj).then(res=> {
                 if(res.code==200){
                     that.list = res.data;
+                    console.log(res.data)
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -191,18 +195,14 @@ export default{
           obj1.per_page = 1000000
           obj1.page = 1
           for(let i=0;i<that.checkList.length;i++){
-            console.log("111")
-            classIds.push(that.checkList[i].id)
+            classIds1.push(that.checkList[i])
           }
           obj1.classIds = classIds1
-          console.log("sssssssssssssss")
           getStudentsByClasses(obj1).then(res=> {
             if(res.code==200){
-              console.log("vvvvvvv1"+that.chooseList.length)
               for(let i = 0; i < res.data.list.length ;i++){
                 that.chooseList.push(res.data.list[i].userId);
               }
-              console.log("vvvvvvv2"+that.chooseList.length)
             }else{
               that.$toast(res.message,3000)
             }
