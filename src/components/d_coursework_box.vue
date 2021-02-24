@@ -101,7 +101,7 @@
         <div class="noData_box" v-if="noData && status == 1 && sindex != ''">
           <p class="mess">当前节下暂无作业，请点击下方新增作业按钮。</p>
           <div>
-            <a class="btnDefault pointer" @click="isnewJobName = true"
+            <a class="btnDefault pointer" @click="isnewJobName = true,homework.name = ''"
               >新增作业</a
             >
           </div>
@@ -156,12 +156,13 @@
       class="dialog_newJobName"
       v-if="sindex != ''"
     >
-      <div slot="title" class="dialog_header">请设置作业名称</div>
+      <div slot="title" class="dialog_header">请设置作业名称/截止日期</div>
       <div class="setScope">
         <el-input
           placeholder="输入作业名称"
           v-model="homework.name"
           maxlength="16"
+          v-emoji
         ></el-input>
         <div class="set_endtime_box" v-if="timeStatus == 1">
           <el-date-picker
@@ -187,9 +188,9 @@
       class="dialog_newJobName"
       v-if="sindex != ''"
     >
-      <div slot="title" class="dialog_header">请设置作业名称</div>
+      <div slot="title" class="dialog_header">请设置作业名称/截止日期</div>
       <div class="setScope">
-        <el-input placeholder="输入作业名称" v-model="modifyName"></el-input>
+        <el-input placeholder="输入作业名称" v-model="modifyName" v-emoji maxlength="16"></el-input>
         <div class="set_endtime_box" v-if="timeStatus == 1">
           <el-date-picker
             type="datetime"
@@ -774,14 +775,26 @@ export default {
       let obj = {};
       obj.id = that.assignmentId;
       obj.name = that.modifyName;
-      // if(that.timeStatus == 1){
-      //   let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
-      //   obj.end_at = new Date(datetime).toISOString();
-      // }else{
-      //   var date = new Date();
-      //   obj.end_at = date.toLocaleDateString();
-      //   console.log(obj.end_at)
-      // }
+
+
+      if(that.modifyName == "" || that.modifyName == null)
+      {
+        return that.$toast("作业名称不可为空", 2000);
+      }
+
+      if (that.timeStatus == 1) {
+        /*
+        let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
+        obj.end_at = new Date(datetime).toISOString();
+        */
+        if (that.homework.endTime == "" || that.homework.endTime == null) {
+          return that.$toast("作业截止时间不为空", 2000);
+        }
+        obj.end_at = that.homework.endTime;
+      } else {
+        var date = new Date();
+        obj.end_at = date.toLocaleDateString();
+      }
       console.log(JSON.stringify(obj));
       modifyAssignmentNameById(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
@@ -869,6 +882,8 @@ export default {
               that.chooseList = [];
             } else {
               // that.courseWorkTitle = res.data.name;
+              that.homework.endTime = res.data.endAt;
+              // that.modifyName = res.data.name;
               that.assignmentId = res.data.id;
               that.courseWork = res.data;
               if(res.data.status == 1){

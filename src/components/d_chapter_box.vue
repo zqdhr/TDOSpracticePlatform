@@ -553,11 +553,15 @@ export default{
             let obj = {};
             obj.course_id = that.courseId
             obj.chapter = that.chapters[index];
+            
             console.log(that.chapters[index])
             if(obj.chapter.name==''){
                return that.$toast('新建章名称不能为空',2000)
             }
+            
+            console.log(that.chapters[index].sections)
             if(that.chapters[index].sections.length > 0) {
+              
               for (let i = 0; i < that.chapters[index].sections.length; i++) {
                 if (that.chapters[index].sections[i].name == '') {
                   return that.$toast('新建节名称不能为空', 2000)
@@ -570,8 +574,10 @@ export default{
                 }
               }
             }else{
-              return that.$toast('新建节名称不能为空', 2000)
+              return that.$toast('章、节不能为空', 2000)
             }
+
+
             insertCourseChapterCompleted(JSON.stringify(obj)).then(res=> {
                 if(res.code==200){
                    that.reload();

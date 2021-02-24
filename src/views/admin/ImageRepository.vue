@@ -8,12 +8,12 @@
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" > </el-option>
             </el-select>
           </div>
-       
+
         </div>
         <div class="fr">
           <a class="btnDefault pointer abtn" @click="delDataList">删除镜像</a>
           <a class="btnDefault pointer abtn" @click="show_Add=true">新增镜像</a>
-          <div class="d-serach"> 
+          <div class="d-serach">
             <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model = "searchText"/>
             <a class="searchBtn pointer" @click="searchImage"></a>
           </div>
@@ -21,7 +21,7 @@
       </div>
 
       <div class="tablex_box list_box">
-       
+
        <template v-if="isHasData">
        <div class="tablex_box imageReposittory_table " :class="{'no_imageReposittory_table':Imagelibraries.length==0}">
         <!--镜像列表-->
@@ -83,10 +83,10 @@
         <a class="btnDefault" @click="isDelete = false">取 消</a>
       </div>
     </el-dialog>
-   
+
     <!--新增镜像弹出框-->
     <el-dialog class="dialog_add_mirroring dialog_body_nopadding_bottom"
-      
+
       :visible.sync="show_Add"
       width="600px">
       <div slot="title" class="dialog_header">
@@ -113,7 +113,7 @@
                 <el-form-item label="">
                     <ul class="fileList_name">
                         <li v-for="(file) in files" :key="file.id">
-                        <span>{{file.name}}</span>          
+                        <span>{{file.name}}</span>
                         </li>
                     </ul>
                     <div class="upload_person">
@@ -137,13 +137,13 @@
                 </el-form-item>
                 -->
           </el-form>
-         
+
           </div>
       </div>
-  
+
         <div slot="footer" class="dialog-footer ">
           <a class="btnDefault"  @click="confiremNew">确认上传</a>
-    
+
       </div>
       </el-dialog>
       <loading  @hideLoading="hideLoading" v-if="showLoading"></loading>
@@ -164,13 +164,13 @@ export default {
      type: "", //
       className: "", //
       inplaceholder: "请输入镜像名称",
-      
+
       //新增镜像
       Imagelibraries:[
            ],
         total:1,
       showDel: false, //删除多选是否显示
-      perPage:24, //虚拟机每页
+      perPage:8, //虚拟机每页
       curPage:1,
       show_Add:false,//虚拟机释放弹出框显示
       dialog_machine:'',
@@ -185,7 +185,7 @@ export default {
       files:[],
       showLoading:false,
       isHasData:true,//是否有数据 默认有数据
-      kind:'',
+      kind:-1,
       searchText:''
     };
   },
@@ -217,7 +217,7 @@ export default {
       },
       selectKind(val){
         let that = this;
-       
+
           that.kind = val
       },
       findAllImagequoteList(){
@@ -243,7 +243,7 @@ export default {
           })
       },
 
-  
+
     //删除镜像点击
     delDataList() {
       let that = this;
@@ -297,13 +297,13 @@ export default {
     inputFile(newFile, oldFile) {
       let that = this;
       console.log('123')
-      
+
       if ( Boolean(newFile) !== Boolean(oldFile) ||oldFile.error !== newFile.error) {
         // if (!this.$refs.upload.active) {
         //   this.$refs.upload.active = true;
         // }
       }
-    
+
       if (newFile && oldFile) {
         //add
         if (newFile && oldFile && !newFile.active && oldFile.active) {
@@ -313,7 +313,7 @@ export default {
           if (response.code == 200) {
             // this.$message.success("文件上传成功");
             // that.searchUser(2, "", "", 1, 10);
-            
+
           } else {
             this.$message.error("文件上传失败");
           }
@@ -335,11 +335,13 @@ export default {
     //底部分页
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      let that = this;
+      that.getImagequoteList(that.kind,that.searchText,val);
     },
     upLoad() {
       this.$refs.upload.active = true;
     },
-    
+
     //镜像确认上传
     confiremNew(){
       let that = this;
@@ -355,7 +357,7 @@ export default {
          return that.$toast('请选择镜像类型',2000)
       }
 
-      
+
       if(that.Mirroring.url==''){
          return that.$toast('请输入镜像类型',2000)
       }
@@ -385,8 +387,8 @@ export default {
        let that = this
        that.showLoading = false;
     }
- 
-   
+
+
   },
     mounted() {
         let that = this;

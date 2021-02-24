@@ -623,8 +623,8 @@ export default {
             that.isNew = false;
           } else {
             // alert(222)
-
-            this.$message.error("文件上传失败");
+            that.files = [];
+            this.$message.error("文件上传失败,请确认文件内容是否正确");
           }
           if (newFile.xhr) {
             //  Get the response status code
@@ -837,6 +837,7 @@ export default {
     //批量上传确认
     confimBatchUpload() {
       let that = this;
+      // alert(1111)
       if (that.files.length > 0) {
         that.$refs.upload1.active = true;
       } else {

@@ -30,12 +30,12 @@
    </template>
 
     <!--学生列表-->
-    <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="isStudent" :studentsList="list" :classList = this.checkedList></studentList>
+    <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="isStudent" :studentsList="list" :classList = this.checkedList :chooseList = this.chooseList></studentList>
 
    </div>
 </template>
 <script>
-import {searchClass,searchClassCount,getStudentsByClasses} from '@/API/api';
+import {searchClass,searchClassCount,getStudentsByClasses,getStudentsByClasseId} from '@/API/api';
 import studentList from "@/components/d_studentList_box.vue";//学生信息-学生列表
 export default{
     data(){
@@ -43,10 +43,13 @@ export default{
             classList:[//班级列表
 
             ],
+
             checkedList:[],//选中的班级列表
 
             isStudent:false,
-            list:{}
+            list:{},
+            chooseList:[],
+            checkList:[]
         }
     },
     components:{studentList},
@@ -65,7 +68,6 @@ export default{
     watch: {
         classesList: {
             handler:function(val, olVal) {
-                console.log(this.classesList)
                 this.classesList = val
                 this.checkedClass();
             }
@@ -77,7 +79,6 @@ export default{
 
         //班级列表添加选中的状态
         addParamcheck(array){
-            console.log(array)
          let that = this;
           for(var i=0;i<array.length;i++){
               that.$set(array[i], 'checked', 0)
@@ -87,7 +88,6 @@ export default{
         //班级列表
         searchClass(){
             let that = this;
-           console.log(this.classesList)
             searchClass().then(res=> {
                 if(res.code==200){
                     that.classList = res.data
@@ -110,20 +110,18 @@ export default{
 
       checkedClass(){
         let that = this;
-
-        alert("asd")
         if(that.classesList.length > 0) {
           for(let i =0;i<that.classesList.length;i++) {
             let obj = {};
             obj.id = that.classesList[i].class_id
             for (let j = 0; j < that.classList.length; j++) {
               if ( that.classList[j].id == that.classesList[i].class_id && that.classesList[i].completed) {
-                alert(j)
                 that.$set(that.classList[j], 'checked', 1)
               } else if ( that.classList[j].id == that.classesList[i].class_id && !that.classesList[i].completed) {
                 that.$set(that.classList[j], 'checked', 2)
               }
             }
+            that.chooseList.push(that.classesList[i].user_id_list)
             that.checkedList.push(obj)
           }
         }else{
@@ -133,12 +131,12 @@ export default{
 
        //班级选择
         checkClass(obj,checked){
-            let that = this;
-            console.log(obj)
+          let that = this;
+          that.checkList.push(obj.id)
             that.$set(obj,'checked',!checked)
 
             let tmp = JSON.parse(JSON.stringify(that.checkedList))
-            console.log(checked);
+            console.log(that.checkList.length);
             if(checked!=0){
 
                for(var i=0;i<that.checkedList.length;i++){
@@ -183,11 +181,32 @@ export default{
             getStudentsByClasses(obj).then(res=> {
                 if(res.code==200){
                     that.list = res.data;
-
                 }else{
                     that.$toast(res.message,3000)
                 }
             })
+
+          let obj1 = {}
+          let classIds1 = [];
+          obj1.per_page = 1000000
+          obj1.page = 1
+          for(let i=0;i<that.checkList.length;i++){
+            console.log("111")
+            classIds.push(that.checkList[i].id)
+          }
+          obj1.classIds = classIds1
+          console.log("sssssssssssssss")
+          getStudentsByClasses(obj1).then(res=> {
+            if(res.code==200){
+              console.log("vvvvvvv1"+that.chooseList.length)
+              for(let i = 0; i < res.data.list.length ;i++){
+                that.chooseList.push(res.data.list[i].userId);
+              }
+              console.log("vvvvvvv2"+that.chooseList.length)
+            }else{
+              that.$toast(res.message,3000)
+            }
+          })
         },
 
         //班级选择确认
@@ -197,7 +216,6 @@ export default{
             if(that.checkedList.length==0){
                 return that.$toast('请先选择班级',2000)
             }
-            console.log(that.checkedList)
             that.searchClassStudents(that.checkedList)
             that.isStudent = true;
 

@@ -462,6 +462,11 @@ var modifyExpiredCourseStatus = function(data){
   return axios.post('/modify_expired_course_status', data,{headers: {'Content-Type':'application/json'}})
 }
 
+//课程归档
+var getStudentsByClasseId = function(data){
+  return axios.get('/get_students_by_classeId?classId='+data.classId)
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -475,7 +480,8 @@ export{
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
 	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment,modifyAssignmentStatusById,downloadCode,modifyExpiredCourseStatus
-	
+	,
+  getStudentsByClasseId
 }
 
 function getJson (data) {

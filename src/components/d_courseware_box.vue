@@ -6,7 +6,7 @@
       <div class="right_box">
         <div class="add_btn_box clearfix" >
           <div class="sel-box">
-            <el-select v-if="isHasData"
+            <el-select 
               v-model="cate"
               placeholder="请选择课件分类"
               @change="selectCate"
@@ -20,7 +20,7 @@
               </el-option>
             </el-select>
           </div>
-          <div class="sel-box" v-if="isHasData">
+          <div class="sel-box">
             <el-select
               v-model="type"
               placeholder="请选择课件类型"
@@ -435,11 +435,14 @@ export default {
         if (res.code == 200) {
           that.total = res.data.total;
            for(let i = 0;i<res.data.list.length;i++){
-                        res.data.list[i].size = (res.data.list[i].size/(1024 * 1024)).toFixed(2) + "MB"
+                        res.data.ligitst[i].size = (res.data.list[i].size/(1024 * 1024)).toFixed(2) + "MB"
                     }
           // res.data.total == 0
           //   ? (that.isHasData = false)
           //   : (that.isHasData = true);
+          res.data.total == 0
+            ? (that.isHasData = false)
+            : (that.isHasData = true);
           that.experimentList = res.data.list;
         } else {
           this.$toast(res.message, 2000);
@@ -463,9 +466,9 @@ export default {
         if (res.code == 200) {
           that.count = res.data.total;
           that.total = res.data.total;
-          // res.data.total == 0
-          //   ? (that.isHasData = false)
-          //   : (that.isHasData = true);
+          res.data.total == 0
+            ? (that.isHasData = false)
+            : (that.isHasData = true);
           that.experimentList = res.data.list;
         } else {
           this.$toast(res.message, 2000);
@@ -485,9 +488,9 @@ export default {
         if (res.code == 200) {
           that.count = res.data.total;
           that.total = res.data.total;
-          // res.data.total == 0
-          //   ? (that.isHasData = false)
-          //   : (that.isHasData = true);
+          res.data.total == 0
+            ? (that.isHasData = false)
+            : (that.isHasData = true);
           that.experimentList = res.data.list;
         } else {
           this.$toast(res.message, 2000);

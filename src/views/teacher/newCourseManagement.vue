@@ -3,15 +3,15 @@
         <div class="container">
             <div class="pageTab">
                 <div class="clearfix">
-                   
+
                     <div class="fr">
-                       <div class="d-serach"> 
+                       <div class="d-serach">
                             <input :placeholder="inplaceholder" type="text" autocomplete="off"  v-model="searchText" @keyup.enter="searchCourse"/>
                             <a class="searchBtn pointer" @click="searchCourse"></a>
                         </div>
                     </div>
                 </div>
-              
+
             </div>
  <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
                <template v-if="hasData">
@@ -35,7 +35,7 @@
                         </div>
                     </li>
                </ul>
-              
+
             </div>
             <div class="tab-pagination">
                 <el-pagination
@@ -108,7 +108,7 @@ export default {
             obj.page = page;
             obj.search = search;
             console.log(obj)
-           
+
             getAdminCourseList(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list
@@ -131,7 +131,13 @@ export default {
         },
 
         archiveManagement(){
+
             let that = this;
+          that.$router.push({path:'/teacher/couseDetail'
+            ,query:{back:this.$Base64.encode(1), courseId: that.id}
+          }).catch((err)=>{
+            console.log(err)
+          })/*
             let obj = {};
             obj.user_id = sessionStorage.getItem("userId");
             obj.course_id = that.id;
@@ -139,17 +145,13 @@ export default {
                 if(res.code==200){
                     that.$toast("备课成功",2000)
                     that.$store.commit("updateNavindex", 1);
-                    
-                    that.$router.push({path:'/teacher/lessonPreparationManagement'
-                        //,query:{back:this.$Base64.encode(1), courseId: that.id}
-                    }).catch((err)=>{
-                        console.log(err)
-                    })
-                    
+
+
+
                 }else{
                     that.$toast("备课失败",3000)
                 }
-            })
+            })*/
         },
 
         //点击备课跳转详情

@@ -149,7 +149,7 @@
         </div>
         </el-dialog>
         <!--点击新建课程课程按钮前确认弹框-->
-        <el-dialog :visible.sync="isNewCourses" width="600px">
+        <el-dialog :visible.sync="isNewCourses" width="500px">
         <div slot="title" class="dialog_header">新建课程</div>
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
@@ -163,7 +163,7 @@
         </div>
         </el-dialog>
            <!--新建课程成功弹框-->
-        <el-dialog :visible.sync="isNewCoursesSuccess" width="600px">
+        <el-dialog :visible.sync="isNewCoursesSuccess" width="500px">
         <div slot="title" class="dialog_header">新建课程</div>
         <div class="confirm_dialog_body">
             <p class="dialog_mess">

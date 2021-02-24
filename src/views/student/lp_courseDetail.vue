@@ -3,7 +3,7 @@
         <div class="container">
             <div class="pageTab clearfix">
                 <div class="mess">
-                    当前位置：<a class="pointer" @click="back">课程管理</a> > <span>{{coursrName}}</span>
+                    当前位置：<a class="pointer" @click="back">我的课程</a> > <span>{{coursrName}}</span>
                 </div>
             </div>
         </div>
@@ -81,7 +81,6 @@ export default {
             section_number:20,
             numbers:'40',
 
-           backNum:1,
            navindex:0,
            menu:[
                {name:'课程大纲'},     
@@ -112,7 +111,7 @@ export default {
     components:{chapter,experiment,courseware},
     created(){
         let that = this;
-        that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
+      
         that.courseId = this.$route.query.courseId
         that.course = 1;
 
@@ -209,7 +208,7 @@ export default {
             //返回课堂管理
             let that = this;
             
-            that.$router.push({path:'/admin/courseManagement'}).catch((err)=>{
+            that.$router.push({path:'/student'}).catch((err)=>{
                 console.log(err)
             })
         },
