@@ -150,7 +150,7 @@
         </p>
       </div>
       <div slot="footer" class="dialog-footer">
-        <a class="btnDefault" @click="confirm1()()">确 认</a>
+        <a class="btnDefault" @click="confirm1()">确 认</a>
         <a class="btnDefault" @click="isExistNoAnswar = false">取 消</a>
       </div>
     </el-dialog>
@@ -502,7 +502,7 @@ export default {
             that.noWorkStr = that.noWorkStr + ','+parseInt(i+1)
           }
         }
-        
+
       }
 
       if(that.noWorkStr != "")
@@ -523,7 +523,7 @@ export default {
             that.$toast("作业保存成功", 3000);
             that.isHomework = false;
             that.student_getJobList(0);
-            
+
           } else {
             that.$toast(res.message, 3000);
           }
@@ -555,7 +555,7 @@ export default {
         }
         dic.answer = tmpDic.studentAnswer;
         answerArr.push(dic);
-        
+
       }
 
       // obj.student_score_list = JSON.stringify(answerArr);
