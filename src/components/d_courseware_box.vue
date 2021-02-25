@@ -53,7 +53,7 @@
                     effect="dark"
                     content="删除"
                     placement="top"
-                    v-if="role != 3 && isEdit == 1 && (typeData==1 || status == 0)"
+                    v-if="role != 3 && isEdit == 1 && typeData==1 && status == 0"
                   >
                     <a
                       class="icon icon_close pointer"
@@ -306,7 +306,7 @@ export default {
         { value: "0", label: "视频" },
         { value: "1", label: "文档" },
       ],
-      cate: "", //课件分类默认内置课件
+      cate: "内置课件", //课件分类默认内置课件
       type: "全部", //课件类型默认全部
       experimentList: [],
       perPage: 8, //8个实验一页

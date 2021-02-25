@@ -23,7 +23,7 @@
                                 </div>
                                 <p class="p-text textline1">{{item.name}}</p>
                                 <p class="p-text textline1">实验时长：{{item.duration}}分钟</p>
-                                <p class="p-text textline1" v-if="role != 1">实验报告截至时间：{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'未设置'}}</p>
+                                <p class="p-text textline1" v-if="role != 1">实验报告截止时间：{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'未设置'}}</p>
                             </div>
                         </li>
                     </ul>
@@ -274,9 +274,12 @@ export default {
         updateExperiment(){
             let that = this
             let obj={}
-            if (that.endTime==''||that.endTime==null) {
-               return  that.$toast('请选择实验报告截止时间',2000)
+            if (that.endTime==null) 
+            {
+                that.endTime=''
             }
+            if (that.endTime!='') {
+
             if (new Date(that.endTime).getTime()<new Date(that.course_info.start_at.substring(0, that.course_info.end_at.indexOf("T"))).getTime()) {
                  return  that.$toast('实验报告截止时间不能小于课程开始时间',2000)
             }
@@ -284,6 +287,7 @@ export default {
                  return  that.$toast('实验报告截止时间不能大于课程结束时间',2000)
             }
 
+            }
             obj.id=that.experiment.id
             obj.duration = that.time
             obj.end_at = that.endTime

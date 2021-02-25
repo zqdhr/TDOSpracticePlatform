@@ -36,8 +36,9 @@
                 v-emoji
                 @keyup.enter="search"
               />
-              <a class="searchBtn pointer" @click="search"></a>
+              <!-- <a class="searchBtn pointer" @click="search"></a> -->
             </div>
+            <a class="btn_finsh" @click="search">查询</a>
           </div>
         </div>
         <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
@@ -62,7 +63,7 @@
                             <div class="trans"></div>
                         </div>
                       <p class="p-text textline1">{{item.name}}</p>
-                      <p class="p-text textline1">实验时长：{{item.duration}}</p>
+                      <p class="p-text textline1">实验时长：{{item.duration}}分钟</p>
 <!--                      <p class="p-text textline1">截止时间：{{item.endtime}}</p>-->
                        <a
                       class="icon icon_radio pointer"
@@ -103,7 +104,7 @@ export default {
   inject:['reload'],
   data() {
     return {
-      inplaceholder: "请输入实验名",
+      inplaceholder: "请输入实验名称",
         all_experimentList:[
           ],
 
@@ -157,6 +158,7 @@ export default {
       obj.page = page;
       obj.section_id = section_id;
       obj.c_category_id = c_category_id;
+      console.log(obj)
       findAllExperimentByCategoryId(obj).then(res=> {
         if(res.code==200){
           that.total = res.data.total
@@ -268,7 +270,7 @@ export default {
     handleCurrentChange1(val) {
       console.log(`当前页: ${val}`);
       let that= this;
-      that.getAllExperiment(that.customClass,that.i_customClass,that.searchTx,val,that.sindex);
+      that.getAllExperiment(that.parentId,that.childrenId,that.searchTx,val,that.sindex);
     },
 
     //获取父类
@@ -304,14 +306,14 @@ export default {
       console.log("11"+that.customClass)
       that.parentId = val;
       that.findChildCategory(val);
-      that.getAllExperiment(val,'',that.searchTx,1,that.sindex);
+      // that.getAllExperiment(val,'',that.searchTx,1,that.sindex);
     },
     //子类
     selectType1(val) {
       let that = this;
        console.log("22"+val)
       that.childrenId = val;
-      that.getAllExperiment(that.customClass,that.childrenId,that.searchTx,1,that.sindex);
+      // that.getAllExperiment(that.customClass,that.childrenId,that.searchTx,1,that.sindex);
     },
     //数组新增checked元素
     array_addChecked(array) {
@@ -359,5 +361,7 @@ export default {
 
 <style lang="less" scoped>
 @import url(../assets/less/admin.less);
-
+.pageTab .fr .d-serach{padding-left: 12px;padding-right: 12px; width: 170px; margin-right: 20px;}
+.btn_finsh{background: @basecolor; font-size:16px;color:#fff; display: inline-block; padding: 5px 8px; .borderRadius(5px,5px,5px,5px);
+vertical-align: middle; cursor: pointer;}
 </style>

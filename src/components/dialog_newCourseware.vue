@@ -67,11 +67,12 @@
                 :placeholder="inplaceholder"
                 type="text"
                 autocomplete="off"
+                 v-emoji
                 v-model = "searchText"
               />
 
             </div>
-            <a class="btn_finsh" @click="searchCoerseWare">完成</a>
+            <a class="btn_finsh" @click="searchCoerseWare">查询</a>
           </div>
         </div>
         <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
@@ -117,7 +118,7 @@
           <div class="tab-pagination fr">
             <el-pagination
               background
-              :current-page="curPage"
+              :current-page.sync="curPage"
               :page-size="perPage"
               @current-change="handleCurrentChange1"
               layout="prev, pager, next,jumper"
@@ -393,7 +394,8 @@ export default {
       let that = this;
       console.log(that.searchText)
       that.kind = that.kind == '2' ? '' : that.kind;
-      that.findCourseWareAll(10, 1, that.kind, that.type, that.searchText, that.category_id, '', '',that.cateId);
+      that.curPage=1
+      that.findCourseWareAll(10, 1, that.kind, that.type, that.searchText, that.category_id, that.cindex, that.sindex,that.cateId);
     },
     //本地上传确认上传
     confirmLocalUpload() {
