@@ -48,11 +48,11 @@
                 <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" id="Screenshots" 
                      v-for="(item,iindex) in containers" :key="iindex"> 
                 
-                     <template v-if="item.url.indexOf('html')>0">
+                     <template v-if="item.url.indexOf('html')>0 && virtualMachine==iindex">
                          <div class="operation_box" id="screen" ></div>
                      </template>
                     <template v-else> 
-                        <xterm :socketURI="socketURI" v-if="socketURI!=''"></xterm>
+                        <xterm :socketURI="socketURI" v-if="socketURI!='' && virtualMachine==iindex"></xterm>
                     </template> 
                    
                 </div>
