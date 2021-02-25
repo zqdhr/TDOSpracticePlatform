@@ -516,6 +516,7 @@ export default {
                 if(res.code==200){
                     that.classList = res.data
                     that.checkedClass();
+                    /*
                     for(let i =0;i<res.data.length;i++){
                         let objCount = {}
                         objCount.classId= res.data[i].id;
@@ -527,7 +528,7 @@ export default {
                                 that.$toast(res.message,3000)
                             }
                         })
-                    }
+                    }*/
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -538,9 +539,6 @@ export default {
       checkedClass(){
         let that = this;
         //classesList已经选中的班级     //班级列表classList 
-        console.log(that.classList)
-        console.log('checkedClass')
-
         for (let i=0; i<that.classList.length; i++) {   
              that.$set(that.classList[i], 'checked',0)
              that.$set(that.classList[i],'user_id_list',[])                    
