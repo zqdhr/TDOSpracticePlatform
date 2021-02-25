@@ -8,11 +8,11 @@
 
             <div class="operationBox">
             
-                <a class="a-opera pointer"  @click="makeImg"  v-if="isOpen">
+                <a class="a-opera pointer"  @click="makeImg"  v-if="isOpen && authority==0">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen" @click="isEdit=true">
+                <a class="a-opera pointer" v-if="isOpen " @click="isEdit=true">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -20,15 +20,15 @@
                     <i><img src="../assets/img/exper_back.png"/></i>
                     <span>返回</span>
                 </a>
-                 <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=1">
-                    <i><img src="../assets/img/exper_end.png"/></i>
-                    <span>结束</span>
-                </a>
+               
                 <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=2">
                     <i><img src="../assets/img/exper_restart.png"/></i>
                     <span>重新开始</span>
                 </a>
-                
+                  <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=1">
+                    <i><img src="../assets/img/exper_end.png"/></i>
+                    <span>结束所有</span>
+                </a>
         
             </div>
             
@@ -36,7 +36,7 @@
         <div class="experiment_container clearfix boxsizing">
             <div class="left-noVNc boxsizing " :class="{'changeWidth':isHide}">
                 <div class="l-nav" >
-                  <span class="pointer" @click="isOpen?(openXuniji(item), virtualMachine=index,container=item):''" :class="{'active':virtualMachine==index}" v-for="(item,index) in containers" :key="index">虚拟机{{index+1}}{{item.status==1?'(运行中)':'(已创建)'}}</span>
+                  <span class="pointer" @click="isOpen?(openXuniji(item), virtualMachine=index,container=item,tagid=item.containerId):''" :class="{'active':virtualMachine==index}" v-for="(item,index) in containers" :key="index">虚拟机{{index+1}}{{item.status==1?'(运行中)':'(已创建)'}}</span>
             
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
@@ -44,21 +44,28 @@
                 <div class="operation_box 22"  v-if="!isOpen"  ref="imageWrapper" >
                    <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>  
                 </div>
+            
+                <div class="operation_box"  ref="imageWrapper" v-show="isOpen&&item.containerId==tagid " id="Screenshots" 
+                     v-for="(item,iindex) in containers" :key="iindex"> 
+                     <template v-if="item.url.indexOf('html')>0">
+                         <div class="operation_box" id="screen" ></div>
+                     </template>
+                    <template v-else> 
+                        <xterm :socketURI="socketURI" ></xterm>
+                    </template> 
+                   
+                </div>
 
-                <div class="operation_box"  ref="imageWrapper" v-if="isOpen && containerstate=='2'" id="Screenshots">
-                    <div class="operation_box" id="screen"></div>
-                </div>
- 
-                <div class="operation_box" ref="imageWrapper" v-if="isOpen && containerstate=='1'" id="Screenshots">
-                   <xterm :socketURI="socketURI" ></xterm> 
-                </div>
+              
+                  
+               
               
             </div>
             <div class="right_main" :class="{'changeWidth':isHide}">
                 <el-scrollbar style="height:100%">
                     <div class="nav">
                         <a class="pointer" :class="{'active_index':curIndex==1}" @click="curIndex=1">实验步骤</a>
-                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" v-if="authority==0">实验报告</a>
+                        <a class="pointer" :class="{'active_index':curIndex==2}" @click="curIndex=2" v-if="authority==0&&experiment.end_at!=null">实验报告</a>
                         <!--<a class="icon_jm pointer" @click="isHide=!isHide"></a>-->
                     </div>
                     <div v-if="curIndex==1">
@@ -117,7 +124,7 @@
             </div>
             </el-dialog>
 
-            <transLoading mess="正在关闭实验，请稍候..." v-if="remove"></transLoading>
+            <transLoading :mess="mess" v-if="remove"></transLoading>
 
             <el-dialog
             :visible.sync="isEdit"
@@ -149,7 +156,7 @@ import RFB from '@novnc/novnc/core/rfb';
 import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import html2canvas from 'html2canvas';
 import xterm from '@/components/Xterminal.vue'
-import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor,hasExperimentReport,downloadCode} from "@/API/api";
+import {createContainers,findAllByType,execContainer,removeContainers,insertExperimentRepor,hasExperimentReport,downloadCode,createAndRunContainers} from "@/API/api";
 
 import transLoading from '@/components/uploadLoading.vue'
 
@@ -213,7 +220,8 @@ export default {
 
             isEdit:false,//点击文件下载名称输入显示
             editValue:'',//下载要输入的文件名称
-
+            tagid:'',
+            mess:'正在关闭实验，请稍候...',
            
         }
     },
@@ -227,10 +235,7 @@ export default {
         if(this.timeInterval!=null){
        
            clearInterval(this.timeInterval)
-           sessionStorage.setItem(this.experimentId,this.second)
-        }else {
-            sessionStorage.removeItem(this.experimentId);
-            console.log('关闭')
+           sessionStorage.setItem(this.userid+this.experimentId,this.second)
         }
     },
     components:{quillEditor,xterm,transLoading},
@@ -239,7 +244,8 @@ export default {
         that.authority = that.$route.query.authority?that.$Base64.decode(that.$route.query.authority):0;
         that.userid = that.$route.query.userid
         that.experimentId=that.$route.query.experimentId
-        that.courseId =that.$route.query.courseId
+        that.courseId =that.authority==0?that.$route.query.courseId:''
+        console.log('课程id:'+that.courseId)
         that.findAllByType(that.experimentId)
         if (that.authority==0) {
             that.hasExperimentReport()
@@ -301,12 +307,13 @@ export default {
             obj.page=1
             findAllByType(obj).then(res=>{
                 if (res.code==200) {
+                       console.log(res.data)
                     that.experiment = res.data
-                   if(sessionStorage.getItem(that.experimentId)!=undefined && sessionStorage.getItem(that.experimentId)!=null){
-                        let experiment_time = sessionStorage.getItem(that.experimentId).split(':')
+                   if(sessionStorage.getItem(that.userid+that.experimentId)!=undefined && sessionStorage.getItem(that.userid+that.experimentId)!=null){
+                        let experiment_time = sessionStorage.getItem(that.userid+that.experimentId).split(':')
                         //time = parseInt(experiment_time[0])*3600+parseInt(experiment_time[1])*60+parseInt(experiment_time[2])
-                        that.second =  sessionStorage.getItem(that.experimentId);
-                        sessionStorage.removeItem(that.experimentId);                       
+                        that.second =  sessionStorage.getItem(that.userid+that.experimentId);
+                        sessionStorage.removeItem(that.userid+that.experimentId);                       
                     }else{
                         that.second= that.experiment.duration*60
                     }
@@ -323,9 +330,15 @@ export default {
             let that = this
             if (that.type==2) {
                 //重启实验
-                that.execContainer(2)
+                that.mess='正在重新开始实验，请稍候...'
+                that.closeContainers()
                 
             }else if (that.type==1) {       
+                that.mess='正在关闭实验，请稍候...'
+                clearInterval(that.timeInterval)
+                that.timeInterval=null
+                sessionStorage.removeItem(that.userid+that.experimentId);
+                console.log('关闭')
                 that.remove=true              
                 if (that.authority==0) {
                    //学生关闭实验 
@@ -354,14 +367,8 @@ export default {
                 if (res.code==200) {
                     console.log(res.data)
                     if(type==0){
-                        that.isOpen=true
-                        that.daojishi(that.second)
-                        that.openXuniji(that.container)
-                        for (let index = 0; index < that.containers.length; index++) {
-                            that.containers[index].status=1
-                            
-                        }
-                        that.virtualMachine=0
+                      that.createContainers(that.userid,that.experimentId,that.courseId)
+                        
                     }
                     if (type==1) {
                         that.remove=false
@@ -392,13 +399,77 @@ export default {
                   that.click_back()
              })
         },
+        //关闭镜像
+        closeContainers(){
+            let that =this
+            that.remove=true
+            if (that.authority==0) {
+            //学生关闭实验 
+            let obj = {}
+            let containerId = []
+            for (let index = 0; index <  that.containers.length; index++) {
+                containerId.push( that.containers[index].containerId)
+            }
+            that.isOpen = true
+            obj.containerId = containerId
+            obj.type = 1
+            execContainer(obj).then(res=>{
+                if (res.code==200) {
+                    console.log(res.data)
+                    that.restartContainers()
+                } else {
+                    console.log(res.message)
+                }       
+            })
+            }else{
+             //教师与管理员关闭实验
+            let obj = {}
+            let containerId = []
+            for (let index = 0; index <  that.containers.length; index++) {
+                containerId.push( that.containers[index].containerId)
+            }
+            obj.containerIds = containerId
+            removeContainers(obj).then(res=>{
+            console.log('返回参数'+res)
+            that.restartContainers()
+            })
+            }
+        },
+        //重启镜像
+        restartContainers(){
+            let that=this                 
+            let obj={}
+            obj.userId = that.userid
+            obj.experimentId = that.experimentId
+            obj.courseId = that.courseId
+            obj.imageId=that.container.imageId
+            createAndRunContainers(obj).then(res=>{
+            that.remove=false   
+            if (res.code==200) {
+                console.log(res.data)
+            } else {
+                console.log(res.message)
+            }
+            })
+           .catch((error) => {
+             that.remove=false   
+            })
+        },
         //添加实验报告
         insertExperimentRepor(hasReport){
             let that = this
+            let endTime = that.experiment.end_at!=null? that.experiment.end_at.substring(0, that.experiment.end_at.indexOf("T")):''
+            let nowTime=new Date().toLocaleDateString().replace(/\//g,'-')
+
+            if (new Date(nowTime).getTime()>new Date(endTime).getTime()) {
+                 return that.$toast("已超过实验报告的最晚提交时间，不能提交报告",3000) 
+            }
+
+             console.log('当前时间：'+new Date().toLocaleDateString().replace(/\//g,'-')+'截至时间：'+endTime)
             if (that.yourContent=='') {
                return that.$toast("请输入实验报告内容",3000) 
             }
-            console.log(hasReport)
+            
             if ( hasReport==true) {
                  that.isHas=true           
                 return
@@ -531,7 +602,12 @@ export default {
             //开始执行倒计时
             that.timeInterval = setInterval(function () {
             //如果时、分、秒都为0时将停止当前的倒计时
-            if (h == 0 && m == 0 && s == 0) { clearInterval(that.timeInterval); return; }
+            if (h == 0 && m == 0 && s == 0) {
+                 clearInterval(that.timeInterval); 
+                 that.type=1;
+                 that.stopOrrestart();
+                 return; 
+                 }
              //当秒走到0时，再次为60秒
             if (s == 0) { s = 60; }
             if (s == 60) {
@@ -553,7 +629,7 @@ export default {
             
             that.time= (h<10?"0"+ h:h )+ ":" +( m<10?"0"+m:m) + ":"+ (s<10?"0"+s:s);
             that.second = h*3600+m*60+s
-         
+            sessionStorage.setItem(that.userid+that.experimentId,that.second)
             }, 1000);
         },
 
@@ -601,7 +677,9 @@ export default {
                    
                 }else {
                     that.containerstate='2'
-                    that.connectVnc(item.url)
+                    if (that.rfb=='') {
+                      that.connectVnc(item.url)
+                    }
                     that.connect_url = item.url
                   
                 }
@@ -615,15 +693,22 @@ export default {
             if (that.editValue=='') {
                return that.$toast("请输入文件名称",3000) 
             }
+            that.isEdit=false
             let obj={}
             obj.containerId = that.container.containerId
-            obj.fileName = '/root/Downloads/'+that.editValue
+            obj.fileName = that.editValue
             console.log(obj)
             downloadCode(obj).then(res=>{
                 if (res.code==200) {
-                    console.log(res.msg)
+                    if (res.data!=null) {
+                        
+                    }else {
+                        that.$toast("输入的文件不存在",3000)  
+                    }
+                    console.log(res.data)
+                    console.log(that.binaryToStr(res.data))
                 } else {
-                    console.log(res.msg)
+                    console.log(res.message)
                 }
             })
 

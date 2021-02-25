@@ -6,7 +6,7 @@
       :visible.sync="isnewFilter"
       :width="isnewFilterType == 1 ? '1100px' : '600px'"
       :class="{ newCourseware_dialog: isnewFilterType == 0 }"
-      @close="searchTx='',customClass='',i_customClass=''"
+      @close="searchTx='',customClass='',i_customClass='',curPage=1"
     >
       <!--实验库选择-->
       <template v-if="isnewFilterType == 1">
@@ -63,7 +63,7 @@
                         </div>
                       <p class="p-text textline1">{{item.name}}</p>
                       <p class="p-text textline1">实验时长：{{item.duration}}</p>
-                      <p class="p-text textline1">截止时间：{{item.endtime}}</p>
+<!--                      <p class="p-text textline1">截止时间：{{item.endtime}}</p>-->
                        <a
                       class="icon icon_radio pointer"
                       :class="{ icon_radio_h: item.checked }"
@@ -80,7 +80,7 @@
           <div class="tab-pagination fr">
             <el-pagination
               background
-              :current-page="curPage"
+              :current-page.sync="curPage"
               :page-size="perPage"
               @current-change="handleCurrentChange1"
               layout="prev, pager, next,jumper"
@@ -197,11 +197,11 @@ export default {
       //     this.$toast(res.message,2000)
       //   }
       // })
-      alert("11")
+        that.curPage=1
        that.getAllExperiment(that.customClass,that.i_customClass,that.searchTx,1,that.sindex);
     },
     //点击选择实验
-    click_new(sid,count,sindex) {
+    click_new(sid,count,sindex,) {
       let that = this;
       that.isnewFilter = true;
       that.chooseList = [];
@@ -209,6 +209,8 @@ export default {
       that.sindex = sid;
       that.count = count;
       that.sindex = sindex;
+      
+      console.log(that.curPage)
       that.array_addChecked(that.all_experimentList);
       that.findAllExperiment();
       that.findParentCategory();
@@ -335,7 +337,7 @@ export default {
       if (!checked) {
         if (!(that.chooseList.indexOf(obj.id) != -1)) {
           alert(that.count)
-          if (that.chooseList.length + parseInt(that.count) > 4) {
+          if (that.chooseList.length+that.count  > 4) {
             return this.$toast("最多上传5个实验，还需添加请删除", 3000);
           }
           that.chooseList.push(obj);

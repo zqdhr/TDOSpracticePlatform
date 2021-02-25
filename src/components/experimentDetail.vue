@@ -112,7 +112,8 @@ export default {
                 {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:1,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'},
                 {id:'ddddoogk',name:'c7_k_2c4g50g_bigdate_linux',type:0,size:'2.5GB',Introduction:'简介文本简介文本简介文本简介文本 简介文本简介文本简介文本',applicationNumber:'6'}
             ],
-            experiment:{}//实验详情
+            experiment:{},//实验详情
+            courseId:'',
 
         }
     },
@@ -124,9 +125,10 @@ export default {
 
     methods:{
         //点击详情，弹出实验详情框
-        click_Detail(experId){
+        click_Detail(experId,courseId){
             let that = this;
             that.detailShow = true
+            that.courseId=courseId
             that.activeIndex = 1;
             that.findAllByType(experId)
         },
@@ -139,7 +141,7 @@ export default {
                 authority:this.$Base64.encode(level),
                 userid:sessionStorage.getItem("userId"),
                 experimentId: that.experiment.id,
-                courseId:''
+                courseId:that.courseId
                 }}).catch((err) => {
               console.log( err);
            });

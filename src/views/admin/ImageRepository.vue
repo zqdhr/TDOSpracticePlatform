@@ -90,7 +90,7 @@
       :visible.sync="show_Add"
       width="600px">
       <div slot="title" class="dialog_header">
-          请注意!
+          新增镜像
       </div>
       <div class="confirm_dialog_body">
           <div class="dialog_add_body">
@@ -101,7 +101,7 @@
                  <el-form-item label="镜像简介:">
                     <el-input v-model="Mirroring.introduction" type="textarea" rows="3" resize="none" maxlength='200'></el-input>
                 </el-form-item>
-              <el-form-item label="输入类型:">
+              <el-form-item label="镜像类型:">
               <el-select v-model="kind" @change="selectKind" >
                   <el-option v-for="item in optionsKind" :key="item.value" :label="item.label" :value="item.value" > </el-option>
               </el-select>
@@ -185,7 +185,7 @@ export default {
       files:[],
       showLoading:false,
       isHasData:true,//是否有数据 默认有数据
-      kind:-1,
+      kind:'',
       searchText:''
     };
   },
@@ -232,6 +232,7 @@ export default {
           obj.imageName = imageName;
           obj.page = page;
           obj.perPage = that.perPage;
+          console.log(obj)
           getImagequoteList(obj).then(res=> {
               if(res.code==200){
                   that.Imagelibraries = res.data.list;

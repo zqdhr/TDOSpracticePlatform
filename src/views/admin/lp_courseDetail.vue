@@ -20,7 +20,7 @@
                                 <p class="r_name">{{coursrName}}</p>
 
                                 <div class="d-cel">
-                                    共有{{chapter_number}}个章节，{{section_number}}个知识点
+                                    共有{{chapter_number}}个章节，{{small_section_number}}个知识点
                                 </div>
                                 <!--已开课才有这个信息-->
                                 <div class="d-cel clearfix">
@@ -53,10 +53,10 @@
 
 
                 <!--课程实验-->
-                <experiment :role="role" v-if="navindex==1" :status="status"></experiment>
+                <experiment :role="role" v-if="navindex==1" :status="status" :typeData = "type"></experiment>
 
                 <!--课程课件-->
-                <courseware v-if="navindex==2" :status="status"></courseware>
+                <courseware v-if="navindex==2" :status="status" :typeData = type></courseware>
 
                 <coursework v-if="navindex==3" :status="status"></coursework>
 
@@ -118,6 +118,7 @@ export default {
             chapter_number:'',
             section_number:'',
             numbers:'',
+            type:0,
 
            backNum:1,
            navindex:0,
@@ -181,7 +182,7 @@ export default {
                     that.picurl = that.$store.state.pic_Url+ res.data.pic_url;
                     that.coursrName = res.data.name;
                     that.chapter_number = res.data.chapter_number
-                    that.section_number = res.data.section_number;
+                    that.small_section_number = res.data.small_section_number;
                     if(res.data.start_at != null && res.data.end_at != null){
                         that.time = res.data.start_at.replace('T', ' ') + '-' + res.data.end_at.replace('T', ' ');
                     }else{

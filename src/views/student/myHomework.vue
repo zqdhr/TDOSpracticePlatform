@@ -150,7 +150,7 @@
         </p>
       </div>
       <div slot="footer" class="dialog-footer">
-        <a class="btnDefault" @click="confirm1()()">确 认</a>
+        <a class="btnDefault" @click="confirm1()">确 认</a>
         <a class="btnDefault" @click="isExistNoAnswar = false">取 消</a>
       </div>
     </el-dialog>
@@ -311,7 +311,7 @@ export default {
       let that = this;
       let obj = {};
       obj.perPage = that.perPage;
-      obj.page = 1;
+      obj.page = that.curPage;
       obj.courseId = that.level1Name;
       obj.userId = sessionStorage.getItem("userId");
       obj.chapterId = "";
@@ -344,7 +344,7 @@ export default {
       let that = this;
       let obj = {};
       obj.perPage = 100;
-      obj.page = that.curPage;
+      obj.page = 1;
       obj.assignmentId = val.assignmentId;
       obj.userId = sessionStorage.getItem("userId");
 
@@ -479,6 +479,7 @@ export default {
         let tmpDic = that.all_courseList[i];
         let dic = {};
         dic.question_id = tmpDic.id;
+        dic.status = 0;
         dic.assignment_id = that.momentJob.assignmentId;
         dic.user_id = sessionStorage.getItem("userId");
         if (tmpDic.type == 0) {
@@ -501,7 +502,7 @@ export default {
             that.noWorkStr = that.noWorkStr + ','+parseInt(i+1)
           }
         }
-        
+
       }
 
       if(that.noWorkStr != "")
@@ -522,7 +523,7 @@ export default {
             that.$toast("作业保存成功", 3000);
             that.isHomework = false;
             that.student_getJobList(0);
-            
+
           } else {
             that.$toast(res.message, 3000);
           }
@@ -554,7 +555,7 @@ export default {
         }
         dic.answer = tmpDic.studentAnswer;
         answerArr.push(dic);
-        
+
       }
 
       // obj.student_score_list = JSON.stringify(answerArr);

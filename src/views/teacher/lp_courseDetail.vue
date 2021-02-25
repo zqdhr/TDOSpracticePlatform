@@ -9,8 +9,8 @@
         </div>
         <div class="container container_info">
             <div class="info_box">
-               
-                
+
+
                 <!--头部课程详细信息-->
                 <div class="top_info ">
                      <div class="c_pic"><img :src="picurl"/></div>
@@ -34,12 +34,29 @@
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
                                 <div class="btnbox">
-                                    <a class="btnDefault pointer btn-course" @click="sure_newCourse=true" v-if="status != 1">确认开课</a>
+                                    <a class="btnDefault pointer btn-course" @click="type == 1?sure_newCourse=true:show_dialog_file = true" v-if="status != 1 || type == 0">{{type == 0?"确认备课":"确认开课"}}</a>
                                 </div>
                              </div>
                          </div>
                      </div>
                 </div>
+
+                      <!--备课弹出框-->
+                      <el-dialog
+
+                              :visible.sync="show_dialog_file"
+                              width="500px">
+                          <div slot="title" class="dialog_header">
+                              备课
+                          </div>
+                          <div class="confirm_dialog_body">
+                              <p class="dialog_mess"><span class="span_icon icon_waring">确认备课吗</span></p>
+                          </div>
+                          <div slot="footer" class="dialog-footer ">
+                              <a class="btnDefault" @click="archiveManagement">确 认</a>
+                              <a class="btnDefault"   @click="show_dialog_file = false">取 消</a>
+                          </div>
+                      </el-dialog>
 
                  <div class="detail_nav">
                     <a :class="{'cur':index==navindex}" v-for="(item,index) in menu" :key="index" @click="linkDetails(item,index)">{{item.name}}</a>
@@ -48,12 +65,12 @@
                  <!--课程大纲-->
                 <chapter :courseId="courseId" v-if="navindex==0" :chapters="courseChapters" :status="status"></chapter>
 
-                
+
                 <!--开课时间-->
                 <div v-if="navindex==1" class="courseTime_box">
                    <div class="time_table">
                        <div class="v-middle">
-                           <div class="din">  
+                           <div class="din">
                                <el-date-picker
                                 v-model="startTime"
                                 :picker-options="pickerOptionsStart"
@@ -65,7 +82,7 @@
                                 >
                                 </el-date-picker>
                             </div>
-                             <div class="din">  
+                             <div class="din">
                                <el-date-picker
                                 v-model="endTime"
                                 :picker-options="pickerOptionsEnd"
@@ -77,31 +94,31 @@
                                 </el-date-picker>
                             </div>
                             <div class="btnbox">
-                                <a class="btnDefault pointer" @click="modifyCourseTime()">确认</a>
+                                <a class="btnDefault pointer" @click="modifyCourseTime()" v-if="status ==0" >确认</a>
                             </div>
                        </div>
                    </div>
                 </div>
-                
+
                 <!--班级列表-->
                 <classList v-if="navindex==2" 
                     @sureCheckClass="sureCheckClass" 
                     :classesList = "classesList" 
                     :classList = "classList" 
                     @getCourseById="getCourseById" 
-                    @checkClass="checkClass(arguments)">
+                    @checkClass="checkClass(arguments)"
+                    :status = status>
                </classList>
+=
 
-        
-                
                 <!--课程实验-->
-                <experiment v-if="navindex==3" ></experiment>
-                
-                <!--课程课件-->
-                <courseware v-if="navindex==4"></courseware>
+                <experiment v-if="navindex==3" :typeData = type :status = status :course_info = myData></experiment>
 
-                <coursework v-if="navindex==5" timeStatus='1'></coursework>
-                
+                <!--课程课件-->
+                <courseware v-if="navindex==4" :typeData = type :status = status  ></courseware>
+
+                <coursework v-if="navindex==5" timeStatus='1' :noEdit = type :course_info = myData></coursework>
+
                 <!--老师课程开课确认框-->
                 <el-dialog
                     :visible.sync="sure_newCourse"
@@ -109,7 +126,7 @@
                     class="personDialog"
                 >
                     <div slot="title" class="dialog_header">课程开课</div>
-            
+
                     <div class="confirm_dialog_body" style="padding-bottom:20px">
                         <p class="dialog_mess">
                             <span class="span_icon icon_waring">该课程是否确定开课！</span>
@@ -139,14 +156,14 @@
                     </div>
                     <span slot="footer" class="dialog-footer">
                         <button class="btnDefault" @click="isEdit = false">取消</button>
-                        <button class="btnDefault" @click="isEdit = false">确认修改</button>
+                        <button class="btnDefault" @click="modifyCourseName">确认修改</button>
                     </span>
                     </el-dialog>
-  
-                
+
+
             </div>
 
-       
+
         </div>
     </div>
 </template>
@@ -157,7 +174,9 @@ import chapter from "@/components/d_chapter_box.vue";//课程大纲
 import experiment from "@/components/d_experiment_box.vue";//课程实验
 import courseware from "@/components/d_courseware_box.vue";//课程课件
 import coursework from "@/components/d_coursework_box.vue";//课程作业
-import {getCourseById,modifyCourseStatus,searchClass,searchClassCount} from '@/API/api';
+
+import {getCourseById,modifyCourseStatus,searchClass,searchClassCount,modifyCourseName,prepareCourse} from '@/API/api';
+
 export default {
     inject:['reload'],
     data(){
@@ -170,7 +189,8 @@ export default {
             sectionNumber:'',
             time:'',
             courseName:'',
-
+            type:'',
+            show_dialog_file:false,
 
            menu:[
                {name:'课程大纲'},
@@ -182,7 +202,7 @@ export default {
             ],
 
            picurl:require('../../assets/pic/course.png'),
-           
+
             startTime:'',//课程开始时间
             endTime:'',//课程结束时间
               // 开始日期 :picker-options 中引用
@@ -205,7 +225,11 @@ export default {
             isEdit:false ,//课程名称修改是否显示
             editValue:'',//
             sure_newCourse:false,//教师端是否开课弹窗显示
+
             classList:[],//该课程下班级列表
+
+            myData:{},
+
         }
     },
     components:{classList,chapter,experiment,courseware,coursework},
@@ -220,20 +244,23 @@ export default {
     beforeDestroy(){
         let that = this;
         that.$store.commit("updateTeacherNavindex",0);
-     
-    }, 
+
+    },
     mounted(){
         let that = this;
         that.show_courseOutline = sessionStorage.getItem('show_courseOutline')?JSON.parse(sessionStorage.getItem('show_courseOutline')):{};
          that.show_courseSection = sessionStorage.getItem('show_courseSection')?JSON.parse(sessionStorage.getItem('show_courseSection')):{};
+
         that.getCourseById();
-      
-           
-       
 
-     
+        if(that.backNum == 1){
+          that.type = 0
+        }else if(that.backNum == 2){
+          that.type = 1
+        }
+         that.getCourseById();
 
-      
+
     },
     methods:{
         getCourseById(){
@@ -245,12 +272,13 @@ export default {
             getCourseById(obj).then(res=> {
                 if(res.code==200){
                     console.log(res.data)
+                    that.courseDetail =res.data
                     that.courseName = res.data.name
                     that.introduction = res.data.introduction
                     that.numbers = res.data.numbers==null?that.numbers = 0:res.data.numbers
                     that.chapterNumber = res.data.chapter_number
-                    that.sectionNumber = res.data.section_number
-              
+                    that.sectionNumber = res.data.small_section_number
+
                     if(res.data.start_at !='' && res.data.end_at != '' && res.data.start_at !=null && res.data.end_at != null){
                         let ipos1 = res.data.start_at.indexOf("T");
                         let ipos2 = res.data.start_at.indexOf("T");
@@ -260,6 +288,7 @@ export default {
                     }else{
                         that.time = '暂无设置时间';
                     }
+                    that.myData = res.data;
                     that.course = res.data
                     that.status = res.data.status
 
@@ -280,6 +309,23 @@ export default {
                 }
             })
         },
+        //修改课程名称
+        modifyCourseName(){
+          let that = this;
+          let obj = {}
+          obj.course_id = this.$route.query.courseId
+          obj.course_name = that.editValue
+          obj.owner_id = sessionStorage.getItem("userId")
+          modifyCourseName(obj).then(res=> {
+            if(res.code==200){
+              that.isEdit = false
+              that.$toast('修改成功',2000)
+              that.reload();
+            }else{
+              that.$toast("修改失败",3000)
+            }
+          })
+        },
         //教师开课
         openClass(){
             let that = this;
@@ -293,20 +339,39 @@ export default {
             modifyCourseStatus(obj).then(res=> {
                 if(res.code==200){
                     that.$toast('开课成功',3000)
-                    
+
                     that.reload();
                 }else{
                     that.$toast(res.message,3000)
                 }
             })
         },
+
+      archiveManagement(){
+
+          let that = this;
+          let obj = {};
+          obj.user_id = sessionStorage.getItem("userId");
+          obj.course_id = this.$route.query.courseId;
+          prepareCourse(obj).then(res=> {
+              if(res.code==200){
+                  that.$toast("备课成功",2000)
+                that.$router.push({path:'/teacher/lessonPreparationManagement'}).catch((err)=>{
+                  console.log(err)
+                })
+                  // that.$store.commit("updateNavindex", 1);
+              }else{
+                  that.$toast("备课失败",3000)
+              }
+          })
+      },
         //章节下拉显示添加参数
         addParamShow(array){
             let that = this;
             array.sort(this.compare('order'))
             for(var i=0;i<array.length;i++){
-                
-             /*章节是否展开 */          
+
+             /*章节是否展开 */
             if( that.show_courseOutline.id == array[i].id){
                 this.$set(array[i], 'show', true);
             }else{
@@ -320,7 +385,7 @@ export default {
                 array[i].status = 1
                 array[i].sections.sort(this.compare('order'))
                 for(var j=0;j<array[i].sections.length;j++){
-                    
+
                     if(array[i].sections[j].id == that.show_courseSection.id){
                         this.$set(array[i].sections[j], 'show', true);
                     }else{
@@ -363,9 +428,9 @@ export default {
             }
             obj.start = that.startTime;
             //that.endTime=that.endTime.getFullYear() + '-' + (that.endTime.getMonth() + 1) + '-' + that.endTime.getDate();
-           
+
             obj.end = that.endTime;
-            obj.status = 0;
+            obj.status = '';
             obj.user_id_list = [];
             console.log(JSON.stringify(obj))
             modifyCourseStatus(JSON.stringify(obj)).then(res=> {
@@ -406,7 +471,7 @@ export default {
         back(){
             //返回课堂管理
             let that = this;
-            
+
             if(that.backNum==1){
                that.$router.push({path:'/teacher'}).catch((err)=>{
                    console.log(err)
@@ -437,9 +502,9 @@ export default {
           }
           that.showStudentList = false;
         },
-       
 
-       
+
+
         //班级选择确认
         sureCheckClass(){
             this.showStudentList = true
@@ -523,7 +588,7 @@ export default {
 
     },
     filters: {
-  
+
       }
 }
 </script>

@@ -26,7 +26,7 @@
                             <div class="info_box">
                                 <div class="cell-info boxsizing">
                                     <p class="p-name textline1">{{item.name}}</p>
-                                    <p class="p-text textline1">共有{{item.chapter_number}}个章节，共{{item.section_number}}个知识点</p>
+                                    <p class="p-text textline1">共有{{item.chapter_number}}个章节，共{{item.small_section_number}}个知识点</p>
                                     <p class="p-text textline1">{{item.introduction}}</p>
                                     <div class="data-box">
                                         <span class="s-time">

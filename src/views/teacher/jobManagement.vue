@@ -231,7 +231,7 @@
 <script>
 import noData from '@/components/noData.vue'
 import {
-  getCourseListByUserId,
+  getCourseListNoNameByUserId,
   getStudentJobList,
   getStudentJobDetail,
   submitCorrectJob,
@@ -296,7 +296,7 @@ export default {
   created() {
     let that = this;
     that.state = that.stateList[0];
-    that.getCourseListByUserId();
+    that.getCourseListNoNameByUserId();
     that.getStudentJobList(0);
   },
   methods: {
@@ -406,13 +406,14 @@ export default {
     },
 
     //课程列表
-    getCourseListByUserId(val) {
+    getCourseListNoNameByUserId(val) {
       let that = this;
       let obj = {};
       obj.per_page = 100;
       obj.page = 1;
       obj.user_id = sessionStorage.getItem("userId");
-      getCourseListByUserId(obj).then((res) => {
+      obj.name = "";
+      getCourseListNoNameByUserId(obj).then((res) => {
         // alert(JSON.stringify(res));
         if (res.code == 200) {
           that.level1List = res.data.list;

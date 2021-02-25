@@ -5,17 +5,17 @@
             <courseNav @getData = "getData"></courseNav>
             <div class="right_box">
                 <div class="add_btn_box">
-                    <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''&&role!=3">新增实验</a>
+                    <a class="btnDefault pointer" @click="click_new" v-if="sindex!=''&&role!=3&&(typeData==1 || status == 0)">新增实验</a>
                 </div>
                 <template v-if="isHasData">
                 <div class="list_box">
                     <ul class="list_ul clearfix " :class="{'student_list_ul':role==3}">
                         <li v-for="(item,index) in experimentList" :key="index">
                             <div class="info pointer"  @click="link_Detail(item.id)">
-                                <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3 && isdeleteStatus == 1">
+                                <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3 && isdeleteStatus == 1 &&(typeData==1 || status == 0)">
                                    <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="getDelete(item.id)"></a>
                                 </el-tooltip>
-                                <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3 && role!=1">
+                                <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3 && role!=1 && isdeleteStatus == 1 &&(typeData==1 || status == 0)">
                                    <a class="icon icon_set pointer" @click.stop="setinfo(item),experiment = item"></a>
                                 </el-tooltip>
                                  <div class="pic">
@@ -23,7 +23,7 @@
                                 </div>
                                 <p class="p-text textline1">{{item.name}}</p>
                                 <p class="p-text textline1">实验时长：{{item.duration}}分钟</p>
-                                <p class="p-text textline1">截止时间：{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'暂无设置时间'}}</p>
+                                <p class="p-text textline1" v-if="role != 1">实验报告截至时间：{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'未设置'}}</p>
                             </div>
                         </li>
                     </ul>
@@ -46,7 +46,7 @@
          <!--新增实验弹窗-->
          <newdialog  ref="newdialog"  @findAllByType='sectionExperment(arguments)'></newdialog>
          <experimentDetail ref="experimentDetail"></experimentDetail>
-        
+
          <!--是否删除-->
         <el-dialog :visible.sync="isDelete" width="500px">
             <div slot="title" class="dialog_header">请注意!</div>
@@ -65,9 +65,9 @@
         <el-dialog :visible.sync="isSet" width="500px" @close="time='',reportinfo='',endTime=''">
             <div slot="title" class="dialog_header">请设置时间!</div>
             <div class="setform">
-                
+
                 <div class="set-col">
-                    <p class="ptitle">课程时间：</p>
+                    <p class="ptitle">实验时长：</p>
                     <div class="dselect">
                         <el-select v-model="time" placeholder="请选择" style="width:100%">
                             <el-option
@@ -90,9 +90,10 @@
                     <div class="dselect">
                         <el-date-picker style="width:100%" :picker-options="pickerOptions"
                             v-model="endTime"
+                            @change="changeDate"
                             type="date"
-                            format="yyyy-MM-dd" 
-                            value-format="yyyy-MM-dd" 
+                            format="yyyy-MM-dd"
+                            value-format="yyyy-MM-dd"
                             placeholder="选择日期">
                         </el-date-picker>
                     </div>
@@ -103,7 +104,7 @@
                 <a class="btnDefault" @click="isSet = false">取 消</a>
             </div>
         </el-dialog>
-        
+
 
     </div>
 </template>
@@ -159,26 +160,47 @@ export default {
             experiment:{},
             total:1,
             count:0,
+            type:'',
             isHasData:true,//是否有数据 默认有数据
             isdeleteStatus:0,//节下面才能删除实验，默认节下面是1
+            authority:0
         }
     },
     props:{
         role:{
             default:0, //默认是0传过来3表示是学生点击课程详情
+        },
+        status:{
+          default:0,
+        },
+        typeData:{
+          default:0,
+        },
+        course_info: {},
+    },
+    watch: {
+      status: {
+        handler:function(val, olVal) {
+
+
         }
+
+
+      },
     },
     created(){
         let that = this;
         that.time = that.timeOptions[1].value
         that.sid = 1
-       
+        
+
     },
     components:{
         courseNav,newdialog,experimentDetail,nodata
     },
     mounted(){
         let that = this;
+        alert("sss"+that.role)
         that.getAllExperiment();
     },
     methods:{
@@ -191,7 +213,6 @@ export default {
             obj.page = page;
             findAllByCategoryId(obj).then(res=> {
                 if(res.code==200){
-
                     that.total = res.data.total
                     res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.experimentList = res.data.list;
@@ -252,16 +273,22 @@ export default {
         //设置截至时间
         updateExperiment(){
             let that = this
-            that.isSet=false
             let obj={}
-            if (that.endTime=='') {
-                  return  that.$toast('请选择实验报告截止时间',2000)
+            if (that.endTime==''||that.endTime==null) {
+               return  that.$toast('请选择实验报告截止时间',2000)
             }
+            if (new Date(that.endTime).getTime()<new Date(that.course_info.start_at.substring(0, that.course_info.end_at.indexOf("T"))).getTime()) {
+                 return  that.$toast('实验报告截止时间不能小于课程开始时间',2000)
+            }
+            if (new Date(that.endTime).getTime()>new Date(that.course_info.end_at.substring(0, that.course_info.end_at.indexOf("T"))).getTime()) {
+                 return  that.$toast('实验报告截止时间不能大于课程结束时间',2000)
+            }
+
             obj.id=that.experiment.id
             obj.duration = that.time
             obj.end_at = that.endTime
             obj.report_requirement = that.reportinfo
-            
+            that.isSet=false
             console.log(obj)
             updateExperiment(obj).then(res=>{
                 if (res.code==200) {
@@ -274,11 +301,11 @@ export default {
                     }else if(that.sindex == "" && that.cindex == ''){
                         that.findAllByType(that.$route.query.courseId,1,8,1)
                     }
-                 
+
                 } else {
                     this.$toast(res.message,2000)
                 }
-               
+
             })
 
 
@@ -301,16 +328,27 @@ export default {
             let that = this;
             that.sid = that.sindex;
             console.log(that.cindex+'节'+that.sindex)
-            
+
             that.$refs.newdialog.click_new(that.sid,that.count,that.sindex);
-            
+
         },
+         changeDate(val) {
+            let that = this;
+            if (val!=null) {
+                that.endTime=val
+            }else {
+                that.endTime=''
+            }
+            console.log(that.endTime) 
+            // alert(that.value2.length);
+         },
          //查看实验详情
         link_Detail(id){
           let that = this;
           that.isNewExperiment = true;
           if(that.cindex!=''&&that.sindex!=''){
-          that.$refs.experimentDetail.click_Detail(id);
+              console.log()
+          that.$refs.experimentDetail.click_Detail(id,that.$route.query.courseId);
 }
         },
         getData(data){
@@ -336,17 +374,20 @@ export default {
         //设置需要的参数复制
         setinfo(item){
             let that = this
+            if(that.course_info.end_at == "" || that.course_info.end_at ==null){
+                return that.$toast("该课程尚未设置开课时间，请先进行设置！", 3000);
+            }
             that.isSet=true
             for (let index = 0; index < that.timeOptions.length; index++) {
               if (that.timeOptions[index].value==item.duration) {
                   that.time = that.timeOptions[index].value
                   break
               }
-                
+
             }
             that.endTime=item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):''
             that.reportinfo = item.report_requirement
-
+            console.log('课程详情'+that.course_info.end_at)
         },
     }
 }
@@ -364,11 +405,11 @@ export default {
 /*列表*/
 .list_box{ overflow: hidden; min-height:500px;
     .list_ul{ margin-left: -10px; margin-right: -10px;
-        li{width:25%;min-height: 40px;float: left; margin-bottom: 20px; }    
+        li{width:25%;min-height: 40px;float: left; margin-bottom: 20px; }
         .pic{width:100%; margin-bottom: 10px;
           .pic_box{padding-bottom:50%; background:blanchedalmond;.borderRadius(5px,5px,0,0); position: relative;}
           img{width:100%;height:100%;position: absolute;}
-        }  
+        }
         /*.trans{position: absolute;width:100%;height: 100%;left:0px;top:0px; background: rgba(0,0,0,.1);} */
         .info{margin: 0 10px; min-height: 30px;background: @background; padding: 40px 0 20px 0; position:relative;}
         .p-text{font-size: 16px;color:@fontColor; text-align: center; padding: 2px 8px; line-height:20px;}

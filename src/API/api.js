@@ -76,6 +76,11 @@ var getCourseListByUserId = function(data){
 	return axios.get('/get_course_list_by_user_id?user_id='+data.user_id+'&page='+data.page+'&per_page='+data.per_page+'&name='+data.search)
 }
 
+//老师获取自己的课程（备课管理的列表,不含名称）
+var getCourseListNoNameByUserId = function(data){
+  return axios.get('/get_course_list_by_user_id?user_id='+data.user_id+'&page='+data.page+'&per_page='+data.per_page)
+}
+
 //通过id获取课程
 var getCourseById = function(data){
 	return axios.get('/get_course_by_id?course_id='+data.course_id)
@@ -472,6 +477,21 @@ var getChangedCourseList = function(data){
   return axios.get('/get_changed_course_list?name='+data.name+ '&per_page=' + data.per_page+ '&page=' + data.page)
 }
 
+//修改课程名称
+var modifyCourseName = function(data){
+  return axios.post('/modify_course_name', data,{headers: {'Content-Type':'application/json'}})
+}
+//重新开启镜像
+var createAndRunContainers = function(data){
+	return axios.get('/createAndRunContainers?userId='+data.userId+'&experimentId='+data.experimentId+'&courseId='+data.courseId+'&imageId='+data.imageId)
+
+}
+
+//管理员教师删除作业
+var deleteAssignmentById = function(data){
+  return axios.post('/deleteAssignmentById', data,{headers: {'Content-Type':'application/json'}})
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -485,8 +505,8 @@ export{
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
 	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment,modifyAssignmentStatusById,downloadCode,modifyExpiredCourseStatus
-	,getChangedCourseList,
-  getStudentsByClasseId
+	,getChangedCourseList,modifyCourseName,getCourseListNoNameByUserId,deleteAssignmentById,
+  getStudentsByClasseId,createAndRunContainers
 }
 
 function getJson (data) {

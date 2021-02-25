@@ -39,7 +39,7 @@
           <a
             class="btnDefault pointer"
             @click="click_new"
-            v-if="(sindex != '' || cindex != '') &&role!=3"
+            v-if="(sindex != '' || cindex != '') &&role!=3 && (typeData==1 || status == 0)"
             >新增课件</a
           >
         </div>
@@ -53,7 +53,7 @@
                     effect="dark"
                     content="删除"
                     placement="top"
-                    v-if="role != 3 && status == 1"
+                    v-if="role != 3 && isEdit == 1 && (typeData==1 || status == 0)"
                   >
                     <a
                       class="icon icon_close pointer"
@@ -297,6 +297,7 @@ export default {
       momentMod: {},
 
       options: [
+        { value: "", label: "全部" },
         { value: "0", label: "内置课件" },
         { value: "1", label: "教师上传" },
       ],
@@ -305,26 +306,32 @@ export default {
         { value: "0", label: "视频" },
         { value: "1", label: "文档" },
       ],
-      cate: "内置课件", //课件分类默认内置课件
+      cate: "", //课件分类默认内置课件
       type: "全部", //课件类型默认全部
       experimentList: [],
       perPage: 8, //8个实验一页
       curPage: 1, //设备列表
       isDelete: false, //是否删除弹出框是否显示
       total: 1,
-      kind: 0,
+      kind: '',
       typeware: "",
       cindex: "",
       sindex: "",
       isHasData: true, //是否有数据 默认有数据
       count: "", //课程下章，节已经存在的课件数量
       isdeleteId: "", //删除的课件id
-      status:0
+      isEdit:0
     };
   },
   props: {
     role: {
       default: 0, //默认是0传过来3表示是学生点击课程详情
+    },
+    typeData: {
+      default: 0,
+    },
+    status: {
+      default: 0,
     },
   },
   components: {
@@ -375,11 +382,9 @@ export default {
         obj.remark_at = that.location;
       }
 
-      // alert(JSON.stringify(obj))
       stduentUploadNotes(obj)
         .then((res) => {
           if (res.code == 200) {
-            // alert(JSON.stringify(res));
             that.titleText = "";
             that.contentText = "";
             that.isRecordNotes = false;
@@ -389,11 +394,9 @@ export default {
           }
         })
         .catch((err) => {
-          alert(JSON.stringify(err));
         });
     },
-    playItem(item) {
-    //   alert(JSON.stringify(item));
+    playItem(item) {;
       let that = this;
       let num = item.kind;
       that.momentMod = item;
@@ -451,8 +454,7 @@ export default {
     },
     getAllCoursewareByCourseId() {
       let that = this;
-    //   alert(that.perPage);
-      that.getCoursewareByCourseId(that.perPage, 1, '',0);
+      that.getCoursewareByCourseId(that.perPage, 1, that.kind,that.type);
     },
     getCoursewareByChapterId(chapterId, kind, type, perPage, page) {
       let that = this;
@@ -470,6 +472,9 @@ export default {
             ? (that.isHasData = false)
             : (that.isHasData = true);
           that.experimentList = res.data.list;
+                  for(let i = 0;i<that.experimentList.length;i++){
+                       that.experimentList[i].size = (that.experimentList[i].size/(1024 * 1024)).toFixed(2) + "MB"
+                    }
         } else {
           this.$toast(res.message, 2000);
         }
@@ -492,6 +497,9 @@ export default {
             ? (that.isHasData = false)
             : (that.isHasData = true);
           that.experimentList = res.data.list;
+                      for(let i = 0;i<that.experimentList.length;i++){
+                       that.experimentList[i].size = (that.experimentList[i].size/(1024 * 1024)).toFixed(2) + "MB"
+                    }
         } else {
           this.$toast(res.message, 2000);
         }
@@ -508,12 +516,15 @@ export default {
       that.cindex = data.cindex;
       that.sindex = data.sindex;
       console.log(that.sindex + that.cindex);
+      that.cate = ''
+      that.kind = ''
+      that.type = ''
       if (data.sindex == "") {
-        that.status = 1
-        that.getCoursewareByChapterId(data.cindex, "", 0, that.perPage, 1);
+        that.isEdit = 1
+        that.getCoursewareByChapterId(data.cindex, that.kind, that.type, that.perPage, 1);
       } else {
-        that.status = 1
-        that.getCoursewareBySectionId(data.sindex, "", 0, that.perPage, 1);
+        that.isEdit = 1
+        that.getCoursewareBySectionId(data.sindex, that.kind, that.type, that.perPage, 1);
       }
     },
     //底部分页
@@ -625,9 +636,34 @@ export default {
           that.count = res.data.total;
           that.total = res.data.total;
           res.data.total == 0?(that.isHasData = false):(that.isHasData = true);
+          if(that.sindex == "fb0a1080-b11e-427c-8567-56ca6105ea07"){
+            that.sindex = ''
+          }
+          if(that.cindex == "fb0a1080-b11e-427c-8567-56ca6105ea07"){
+            that.cindex = ''
+          }
           //that.experimentList = res.data.list;
           //删除成功，节课件查询
-          that.getCoursewareBySectionId(that.sindex,that.kind,'',that.perPage,1);
+          // that.getCoursewareBySectionId(that.sindex,that.kind,'',that.perPage,1);
+          if (that.sindex == "" && that.cindex == "") {
+            that.getCoursewareByCourseId(that.perPage, 1, that.typeware, that.cate);
+          } else if (that.sindex == "" && that.cindex != "") {
+            that.getCoursewareByChapterId(
+              that.cindex,
+              that.typeware,
+               that.cate,
+              that.perPage,
+              1
+            );
+          } else {
+            that.getCoursewareBySectionId(
+              that.sindex,
+              that.typeware,
+               that.cate,
+              that.perPage,
+              1
+            );
+          }
         } else {
           this.$toast(res.message, 2000);
         }

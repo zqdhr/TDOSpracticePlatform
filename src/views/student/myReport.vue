@@ -106,7 +106,7 @@
                         <div class="cell pname">{{item.name}}</div>
                      </div>
                      <div class="d2 d15">
-                        <div class="cell textline1">{{item.end_at?item.end_at:'暂未设置'}}</div>
+                        <div class="cell textline1">{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'暂未设置'}}</div>
                      </div>
                      <div class="d3 d18">
                         <div class="cell">{{item.isCorrect==1?item.score:'待老师批阅'}}</div>
@@ -401,6 +401,7 @@ export default {
             obj.endTime = ''
             obj.perPage=that.perPage
             obj.page = page
+            console.log(obj)
             findByExperimentReportAll(obj).then(res=>{
                 if (res.code==200) {
                     console.log(res.data)
