@@ -43,6 +43,7 @@
                 type="text"
                 autocomplete="off"
                 v-model="searchText"
+                v-emoji
               />
               <a class="searchBtn pointer" @click="student_getJobList(1)"></a>
             </div>
@@ -542,6 +543,7 @@ export default {
         let tmpDic = that.all_courseList[i];
         let dic = {};
         dic.question_id = tmpDic.id;
+        dic.status = 0;
         dic.assignment_id = that.momentJob.assignmentId;
         dic.user_id = sessionStorage.getItem("userId");
         if (tmpDic.type == 0) {

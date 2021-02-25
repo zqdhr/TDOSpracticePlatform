@@ -23,8 +23,8 @@
                     <div class="fr">
                        <a class="btnDefault pointer abtn"  @click="linkNewCourse">新建课程</a>
                        <div class="d-serach">
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="paramData.name"/>
-                            <a class="searchBtn pointer" @click="searchCourse"></a>
+                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="paramData.name"  @keyup.enter="onEnterPress(paramData.name)"/>
+                            <a class="searchBtn pointer" @click="searchCourse" ></a>
                         </div>
                     </div>
                 </div>
@@ -191,6 +191,9 @@ export default {
         selectCourse(){
             let that = this;
             that.coursetype ==0 ? that.getAdminUnpublishedCourseList() : that.getExpirCourseList();that.dataMess = '暂无归档课程'
+        },
+        onEnterPress(searchKeyword){
+            this.getAdminCourseList(searchKeyword)
         },
         searchCourse(){
             let that = this;

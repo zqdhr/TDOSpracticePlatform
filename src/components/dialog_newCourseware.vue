@@ -393,7 +393,7 @@ export default {
       let that = this;
       console.log(that.searchText)
       that.kind = that.kind == '2' ? '' : that.kind;
-      that.findCourseWareAll(10, 1, that.kind, that.type, that.searchText, that.category_id, '', '',that.cateId);
+      that.findCourseWareAll(10, 1, that.kind, that.type, that.searchText, that.category_id, that.cindex, that.sindex,that.cateId);
     },
     //本地上传确认上传
     confirmLocalUpload() {

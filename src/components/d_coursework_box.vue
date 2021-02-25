@@ -749,6 +749,7 @@ export default {
     addQuestionBack(flag) {
       // alert("111");
       let that = this;
+      that.isShow = false;
       let obj = {};
       let list = [];
       // alert(that.assignmentId);
