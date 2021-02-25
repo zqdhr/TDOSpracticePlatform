@@ -3,7 +3,7 @@
         <div class="container">
             <div class="pageTab">
                 <div class="mess">
-                    当前位置：<a class="pointer" @click="back">课程管理</a> > <span>{{courseName}}</span>
+                    当前位置：<a class="pointer" @click="back"> {{backNum==1?'开课管理':'备课管理'}}</a> > <span>{{courseName}}</span>
                 </div>
             </div>
         </div>
@@ -41,22 +41,22 @@
                      </div>
                 </div>
 
-                      <!--备课弹出框-->
-                      <el-dialog
+                <!--备课弹出框-->
+                <el-dialog
 
-                              :visible.sync="show_dialog_file"
-                              width="500px">
-                          <div slot="title" class="dialog_header">
-                              备课
-                          </div>
-                          <div class="confirm_dialog_body">
-                              <p class="dialog_mess"><span class="span_icon icon_waring">确认备课吗</span></p>
-                          </div>
-                          <div slot="footer" class="dialog-footer ">
-                              <a class="btnDefault" @click="archiveManagement">确 认</a>
-                              <a class="btnDefault"   @click="show_dialog_file = false">取 消</a>
-                          </div>
-                      </el-dialog>
+                        :visible.sync="show_dialog_file"
+                        width="500px">
+                    <div slot="title" class="dialog_header">
+                        备课
+                    </div>
+                    <div class="confirm_dialog_body">
+                        <p class="dialog_mess"><span class="span_icon icon_waring">确认备课吗</span></p>
+                    </div>
+                    <div slot="footer" class="dialog-footer ">
+                        <a class="btnDefault" @click="archiveManagement">确 认</a>
+                        <a class="btnDefault"   @click="show_dialog_file = false">取 消</a>
+                    </div>
+                </el-dialog>
 
                  <div class="detail_nav">
                     <a :class="{'cur':index==navindex}" v-for="(item,index) in menu" :key="index" @click="linkDetails(item,index)">{{item.name}}</a>
@@ -109,7 +109,7 @@
                     @checkClass="checkClass(arguments)"
                     :status = status>
                </classList>
-=
+
 
                 <!--课程实验-->
                 <experiment v-if="navindex==3" :typeData = type :status = status :course_info = myData></experiment>
@@ -336,6 +336,13 @@ export default {
             obj.start = '';
             obj.end = '';
             obj.status = 1;
+            if (that.time == "暂无设置时间") {
+                return that.$toast("请先设置开课时间", 3000);
+            }
+
+            if (that.numbers == 0) {
+                return that.$toast("请先设置学生信息", 3000);
+            }
             modifyCourseStatus(obj).then(res=> {
                 if(res.code==200){
                     that.$toast('开课成功',3000)
@@ -356,9 +363,10 @@ export default {
           prepareCourse(obj).then(res=> {
               if(res.code==200){
                   that.$toast("备课成功",2000)
-                that.$router.push({path:'/teacher/lessonPreparationManagement'}).catch((err)=>{
+                  that.$router.push({path:'/teacher/lessonPreparationManagement'}).catch((err)=>{
                   console.log(err)
                 })
+                  that.$store.commit("updateNavindex", 1);
                   // that.$store.commit("updateNavindex", 1);
               }else{
                   that.$toast("备课失败",3000)
