@@ -46,6 +46,11 @@
               @click="reset_homework"
               v-if="canEdit == 1 && noEdit != 0"
             ></a>
+            <a
+              class="edit delete"
+              @click="isConfirmDeleteWork = true"
+              v-if="canEdit == 1 && noEdit != 0"
+            ></a>
           </div>
           <div class="course_list">
             <el-scrollbar style="height: 100%">
@@ -160,6 +165,23 @@
         <a class="btnDefault" @click="isConfirmWork = false">取 消</a>
       </div>
     </el-dialog>
+
+        <!--删除作业弹框-->
+    <el-dialog :visible.sync="isConfirmDeleteWork" width="600px">
+      <div slot="title" class="dialog_header">请注意!</div>
+      <div class="confirm_dialog_body">
+        <p class="dialog_mess">
+          <span class="span_icon icon_waring"
+            >确定要删除当前作业吗？</span
+          >
+        </p>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <a class="btnDefault" @click="deleteAssignmentById">确 定</a>
+        <a class="btnDefault" @click="isConfirmDeleteWork = false">取 消</a>
+      </div>
+    </el-dialog>
+
 
     <!--新增作业弹窗-->
     <el-dialog
@@ -381,6 +403,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      isConfirmDeleteWork:false,
       setNameOrTimeTitle: "请设置作业名称",
       canEdit: 0,
       nowData: {},
@@ -545,11 +568,10 @@ export default {
           return that.$toast("作业截止时间不为空", 2000);
         }
 
-        if(that.course_info.end_at == "" || that.course_info.end_at ==null)
-        {
+        if (that.course_info.end_at == "" || that.course_info.end_at == null) {
           return that.$toast("该课程尚未设置起止时间，请先进行设置！", 3000);
         }
-        
+
         let dates1 = new Date(that.homework.endTime);
         let dates2 = new Date(that.course_info.end_at);
         let dates3 = new Date(that.course_info.start_at);
@@ -795,24 +817,24 @@ export default {
     //删除当前作业
     deleteAssignmentById() {
       let that = this;
-      
+
       let obj = {};
       let arr = [];
       arr.push(that.assignmentId);
       obj.assignment_id_list = arr;
+      that.isConfirmDeleteWork = false
+
       deleteAssignmentById(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
           this.$toast("删除作业成功！", 2000);
           //这边要刷新下作业
           that.getData(that.nowData);
-        
         } else {
           // alert("确认失败");
           this.$toast(res.message, 2000);
         }
       });
     },
-
 
     //选择分类(选择，简答)
     selectCate(val) {
@@ -878,8 +900,7 @@ export default {
         if (that.homework.endTime == "" || that.homework.endTime == null) {
           return that.$toast("作业截止时间不为空", 2000);
         }
-        if(that.course_info.end_at == "" || that.course_info.end_at ==null)
-        {
+        if (that.course_info.end_at == "" || that.course_info.end_at == null) {
           return that.$toast("该课程尚未设置起止时间，请先进行设置！", 3000);
         }
 
@@ -1076,10 +1097,11 @@ export default {
   }
   .edit {
     position: absolute;
-    right: 0px;
+    right: 40px;
     top: 50%;
     margin-top: -9px;
   }
+  .delete{right:0px;background: url(../assets/img/d_coursework_del.png) center no-repeat;}
 }
 .add_btn_box {
   text-align: center;
