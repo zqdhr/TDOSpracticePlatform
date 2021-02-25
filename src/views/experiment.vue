@@ -45,7 +45,7 @@
                    <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>  
                 </div>
             
-                <div class="operation_box"  ref="imageWrapper" v-show="isOpen " id="Screenshots" 
+                <div class="operation_box"  ref="imageWrapper" v-show="isOpen&&item.containerId==tagid " id="Screenshots" 
                      v-for="(item,iindex) in containers" :key="iindex"> 
                      <template v-if="item.url.indexOf('html')>0">
                          <div class="operation_box" id="screen" ></div>
