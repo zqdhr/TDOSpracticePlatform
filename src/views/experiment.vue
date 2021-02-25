@@ -124,7 +124,7 @@
             </div>
             </el-dialog>
 
-            <transLoading mess="正在关闭实验，请稍候..." v-if="remove"></transLoading>
+            <transLoading :mess="mess" v-if="remove"></transLoading>
 
             <el-dialog
             :visible.sync="isEdit"
@@ -221,6 +221,7 @@ export default {
             isEdit:false,//点击文件下载名称输入显示
             editValue:'',//下载要输入的文件名称
             tagid:'',
+            mess:'正在关闭实验，请稍候...',
            
         }
     },
@@ -329,9 +330,11 @@ export default {
             let that = this
             if (that.type==2) {
                 //重启实验
-                that.execContainer(2)
+                that.mess='正在重新开始实验，请稍候...'
+                that.closeContainers()
                 
             }else if (that.type==1) {       
+                that.mess='正在关闭实验，请稍候...'
                 clearInterval(that.timeInterval)
                 that.timeInterval=null
                 sessionStorage.removeItem(that.userid+that.experimentId);
@@ -396,18 +399,61 @@ export default {
                   that.click_back()
              })
         },
-        //重启镜像
-        restartContainers(){
-            let that=this
-            that.remove=true              
+        //关闭镜像
+        closeContainers(){
+            let that =this
+            that.remove=true
             if (that.authority==0) {
-                   //学生关闭实验 
-                that.execContainer(1)
+            //学生关闭实验 
+            let obj = {}
+            let containerId = []
+            for (let index = 0; index <  that.containers.length; index++) {
+                containerId.push( that.containers[index].containerId)
+            }
+            that.isOpen = true
+            obj.containerId = containerId
+            obj.type = 1
+            execContainer(obj).then(res=>{
+                if (res.code==200) {
+                    console.log(res.data)
+                    that.restartContainers()
+                } else {
+                    console.log(res.message)
+                }       
+            })
             }else{
              //教师与管理员关闭实验
-                that.removeContainers()
+            let obj = {}
+            let containerId = []
+            for (let index = 0; index <  that.containers.length; index++) {
+                containerId.push( that.containers[index].containerId)
             }
-        createAndRunContainers
+            obj.containerIds = containerId
+            removeContainers(obj).then(res=>{
+            console.log('返回参数'+res)
+            that.restartContainers()
+            })
+            }
+        },
+        //重启镜像
+        restartContainers(){
+            let that=this                 
+            let obj={}
+            obj.userId = that.userid
+            obj.experimentId = that.experimentId
+            obj.courseId = that.courseId
+            obj.imageId=that.container.imageId
+            createAndRunContainers(obj).then(res=>{
+            that.remove=false   
+            if (res.code==200) {
+                console.log(res.data)
+            } else {
+                console.log(res.message)
+            }
+            })
+           .catch((error) => {
+             that.remove=false   
+            })
         },
         //添加实验报告
         insertExperimentRepor(hasReport){

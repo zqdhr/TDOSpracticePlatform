@@ -297,6 +297,7 @@ export default {
       momentMod: {},
 
       options: [
+        { value: "", label: "全部" },
         { value: "0", label: "内置课件" },
         { value: "1", label: "教师上传" },
       ],
@@ -305,7 +306,7 @@ export default {
         { value: "0", label: "视频" },
         { value: "1", label: "文档" },
       ],
-      cate: "内置课件", //课件分类默认内置课件
+      cate: "", //课件分类默认内置课件
       type: "全部", //课件类型默认全部
       experimentList: [],
       perPage: 8, //8个实验一页

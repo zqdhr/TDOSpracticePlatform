@@ -197,7 +197,7 @@ export default {
       //     this.$toast(res.message,2000)
       //   }
       // })
-      alert("11")
+        that.curPage=1
        that.getAllExperiment(that.customClass,that.i_customClass,that.searchTx,1,that.sindex);
     },
     //点击选择实验

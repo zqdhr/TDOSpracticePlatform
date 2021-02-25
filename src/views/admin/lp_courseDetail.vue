@@ -182,7 +182,7 @@ export default {
                     that.picurl = that.$store.state.pic_Url+ res.data.pic_url;
                     that.coursrName = res.data.name;
                     that.chapter_number = res.data.chapter_number
-                    that.section_number = res.data.section_number;
+                    that.section_number = res.data.small_section_number;
                     if(res.data.start_at != null && res.data.end_at != null){
                         that.time = res.data.start_at.replace('T', ' ') + '-' + res.data.end_at.replace('T', ' ');
                     }else{

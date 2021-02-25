@@ -232,6 +232,7 @@ export default {
           obj.imageName = imageName;
           obj.page = page;
           obj.perPage = that.perPage;
+          console.log(obj)
           getImagequoteList(obj).then(res=> {
               if(res.code==200){
                   that.Imagelibraries = res.data.list;

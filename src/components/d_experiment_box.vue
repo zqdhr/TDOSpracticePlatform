@@ -23,7 +23,7 @@
                                 </div>
                                 <p class="p-text textline1">{{item.name}}</p>
                                 <p class="p-text textline1">实验时长：{{item.duration}}分钟</p>
-                                <p class="p-text textline1" v-if="role != 1">截止时间：{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'暂无设置时间'}}</p>
+                                <p class="p-text textline1" v-if="role != 1">实验报告截至时间：{{item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):'未设置'}}</p>
                             </div>
                         </li>
                     </ul>
@@ -90,6 +90,7 @@
                     <div class="dselect">
                         <el-date-picker style="width:100%" :picker-options="pickerOptions"
                             v-model="endTime"
+                            @change="changeDate"
                             type="date"
                             format="yyyy-MM-dd"
                             value-format="yyyy-MM-dd"
@@ -174,7 +175,8 @@ export default {
         },
         typeData:{
           default:0,
-        }
+        },
+        course_info: {},
     },
     watch: {
       status: {
@@ -190,6 +192,7 @@ export default {
         let that = this;
         that.time = that.timeOptions[1].value
         that.sid = 1
+        
 
     },
     components:{
@@ -270,16 +273,22 @@ export default {
         //设置截至时间
         updateExperiment(){
             let that = this
-            that.isSet=false
             let obj={}
-            if (that.endTime=='') {
-                  return  that.$toast('请选择实验报告截止时间',2000)
+            if (that.endTime==''||that.endTime==null) {
+               return  that.$toast('请选择实验报告截止时间',2000)
             }
+            if (new Date(that.endTime).getTime()<new Date(that.course_info.start_at.substring(0, that.course_info.end_at.indexOf("T"))).getTime()) {
+                 return  that.$toast('实验报告截止时间不能小于课程开始时间',2000)
+            }
+            if (new Date(that.endTime).getTime()>new Date(that.course_info.end_at.substring(0, that.course_info.end_at.indexOf("T"))).getTime()) {
+                 return  that.$toast('实验报告截止时间不能大于课程结束时间',2000)
+            }
+
             obj.id=that.experiment.id
             obj.duration = that.time
             obj.end_at = that.endTime
             obj.report_requirement = that.reportinfo
-
+            that.isSet=false
             console.log(obj)
             updateExperiment(obj).then(res=>{
                 if (res.code==200) {
@@ -323,6 +332,16 @@ export default {
             that.$refs.newdialog.click_new(that.sid,that.count,that.sindex);
 
         },
+         changeDate(val) {
+            let that = this;
+            if (val!=null) {
+                that.endTime=val
+            }else {
+                that.endTime=''
+            }
+            console.log(that.endTime) 
+            // alert(that.value2.length);
+         },
          //查看实验详情
         link_Detail(id){
           let that = this;
@@ -355,6 +374,9 @@ export default {
         //设置需要的参数复制
         setinfo(item){
             let that = this
+            if(that.course_info.end_at == "" || that.course_info.end_at ==null){
+                return that.$toast("该课程尚未设置开课时间，请先进行设置！", 3000);
+            }
             that.isSet=true
             for (let index = 0; index < that.timeOptions.length; index++) {
               if (that.timeOptions[index].value==item.duration) {
@@ -365,7 +387,7 @@ export default {
             }
             that.endTime=item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):''
             that.reportinfo = item.report_requirement
-
+            console.log('课程详情'+that.course_info.end_at)
         },
     }
 }

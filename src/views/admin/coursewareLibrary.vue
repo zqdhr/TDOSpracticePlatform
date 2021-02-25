@@ -174,9 +174,9 @@ import pdf from 'vue-pdf'
 export default {
     data(){
         return{
-           inplaceholder:'请输入课件名',
+           inplaceholder:'请输入课件名称',
             catoptions:[
-                {value: '0',label: '内置课件'},{value: '1',label: '教师上传'}
+              {value: '',label: '全部'},  {value: '0',label: '内置课件'},{value: '1',label: '教师上传'}
             ],
             typeList:[
                 {value: '',label: '全部'},{value: '1',label: '文档'},{value: '0',label: '视频'}
@@ -206,7 +206,7 @@ export default {
                 perPage:15,
                 page:1,
                 kind:'', //种类 0视频 1pdf
-                type:0 ,//0内置课件 1教师上传
+                type:'' ,//0内置课件 1教师上传
                 category_id:'',//自定义种类
                 c_category_id:'', //自定义子种类
                 name:'', //搜索的关键词
@@ -251,7 +251,7 @@ export default {
       newdialog,nodata,videoPlayer ,pdf
     },
     created(){
-        this.paramData.type = this.options[0].value;//默认选中内置课件
+        this.paramData.type = this.catoptions[0].value;//默认选中内置课件
         this.paramData.kind = this.typeList[0].value;//课件类型默认选中全部
 
         //获取课件列表

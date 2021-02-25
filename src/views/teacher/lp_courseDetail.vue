@@ -106,7 +106,7 @@
 
 
                 <!--课程实验-->
-                <experiment v-if="navindex==3" :typeData = type :status = status></experiment>
+                <experiment v-if="navindex==3" :typeData = type :status = status :course_info = myData></experiment>
 
                 <!--课程课件-->
                 <courseware v-if="navindex==4" :typeData = type :status = status  ></courseware>
