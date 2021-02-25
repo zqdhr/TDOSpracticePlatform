@@ -16,9 +16,9 @@
         </div>
         <div class="fr">
           <a class="btnDefault pointer abtn" @click="click_Release(1,'')">一键释放</a>
-          
+
           <!--
-          <div class="d-serach"> 
+          <div class="d-serach">
             <input :placeholder="inplaceholder" type="text" autocomplete="off" />
             <a class="searchBtn pointer"></a>
           </div>
@@ -32,7 +32,7 @@
           <ul class="default_List">
              <li v-for="(item,index) in machineList" :key="index">
                  <div class="info-box ">
-                   
+
                      <div class="d-icon"></div>
                       <p class="p_id textline1">ID：{{item.container_id}}</p>
                       <p class="p_id textline1">用户：{{item.user_name}}</p>
@@ -61,10 +61,10 @@
 
       </div>
     </div>
-   
+
     <!--虚拟机内存释放弹出框-->
     <el-dialog
-      
+
       :visible.sync="show_Release"
       width="500px">
       <div slot="title" class="dialog_header">
@@ -80,7 +80,7 @@
       </div>
         <div slot="footer" class="dialog-footer " v-if="release_success">
           <a class="btnDefault"  @click="successConfirm">确 认</a>
-    
+
       </div>
       </el-dialog>
 
@@ -182,7 +182,7 @@ export default {
             console.log('管理员')
             that.getRunContainerList(0,'',1);
         }
-     
+
     },
     //班级选择事件
     selectClass(val) {
@@ -231,7 +231,7 @@ export default {
       if(num==1){
         console.log(that.type)
         that.type == 1?that.dialog_machine ='确定要一键释放所有老师内存吗？':that.type==2?that.dialog_machine ='确定要一键释放所有学生内存吗？':that.dialog_machine ='确定要一键释放所有内存吗？'
-        
+
       }else{
           that.id = id
         that.dialog_machine ='确定要释放ID：'+id+'的虚拟机内存吗？'
@@ -246,6 +246,8 @@ export default {
             stopRunContainerList().then((res) => {
                if (res.code == 200) {
                    that.release_success = true
+                   that.isClose=false;
+                   that.getAllRunContainer();
                } else {
                    that.$toast(res.message, 3000);
                }
@@ -260,7 +262,9 @@ export default {
             execContainer(obj).then(res=>{
                 that.id = ''
                 if (res.code==200) {
-                    that.isClose=false
+                    that.show_Release = false;
+                    that.isClose=false;
+                    that.getAllRunContainer();
                 } else {
                     that.isClose=false
                     that.$toast(res.message,3000)
@@ -277,7 +281,7 @@ export default {
        that.show_Release = false
       that.release_success = false
     }
-   
+
   },
 };
 </script>

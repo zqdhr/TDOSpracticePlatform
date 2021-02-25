@@ -58,7 +58,7 @@
                   v-model="form.introduction"
                   type="textarea"
                   :rows=3
-                   resize="none" 
+                   resize="none"
                    maxLength = '200'
                 ></el-input>
               </el-form-item>
@@ -161,7 +161,7 @@
               :header-cell-class-name="cellClass"
 
               ref="multipleTable"
-              
+
             >
               <el-table-column type="selection" width="55"> </el-table-column>
 
@@ -260,7 +260,7 @@
              <div class="btnbox">
                 <a class="btnDefault pointer" @click="confirmNewExperimentBef">确认新增</a>
             </div>
-           
+
         </div>
 
       </div>
@@ -309,8 +309,8 @@ export default {
                 },{
                 value: '120',
                 label: '120分钟'
-                }      
-            ],  
+                }
+            ],
       curIndex:1,
       innerVisible:false,
       form: {
@@ -323,11 +323,11 @@ export default {
         cover: "",
         cateId:'',
         images:[]
-        
-        
-        
+
+
+
       },
- 
+
       category:[],//实验所属分类
       categoryOptions: [],
       multipleSelection:[],
@@ -395,7 +395,7 @@ export default {
   methods: {
 
     cellClass (row) {
-      
+
       if (row.columnIndex === 0) {//将第一行消除
         return 'disabledCheck'
       }
@@ -408,7 +408,7 @@ export default {
                   that.categoryOptions = res.data;
                   for (let index = 0; index < that.categoryOptions.length; index++) {
                     that.findChildCategory(that.categoryOptions[index].id)
-                    
+
                   }
               }else{
                   this.$toast(res.message,2000)
@@ -428,16 +428,16 @@ export default {
           let obj={}
           obj.parent_category_id = cateId
           findChildCategory(obj).then(res=> {
-                if(res.code==200){                  
-               let catesons = res.data      
-                   if(catesons.length>0){ 
-                  for(let i = 0; i <  that.categoryOptions.length; i++) {                    
-                    if(that.categoryOptions[i].id === cateId) {                    
+                if(res.code==200){
+               let catesons = res.data
+                   if(catesons.length>0){
+                  for(let i = 0; i <  that.categoryOptions.length; i++) {
+                    if(that.categoryOptions[i].id === cateId) {
                         that.$set(that.categoryOptions[i], 'cates', catesons) // right
                        break;
                      }
-                    }     
-                  }       
+                    }
+                  }
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -484,14 +484,14 @@ export default {
         this.$nextTick(function(){
            this.Imagelibraries.forEach((item,i)=>{
                this.multipleSelection.forEach((multItem,j)=>{
-                   if(this.Imagelibraries[i].id == this.multipleSelection[j].id){                  
+                   if(this.Imagelibraries[i].id == this.multipleSelection[j].id){
                       this.$refs.multipleTable.toggleRowSelection(this.Imagelibraries[i],true);
-                    
+
                   }
                })
           })
         })
-       
+
     },
     /*tab选择 */
     handleSelectionChange(val) {
@@ -566,7 +566,7 @@ export default {
           console.log(this.files);
           if (response.code == 200) {
             this.$message.success("文件上传成功");
-  
+
           } else {
             this.$message.error("文件上传失败");
           }
@@ -613,22 +613,22 @@ export default {
           return  that.$toast('请输入实验名称',2000)
         }
         if (that.form.cateId=='') {
-          return that.$toast('请选择所属分类',2000)      
+          return that.$toast('请选择所属分类',2000)
         }
         if (that.form.duration=='') {
-          return that.$toast('请选择实验时长',2000)      
+          return that.$toast('请选择实验时长',2000)
         }
         if (that.form.introduction=='') {
-          return that.$toast('请输入实验描述',2000)      
+          return that.$toast('请输入实验描述',2000)
         }
         if (that.files.length==0) {
-          return that.$toast('请上传实验封面',2000)      
+          return that.$toast('请上传实验封面',2000)
         }
         if (that.yourContent=='') {
-          return that.$toast('请输入实验步骤',2000)      
+          return that.$toast('请输入实验步骤',2000)
         }
         if (that.form.images.length==0) {
-          return that.$toast('请至少选择一台虚拟机',2000)      
+          return that.$toast('请至少选择一台虚拟机',2000)
         }
         that.innerVisible = true
     },
@@ -641,14 +641,14 @@ export default {
         upload(imageUpload).then(res=>{
           if (res.code==200) {
             console.log(res.data)
-            that.form.cover=res.data.name  
-            that.commitExprement()      
+            that.form.cover=res.data.name
+            that.commitExprement()
           }else {
             that.$toast(res.message,3000)
          }
       })
 
-        
+
 
 
 
@@ -680,9 +680,9 @@ export default {
         obj.introduce = that.form.introduction
         obj.images =that.form.images
         console.log(obj)
-        
+
         insertExperiment(obj).then(res=>{
-           if(res.code==200){                  
+           if(res.code==200){
                 that.isNew_experiment = false
                 that.$parent.findExperiment(1)
                 that.innerVisible = false
@@ -695,7 +695,7 @@ export default {
       onEditorBlur(){}, // 失去焦点事件
       onEditorFocus(){}, // 获得焦点事件
 
-    
+
   },
 };
 </script>
@@ -738,7 +738,7 @@ export default {
     img { width: 320px; position:absolute;left:50%;top:50%;
            position:absolute;left:50%;top:50%;
         transform:translate(-50%,-50%);
-        -ms-transform:translate(-50%,-50%);	
+        -ms-transform:translate(-50%,-50%);
         -moz-transform:translate(-50%,-50%);
         -webkit-transform:translate(-50%,-50%);
         -o-transform:translate(-50%,-50%);
@@ -772,7 +772,7 @@ export default {
     }
 }
 /*pp_complete */
-.pp_complete{ 
+.pp_complete{
     .btnbox{padding-top:30px;}
     .confirm_info{min-height:300px; margin: 0 60px;border:1px solid @border; font-size: 18px; color: @tabcolor; padding:20px 0;}
     .d-confirm{width:70%;margin: 0 auto;}
@@ -783,7 +783,7 @@ export default {
     img{
         position:absolute;left:50%;top:50%; max-width: 100%;
         transform:translate(-50%,-50%);
-        -ms-transform:translate(-50%,-50%);	
+        -ms-transform:translate(-50%,-50%);
         -moz-transform:translate(-50%,-50%);
         -webkit-transform:translate(-50%,-50%);
         -o-transform:translate(-50%,-50%);
