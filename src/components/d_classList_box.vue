@@ -17,7 +17,7 @@
                         </span>
                         <p class="p_name">{{item.name}}</p>
                         <div class="line"></div>
-                        <p class="p_number">(共有{{item.number}}名学员)</p>
+                        <p class="p_number">(共有{{item.count}}名学员)</p>
                     </div>
                 </li>
             </ul>

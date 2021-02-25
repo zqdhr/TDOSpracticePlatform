@@ -44,14 +44,15 @@
                 <div class="operation_box 22"  v-if="!isOpen"  ref="imageWrapper" >
                    <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>  
                 </div>
-            
-                <div class="operation_box"  ref="imageWrapper" v-show="isOpen&&item.containerId==tagid " id="Screenshots" 
+               
+                <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" id="Screenshots" 
                      v-for="(item,iindex) in containers" :key="iindex"> 
+                
                      <template v-if="item.url.indexOf('html')>0">
                          <div class="operation_box" id="screen" ></div>
                      </template>
                     <template v-else> 
-                        <xterm :socketURI="socketURI" ></xterm>
+                        <xterm :socketURI="socketURI" v-if="socketURI!=''"></xterm>
                     </template> 
                    
                 </div>
