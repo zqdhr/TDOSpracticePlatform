@@ -107,12 +107,24 @@ export default {
       state: (state) => state,
     }),
   },
+  watch: { 
+      // 监听路由变化，路由变化的时候请求页面数据
+      '$route': function() {
+           let that = this;
+          if(this.$route.meta.navindex!=null){
+            that.$store.commit("updateNavindex", this.$route.meta.navindex);
+          }
+          that.navindex = this.$route.meta.navindex
+      }
+  },
   created(){
     let that = this;
-    if(this.$route.meta.navindex){
+    if(this.$route.meta.navindex!=null){
        that.$store.commit("updateNavindex", this.$route.meta.navindex);
     }
+    that.navindex = this.$route.meta.navindex
     that.getUserInfo()
+
   },
   mounted(){
       let that = this;
@@ -132,7 +144,6 @@ export default {
          that.menus = that.$store.state.stu_menus;
       }
 
-      console.log(this.$route)
     
   },
   methods: {
@@ -140,8 +151,7 @@ export default {
       let that = this;
       that.$store.commit("updateNavindex", num);
       let tmp = that.menus;
-      if (!item.children) {
-    
+      if (!item.children) {    
         that.$router.push({ path: item.path }).catch((err) => {
           console.log( err);
         });
@@ -149,8 +159,10 @@ export default {
     },
     children_linPath(item,index){
       let that = this;
-
-      that.$store.commit("updateNavindex", index);
+      let num = sessionStorage.getItem('p_p-authority');
+      if(num==2){
+         that.$store.commit("updateNavindex", index);
+      }
       that.$router.push({ path: item.path }).catch((err) => {
           console.log( err);
         });

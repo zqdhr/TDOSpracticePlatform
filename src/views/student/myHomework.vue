@@ -45,7 +45,10 @@
                 v-model="searchText"
                 v-emoji
               />
-              <a class="searchBtn pointer" @click="student_getJobList(1)"></a>
+              <a
+                class="searchBtn pointer"
+                @click="(curPage = 1), student_getJobList(1)"
+              ></a>
             </div>
           </div>
         </div>
@@ -79,7 +82,7 @@
               <div class="cell pname">{{ item.assignmentName }}</div>
             </div>
             <div class="d2 d15">
-              <div class="cell textline1">{{ item.endAt | dateFormatYMD}}</div>
+              <div class="cell textline1">{{ item.endAt | dateFormatYMD }}</div>
             </div>
             <div class="d3 d18">
               <div class="cell">
@@ -140,14 +143,15 @@
       </div>
     </el-dialog>
 
-
-        <!--点击保存按钮弹出确认框-->
+    <!--点击保存按钮弹出确认框-->
     <el-dialog :visible.sync="isExistNoAnswar" width="600px">
       <div slot="title" class="dialog_header">请注意!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <!--成功span的class为icon_success-->
-          <span class="span_icon icon_success">作业第{{noWorkStr}}尚未作答，是否保存？</span>
+          <span class="span_icon icon_success"
+            >作业第{{ noWorkStr }}尚未作答，是否保存？</span
+          >
         </p>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -210,15 +214,12 @@
               作答：{{ item.studentAnswer }}
             </p>
 
-            <p
-              class="answer_box colorRed p_correct_text"
-              v-if="curStatus == 2"
-            >
+            <p class="answer_box colorRed p_correct_text" v-if="curStatus == 2">
               正确答案：{{ item.answer }}
             </p>
 
             <div class="score_box" v-if="curStatus == 2">
-              本题得分：<span>{{item.score}}</span>
+              本题得分：<span>{{ item.score }}</span>
             </div>
             <!--选中的状态添加class   li_radio_h-->
             <span
@@ -256,9 +257,9 @@ export default {
   },
   data() {
     return {
-      noWorkStr:"",
-      isExistNoAnswar:false,
-      searchText:"",
+      noWorkStr: "",
+      isExistNoAnswar: false,
+      searchText: "",
       isSubmitJob: false,
       totalNum: 0,
       perPage: 10, //用户列表每页条数
@@ -318,7 +319,7 @@ export default {
       obj.chapterId = "";
       obj.sectionId = "";
       obj.name = "";
-      if(val == 1){
+      if (val == 1) {
         obj.name = that.searchText;
       }
       obj.status = that.state == "-1" ? "" : that.state;
@@ -327,6 +328,9 @@ export default {
       student_getJobList(obj)
         .then((res) => {
           if (res.code == 200) {
+            if (val == 1) {
+              that.searchText = "";
+            }
             that.totalNum = res.data.total;
             that.jobList = res.data.list;
             console.log(JSON.stringify(res));
@@ -406,11 +410,13 @@ export default {
     changeState(val) {
       console.log("选择状态");
       let that = this;
+      that.curPage = 1;
       that.student_getJobList(0);
     },
     //选择课程
     changeLevel1(val) {
       let that = this;
+      that.curPage = 1;
       that.student_getJobList(0);
     },
 
@@ -426,7 +432,7 @@ export default {
         that.curStatus = 0;
       } else if (item.score == -1 && item.status == 1) {
         that.curStatus = 1;
-      } else if(item.score != -1 && item.status == 1){
+      } else if (item.score != -1 && item.status == 1) {
         that.curStatus = 2;
       }
 
@@ -495,21 +501,18 @@ export default {
         dic.answer = tmpDic.studentAnswer;
         answerArr.push(dic);
 
-        if(dic.answer == null || dic.answer == "")
-        {
-          if(that.noWorkStr == ""){
-            that.noWorkStr = parseInt(i+1);
-          }else{
-            that.noWorkStr = that.noWorkStr + ','+parseInt(i+1)
+        if (dic.answer == null || dic.answer == "") {
+          if (that.noWorkStr == "") {
+            that.noWorkStr = parseInt(i + 1);
+          } else {
+            that.noWorkStr = that.noWorkStr + "," + parseInt(i + 1);
           }
         }
-
       }
 
-      if(that.noWorkStr != "")
-      {
+      if (that.noWorkStr != "") {
         //显示提示
-        return that.isExistNoAnswar = true;
+        return (that.isExistNoAnswar = true);
       }
 
       // obj.student_score_list = JSON.stringify(answerArr);
@@ -524,7 +527,6 @@ export default {
             that.$toast("作业保存成功", 3000);
             that.isHomework = false;
             that.student_getJobList(0);
-
           } else {
             that.$toast(res.message, 3000);
           }
@@ -557,7 +559,6 @@ export default {
         }
         dic.answer = tmpDic.studentAnswer;
         answerArr.push(dic);
-
       }
 
       // obj.student_score_list = JSON.stringify(answerArr);

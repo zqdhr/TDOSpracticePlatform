@@ -309,7 +309,7 @@ export default {
       if(that.upload_falg==3){
         return this.$toast("上传的视频不能大于500M", 3000);
       }
-
+      
       if(that.upload_falg==0){
           upload(obj).then(res=>{
             if (res.code==200) {

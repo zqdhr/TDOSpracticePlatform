@@ -29,7 +29,7 @@
                 autocomplete="off"
                 v-model="searchRemark"
               />
-              <a class="searchBtn pointer" @click="getNote(searchRemark)"></a>
+              <a class="searchBtn pointer" @click="curPage =1, getNote(searchRemark)"></a>
             </div>
           </div>
         </div>
@@ -410,6 +410,9 @@ export default {
       getStudentsNotes(obj)
         .then((res) => {
           if (res.code == 200) {
+            if(val != ""){
+              that.searchRemark = "";
+            }
             that.total = res.data.total;
             that.notesList = res.data.list;
 
@@ -462,6 +465,7 @@ export default {
     //选择课程
     changeLevel1(val) {
       let that = this;
+      that.curPage = 1;
       that.getNote("");
       that.selectNotes = [];
       that.isShowCheck = false;

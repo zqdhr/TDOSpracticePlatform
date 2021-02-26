@@ -112,7 +112,7 @@ export default {
       dialog_machine:'',
        isHasData:true,//是否有数据 默认有数据
         type1:'',
-        state:'',//1一件释放 2释放单个
+        flag_state:'',//1一件释放 2释放单个
         container:{}
     };
   },
@@ -231,7 +231,7 @@ export default {
       that.show_Release = true
       that.release_success = false
       //that.type = num;
-      that.state=num
+      that.flag_state=num
       if(num==1){
         console.log(that.type)
         that.type == 1?that.dialog_machine ='确定要一键释放所有老师内存吗？':that.type==2?that.dialog_machine ='确定要一键释放所有学生内存吗？':that.dialog_machine ='确定要一键释放所有内存吗？'
@@ -245,7 +245,7 @@ export default {
     //虚拟机释放确认
     confiremRelease(){
         let that = this;
-        if(that.state == 1){
+        if(that.flag_state == 1){
             that.type    = ''
             stopRunContainerList().then((res) => {
                if (res.code == 200) {
