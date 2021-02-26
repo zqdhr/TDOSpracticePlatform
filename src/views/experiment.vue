@@ -37,7 +37,6 @@
             <div class="left-noVNc boxsizing " :class="{'changeWidth':isHide}">
                 <div class="l-nav" >
                   <span class="pointer" @click="isOpen?(openXuniji(item), virtualMachine=index,container=item,tagid=item.containerId):''" :class="{'active':virtualMachine==index}" v-for="(item,index) in containers" :key="index">虚拟机{{index+1}}{{item.status==1?'(运行中)':'(已创建)'}}</span>
-            
                   <a class="icon_jm pointer" @click="isHide=!isHide" v-if="isHide"></a>
                 </div>
 
@@ -47,13 +46,11 @@
                
                 <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" id="Screenshots" 
                      v-for="(item,iindex) in containers" :key="iindex"> 
-                
-                     <template v-if="item.url.indexOf('html')>0 && virtualMachine==iindex">
-                         <div class="operation_box" id="screen" ></div>
-                     </template>
-                    <template v-else> 
-                        <xterm :socketURI="socketURI" v-if="socketURI!='' && virtualMachine==iindex"></xterm>
-                    </template> 
+                   
+                   <div class="operation_box" id="screen" v-if="item.url.indexOf('html')>0 && virtualMachine==iindex && containerstate=='2'" ></div>          
+                  
+                   <xterm :socketURI="item.url" v-show="virtualMachine==iindex && item.url.indexOf('html')==-1 && containerstate=='1'"></xterm>
+                   
                    
                 </div>
 
@@ -197,7 +194,7 @@ export default {
 
              term: null,
 
-             socketURI:'ws://192.168.1.28:10003',
+             socketURI:'',
 
              //socketURI:'http://192.168.1.54:2222/ssh/host/192.168.1.54/5001'
             userid:'',
@@ -523,6 +520,7 @@ export default {
           
             const url =uri
             this.$nextTick(function(){
+                console.log(document.getElementById('screen'));
             that.rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
                 credentials: {password: '123456' }
@@ -659,11 +657,13 @@ export default {
             //const iframeHtml = this.$refs.frameWrapper.contentWindow // 获取iframe内容
             //const iframeBody = iframeHtml.document.getElementsByTagName('body')[0]
             //that.$refs.imageWrapper
-            html2canvas(that.$refs.imageWrapper, opts).then((canvas) => {
-                var url = canvas.toDataURL('image/png')
-                that.dataURL = url
-                that.yourContent =that.yourContent+ '<p><img src="'+that.dataURL+'"/></p>'
-                console.log(that.yourContent)
+            that.$nextTick(function(){
+                html2canvas(that.$refs.imageWrapper, opts).then((canvas) => {
+                    var url = canvas.toDataURL('image/png')
+                    that.dataURL = url
+                    that.yourContent =that.yourContent+ '<p><img src="'+that.dataURL+'"/></p>'
+                    console.log(that.yourContent)
+                })
             })
         },
 
@@ -674,14 +674,19 @@ export default {
             if (that.isOpen) {
                 if (item.url.indexOf("vnc.html")==-1) {
                      that.containerstate='1'
-                    that.socketURI = item.url
+
+                     //that.socketURI = item.url
                    
                 }else {
                     that.containerstate='2'
-                    if (that.rfb=='') {
-                      that.connectVnc(item.url)
-                    }
                     that.connect_url = item.url
+  
+                     that.$nextTick(function(){
+                           that.connectVnc(item.url)
+                     })
+                     
+               
+                    
                   
                 }
             }
