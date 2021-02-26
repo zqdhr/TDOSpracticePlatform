@@ -17,7 +17,7 @@
                      <div class="c_info">
                          <div class="right_info">
                              <div class="info_detail_box">
-                                <p class="r_name">{{courseName}}<img class="pointer course_edit" @click="isEdit=true" src="../../assets/img/icon_edit.png"/></p>
+                                <p class="r_name">{{courseName}}<img class="pointer course_edit" v-if="status ==0" @click="isEdit=true" src="../../assets/img/icon_edit.png"/></p>
 
                                 <div class="d-cel">
                                     共有{{chapterNumber}}个章节，{{sectionNumber}}个知识点

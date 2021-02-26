@@ -12,7 +12,7 @@
                     <ul class="list_ul clearfix " :class="{'student_list_ul':role==3}">
                         <li v-for="(item,index) in experimentList" :key="index">
                             <div class="info pointer"  @click="link_Detail(item.id)">
-                                <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if="role!=3 && isdeleteStatus == 1 &&(typeData==1 || status == 0)">
+                                <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if=" isdeleteStatus == 1?showDelete():false">
                                    <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="getDelete(item.id)"></a>
                                 </el-tooltip>
                                 <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3 && role!=1 && isdeleteStatus == 1 &&(typeData==1 || status == 0)">
@@ -254,6 +254,34 @@ export default {
           that.isDelete = true;
           that.experimentId = id;
         },
+         showDelete(){
+      let that = this
+
+      console.log(sessionStorage.getItem('p_p-authority')+that.status+that.typeData)
+      if (sessionStorage.getItem('p_p-authority')==0) {
+        // 学生直接没有删除按钮
+        return false
+      }else {
+        
+          if (sessionStorage.getItem('p_p-authority')==2) {
+            //管理员判断status
+            if (that.status==0) {
+              return true
+            }else {
+              return false
+            }
+          }else {
+            //判断教师端
+            if (that.status==0&&that.typeData==1) {
+              return true
+            }else {
+              return false
+            }
+          }
+        
+
+      }
+    },
         //删除实验
         deleteExperiment(){
             let that = this

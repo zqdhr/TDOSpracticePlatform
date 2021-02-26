@@ -53,7 +53,7 @@
                     effect="dark"
                     content="删除"
                     placement="top"
-                    v-if="showDelete(isEdit)"
+                    v-if="isEdit==1?showDelete():false"
                   >
                     <a
                       class="icon icon_close pointer"
@@ -674,13 +674,15 @@ export default {
       let that = this;
       that.$refs.newdialog.click_new(that.cindex, that.sindex, that.count);
     },
-    showDelete(isEdit){
+    showDelete(){
       let that = this
+
+      console.log(sessionStorage.getItem('p_p-authority')+that.status+that.typeData)
       if (sessionStorage.getItem('p_p-authority')==0) {
         // 学生直接没有删除按钮
         return false
       }else {
-        if (isEdit==1) {
+        
           if (sessionStorage.getItem('p_p-authority')==2) {
             //管理员判断status
             if (that.status==0) {
@@ -690,15 +692,13 @@ export default {
             }
           }else {
             //判断教师端
-            if (that.status==0&&that.typeData==0) {
+            if (that.status==0&&that.typeData==1) {
               return true
             }else {
               return false
             }
           }
-        }else {
-          return false
-        }
+        
 
       }
     },
