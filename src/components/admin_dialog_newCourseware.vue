@@ -5,7 +5,7 @@
       class="dialog_pagination add_local_courseware"
       :visible.sync="isnewFilter"
       width="500px"
-    
+
     >
       <!--本地上传-->
       <template >
@@ -53,7 +53,7 @@
               </el-form-item>
             </el-form>
           </div>
-         
+
         </div>
         <div slot="footer" class="dialog-footer">
           <a class="btnDefault pointer" @click="confirmLocalUpload">确认上传</a>
@@ -82,8 +82,8 @@ export default {
         { value: "2", label: "文档" },
         { value: "3", label: "视频" },
       ],
-      
-    
+
+
       total: 100,
       perPage: 8, //8个实验一页
       curPage: 1, //设备列表
@@ -108,7 +108,7 @@ export default {
       time:'',
       addCategoryID:'',//自定义分类ID
       loading:false,//课件库是否在上传
-      upload_falg:0,
+      upload_falg:0, //文件是否上传 0可以上传 1文件格式不对  2pdf文件太大 3视频文件太大
     };
   },
   components: {
@@ -177,7 +177,7 @@ export default {
       that.chooseList = [];
       this.findParentCategory()
     },
-  
+
     //选择分类
     selectCate(val) {
       console.log(val);
@@ -191,7 +191,7 @@ export default {
         this.$toast("请选择自定义分类", 3000);
         return;
       }
-      
+
       if(that.files.length==0){
         this.$toast("请先上传课件", 3000);
         return;
@@ -202,7 +202,7 @@ export default {
         that.upload(that.files[0].file)
       }
     },
-  
+
     //弹窗关闭
     closeDialog() {
       let that = this;
@@ -219,7 +219,7 @@ export default {
       console.log("选择自定义分类");
     },
     //数组新增checked元素
-    
+
     handleChange(val){
       let that = this;
       //  console.log(value.length==1?value[0]:value[1]);
@@ -227,8 +227,8 @@ export default {
       that.addCategoryID = val.length == 1 ? val[0] : val[1];
 
     },
-  
-   
+
+
     //上传前的钩子函数
     inputFilter(newFile, oldFile, prevent) {
       let that = this;
@@ -237,23 +237,23 @@ export default {
           newFile.name.lastIndexOf(".") + 1
         );
         that.extension = extension;
-        const isLt100M = newFile.size / 1024 / 1024 < 1;
-        const isLt500M = newFile.size / 1024 / 1024 < 5;
+        const isLt100M = newFile.size / 1024 / 1024 < 100;
+        const isLt500M = newFile.size / 1024 / 1024 < 500;
 
         if (extension != "pdf" && extension != "mp4") {
           this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
           this.upload_falg = 1;
-          return 
+          return
         }
-        if(extension == 'pdf' && !isLt100M){       
+        if(extension == 'pdf' && !isLt100M){
           this.$toast("上传的pdf不能大于100M", 3000);
           this.upload_falg = 2;
-          return 
+          return
         }
-        if(extension == 'mp4' && !isLt500M){       
+        if(extension == 'mp4' && !isLt500M){
              this.$toast("上传的视频不能大于500M", 3000);
              this.upload_falg = 3;
-             return 
+             return
         }
       }
     },
@@ -297,7 +297,7 @@ export default {
       //alert("asddd"+type)
       obj.append('type',type)
       obj.append('file',file)
-    
+
       //alert(that.files[0].file.name)
       if(that.upload_falg==1){
         return this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
@@ -309,7 +309,7 @@ export default {
       if(that.upload_falg==3){
         return this.$toast("上传的视频不能大于500M", 3000);
       }
-      
+
       if(that.upload_falg==0){
           upload(obj).then(res=>{
             if (res.code==200) {
@@ -342,8 +342,8 @@ export default {
           }).catch(res => {console.log(JSON.stringify(res))})
       }
 
-      
-      
+
+
 
 
     },

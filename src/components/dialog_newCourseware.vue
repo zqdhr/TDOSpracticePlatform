@@ -240,7 +240,8 @@ export default {
       noDataType:1,  //没有数据展示的样式
       dataMess:'当前暂无课件',
       hasData:false,
-      loading:false,//课件库是否在上传
+      loading:false,//课件库是否在上传,
+      upload_falg:0, //文件是否上传 0可以上传 1文件格式不对  2pdf文件太大 3视频文件太大
     };
   },
   components: {
@@ -400,14 +401,12 @@ export default {
     //本地上传确认上传
     confirmLocalUpload() {
       let that = this;
-      console.log(that.files.length)
       if (that.files.length==0) {
         return that.$toast('请选择课件',2000)
 
       }
 
-      that.isnewFilter = false
-      console.log("111")
+      
       if (!this.$refs.upload.active) {
         that.upload(that.files[0].file)
       }
@@ -538,14 +537,19 @@ export default {
         const isLt500M = newFile.size / 1024 / 1024 < 500;
 
         if (extension != "pdf" && extension != "mp4") {
-          this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
-          return prevent();
+           this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
+           this.upload_falg = 1;
+           return 
         }
         if(extension == 'pdf' && !isLt100M){
-          return  this.$toast("上传的pdf不能大于100M", 3000);
+          this.$toast("上传的pdf不能大于100M", 3000);
+          this.upload_falg = 2;
+          return 
         }
         if(extension == 'mp4' && !isLt500M){
-          return  this.$toast("上传的视频不能大于500M", 3000);
+            this.$toast("上传的视频不能大于500M", 3000);
+            this.upload_falg = 3;
+           return 
         }
       }
     },
@@ -582,6 +586,17 @@ export default {
       let type = that.extension == 'pdf' ?2 : 1
       obj.append('type', type)
       obj.append('file', file)
+      
+      if(that.upload_falg==1){
+        return this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
+      }
+
+      if(that.upload_falg==2){
+        return   this.$toast("上传的pdf不能大于100M", 3000);
+      }
+      if(that.upload_falg==3){
+        return this.$toast("上传的视频不能大于500M", 3000);
+      }
       that.loading = true;
       upload(obj).then(res => {
         if (res.code == 200) {
