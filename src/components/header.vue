@@ -18,7 +18,7 @@
             :class="{ cur: index == state.navindex }"
             v-for="(item, index) in menus"
             :key="index"
-            
+
           >
             <a @click="linPath(item, index)" >{{ item.text }}</a>
             <ul v-if="item.children" class="children-ul" @mouseleave="isShow=false">
@@ -34,10 +34,10 @@
 
   </div>
   <!--修改密码弹出框-->
-  <el-dialog 
+  <el-dialog
       :visible.sync="resetDialog"
       width="500px"
-      class="personDialog"   
+      class="personDialog"
       @close="password='',confirmPassword=''"
     >
     <div slot="title" class="dialog_header">密码修改</div>
@@ -46,12 +46,12 @@
         <el-form ref="form" label-width="100px">
           <el-form-item label="输入新密码">
             <el-input onKeyUp="value=value.replace(/[\W]/g,'')"
-                      type="password" 
-                      placeholder="请输入新密码" 
+                      type="password"
+                      placeholder="请输入新密码"
                       maxlength="20"
                       v-model="password"></el-input>
           </el-form-item>
-         
+
           <el-form-item label="确认密码">
             <el-input  onKeyUp="value=value.replace(/[\W]/g,'')" type="password" placeholder="请输入确认密码" maxlength="20" v-model="confirmPassword"></el-input>
           </el-form-item>
@@ -63,12 +63,12 @@
         <button class="btnDefault" @click="editPassword">确认</button>
       </span>
     </el-dialog>
-    
+
     <!--退出登录弹出框-->
-    <el-dialog 
+    <el-dialog
       :visible.sync="logoutDialog"
       width="500px"
-      class="personDialog"   
+      class="personDialog"
     >
     <div slot="title" class="dialog_header">退出登录</div>
 
@@ -83,12 +83,12 @@
       </span>
     </el-dialog>
   </div>
-      
-  
+
+
 </template>
 <script>
 import { mapState } from "vuex";
-import {updateUserPassword} from '@/API/api';
+import {updateUserPassword,layout} from '@/API/api';
 export default {
   data() {
     return {
@@ -118,22 +118,22 @@ export default {
       let that = this;
       let num = sessionStorage.getItem('p_p-authority');
       //console.log(this.$route.meta.navindex)
- 
+
       if(num==2){
          that.menus = that.$store.state.ad_menus;
-      
+
       }
       if(num==1){
         that.menus = that.$store.state.tea_menus;
-        
-       
+
+
       }
       if(num==0){
          that.menus = that.$store.state.stu_menus;
       }
 
       console.log(this.$route)
-    
+
   },
   methods: {
     linPath(item, num) {
@@ -141,7 +141,7 @@ export default {
       that.$store.commit("updateNavindex", num);
       let tmp = that.menus;
       if (!item.children) {
-    
+
         that.$router.push({ path: item.path }).catch((err) => {
           console.log( err);
         });
@@ -158,37 +158,44 @@ export default {
     //退出登录
     logOut(){
       let that = this;
-     
-      window.sessionStorage.removeItem('store')
-      window.sessionStorage.removeItem('userId')
-      let authority = sessionStorage.getItem('p_p-authority') ;
-      if(authority==2){
-          window.sessionStorage.removeItem('p_p-admin_userName')
-          window.sessionStorage.removeItem('p_p-authority')
-      }  
-      if(authority==1){
-          window.sessionStorage.removeItem('p_p-teacher_userName')
-          window.sessionStorage.removeItem('p_p-authority')
-      }
-      that.$store.commit("updateNavindex", 0);
-      that.$router.push({ path:'/login'}).catch((err) => {
-        console.log(err);
-      });
+      let obj = {};
+      obj.user_id = sessionStorage.getItem("userId");
+      layout(obj).then(res => {
+        if (res.code == 200) {
+          window.sessionStorage.removeItem('store')
+          window.sessionStorage.removeItem('userId')
+          let authority = sessionStorage.getItem('p_p-authority') ;
+          if(authority==2){
+            window.sessionStorage.removeItem('p_p-admin_userName')
+            window.sessionStorage.removeItem('p_p-authority')
+          }
+          if(authority==1){
+            window.sessionStorage.removeItem('p_p-teacher_userName')
+            window.sessionStorage.removeItem('p_p-authority')
+          }
+          that.$store.commit("updateNavindex", 0);
+          that.$router.push({ path:'/login'}).catch((err) => {
+            console.log(err);
+          });
+        } else {
+          this.$toast(res.message, 2000)
+        }
+      })
     },
     //密码修改
     editPassword(){
       let that =this
       if (that.password=='') {
-        return that.$toast('请输入新密码',2000)      
+        return that.$toast('请输入新密码',2000)
       }
       if (that.password.length<6||that.password.length>20) {
-        return that.$toast('输入的密码需要为6-20位',2000)      
+        return that.$toast('输入的密码需要为6-20位',2000)
       }
       if (that.confirmPassword=='') {
-        return that.$toast('请输入确认密码',2000)      
+        return that.$toast('请输入确认密码',2000)
       }
       if (that.password!=that.confirmPassword) {
-        return that.$toast('两次输入的密码不一致',2000) 
+        return that.$toast('两次输入的密码不一致',2000)
       }
       that.resetDialog = false
       let list = []
@@ -288,7 +295,7 @@ export default {
     > li a { font-size: 18px; color: @hnavcolor; cursor: pointer; padding: 10px 8px; }
     >li:after{content: ""; width: 71px; height: 3px; position: absolute; left: 50%; margin-left: -35px; bottom: 0px; background: #fff;}
     > li:hover a, > li.cur a { color: @basecolor; }
-  
+
     > li:hover:after,
     > li.cur:after { content: ""; width: 71px; height: 3px; position: absolute; left: 50%; margin-left: -35px; bottom: 0px; background: @basecolor; }
     .children-ul {
@@ -304,7 +311,7 @@ export default {
       > li { height: 50px; line-height: 50px; }
       > li a { color: @hnavcolor; }
       > li a:hover { color: @basecolor; }
-      
+
     }
     > li:hover{
         .children-ul{display: block;}

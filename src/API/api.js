@@ -497,6 +497,11 @@ var stopExperiment =function(data){
 	return axios.post('/stopExperiment?userId='+data.userId+'&experimentId='+data.experimentId)
 }
 
+//用户退出登陆
+var layout =function(data){
+  return axios.get('/logout?user_id='+data.user_id)
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -510,7 +515,7 @@ export{
 	,unbindExperiments,getAssignmentNameBySectionId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getStudentsByClasses,
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
 	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment,modifyAssignmentStatusById,downloadCode,modifyExpiredCourseStatus
-	,getChangedCourseList,modifyCourseName,getCourseListNoNameByUserId,deleteAssignmentById,
+	,getChangedCourseList,modifyCourseName,getCourseListNoNameByUserId,deleteAssignmentById,layout,
   getStudentsByClasseId,createAndRunContainers,stopExperiment
 }
 
