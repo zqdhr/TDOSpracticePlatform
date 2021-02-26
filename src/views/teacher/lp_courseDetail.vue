@@ -101,11 +101,11 @@
                 </div>
 
                 <!--班级列表-->
-                <classList v-if="navindex==2" 
-                    @sureCheckClass="sureCheckClass" 
-                    :classesList = "classesList" 
-                    :classList = "classList" 
-                    @getCourseById="getCourseById" 
+                <classList v-if="navindex==2"
+                    @sureCheckClass="sureCheckClass"
+                    :classesList = "classesList"
+                    :classList = "classList"
+                    @getCourseById="getCourseById"
                     @checkClass="checkClass(arguments)"
                     :status = status>
                </classList>
@@ -239,7 +239,7 @@ export default {
         that.courseId = that.$route.query.courseId;
         that.navindex = that.$store.state.teacherNavindex;
         //console.log(that.$store.state.teacherNavindex)
-       
+
     },
     beforeDestroy(){
         let that = this;
@@ -264,7 +264,7 @@ export default {
     },
     methods:{
         getCourseById(){
-          
+
             let course_id = this.$route.query.courseId
             let that = this;
             let obj = {};
@@ -297,7 +297,7 @@ export default {
                     that.classesList = res.data.classesList
 
                     if(that.navindex==2){
-           
+
                        that.searchClass();
                     }
 
@@ -331,7 +331,7 @@ export default {
             let that = this;
             let obj = {}
             obj.owner_id = sessionStorage.getItem("userId")
-            obj.classIds =  [];
+            obj.user_id_list =  [];
             obj.course_id = this.$route.query.courseId;
             obj.start = '';
             obj.end = '';
@@ -499,10 +499,10 @@ export default {
           that.navindex = num;
           that.$store.commit("updateTeacherNavindex",num);
           sessionStorage.setItem("store",JSON.stringify(this.$store.state))
-         
+
            sessionStorage.removeItem('show_courseOutline');
           sessionStorage.removeItem('show_courseSection');
-       
+
           if(num==2){
               that.getCourseById();
           }else{
@@ -546,12 +546,12 @@ export default {
        //页面初始化班级选中
       checkedClass(){
         let that = this;
-        //classesList已经选中的班级     //班级列表classList 
-        for (let i=0; i<that.classList.length; i++) {   
+        //classesList已经选中的班级     //班级列表classList
+        for (let i=0; i<that.classList.length; i++) {
              that.$set(that.classList[i], 'checked',0)
-             that.$set(that.classList[i],'user_id_list',[])                    
+             that.$set(that.classList[i],'user_id_list',[])
             for (let j=0; j<that.classesList.length; j++) {
-                if (that.classList[i].id == that.classesList[j].class_id) {               
+                if (that.classList[i].id == that.classesList[j].class_id) {
                     //执行业务
                     if(that.classesList[j].completed){
                     that.$set(that.classList[i], 'checked',1)
@@ -566,11 +566,11 @@ export default {
                         that.$set(that.classList[i],'user_id_list',that.classesList[j].user_id_list);
                         break
                     }
-                    
-                
+
+
                 }
             }
-         
+
         }
 
       },
@@ -584,7 +584,7 @@ export default {
         console.log(params);
         if(checked==0){
            that.$set(that.classList[index], 'checked',1)
-           that.$set(that.classList[index], 'user_id_list',[])          
+           that.$set(that.classList[index], 'user_id_list',[])
         }else{
            that.$set(that.classList[index], 'checked',0)
            that.$set(that.classList[index], 'user_id_list',[])
