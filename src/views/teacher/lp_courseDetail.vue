@@ -129,11 +129,11 @@
 
                     <div class="confirm_dialog_body" style="padding-bottom:20px">
                         <p class="dialog_mess">
-                            <span class="span_icon icon_waring">该课程是否确定开课！</span>
+                            <span class="span_icon icon_waring">是否确定开课！</span>
                         </p>
                     </div>
                     <span slot="footer" class="dialog-footer">
-                <button class="btnDefault" @click="resetDialog = false">取消</button>
+                <button class="btnDefault" @click="sure_newCourse = false">取消</button>
                 <button class="btnDefault" @click="openClass">确认</button>
             </span>
                 </el-dialog>
