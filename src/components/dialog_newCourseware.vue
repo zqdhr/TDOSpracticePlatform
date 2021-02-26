@@ -195,7 +195,7 @@ export default {
   inject:['reload'],
   data() {
     return {
-      inplaceholder: "请输入课件名",
+      inplaceholder: "请输入课件名称",
       options: [
         { value: "", label: "全部" },
         { value: "0", label: "内置课件" },
