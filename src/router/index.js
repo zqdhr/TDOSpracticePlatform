@@ -13,26 +13,31 @@ const routes = [
     path: '/',   
     component: index,
     redirect: '/admin',
+    meta:{navindex:0},
     children:[
       {
         path: '/admin',
         name: 'statisticalAnalysis',//统计分析
-        component: () => import(/* webpackChunkName: "about" */ '../views/admin/statisticalAnalysis.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/statisticalAnalysis.vue'),
+        meta:{navindex:0},
       },
       {
         path: '/admin/personnelManage',//管理员端人员管理
         name: 'personnelManage',
-        component: () => import(/* webpackChunkName: "about" */ '../views/admin/personnelManagement.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/personnelManagement.vue'),
+        meta:{navindex:4},
       },
       {
         path: '/admin/experimentManage',//运行实验管理
         name: 'experimentManage',
-        component: () => import(/* webpackChunkName: "about" */ '../views/admin/experimentManagement.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/experimentManagement.vue'),
+        meta:{navindex:3},
       },
       {
         path: '/admin/courseManagement',//课程管理
         name: 'courseManagement',
-        component: () => import(/* webpackChunkName: "about" */ '../views/admin/courseManagement.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/courseManagement.vue'),
+        meta:{navindex:1},
       },
       {
         path: '/admin/newCourse',//新建课程
@@ -83,31 +88,37 @@ const routes = [
     path:'/teacher',//教师端
     component: index,
     redirect: '/teacher/newCourseManagement',
+    meta:{navindex:0},
     children:[
       {
         path: '/teacher/newCourseManagement',//开课管理
         name: 'newCourseManagement',
-        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/newCourseManagement.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/newCourseManagement.vue'),
+        meta:{navindex:0},
       },
       {
         path: '/teacher/jobManagement',//作业管理
         name: 'jobManagement',
-        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/jobManagement.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/jobManagement.vue'),
+        meta:{navindex:2},
       },
       {
         path: '/teacher/experimentalReport',//实验报告
         name: 'experimentalReport',
-        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/experimentalReport.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/experimentalReport.vue'),
+        meta:{navindex:3},
       },
       {
         path: '/teacher/courseManagement',//课程管理
         name: 'teacourseManagement',
-        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/courseManagement.vue')
+        component: () => import(/* webpackChunkName: "about" */ '../views/teacher/courseManagement.vue'),
+        meta:{navindex:4},
       },
       {
         path: '/teacher/lessonPreparationManagement',//备课管理
         name: 'lessonPreparationManagement',
         component: () => import(/* webpackChunkName: "about" */ '../views/teacher/lessonPreparationManagement.vue'),
+        meta:{navindex:1},
        
 
       },
@@ -115,7 +126,7 @@ const routes = [
         path: '/teacher/couseDetail',//备课管理-课程详情
         name: 'couseDetail',
         component: () => import(/* webpackChunkName: "about" */ '../views/teacher/lp_courseDetail.vue'),
-       
+        
       }
      
     ]
@@ -124,11 +135,13 @@ const routes = [
     path:'/student',//学生端
     component: index,
     redirect: '/student/myCourses',
+    meta:{navindex:0},
     children:[
       {
         path:'/student/myCourses',
         name: 'myCourses',
         component: () => import('../views/student/myCourses.vue'),
+        meta:{navindex:0},
       },
       {  
         path: '/student/courseDetail',//学生端课程详情
@@ -140,19 +153,21 @@ const routes = [
         path: '/student/myReport',//学生端我的报告
         name: 'studentReport',
         component: () => import('../views/student/myReport.vue'),
+        meta:{navindex:1},
        
       },
       {  
         path: '/student/myHomework',//学生端我的作业
         name: 'studentmyHomework',
         component: () => import('../views/student/myHomework.vue'),
+        meta:{navindex:2},
        
       },
       {  
         path: '/student/myNotes',//学生端我的作业
         name: 'studentmyNotes',
         component: () => import('../views/student/myNotes.vue'),
-       
+        meta:{navindex:3},
       }
       
     ]
