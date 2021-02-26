@@ -108,6 +108,7 @@ export default {
       time:'',
       addCategoryID:'',//自定义分类ID
       loading:false,//课件库是否在上传
+      upload_falg:0,
     };
   },
   components: {
@@ -236,18 +237,23 @@ export default {
           newFile.name.lastIndexOf(".") + 1
         );
         that.extension = extension;
-        const isLt100M = newFile.size / 1024 / 1024 < 100;
-        const isLt500M = newFile.size / 1024 / 1024 < 500;
+        const isLt100M = newFile.size / 1024 / 1024 < 1;
+        const isLt500M = newFile.size / 1024 / 1024 < 5;
 
         if (extension != "pdf" && extension != "mp4") {
           this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
-          return prevent();
+          this.upload_falg = 1;
+          return 
         }
         if(extension == 'pdf' && !isLt100M){       
-           return  this.$toast("上传的pdf不能大于100M", 3000);
+          this.$toast("上传的pdf不能大于100M", 3000);
+          this.upload_falg = 2;
+          return 
         }
         if(extension == 'mp4' && !isLt500M){       
-           return  this.$toast("上传的视频不能大于500M", 3000);
+             this.$toast("上传的视频不能大于500M", 3000);
+             this.upload_falg = 3;
+             return 
         }
       }
     },
@@ -293,38 +299,52 @@ export default {
       obj.append('file',file)
     
       //alert(that.files[0].file.name)
-      
-      that.loading = true;
-      
-      upload(obj).then(res=>{
-        if (res.code==200) {
-          that.loading = false;
-          that.picUrl = res.data.name;
-          that.size = res.data.size;
-          that.time = res.data.time;
-          let obj = {};
-          obj.name = that.files[0].file.name;
-          obj.type = 0;
-          obj.kind = that.extension == 'pdf'?1:0;
-          obj.url = that.picUrl;
-          obj.duration = that.time;
-          obj.size = that.size;
-          obj.category_id = that.addCategoryID;
-          this.$refs.upload.active = true;
-          addCourseware(JSON.stringify(obj)).then((res) => {
-            if (res.code == 200) {
-              that.isnewFilter =false ; //上传弹窗消失
-             
-              that.$emit('getCourseAll')
-            } else {
-              that.$toast(res.message, 3000);
-            }
-          });
+      if(that.upload_falg==1){
+        return this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
+      }
 
-        }else {
-          that.$toast(res.message,3000)
-        }
-      }).catch(res => {console.log(JSON.stringify(res))})
+      if(that.upload_falg==2){
+        return   this.$toast("上传的pdf不能大于100M", 3000);
+      }
+      if(that.upload_falg==3){
+        return this.$toast("上传的视频不能大于500M", 3000);
+      }
+
+      if(that.upload_falg==0){
+          upload(obj).then(res=>{
+            if (res.code==200) {
+              that.loading = false;
+              that.picUrl = res.data.name;
+              that.size = res.data.size;
+              that.time = res.data.time;
+              let obj = {};
+              obj.name = that.files[0].file.name;
+              obj.type = 0;
+              obj.kind = that.extension == 'pdf'?1:0;
+              obj.url = that.picUrl;
+              obj.duration = that.time;
+              obj.size = that.size;
+              obj.category_id = that.addCategoryID;
+              this.$refs.upload.active = true;
+              addCourseware(JSON.stringify(obj)).then((res) => {
+                if (res.code == 200) {
+                  that.isnewFilter =false ; //上传弹窗消失
+                  that.loading = true;
+                  that.$emit('getCourseAll')
+                } else {
+                  that.$toast(res.message, 3000);
+                }
+              });
+
+            }else {
+              that.$toast(res.message,3000)
+            }
+          }).catch(res => {console.log(JSON.stringify(res))})
+      }
+
+      
+      
+
 
     },
 
