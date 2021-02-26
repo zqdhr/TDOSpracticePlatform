@@ -26,9 +26,9 @@ export default {
   watch: {
     socketURI: {
       handler(val, olVal) {
-        console.log('123')
-        this.socket = null;
-        this.term = null; 
+        console.log(val)
+          this.socket = null;
+          this.term = null;    
       },
       
     },
@@ -37,10 +37,12 @@ export default {
   mounted() {
     this.initSocket();
   },
+
   beforeDestroy() {
     this.socket.close();
     this.term.dispose();
   },
+ 
   methods: {
     close() {
       this.socket.close();
@@ -56,16 +58,21 @@ export default {
       term.loadAddon(attachAddon);
       term.loadAddon(fitAddon);
       term.open(document.getElementById("xterm"));
+   
       fitAddon.fit();
       term.focus();
       this.term = term;
     },
     initSocket() {
-  
-      this.socket = new WebSocket(this.socketURI);
+      if(this.socketURI.indexOf('html')==-1){
+        this.socket = new WebSocket(this.socketURI);
+        
+      }
+      
       this.socketOnClose();
       this.socketOnOpen();
       this.socketOnError();
+        
     },
     socketOnOpen() {
       this.socket.onopen = () => {
