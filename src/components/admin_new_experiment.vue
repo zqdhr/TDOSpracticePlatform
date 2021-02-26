@@ -13,7 +13,7 @@
             ><span class="num">1</span> 基本资料</a
           >
           <a class="pointer" @click="tab_virtualMachine" :class="{ active: curIndex == 2 }"
-            ><span class="num">2</span> 选择虚拟机</a
+            ><span class="num">2</span> 选择镜像</a
           >
           <a class="pointer" @click="curIndex=3" :class="{ active: curIndex == 3 }"
             ><span class="num">3</span> 实验步骤</a

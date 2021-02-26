@@ -68,11 +68,11 @@
       :visible.sync="show_Release"
       width="500px">
       <div slot="title" class="dialog_header">
-          请注意!
+          {{!release_success?'警告!':'请注意!'}}
       </div>
       <div class="confirm_dialog_body">
           <p class="dialog_mess" v-if="!release_success"><span class="span_icon icon_waring">{{dialog_machine}}</span></p>
-          <p class="dialog_mess" v-if="release_success"><span class="span_icon icon_success">虚拟机内存已释放！</span></p>
+          <p class="dialog_mess" v-if="release_success"><span class="span_icon icon_success">{{flag_state==1?'后台正在释放中，请稍后查看':'虚拟机内存已释放！'}}</span></p>
       </div>
       <div slot="footer" class="dialog-footer " v-if="!release_success">
           <a class="btnDefault" @click="confiremRelease">确 认</a>

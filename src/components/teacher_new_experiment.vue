@@ -6,7 +6,7 @@
       :visible.sync="isnewFilter"
       :width="isnewFilterType == 1 ? '1100px' : '600px'"
       :class="{ newCourseware_dialog: isnewFilterType == 0 }"
-      @close="searchTx='',customClass='',i_customClass='',curPage=1"
+      @close="searchTx='',parent_id='',childrenId='',curPage=1"
     >
       <!--实验库选择-->
       <template v-if="isnewFilterType == 1">
@@ -14,12 +14,12 @@
         <div class="pageTab clearfix nopaddingBottom">
           <div class="fl">
             <div class="sel-box">
-              <el-select v-model="customClass" placeholder="自定义分类" @change="selectType" >
+              <el-select v-model="parent_id" placeholder="自定义分类" @change="selectType" >
                 <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id" > </el-option>
               </el-select>
             </div>
-            <div class="sel-box" v-if="customClass!=''">
-              <el-select v-model="i_customClass" placeholder="自定义分类" @change="selectType1" >
+            <div class="sel-box" v-if="parent_id!=''">
+              <el-select v-model="childrenId" placeholder="自定义分类" @change="selectType1" >
                 <el-option v-for="item in options1" :key="item.id" :label="item.name" :value="item.id" > </el-option>
               </el-select>
             </div>
@@ -129,6 +129,7 @@ export default {
 
       chooseList: [], //实验被选择列表
       parent_id:'',
+      childrenId:'',
       count:'',//节下已有的实验，不能超过五个
       sindex:'',//节id
       noDataType:1,  //没有数据展示的样式
@@ -200,7 +201,7 @@ export default {
       //   }
       // })
         that.curPage=1
-       that.getAllExperiment(that.customClass,that.i_customClass,that.searchTx,1,that.sindex);
+       that.getAllExperiment(that.parentId,that.childrenId,that.searchTx,1,that.sindex);
     },
     //点击选择实验
     click_new(sid,count,sindex,) {
@@ -302,18 +303,20 @@ export default {
     //父类
     selectType(val) {
       let that = this;
-      that.i_customClass = {};
-      console.log("11"+that.customClass)
+      that.options1 = [];
+      that.childrenId='';
+     
       that.parentId = val;
+       console.log("11"+that.parentId)
       that.findChildCategory(val);
-      // that.getAllExperiment(val,'',that.searchTx,1,that.sindex);
+      that.getAllExperiment(that.parentId,that.childrenId,that.searchTx,1,that.sindex);
     },
     //子类
     selectType1(val) {
       let that = this;
        console.log("22"+val)
       that.childrenId = val;
-      // that.getAllExperiment(that.customClass,that.childrenId,that.searchTx,1,that.sindex);
+      that.getAllExperiment(that.parentId,that.childrenId,that.searchTx,1,that.sindex);
     },
     //数组新增checked元素
     array_addChecked(array) {

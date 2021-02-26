@@ -312,6 +312,10 @@ export default {
         //修改课程名称
         modifyCourseName(){
           let that = this;
+          if (that.editValue=='') {
+              return that.$toast('请输入课程名称',2000)
+              
+          }
           let obj = {}
           obj.course_id = this.$route.query.courseId
           obj.course_name = that.editValue

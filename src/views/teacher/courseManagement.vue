@@ -147,12 +147,11 @@ export default {
             obj.userId = that.student.userid
             obj.experimentId = that.student.containerId
             console.log(obj)
+            that.isClose=false
             stopExperiment(obj).then(res=>{
                 if (res.code==200) {
-                    that.isClose=false
                     that.getRunContainerByTeacher(1)
                 } else {
-                    that.isClose=false
                     that.$toast(res.message,3000) 
                     console.log(res.message)
                 }       
