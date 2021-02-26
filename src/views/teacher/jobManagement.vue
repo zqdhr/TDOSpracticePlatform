@@ -302,8 +302,14 @@ export default {
   methods: {
     changeDate(val) {
       let that = this;
+      if (val==null) {
+              that.timestart = '';
+      that.timeend = '';
+      }else {
       that.timestart = val[0];
       that.timeend = val[1];
+      }
+
       that.getStudentJobList(0)
       console.log(val) 
       // alert(that.value2.length);

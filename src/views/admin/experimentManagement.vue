@@ -34,11 +34,11 @@
                  <div class="info-box ">
 
                      <div class="d-icon"></div>
-                      <p class="p_id textline1">ID：{{item.container_id}}</p>
+                      <!-- <p class="p_id textline1">ID：{{item.container_id}}</p> -->
                       <p class="p_id textline1">用户：{{item.user_name}}</p>
-                     <p class="p_id textline1">实验名称：{{item.name}}</p>
+                     <p class="p_id textline1">实验名称：{{item.experiment_name}}</p>
                      <div class="btnbox">
-                         <a class="btnDefault machbtn pointer" @click="click_Release(2,item.container_id)"><span>释放内存</span></a>
+                         <a class="btnDefault machbtn pointer" @click="click_Release(2,item.experiment_name),container =item"><span>释放内存</span></a>
                      </div>
                  </div>
              </li>
@@ -88,7 +88,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import {getRunContainerList,searchClass,stopRunContainerList,execContainer} from '@/API/api';
+import {getRunContainerList,searchClass,stopRunContainerList,execContainer,stopExperiment} from '@/API/api';
 import nodata from '@/components/noData'
 export default {
   data() {
@@ -112,6 +112,8 @@ export default {
       dialog_machine:'',
        isHasData:true,//是否有数据 默认有数据
         type1:'',
+        state:'',//1一件释放 2释放单个
+        container:{}
     };
   },
   components:{nodata},
@@ -141,6 +143,7 @@ export default {
           obj.perPage = that.perPage;
           getRunContainerList(obj).then(res=> {
               if(res.code==200){
+                console.log(res.data)
                   that.total = res.data.total;
                   res.data.total==0 ? that.isHasData = false :that.isHasData = true
                   that.machineList = res.data.list;
@@ -228,20 +231,21 @@ export default {
       that.show_Release = true
       that.release_success = false
       //that.type = num;
+      that.state=num
       if(num==1){
         console.log(that.type)
         that.type == 1?that.dialog_machine ='确定要一键释放所有老师内存吗？':that.type==2?that.dialog_machine ='确定要一键释放所有学生内存吗？':that.dialog_machine ='确定要一键释放所有内存吗？'
 
       }else{
           that.id = id
-        that.dialog_machine ='确定要释放ID：'+id+'的虚拟机内存吗？'
+        that.dialog_machine ='确定要释放'+id+'的虚拟机内存吗？'
       }
 
     },
     //虚拟机释放确认
     confiremRelease(){
         let that = this;
-        if(that.type == 1){
+        if(that.state == 1){
             that.type    = ''
             stopRunContainerList().then((res) => {
                if (res.code == 200) {
@@ -254,12 +258,10 @@ export default {
             });
         }else{
             let obj = {}
-            let containerId = []
-            containerId.push(that.id)
-            obj.containerId = containerId
-            obj.type = 1
+            obj.userId = that.container.user_id
+            obj.experimentId = that.container.experiment_id
             console.log(obj)
-            execContainer(obj).then(res=>{
+            stopExperiment(obj).then(res=>{
                 that.id = ''
                 if (res.code==200) {
                     that.show_Release = false;

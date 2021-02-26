@@ -492,6 +492,11 @@ var deleteAssignmentById = function(data){
   return axios.post('/deleteAssignmentById', data,{headers: {'Content-Type':'application/json'}})
 }
 
+//结束单个实验镜像
+var stopExperiment =function(data){
+	return axios.post('/stopExperiment?userId='+data.userId+'&experimentId='+data.experimentId)
+}
+
 export{
 	getCity,createToken,login,hardware,online,onlineUsers,searchUser,searchClass,deleteUser,getAdminCourseList,getCourseListByUserId,getCourseById,
 	modifyCourseStatus,getCoursewareBySectionId,modifyUser,getAdminUnpublishedCourseList,getCoursewareAll,insertCourse,getExpirCourseList,
@@ -506,7 +511,7 @@ export{
 	getStudentsNotes,stduentUploadNotes,findAllExperimentByCategoryId,updateUserPassword,deleteChapterSectionCourseById,delete_remark,stduentSubmitHomework,stduentSaveHomework
 	,prepareCourse,modifyChapterNameById,modifySectionNameById,modifySmallSectionNameById,updateExperiment,modifyAssignmentStatusById,downloadCode,modifyExpiredCourseStatus
 	,getChangedCourseList,modifyCourseName,getCourseListNoNameByUserId,deleteAssignmentById,
-  getStudentsByClasseId,createAndRunContainers
+  getStudentsByClasseId,createAndRunContainers,stopExperiment
 }
 
 function getJson (data) {
