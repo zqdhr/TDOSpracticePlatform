@@ -131,6 +131,8 @@ export default {
       if(num==0){
          that.menus = that.$store.state.stu_menus;
       }
+
+      console.log(this.$route)
     
   },
   methods: {
