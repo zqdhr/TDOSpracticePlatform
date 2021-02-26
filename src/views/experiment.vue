@@ -258,7 +258,7 @@ export default {
                 this.connectVnc(this.connect_url)
             } else {
                 //这里做不可重新连接的一些操作
-                this.connectVnc(this.connect_url)
+                //this.connectVnc(this.connect_url)
                 
             }
         },
@@ -658,7 +658,7 @@ export default {
             //const iframeBody = iframeHtml.document.getElementsByTagName('body')[0]
             //that.$refs.imageWrapper
             that.$nextTick(function(){
-                html2canvas(that.$refs.imageWrapper, opts).then((canvas) => {
+                html2canvas(document.getElementById('Screenshots'), opts).then((canvas) => {
                     var url = canvas.toDataURL('image/png')
                     that.dataURL = url
                     that.yourContent =that.yourContent+ '<p><img src="'+that.dataURL+'"/></p>'
