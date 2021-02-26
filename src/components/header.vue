@@ -149,12 +149,13 @@ export default {
   methods: {
     linPath(item, num) {
       let that = this;
-      that.$store.commit("updateNavindex", num);
+     
       let tmp = that.menus;
       if (!item.children) {    
         that.$router.push({ path: item.path }).catch((err) => {
           console.log( err);
         });
+         that.$store.commit("updateNavindex", num);
       }
     },
     children_linPath(item,index){

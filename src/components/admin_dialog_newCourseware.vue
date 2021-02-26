@@ -108,7 +108,7 @@ export default {
       time:'',
       addCategoryID:'',//自定义分类ID
       loading:false,//课件库是否在上传
-      upload_falg:0,
+      upload_falg:0, //文件是否上传 0可以上传 1文件格式不对  2pdf文件太大 3视频文件太大
     };
   },
   components: {
@@ -237,8 +237,8 @@ export default {
           newFile.name.lastIndexOf(".") + 1
         );
         that.extension = extension;
-        const isLt100M = newFile.size / 1024 / 1024 < 1;
-        const isLt500M = newFile.size / 1024 / 1024 < 5;
+        const isLt100M = newFile.size / 1024 / 1024 < 100;
+        const isLt500M = newFile.size / 1024 / 1024 < 500;
 
         if (extension != "pdf" && extension != "mp4") {
           this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
