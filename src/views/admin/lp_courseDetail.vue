@@ -58,7 +58,7 @@
                 <!--课程课件-->
                 <courseware v-if="navindex==2" :status="status" :typeData = type></courseware>
 
-                <coursework v-if="navindex==3" :status="status"></coursework>
+                <coursework v-if="navindex==3" :status="status" :isEdit = type></coursework>
 
 
             </div>

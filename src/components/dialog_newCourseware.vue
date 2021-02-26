@@ -591,7 +591,7 @@ export default {
           that.time = res.data.time;
           let obj = {};
           obj.name = that.files[0].file.name;
-          obj.type = 1;
+          obj.type = that.role == 1?0:1;
           obj.kind = that.extension == 'pdf' ?1 : 0;
           obj.url = that.picUrl;
           obj.duration = that.time;
@@ -624,9 +624,13 @@ export default {
                   } else {
                     console.log("章新增课件")
                     let obj = {};
-                    obj.courseware_id = resCourse.data.id;
-                    obj.section_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
-                    obj.chapter_id = that.cindex;
+                    let list = [];
+                    let ware = {};
+                    ware.courseware_id = resCourse.data.id;
+                    ware.section_id = "fb0a1080-b11e-427c-8567-56ca6105ea07";
+                    ware.chapter_id = that.cindex;
+                    list.push(ware);
+                    obj.chapter_section_courseware_list = list
                     addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
                       if (resadd.code == 200) {
                         alert("111")

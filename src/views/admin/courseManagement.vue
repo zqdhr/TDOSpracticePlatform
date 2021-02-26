@@ -23,7 +23,7 @@
                     <div class="fr">
                        <a class="btnDefault pointer abtn"  @click="linkNewCourse">新建课程</a>
                        <div class="d-serach">
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="paramData.name"  @keyup.enter="onEnterPress(paramData.name)"/>
+                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="paramData.name"  @keyup.enter="onEnterPress(paramData.name)" v-emoji/>
                             <a class="searchBtn pointer" @click="searchCourse" ></a>
                         </div>
                     </div>
