@@ -211,7 +211,7 @@ export default {
       that.sindex = sid;
       that.count = count;
       that.sindex = sindex;
-      
+
       console.log(that.curPage)
       that.array_addChecked(that.all_experimentList);
       that.findAllExperiment();
