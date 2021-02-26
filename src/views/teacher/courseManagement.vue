@@ -114,6 +114,7 @@ export default {
     },
     created(){
         this.getCourseListByUserId()
+        this.getRunContainerByTeacher(1)
     },
     components:{noData},
     methods:{
@@ -203,10 +204,10 @@ export default {
                 if(res.code==200){
                     console.log(res.data)
                     that.classList = res.data.list
-                     if(that.classList.length>0){
-                        that.className = that.classList[0].id
-                        that.getRunContainerByTeacher(1)
-                    }
+                    //  if(that.classList.length>0){
+                    //     that.className = that.classList[0].id
+                       
+                    // }
                     
                 }else{
                    
@@ -224,6 +225,7 @@ export default {
             obj.filter = that.searchContent
             obj.page=page
             obj.perPage=that.perPage
+            obj.teacherId=obj.user_id = sessionStorage.getItem("userId")
             getRunContainerByTeacher(obj).then(res=> {
                 if (res.code==200) {
                     console.log(res.data)

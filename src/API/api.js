@@ -315,7 +315,7 @@ var student_getCourseList =function(data){
 }
 //教师获取课堂列表
 var getRunContainerByTeacher =function(data){
-	return axios.get('/getRunContainerByTeacher?courseId='+data.courseId+'&filter='+data.filter+'&perPage=' + data.perPage+ '&page=' + data.page)
+	return axios.get('/getRunContainerByTeacher?courseId='+data.courseId+'&filter='+data.filter+'&perPage=' + data.perPage+ '&page=' + data.page+'&teacherId='+data.teacherId)
 }
 //课程结束 容器ID是list数组，type 0是START,1是 STOP,2是 RESTART
 var execContainer=function(data){
