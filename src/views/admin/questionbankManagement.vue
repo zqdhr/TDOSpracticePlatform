@@ -71,7 +71,7 @@
               autocomplete="off"
               v-model="searchText"
             />
-            <a class="searchBtn pointer" @click="search"></a>
+            <a class="searchBtn pointer" @click="search()"></a>
           </div>
         </div>
       </div>
@@ -466,6 +466,7 @@ export default {
     //搜索
     search() {
       let that = this;
+      that.curPage = 1;
       that.selectQuestionBackAll(that.searchText);
     },
     //下载模板
@@ -581,6 +582,9 @@ export default {
       getQuestionBackAll(obj).then((res) => {
         console.log(JSON.stringify(res));
         if (res.code == 200) {
+          if(content != ""){
+            that.searchText = "";
+          }
           that.total = res.data.total;
           that.questionList = res.data.list;
           console.log(res.data.list);
@@ -591,6 +595,7 @@ export default {
     },
     getQuestionBackAll() {
       let that = this;
+      that.curPage = 1;
       that.selectQuestionBackAll("");
     },
 
@@ -743,11 +748,13 @@ export default {
       let that = this;
       that.i_customClass = {};
       that.findChildCategory(val);
+      that.curPage = 1;
       that.selectQuestionBackAll("");
     },
     //子类
     selectType1(val) {
       let that = this;
+      that.curPage = 1;
       that.selectQuestionBackAll("");
     },
     //题目类型选择
@@ -755,6 +762,7 @@ export default {
       // that.quest_type
       let that = this;
       that.quest_type = val;
+      that.curPage = 1;
       that.selectQuestionBackAll("");
     },
     //底部分页
@@ -763,7 +771,7 @@ export default {
 
       console.log(`当前页: ${val}`);
 
-      that.curPage = val;
+      that.curPage = 1;
 
       that.selectQuestionBackAll("");
     },

@@ -37,23 +37,24 @@
               >
               </el-date-picker>
             </div> -->
-            <div class="sel-box" style="width:350px">
- <el-date-picker 
-                            class="pageTab_date"
-                            v-if="state.id==1"
-                            v-model="value2"
-                            type="daterange"
-                            align="right"
-                            unlink-panels
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                            :picker-options="pickerOptions"
-                             @change="changeDate"
-                             value-format="yyyy-MM-dd" format="yyyy-MM-dd"
-                            >
-                        </el-date-picker>
-              </div>
+            <div class="sel-box" style="width: 350px">
+              <el-date-picker
+                class="pageTab_date"
+                v-if="state.id == 1"
+                v-model="value2"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="pickerOptions"
+                @change="changeDate"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+              >
+              </el-date-picker>
+            </div>
             <div class="sel-box">
               <el-select
                 v-model="level1Name"
@@ -73,67 +74,79 @@
           </div>
           <div class="fr">
             <div class="d-serach">
-              <input v-model="searchText" :placeholder="inplaceholder" type="text" autocomplete="off" v-emoji />
+              <input
+                v-model="searchText"
+                :placeholder="inplaceholder"
+                type="text"
+                autocomplete="off"
+                v-emoji
+              />
               <a class="searchBtn pointer" @click="searchAction"></a>
             </div>
           </div>
         </div>
       </div>
-             <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
-               <template v-if="hasData">
-      <div class="container">
-        <div class="tea_list">
-          <ul class="tab_box">
-            <li v-for="(item, index) in jobList" :key="index">
-              <div class="d1 d15">
-                <!-- <div class="cell pnum">{{ (index + 1) | catIndex }}</div> -->
-                 <div class="cell textline1">班级：{{item.className}}</div>
-              </div>
-              <div class="d2 d28">
-                <div class="cell textline1">
-                  学号：{{ item.userId }} 姓名：{{ item.userName }}
+      <noData
+        :noDataType="noDataType"
+        :dataMess="dataMess"
+        v-if="!hasData"
+      ></noData>
+      <template v-if="hasData">
+        <div class="container">
+          <div class="tea_list">
+            <ul class="tab_box">
+              <li v-for="(item, index) in jobList" :key="index">
+                <div class="d1 d15">
+                  <!-- <div class="cell pnum">{{ (index + 1) | catIndex }}</div> -->
+                  <div class="cell textline1">班级：{{ item.className }}</div>
                 </div>
-              </div>
-              <div class="d3 d30">
-                <div class="cell">提交时间：{{ item.committedAt | dateFormatYMDhms}}</div>
-              </div>
-              <div class="d4 d14">
-                <div class="cell">
-                  {{ item.status == 0 ? "待批阅" : "已批阅" }}
+                <div class="d2 d28">
+                  <div class="cell textline1">
+                    学号：{{ item.userId }} 姓名：{{ item.userName }}
+                  </div>
                 </div>
-              </div>
-              <div class="d5 d13">
-                <div class="cell">
-                  <a
-                    class="btnDefault btn_py pointer"
-                    v-if="item.status == 0"
-                    @click="showDetail(0, item)"
-                    >批阅</a
-                  >
-                  <a
-                    class="btnDefault btn_py pointer"
-                    v-if="item.status == 1"
-                    @click="showDetail(1, item)"
-                    >查看详情</a
-                  >
+                <div class="d3 d30">
+                  <div class="cell">
+                    提交时间：{{ item.committedAt | dateFormatYMDhms }}
+                  </div>
                 </div>
-              </div>
-            </li>
-          </ul>
-          <div class="tab-pagination">
-            <el-pagination
-              background
-              :current-page="curPage"
-              :page-size="perPage"
-              @current-change="handleCurrentChange"
-              layout="prev, pager, next,jumper"
-              :total="allJob_Nub"
-            >
-            </el-pagination>
+                <div class="d4 d14">
+                  <div class="cell">
+                    {{ item.status == 0 ? "待批阅" : "已批阅" }}
+                  </div>
+                </div>
+                <div class="d5 d13">
+                  <div class="cell">
+                    <a
+                      class="btnDefault btn_py pointer"
+                      v-if="item.status == 0"
+                      @click="showDetail(0, item)"
+                      >批阅</a
+                    >
+                    <a
+                      class="btnDefault btn_py pointer"
+                      v-if="item.status == 1"
+                      @click="showDetail(1, item)"
+                      >查看详情</a
+                    >
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <div class="tab-pagination">
+              <el-pagination
+                background
+                :current-page="curPage"
+                :page-size="perPage"
+                @current-change="handleCurrentChange"
+                layout="prev, pager, next,jumper"
+                :total="allJob_Nub"
+              >
+              </el-pagination>
+            </div>
           </div>
         </div>
-      </div>
-         </template>
+      </template>
     </div>
 
     <!--点击确定按钮弹出确认框-->
@@ -229,7 +242,7 @@
   </div>
 </template>
 <script>
-import noData from '@/components/noData.vue'
+import noData from "@/components/noData.vue";
 import {
   getCourseListNoNameByUserId,
   getStudentJobList,
@@ -266,14 +279,12 @@ export default {
       all_courseList: [],
       momentJobMod: null,
       pic_Url: "",
-      noDataType:1,  //没有数据展示的样式
-      dataMess:'当前暂无作业',
-      hasData:false,
-      timestart:'',//筛选起始时间
-      timeend:'',//筛选结束时间
-      pickerOptions: {
-          
-        },
+      noDataType: 1, //没有数据展示的样式
+      dataMess: "当前暂无作业",
+      hasData: false,
+      timestart: "", //筛选起始时间
+      timeend: "", //筛选结束时间
+      pickerOptions: {},
     };
   },
   filters: {
@@ -288,7 +299,7 @@ export default {
       return str;
     },
   },
-    components:{noData},
+  components: { noData },
   mounted() {
     let that = this;
     that.pic_Url = that.$store.state.pic_Url;
@@ -302,16 +313,11 @@ export default {
   methods: {
     changeDate(val) {
       let that = this;
-      if (val==null) {
-              that.timestart = '';
-      that.timeend = '';
-      }else {
       that.timestart = val[0];
       that.timeend = val[1];
-      }
-
-      that.getStudentJobList(0)
-      console.log(val) 
+      that.curPage = 1;
+      that.getStudentJobList(2);
+      console.log(val);
       // alert(that.value2.length);
     },
     //底部分页
@@ -328,13 +334,13 @@ export default {
       that.timestart = "";
       that.timeend = "";
       that.value2 = [];
+      that.curPage = 1;
       that.getStudentJobList(0);
-
     },
     //选择课程
     changeLevel1(val) {
       let that = this;
-
+that.curPage = 1;
       that.getStudentJobList(0);
     },
 
@@ -349,6 +355,7 @@ export default {
     //搜索事件
     searchAction() {
       let that = this;
+      that.curPage = 1;
       that.getStudentJobList(1);
     },
     //批改分数
@@ -393,7 +400,7 @@ export default {
       // obj.student_score_list = JSON.stringify(answerArr);
       obj.student_score_list = answerArr;
 
-// alert(JSON.stringify(obj));
+      // alert(JSON.stringify(obj));
       submitCorrectJob(obj)
         .then((res) => {
           console.log(JSON.stringify(res));
@@ -452,9 +459,14 @@ export default {
       let obj = {};
       obj.perPage = that.perPage;
       obj.page = that.curPage;
-      obj.name = that.searchText;
+      if (val == 1) {
+        obj.name = that.searchText;
+      } else {
+        obj.name = "";
+      }
       obj.classId = "";
-      obj.courseId = JSON.stringify(that.level1Name) != "{}" ? that.level1Name.id : "";
+      obj.courseId =
+        JSON.stringify(that.level1Name) != "{}" ? that.level1Name.id : "";
       obj.chapterId = "";
       obj.sectionId = "";
 
@@ -463,19 +475,25 @@ export default {
       } else {
         obj.status = that.state.id;
       }
-      obj.startTime =that.timestart;
-      obj.endTime = that.timeend;
-      obj.ownerId = sessionStorage.getItem("userId")
+      if (val == 2) {
+        obj.startTime = that.timestart;
+        obj.endTime = that.timeend;
+      } else {
+        obj.startTime = "";
+        obj.endTime = "";
+      }
+
+      obj.ownerId = sessionStorage.getItem("userId");
 
       // alert(JSON.stringify(obj));
-      console.log(obj)
+      console.log(obj);
       getStudentJobList(obj)
         .then((res) => {
           // alert(JSON.stringify(res));
           that.allJob_Nub = res.data.total;
           if (res.code == 200) {
             that.jobList = res.data.list;
-             that.hasData=res.data.list.length==0?false:true
+            that.hasData = res.data.list.length == 0 ? false : true;
           } else {
             that.$toast(res.message, 3000);
           }
