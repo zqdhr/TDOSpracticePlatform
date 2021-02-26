@@ -14,7 +14,7 @@
           <a class="btnDefault pointer abtn" @click="delDataList">删除镜像</a>
           <a class="btnDefault pointer abtn" @click="show_Add=true">新增镜像</a>
           <div class="d-serach">
-            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model = "searchText"/>
+            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model = "searchText" v-emoji/>
             <a class="searchBtn pointer" @click="searchImage"></a>
           </div>
         </div>

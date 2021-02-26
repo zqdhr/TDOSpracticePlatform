@@ -635,6 +635,7 @@ export default {
                       if (resadd.code == 200) {
                         alert("111")
                         that.isnewFilter = false;
+
                       } else {
                         this.$toast(resadd.message, 2000)
                       }
