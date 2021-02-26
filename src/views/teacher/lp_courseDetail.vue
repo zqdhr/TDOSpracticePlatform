@@ -3,7 +3,7 @@
         <div class="container">
             <div class="pageTab">
                 <div class="mess">
-                    当前位置：<a class="pointer" @click="back">课程管理</a> > <span>{{courseName}}</span>
+                    当前位置：<a class="pointer" @click="back"> {{backNum==1?'开课管理':'备课管理'}}</a> > <span>{{courseName}}</span>
                 </div>
             </div>
         </div>
@@ -41,25 +41,25 @@
                      </div>
                 </div>
 
-                      <!--备课弹出框-->
-                      <el-dialog
+                <!--备课弹出框-->
+                <el-dialog
 
-                              :visible.sync="show_dialog_file"
-                              width="500px">
-                          <div slot="title" class="dialog_header">
-                              备课
-                          </div>
-                          <div class="confirm_dialog_body">
-                              <p class="dialog_mess"><span class="span_icon icon_waring">确认备课吗</span></p>
-                          </div>
-                          <div slot="footer" class="dialog-footer ">
-                              <a class="btnDefault" @click="archiveManagement">确 认</a>
-                              <a class="btnDefault"   @click="show_dialog_file = false">取 消</a>
-                          </div>
-                      </el-dialog>
+                        :visible.sync="show_dialog_file"
+                        width="500px">
+                    <div slot="title" class="dialog_header">
+                        备课
+                    </div>
+                    <div class="confirm_dialog_body">
+                        <p class="dialog_mess"><span class="span_icon icon_waring">确认备课吗</span></p>
+                    </div>
+                    <div slot="footer" class="dialog-footer ">
+                        <a class="btnDefault" @click="archiveManagement">确 认</a>
+                        <a class="btnDefault"   @click="show_dialog_file = false">取 消</a>
+                    </div>
+                </el-dialog>
 
                  <div class="detail_nav">
-                    <a  :class="{'cur':index==navindex}" v-for="(item,index) in menu" :key="index" @click="linkDetails(item,index)">{{item.name}}</a>
+                    <a :class="{'cur':index==navindex}" v-for="(item,index) in menu" :key="index" @click="linkDetails(item,index)">{{item.name}}</a>
                 </div>
 
                  <!--课程大纲-->
@@ -101,8 +101,14 @@
                 </div>
 
                 <!--班级列表-->
-                <classList v-if="navindex==2" @sureCheckClass="sureCheckClass" :classesList = "classesList" :status = status></classList>
-
+                <classList v-if="navindex==2" 
+                    @sureCheckClass="sureCheckClass" 
+                    :classesList = "classesList" 
+                    :classList = "classList" 
+                    @getCourseById="getCourseById" 
+                    @checkClass="checkClass(arguments)"
+                    :status = status>
+               </classList>
 
 
                 <!--课程实验-->
@@ -168,7 +174,9 @@ import chapter from "@/components/d_chapter_box.vue";//课程大纲
 import experiment from "@/components/d_experiment_box.vue";//课程实验
 import courseware from "@/components/d_courseware_box.vue";//课程课件
 import coursework from "@/components/d_coursework_box.vue";//课程作业
-import {getCourseById,modifyCourseStatus,modifyCourseName,prepareCourse} from '@/API/api';
+
+import {getCourseById,modifyCourseStatus,searchClass,searchClassCount,modifyCourseName,prepareCourse} from '@/API/api';
+
 export default {
     inject:['reload'],
     data(){
@@ -217,7 +225,11 @@ export default {
             isEdit:false ,//课程名称修改是否显示
             editValue:'',//
             sure_newCourse:false,//教师端是否开课弹窗显示
+
+            classList:[],//该课程下班级列表
+
             myData:{},
+
         }
     },
     components:{classList,chapter,experiment,courseware,coursework},
@@ -227,6 +239,7 @@ export default {
         that.courseId = that.$route.query.courseId;
         that.navindex = that.$store.state.teacherNavindex;
         //console.log(that.$store.state.teacherNavindex)
+       
     },
     beforeDestroy(){
         let that = this;
@@ -237,6 +250,8 @@ export default {
         let that = this;
         that.show_courseOutline = sessionStorage.getItem('show_courseOutline')?JSON.parse(sessionStorage.getItem('show_courseOutline')):{};
          that.show_courseSection = sessionStorage.getItem('show_courseSection')?JSON.parse(sessionStorage.getItem('show_courseSection')):{};
+
+        that.getCourseById();
 
         if(that.backNum == 1){
           that.type = 0
@@ -249,6 +264,7 @@ export default {
     },
     methods:{
         getCourseById(){
+          
             let course_id = this.$route.query.courseId
             let that = this;
             let obj = {};
@@ -275,7 +291,16 @@ export default {
                     that.myData = res.data;
                     that.course = res.data
                     that.status = res.data.status
+
+                    //该课程下面选中的班级列表
+
                     that.classesList = res.data.classesList
+
+                    if(that.navindex==2){
+           
+                       that.searchClass();
+                    }
+
                     that.courseChapters = res.data.chapters
                     that.picurl = that.$store.state.pic_Url+ res.data.pic_url
                     that.addParamShow(that.courseChapters)
@@ -311,6 +336,13 @@ export default {
             obj.start = '';
             obj.end = '';
             obj.status = 1;
+            if (that.time == "暂无设置时间") {
+                return that.$toast("请先设置开课时间", 3000);
+            }
+
+            if (that.numbers == 0) {
+                return that.$toast("请先设置学生信息", 3000);
+            }
             modifyCourseStatus(obj).then(res=> {
                 if(res.code==200){
                     that.$toast('开课成功',3000)
@@ -331,9 +363,10 @@ export default {
           prepareCourse(obj).then(res=> {
               if(res.code==200){
                   that.$toast("备课成功",2000)
-                that.$router.push({path:'/teacher/lessonPreparationManagement'}).catch((err)=>{
+                  that.$router.push({path:'/teacher/lessonPreparationManagement'}).catch((err)=>{
                   console.log(err)
                 })
+                  that.$store.commit("updateNavindex", 1);
                   // that.$store.commit("updateNavindex", 1);
               }else{
                   that.$toast("备课失败",3000)
@@ -466,10 +499,15 @@ export default {
           that.navindex = num;
           that.$store.commit("updateTeacherNavindex",num);
           sessionStorage.setItem("store",JSON.stringify(this.$store.state))
-          that.reload()
+         
            sessionStorage.removeItem('show_courseOutline');
           sessionStorage.removeItem('show_courseSection');
-
+       
+          if(num==2){
+              that.getCourseById();
+          }else{
+               that.reload()
+          }
           that.showStudentList = false;
         },
 
@@ -478,7 +516,81 @@ export default {
         //班级选择确认
         sureCheckClass(){
             this.showStudentList = true
+        },
+         //班级列表
+        searchClass(){
+            let that = this;
+            searchClass().then(res=> {
+                if(res.code==200){
+                    that.classList = res.data
+                    that.checkedClass();
+                    /*
+                    for(let i =0;i<res.data.length;i++){
+                        let objCount = {}
+                        objCount.classId= res.data[i].id;
+                        //查看班级人数
+                        searchClassCount(objCount).then(res1=> {
+                            if(res.code==200){
+                                that.$set(that.classList[i], "number", res1.data);
+                            }else{
+                                that.$toast(res.message,3000)
+                            }
+                        })
+                    }*/
+                }else{
+                    that.$toast(res.message,3000)
+                }
+            })
+        },
+
+       //页面初始化班级选中
+      checkedClass(){
+        let that = this;
+        //classesList已经选中的班级     //班级列表classList 
+        for (let i=0; i<that.classList.length; i++) {   
+             that.$set(that.classList[i], 'checked',0)
+             that.$set(that.classList[i],'user_id_list',[])                    
+            for (let j=0; j<that.classesList.length; j++) {
+                if (that.classList[i].id == that.classesList[j].class_id) {               
+                    //执行业务
+                    if(that.classesList[j].completed){
+                    that.$set(that.classList[i], 'checked',1)
+                    that.$set(that.classList[i],'user_id_list',that.classesList[j].user_id_list)
+                        break
+                    }else{
+                    that.$set(that.classList[i], 'checked',2)
+                        let obj = {};
+                        obj.id = that.classList[i].id;
+                        obj.name = that.classList[i].name;
+                        obj.user_id_list = that.classesList[j].user_id_list;
+                        that.$set(that.classList[i],'user_id_list',that.classesList[j].user_id_list);
+                        break
+                    }
+                    
+                
+                }
+            }
+         
         }
+
+      },
+
+
+     //班级选中事件
+     checkClass(params){
+         let that = this
+        let index = params[1]
+        let checked = params[2];
+        console.log(params);
+        if(checked==0){
+           that.$set(that.classList[index], 'checked',1)
+           that.$set(that.classList[index], 'user_id_list',[])          
+        }else{
+           that.$set(that.classList[index], 'checked',0)
+           that.$set(that.classList[index], 'user_id_list',[])
+        }
+     }
+
 
     },
     filters: {

@@ -53,7 +53,7 @@
                     effect="dark"
                     content="删除"
                     placement="top"
-                    v-if="role != 3 && isEdit == 1 && (typeData==1 || status == 0)"
+                    v-if="showDelete(isEdit)"
                   >
                     <a
                       class="icon icon_close pointer"
@@ -183,7 +183,7 @@
                   </div>
                   <a
                     class="pointer pdf_btnrecord"
-                    @click="isRecordNotes = true"
+                    @click="isRecordNotes = true,titleText ='',contentText ='' "
                     v-if="role == 3"
                   ></a>
                   <p>{{ currentPage }} / {{ pageCount }}</p>
@@ -673,6 +673,34 @@ export default {
     click_new() {
       let that = this;
       that.$refs.newdialog.click_new(that.cindex, that.sindex, that.count);
+    },
+    showDelete(isEdit){
+      let that = this
+      if (sessionStorage.getItem('p_p-authority')==0) {
+        // 学生直接没有删除按钮
+        return false
+      }else {
+        if (isEdit==1) {
+          if (sessionStorage.getItem('p_p-authority')==2) {
+            //管理员判断status
+            if (that.status==0) {
+              return true
+            }else {
+              return false
+            }
+          }else {
+            //判断教师端
+            if (that.status==0&&that.typeData==0) {
+              return true
+            }else {
+              return false
+            }
+          }
+        }else {
+          return false
+        }
+
+      }
     },
 
     //视频关闭

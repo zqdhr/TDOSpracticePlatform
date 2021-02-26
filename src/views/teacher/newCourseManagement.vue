@@ -6,7 +6,7 @@
 
                     <div class="fr">
                        <div class="d-serach">
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off"  v-model="searchText" @keyup.enter="searchCourse"/>
+                            <input :placeholder="inplaceholder" type="text" autocomplete="off"  v-model="searchText" @keyup.enter="searchCourse" v-emoji/>
                             <a class="searchBtn pointer" @click="searchCourse"></a>
                         </div>
                     </div>

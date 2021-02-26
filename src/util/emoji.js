@@ -14,7 +14,8 @@ let findEle = (parent, type) => {
     bind: function (el, binding, vnode) {
       // 正则规则可根据需求自定义
       //[^\u4E00-\u9FA5|\d|a-zA-Z|\r\n\s,.?!，。？！…—&$=()-+/*{}[\]]|\s/g/
-      var regRule = /[^\u4E00-\u9FA5|\d|a-zA-Z|\r\n\s,.?!，。？！…—=()-+/*{}[\]]|\s/g
+      //var regRule = /[^\u4E00-\u9FA5|\d|a-zA-Z|\r\n\s,.?!，。？！…—=()-+/*{}[\]]|\s/g
+      var regRule = /[^\u4E00-\u9FA5|\d|a-zA-Z]|\s/g
       let $inp = findEle(el, 'input')
       el.$inp = $inp
       /*

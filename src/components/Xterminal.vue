@@ -26,10 +26,9 @@ export default {
   watch: {
     socketURI: {
       handler(val, olVal) {
-       
+        console.log('123')
         this.socket = null;
-        this.term = null;
-        this.initSocket();
+        this.term = null; 
       },
       
     },
@@ -62,7 +61,7 @@ export default {
       this.term = term;
     },
     initSocket() {
-     
+  
       this.socket = new WebSocket(this.socketURI);
       this.socketOnClose();
       this.socketOnOpen();

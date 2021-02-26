@@ -3,24 +3,28 @@
         <div class="back_box">
            <a class="back pointer" @click="backClass"></a>
            <div class="fr">
-              <el-select v-model="class_value" placeholder="请选择班级" >
+              <el-select v-model="class_value" placeholder="请选择班级"  @change="studentSelectClass">
                 <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  v-for="item in classList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
                 </el-option>
               </el-select>
+      
            </div>
         </div>
         <div class="tab_box">
             <el-table class="student_tab"
-                :data="studentList"
-                stripe
-                ref="multipleTable"
-                style="width: 100%"
-                      @selection-change="handleSelectionChange">
-                    <el-table-column type="selection" width="60"></el-table-column>
+                      :data="studentList"
+                      stripe
+                      ref="multipleTable"
+                      style="width: 100%"
+                      :row-key="(row) => row.userId"
+                      @selection-change="handleSelectionChange "
+                      @select = "handleSelect"
+                      >
+                    <el-table-column type="selection" width="60" :reserve-selection="true" ></el-table-column>
                     <el-table-column
                     prop="userId"
                     label="学号"
@@ -99,6 +103,7 @@ export default{
           multipleSelection: [],
           perPage: 10,//用户列表每页条数
           curPage:1,
+          
         }
     },
     props:{
@@ -108,38 +113,31 @@ export default{
         classList:{
             default: []
         },
-      chooseList:{
-        default: []
-      },
+      
     },
 
      watch: {
+
       studentsList: {
         handler: function(newV, oldV) {
           let that = this
           this.studentList = newV.list
-
-
-          //console.log(this.studentList)
-
-          console.log("+==================")
-          console.log(this.chooseList)
-          console.log(newV.list)
+         
          this.$nextTick(() => {
+              
           for (let i = 0; i < newV.list.length; i++) {
-              for(let j = 0;j<this.chooseList.length;j++){
-                if(newV.list[i].userId == this.chooseList[j]){
-                  console.log(newV.list[i].userId)
-                  this.$refs.multipleTable.toggleRowSelection(
-                    this.studentList[i],
-                    true
-                  );
-                }
+              if(newV.list[i].checked){                      
+                this.$refs.multipleTable.toggleRowSelection(
+                  that.studentList[i],
+                  true
+                );
               }
 
-            }
-          that.total = newV.list.length
+            }   
+                 
          })
+        
+          that.total = newV.list.length
         },
         deep: true
       }
@@ -147,63 +145,71 @@ export default{
     methods:{
          //底部分页
         handleCurrentChange(val) {
-            let that = this;
-            let obj = {}
-            let classIds = [];
-            obj.per_page = that.perPage
-            obj.page = val
+          let that = this;
+          that.$emit('handleCurrentChange',val,'')  
+        },
 
-            for(let i = 0;i<that.classList.length;i++){
-                classIds.push(that.classList[i].id)
+        //学生用户班级选中
+        studentSelectClass(val){
+          let that = this;
+          let obj = {};
+          for (var i =0;i<that.classList.length;i++){
+            if(that.classList[i].id==val){
+               obj = that.classList[i]
             }
-            obj.classIds = classIds
-            getStudentsByClasses(obj).then(res=> {
-                if(res.code==200){
-                    alert("qwe")
-                  console.log(res.data)
-                    that.studentList = res.data.list
-                  for (let i = 0; i < res.data.list.length; i++) {
-                    for(let j = 0;j<this.chooseList.length;j++){
-                      if(res.data.list[i].userId == this.chooseList[j]){
-                        console.log(res.data.list[i].userId)
-                        this.$refs.multipleTable.toggleRowSelection(
-                          this.studentList[i],
-                          true
-                        );
-                      }
-                    }
-
-                  }
-                }else{
-                    that.$toast(res.message,3000)
-                }
-            })
+          }
+          that.$emit('handleCurrentChange','',obj)
         },
 
         handleSelectionChange(val) {
-
+    
           this.multipleSelection  = val;
+          //console.log(this.multipleSelection)
+        },
+
+        //手动点击的时候选择
+        handleSelect(val,row){
+          console.log(row)
+          let that = this;
+          for(let i=0,len=that.classList.length;i<len;i++){
+            let tmp = [];
+            let temp = that.classList[i].user_id_list;
+            if(row.classId == that.classList[i].id){
+               if(that.classList[i].user_id_list.indexOf(row.userId)!=-1){
+                  let index = that.classList[i].user_id_list.indexOf(row.userId);
+                  temp.splice(index,1)
+                  
+               }else{
+                 temp.push(row.userId)
+               }
+            }
+            that.classList[i].user_id_list = temp;
+          }
         },
 
         //选择学生确认
         chooseStudent(){
-            this.$emit('sureStudent');
+            
             let that = this;
             let obj = {}
             obj.owner_id = sessionStorage.getItem("userId")
             let user_id_list = [];
-            alert(this.multipleSelection.length)
-            for(let i = 0;i<that.multipleSelection.length;i++){
-                user_id_list.push(that.multipleSelection[i].userId);
+           
+            
+            for(let i = 0;i<that.classList.length;i++){   
+               for(let j=0,len=that.classList[i].user_id_list.length;j<len;j++){
+                   user_id_list.push(that.classList[i].user_id_list[j]); 
+                }
             }
+
             obj.user_id_list =  user_id_list;
             obj.start = '';
             obj.end = '';
             obj.course_id = this.$route.query.courseId;
-            obj.status = 0;
+            obj.status = '';
             modifyCourseStatus(obj).then(res=> {
             if(res.code==200){
-                alert("111")
+                this.$emit('sureStudent');
             }else{
                 that.$toast(res.message,3000)
             }
