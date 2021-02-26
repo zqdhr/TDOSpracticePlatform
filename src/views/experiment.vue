@@ -126,6 +126,7 @@
 
             <el-dialog
             :visible.sync="isEdit"
+            @close="editValue=''"
             width="500px"
             class="personDialog"
 
@@ -329,6 +330,9 @@ export default {
             if (that.type==2) {
                 //重启实验
                 that.mess='正在重新开始实验，请稍候...'
+                clearInterval(that.timeInterval)
+                that.timeInterval=null
+                sessionStorage.removeItem(that.userid+that.experimentId);
                 that.closeContainers()
                 
             }else if (that.type==1) {       
@@ -442,9 +446,11 @@ export default {
             obj.courseId = that.courseId
             obj.imageId=that.container.imageId
             createAndRunContainers(obj).then(res=>{
+                  console.log(res)
             that.remove=false   
             if (res.code==200) {
                 console.log(res.data)
+                that.daojishi(that.experiment.duration*60)
             } else {
                 console.log(res.message)
             }

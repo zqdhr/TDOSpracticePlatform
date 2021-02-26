@@ -83,7 +83,7 @@
     </div>
 </template>
 <script>
-import {searchClass,getRunContainerByTeacher,getCourseListByUserId,execContainer} from "@/API/api";
+import {searchClass,getRunContainerByTeacher,getCourseListByUserId,execContainer,stopExperiment} from "@/API/api";
 import noData from '@/components/noData.vue'
 export default {
     data(){
@@ -136,7 +136,7 @@ export default {
             let that=this
             that.student.userid = item.user_id
             that.student.name = item.user_name
-            that.student.containerId = item.container_id
+            that.student.containerId = item.experiment_id
             that.isClose=true
             console.log('当前学生：'+that.student.name+',学号：'+that.student.userid)
         },
@@ -144,12 +144,10 @@ export default {
         commitClose(){
             let that = this
             let obj = {}
-            let containerId = []
-            containerId.push(that.student.containerId)
-            obj.containerId = containerId
-            obj.type = 1
+            obj.userId = that.student.userid
+            obj.experimentId = that.student.containerId
             console.log(obj)
-            execContainer(obj).then(res=>{
+            stopExperiment(obj).then(res=>{
                 if (res.code==200) {
                     that.isClose=false
                     that.getRunContainerByTeacher(1)

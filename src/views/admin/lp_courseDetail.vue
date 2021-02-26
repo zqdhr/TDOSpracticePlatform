@@ -150,6 +150,7 @@ export default {
             resetDialog:false,//重置密码是否弹出
             show_courseOutline:{},//当前展示的课程章节，新建小节还是展示小节列表
             show_courseSection:{},//当前展开的是哪个小节
+            small_section_number:0,//小节数量
         }
     },
     components:{chapter,experiment,courseware,coursework},
