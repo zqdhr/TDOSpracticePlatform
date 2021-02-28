@@ -4,7 +4,7 @@
            
             <div class="name textline1">正在进行的实验：{{experiment.name}}</div>
            
-            <div class="timeBox">{{time}}</div>
+            <div class="timeBox" v-if="showtime">{{time}}</div>
 
             <div class="operationBox">
             
@@ -12,7 +12,7 @@
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen " @click="isEdit=true">
+                <a class="a-opera pointer" v-if="isOpen&& authority==0 " @click="isEdit=true">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -221,6 +221,7 @@ export default {
             editValue:'',//下载要输入的文件名称
             tagid:'',
             mess:'正在关闭实验，请稍候...',
+            showtime:true,
            
         }
     },
@@ -246,6 +247,7 @@ export default {
         that.courseId =that.authority==0?that.$route.query.courseId:''
         console.log('课程id:'+that.courseId)
         that.findAllByType(that.experimentId)
+        that.showtime =  that.userid==sessionStorage.getItem("userId")?true:false
         if (that.authority==0) {
             that.hasExperimentReport()
         }  

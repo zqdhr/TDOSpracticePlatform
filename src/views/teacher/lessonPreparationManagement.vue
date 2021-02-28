@@ -7,7 +7,7 @@
                     <div class="fr">
                        <a class="btnDefault pointer abtn"  @click="show_dialog_file=true;archiveManagementisSuccess=false">归档</a>
                        <div class="d-serach">
-                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="searchTx" @keyup.enter="searchCourse" />
+                            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-emoji v-model="searchTx" @keyup.enter="searchCourse" />
                             <a class="searchBtn pointer" @click="searchCourse"></a>
                         </div>
                     </div>

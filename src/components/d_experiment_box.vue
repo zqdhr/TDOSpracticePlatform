@@ -302,19 +302,19 @@ export default {
         updateExperiment(){
             let that = this
             let obj={}
-            if (that.endTime==null) 
-            {
-                that.endTime=''
+            
+          
+            if (that.endTime=='') {
+                 return  that.$toast('请设置实验报告截止时间',2000)
             }
-            if (that.endTime!='') {
-
             if (new Date(that.endTime).getTime()<new Date(that.course_info.start_at.substring(0, that.course_info.end_at.indexOf("T"))).getTime()) {
                  return  that.$toast('实验报告截止时间不能小于课程开始时间',2000)
             }
             if (new Date(that.endTime).getTime()>new Date(that.course_info.end_at.substring(0, that.course_info.end_at.indexOf("T"))).getTime()) {
                  return  that.$toast('实验报告截止时间不能大于课程结束时间',2000)
             }
-
+            if (that.reportinfo==''||that.reportinfo==null) {
+                 return  that.$toast('请输入实验报告要求',2000)
             }
             obj.id=that.experiment.id
             obj.duration = that.time
@@ -409,7 +409,9 @@ export default {
             if(that.course_info.end_at == "" || that.course_info.end_at ==null){
                 return that.$toast("该课程尚未设置开课时间，请先进行设置！", 3000);
             }
-            that.isSet=true
+          
+            
+  
             for (let index = 0; index < that.timeOptions.length; index++) {
               if (that.timeOptions[index].value==item.duration) {
                   that.time = that.timeOptions[index].value
@@ -418,7 +420,11 @@ export default {
 
             }
             that.endTime=item.end_at!=null?item.end_at.substring(0,item.end_at.indexOf("T")):''
-            that.reportinfo = item.report_requirement
+            that.reportinfo = item.report_requirement==null?'':item.report_requirement
+            if (that.endTime!=''&&that.reportinfo!='') {
+                 return that.$toast("该实验报告已设置过，无需再次设置", 3000);
+            }
+            that.isSet=true
             console.log('课程详情'+that.course_info.end_at)
         },
     }

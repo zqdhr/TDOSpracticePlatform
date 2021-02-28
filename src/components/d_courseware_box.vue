@@ -429,6 +429,7 @@ export default {
     getCoursewareByCourseId(perPage, page, kind, type) {
       let that = this;
       let obj = {};
+      that.curPage=page
       obj.courseId = that.$route.query.courseId;
       obj.kind = kind;
       obj.type = type;
