@@ -21,10 +21,21 @@
                       ref="multipleTable"
                       style="width: 100%"
                       :row-key="(row) => row.userId"
-                      @selection-change="handleSelectionChange "
+                      
                       @select = "handleSelect"
+                      @select-all="select_all"
                       >
-                    <el-table-column type="selection" width="60" :reserve-selection="true" ></el-table-column>
+                  
+                    <el-table-column type="selection" width="60"  ></el-table-column>
+                   
+                     <!--
+                     <el-table-column  width="55">
+                      <template slot-scope="scope">
+                        <el-checkbox v-model="scope.row.checked"></el-checkbox>
+                      </template>
+                    </el-table-column>
+                    -->
+                  
                     <el-table-column
                     prop="userId"
                     label="学号"
@@ -72,7 +83,7 @@
             :page-size="perPage"
             @current-change="handleCurrentChange"
             layout="prev, pager, next,jumper"
-            :total="studentsList.total"
+            :total="total"
             >
             </el-pagination>
         </div>
@@ -88,7 +99,7 @@ export default{
     data(){
         return{
          studentList:[],
-            total:1,//总人数
+           
           options: [{
             value: '选项1',
             label: '班级1'
@@ -102,8 +113,10 @@ export default{
           class_value:'',//下拉选中的班级
           multipleSelection: [],
           perPage: 10,//用户列表每页条数
-          curPage:1,
+          curPage:1,//当前页数
           
+
+        
         }
     },
     props:{
@@ -113,31 +126,36 @@ export default{
         classList:{
             default: []
         },
+        total:{
+          default:0,
+        }
       
     },
-
+    
      watch: {
-
+  
       studentsList: {
         handler: function(newV, oldV) {
           let that = this
-          this.studentList = newV.list
-         
-         this.$nextTick(() => {
-              
-          for (let i = 0; i < newV.list.length; i++) {
-              if(newV.list[i].checked){                      
+          this.studentList = newV
+  
+          this.$nextTick(() => {             
+          for (let i = 0; i < newV.length; i++) {
+              if(newV[i].checked){                      
                 this.$refs.multipleTable.toggleRowSelection(
                   that.studentList[i],
                   true
                 );
+              
               }
 
-            }   
+          }  
+          
+          
                  
          })
         
-          that.total = newV.list.length
+          
         },
         deep: true
       }
@@ -146,6 +164,7 @@ export default{
          //底部分页
         handleCurrentChange(val) {
           let that = this;
+          this.select_flag = false;
           that.$emit('handleCurrentChange',val,'')  
         },
 
@@ -162,14 +181,26 @@ export default{
         },
 
         handleSelectionChange(val) {
-    
-          this.multipleSelection  = val;
-          //console.log(this.multipleSelection)
+          //表示页面手动点击全选按钮
+          this.multipleSelection  = val;          
+        
+        },
+        select_all(val){
+          let that = this;
+
+          if(val.length>0){
+           
+            this.$emit('stu_select_all')
+             
+          }
+          if(val.length==0){
+            this.$emit('stu_select_no')       
+          }
+        
         },
 
         //手动点击的时候选择
         handleSelect(val,row){
-          console.log(row)
           let that = this;
           for(let i=0,len=that.classList.length;i<len;i++){
             let tmp = [];

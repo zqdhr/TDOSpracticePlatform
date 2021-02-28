@@ -30,9 +30,14 @@
    </template>
 
     <!--学生列表 -->
-    <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="isStudent"  @handleCurrentChange="handleCurrentChange(arguments)"    
+    <studentList @sureStudent="sureStudent" @backClass="backClass" v-if="isStudent"  
+       @handleCurrentChange="handleCurrentChange(arguments)"    
        :studentsList="list" 
-       :classList = this.checkedList   
+       :classList = this.checkedList
+       :total = "total"
+       @stu_select_all="stu_select_all"
+       @stu_select_no="stu_select_no"
+   
     >
     </studentList>
 
@@ -52,6 +57,7 @@ export default{
             checkList:[],
             per_page:10,
             page:1,
+            total:0,
         }
     },
     components:{studentList},
@@ -69,9 +75,9 @@ export default{
             default:[]
         },
 
-      status: {
-        default: 0,
-      },
+       status: {
+         default: 0,
+       },
 
     },
     watch: {
@@ -82,7 +88,7 @@ export default{
         },
         classList:{
             handler:function(val, olVal) {
-              
+               //console.log(val)
            }
         }
     },
@@ -116,29 +122,72 @@ export default{
         },
         
         //子组件调用父组件
-        handleCurrentChange(params){
+        handleCurrentChange(params){ //第一个参数是第一个页数，第二个参数是当前选中的班级
         
            let that = this;
-           let class_id = [];
+           let class_id = [];       
            if(params[0]!=''){
               that.page = params[0];
            }
            if(params[1]!=''){
               class_id.push(params[1])         
               that.searchClassStudents(class_id)
-           }else{
-               
-           that.searchClassStudents(that.checkedList)
+           }else{  
+              that.searchClassStudents(that.checkedList)
            }
         },
 
+        //当前页学生全选
+        stu_select_all(){
+            let that = this;
+            //that.checkedList当前选中的班级，以及该班级选中的用户id列表
+            //that.list当前展示的用户类别
+             console.log(that.checkedList)
+             console.log(that.list)
+
+            for(let i=0,len=that.checkedList.length;i<len;i++){
+                for(let j = 0,len = that.list.length ; j<len;j++){
+                    if(that.checkedList[i].id == that.list[j].classId){
+                        //该用户不存在添加进去
+                        if(that.checkedList[i].user_id_list.indexOf(that.list[j].userId)==-1){
+                           that.checkedList[i].user_id_list.push(that.list[j].userId)
+                        }
+                    }
+                }
+            }
+
+          
+           console.log('全部全选')
+        },
+        //当前学生全部取消选择
+         stu_select_no(){
+            let that = this;
+            let temp = JSON.parse(JSON.stringify(that.checkedList));
+            
+                for(let j = 0,len = that.list.length ; j<len;j++){
+                    for(let i=0,len=that.checkedList.length;i<len;i++){
+                    if(that.checkedList[i].id == that.list[j].classId){
+                        //该用户存在，删除
+                        if(that.checkedList[i].user_id_list.indexOf(that.list[j].userId)>=-1){
+                            for(let n = 0, len = that.checkedList[i].user_id_list.length; n<len;n++){
+                                let index = that.checkedList[i].user_id_list.indexOf(that.list[j].userId)
+                                temp[i].user_id_list.splice(index,1)
+                            }
+                        
+                          
+                        }
+                    }
+                }
+            }
+            that.checkedList = temp
+                console.log(that.checkedList)
+             console.log(that.list)
+        },
         
 
         //班级学生信息
-        searchClassStudents(list){
-     
+        searchClassStudents(list){    
             //param list当前选中的班级
-      
             let that = this;
             let obj = {}
             let classIds = [];
@@ -147,37 +196,42 @@ export default{
 
             for(let i=0;i<list.length;i++){
                 classIds.push(list[i].id);          
-            }
-          
-//console.log(list)
+            }         
             obj.classIds = classIds //表示选中的班级
-           
+
             getStudentsByClasses(obj).then(res=> {
                 if(res.code==200){
     
-                    //that.checkedList:班级选中的学生列表，如果用户列表为空代表该班级学生全部选中
+                    //that.checkedList:班级选中的学生列表，如果用户列表为空代表或者参数checked==1该班级学生全部选中
                     //res.data.list:学生列表
                     
                     for (let i=0; i<that.checkedList.length; i++) {
-                        if (that.checkedList[i].user_id_list.length == 0) {//该班级学生全部选中
+                        if (that.checkedList[i].user_id_list.length == 0 || that.checkedList[i].checked==1) {//该班级学生全部选中
                             for (let j=0; j<res.data.list.length; j++) {
                                 if (res.data.list[j].classId == that.checkedList[i].id) {
-                                    that.checkedList[i].user_id_list.push(res.data.list[j].userId)
+                                    if (that.checkedList[i].user_id_list.indexOf(res.data.list[j].userId) == -1) {
+                                       that.checkedList[i].user_id_list.push(res.data.list[j].userId)
+                                    }
                                     res.data.list[j].checked = true 
                                 }
                             }
-                        } else {//遍历学生数组，如果学生id在班级选中的学生数组中，那么该学生状态设置为选中
-                            for (let j=0; j<res.data.list.length; j++) {
+                        } else {                           
+                            //遍历学生数组，如果学生id在班级选中的学生数组中，那么该学生状态设置为选中
+                            for (let j=0; j<res.data.list.length; j++) {                                                                              
                                 if (that.checkedList[i].user_id_list.indexOf(res.data.list[j].userId) != -1) {
                                     res.data.list[j].checked = true 
+                                   
                                 }
+                                   
                             }
+                               
                         }
                     }
 
-                    that.list = res.data;
+                    that.list = res.data.list;
+                    that.total= res.data.total
+                    
 
-                
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -188,19 +242,47 @@ export default{
         //班级选择确认
         sureCheckClass(){
             let that = this;        
-            let temp = []
+            let temp = [];
             for(let j = 0,  len = that.classList.length; j < len; j++){
-                if(that.classList[j].checked==1 || that.classList[j].checked==2 ){
-                   temp.push(that.classList[j]);  
+                let  obj = {};
+                obj.per_page = 500;
+                obj.page = that.page
+                obj.classIds = [];
+                obj.classIds.push(that.classList[j].id)
+                
+                //查询每个班级下面的学生
+                if(that.classList[j].checked==1){
+                    getStudentsByClasses(obj).then(res=> {
+                        if(res.code==200){
+                           if(that.classList[j].checked==1){
+                               that.classList[j].user_id_list = [];
+                               for(let i =0,len=res.data.list.length;i<len;i++){
+                                  that.classList[j].user_id_list.push(res.data.list[i].userId)  
+                               }                           
+                           }
+                        }else{
+                            that.$toast(res.message,3000)
+                        }
+                    })
+                    temp.push(that.classList[j]);  
                 }
-               
-
+                
+                if(that.classList[j].checked==2){
+                    temp.push(that.classList[j]); 
+                }
+                
+                /*
+                if(that.classList[j].checked==1 || that.classList[j].checked==2 ){
+                 
+                   console.log(temp)
+                  
+                }
+                */
             }
-            if(temp==0){
+            if(temp.length==0){
                 return that.$toast('请先选择班级',2000)
             }
-            //console.log(that.checkedList)
-            //console.log('that.checkedList')
+
             that.checkedList = temp
             that.page = 1;
             that.searchClassStudents(that.checkedList)
@@ -231,7 +313,7 @@ export default{
     }
     .class_info_part{border: 1px solid @basecolor1;}
     .class_info_all{border: 1px solid @basecolor}
-    .p_name{font-size: 24px;color:@tabcolor;}
+    .p_name{font-size: 24px;color:@tabcolor; height: 26px; line-height: 26px;}
     .line{margin:20px 40px;height: 2px; background:@linecoloe;}
     .p_number{font-size:18px;color:@tabcolor;}
     .s-radion{width:28px;height: 28px;display: block;position: absolute; background: url(../assets/img/rad2.png) center no-repeat; left:15px;top:15px;cursor: pointer;}

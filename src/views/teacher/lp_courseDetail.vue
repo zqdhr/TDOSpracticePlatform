@@ -258,7 +258,7 @@ export default {
         }else if(that.backNum == 2){
           that.type = 1
         }
-         that.getCourseById();
+      
 
 
     },
@@ -547,6 +547,7 @@ export default {
       checkedClass(){
         let that = this;
         //classesList已经选中的班级     //班级列表classList
+       
         for (let i=0; i<that.classList.length; i++) {
              that.$set(that.classList[i], 'checked',0)
              that.$set(that.classList[i],'user_id_list',[])
@@ -555,8 +556,8 @@ export default {
                     //执行业务
                     if(that.classesList[j].completed){
                     that.$set(that.classList[i], 'checked',1)
-                    that.$set(that.classList[i],'user_id_list',that.classesList[j].user_id_list)
-                        break
+                    that.$set(that.classList[i],'user_id_list',[])
+                       
                     }else{
                     that.$set(that.classList[i], 'checked',2)
                         let obj = {};
@@ -564,7 +565,7 @@ export default {
                         obj.name = that.classList[i].name;
                         obj.user_id_list = that.classesList[j].user_id_list;
                         that.$set(that.classList[i],'user_id_list',that.classesList[j].user_id_list);
-                        break
+                       
                     }
 
 
@@ -572,6 +573,9 @@ export default {
             }
 
         }
+
+        console.log(that.classList)
+    
 
       },
 
@@ -581,14 +585,15 @@ export default {
          let that = this
         let index = params[1]
         let checked = params[2];
-        console.log(params);
+        
+        //console.log(params);
         if(checked==0){
            that.$set(that.classList[index], 'checked',1)
            that.$set(that.classList[index], 'user_id_list',[])
         }else{
            that.$set(that.classList[index], 'checked',0)
            that.$set(that.classList[index], 'user_id_list',[])
-        }
+        }   
      }
 
 
