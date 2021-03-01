@@ -369,6 +369,7 @@ export default {
       that.count = count;
       that.type = ''; //默认选中内置课件
       that.kind = ''; //课件类型默认选中全部
+      that.upload_falg = 0;
       that.findParentCategory();
       that.getCoursewareAll();
     },
