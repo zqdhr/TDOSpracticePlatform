@@ -44,7 +44,7 @@
                    <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>
                 </div>
 
-                <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" id="Screenshots"
+                <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" :id="'Screenshots'+iindex"
                      v-for="(item,iindex) in opencontainers" :key="iindex">
 
                    <div class="operation_box" id="screen" v-if="item.url.indexOf('html')>0 && virtualMachine==iindex && containerstate=='2'" ></div>
@@ -165,7 +165,7 @@ export default {
             dataURL: '',
             isHide:false,//右侧栏是否显示
             curIndex:1,
-            virtualMachine:6,
+            virtualMachine:8,
             reportText:'',//实验报告输入内容
             authority:0,
             isOpen:false,//虚拟机是否开启
@@ -528,7 +528,7 @@ export default {
 
             const url =uri
             this.$nextTick(function(){
-                console.log(document.getElementById('screen'));
+           
             that.rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
                 credentials: {password: '123456' }
@@ -650,8 +650,8 @@ export default {
                 backgroundColor: null, // 解决生成的图片有白边
                 useCORS: true, // 如果截图的内容里有图片,解决文件跨域问题
                 scale:2,
-                height: document.getElementById('Screenshots').offsetHeight,
-                width:document.getElementById('Screenshots').offsetWidth,
+                height: document.getElementById('Screenshots'+that.virtualMachine).offsetHeight,
+                width:document.getElementById('Screenshots'+that.virtualMachine).offsetWidth,
                 //windowHeight: document.getElementById('imageWrapper').scrollHeight,
                 //windowWidth: document.getElementById('imageWrapper').scrollWidth,
                 x:0,
@@ -665,8 +665,10 @@ export default {
             //const iframeHtml = this.$refs.frameWrapper.contentWindow // 获取iframe内容
             //const iframeBody = iframeHtml.document.getElementsByTagName('body')[0]
             //that.$refs.imageWrapper
+
+           console.log(document.getElementById('Screenshots'+that.virtualMachine))
             that.$nextTick(function(){
-                html2canvas(document.getElementById('Screenshots'), opts).then((canvas) => {
+                html2canvas(document.getElementById('Screenshots'+that.virtualMachine), opts).then((canvas) => {
                     var url = canvas.toDataURL('image/png')
                     that.dataURL = url
                     that.yourContent =that.yourContent+ '<p><img src="'+that.dataURL+'"/></p>'
