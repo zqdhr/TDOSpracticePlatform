@@ -259,6 +259,7 @@ export default {
             if(msg.detail.clean){
                 // 根据 断开信息的msg.detail.clean 来判断是否可以重新连接
                 this.connectVnc(this.connect_url)
+
             } else {
                 //这里做不可重新连接的一些操作
                 //this.connectVnc(this.connect_url)
@@ -407,37 +408,19 @@ export default {
         closeContainers(){
             let that =this
             that.remove=true
-            if (that.authority==0) {
-            //学生关闭实验 
-            let obj = {}
-            let containerId = []
-            for (let index = 0; index <  that.containers.length; index++) {
-                containerId.push( that.containers[index].containerId)
-            }
-            that.isOpen = true
-            obj.containerId = containerId
-            obj.type = 1
-            execContainer(obj).then(res=>{
-                if (res.code==200) {
-                    console.log(res.data)
-                    that.restartContainers()
-                } else {
-                    console.log(res.message)
-                }       
-            })
-            }else{
              //教师与管理员关闭实验
             let obj = {}
             let containerId = []
-            for (let index = 0; index <  that.containers.length; index++) {
-                containerId.push( that.containers[index].containerId)
-            }
+            // for (let index = 0; index <  that.containers.length; index++) {
+            //     containerId.push( that.containers[index].containerId)
+            // }
+            containerId.push(that.container.containerId)
             obj.containerIds = containerId
             removeContainers(obj).then(res=>{
             console.log('返回参数'+res)
             that.restartContainers()
             })
-            }
+            
         },
         //重启镜像
         restartContainers(){
@@ -452,6 +435,14 @@ export default {
             that.remove=false   
             if (res.code==200) {
                 console.log(res.data)
+                for (let index = 0; index < that.containers.length; index++) {
+                    if (that.containers[index].imageId==res.data.imageId) {
+                        that.containers[index]=res.data
+                    }
+                    
+                }
+                that.container = res.data
+                that.openXuniji(that.container)             
                 that.daojishi(that.experiment.duration*60)
             } else {
                 console.log(res.message)

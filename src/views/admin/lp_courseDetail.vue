@@ -159,6 +159,10 @@ export default {
         let that = this;
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
         that.courseId = that.$route.query.courseId;
+        if(sessionStorage.getItem('slt_Experiment') !=null &&　sessionStorage.getItem('slt_Experiment') == 1){
+            sessionStorage.removeItem('slt_Experiment')
+            that.$store.commit("updateAdminNavindex",1);
+        }
         that.navindex = that.$store.state.adminNavindex;
     },
    beforeDestroy(){

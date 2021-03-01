@@ -114,7 +114,10 @@ export default {
       
         that.courseId = this.$route.query.courseId
         that.course = 1;
-
+         if(sessionStorage.getItem('slt_Experiment') !=null &&　sessionStorage.getItem('slt_Experiment') == 1){
+            sessionStorage.removeItem('slt_Experiment')
+            that.$store.commit("updateStudentNavindex",1);
+        }
        that.navindex = that.$store.state.studentNavindex;
       
     },
