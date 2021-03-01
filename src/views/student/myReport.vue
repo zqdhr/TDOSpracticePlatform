@@ -184,7 +184,7 @@
     </div>
 </template>
 <script>
-import {student_getCourseList,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId} from '@/API/api';
+import {student_getCourseList,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,findStudentExperimentReport} from '@/API/api';
 import { quillEditor } from "vue-quill-editor"; //调用编辑器
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
@@ -393,16 +393,13 @@ export default {
             that.curPage=page
             let obj={}
             obj.course_id = that.className
-            obj.status=that.state
             obj.isCorrect = -1
             obj.user_id =sessionStorage.getItem("userId")
             obj.name = that.searchTx
-            obj.startTime = ''
-            obj.endTime = ''
             obj.perPage=that.perPage
             obj.page = page
             console.log(obj)
-            findByExperimentReportAll(obj).then(res=>{
+            findStudentExperimentReport(obj).then(res=>{
                 if (res.code==200) {
                     console.log(res.data)
                     that.jobList = res.data.list

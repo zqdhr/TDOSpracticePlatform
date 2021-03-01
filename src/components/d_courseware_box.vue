@@ -39,7 +39,7 @@
           <a
             class="btnDefault pointer"
             @click="click_new"
-            v-if="(sindex != '' || cindex != '') &&role!=3 && (typeData==1 || status == 0)"
+            v-if="isEdit==1?showAdd():false"
             >新增课件</a
           >
         </div>
@@ -697,6 +697,37 @@ export default {
             }else {
               return false
             }
+          }
+
+
+      }
+    },
+     showAdd(){
+      let that = this
+
+      console.log(sessionStorage.getItem('p_p-authority')+that.status+that.typeData)
+      if (sessionStorage.getItem('p_p-authority')==0) {
+        // 学生直接没有删除按钮
+        return false
+      }else {
+
+          if (sessionStorage.getItem('p_p-authority')==2) {
+            //管理员判断status
+            if (that.status==0) {
+              return true
+            }else {
+              return false
+            }
+          }else {
+            //判断教师端
+           
+            if (that.status!=-1&&that.typeData==1) {
+              return true
+            }else {
+              return false
+            }
+            
+          
           }
 
 
