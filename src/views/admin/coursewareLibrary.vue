@@ -13,7 +13,7 @@
                 <el-option v-for="item in i_customClass" :key="item.id" :label="item.name" :value="item.id" > </el-option>
                 </el-select>
             </div>
-            <div class="sel-box">               
+            <div class="sel-box">
                 <el-select v-model="paramData.type" placeholder="请选择课件分类" @change="selectCourseWareType">
                     <el-option
                     v-for="item in catoptions"
@@ -21,9 +21,9 @@
                     :label="item.label"
                     :value="item.value">
                     </el-option>
-                </el-select>               
+                </el-select>
             </div>
-            <div class="sel-box">               
+            <div class="sel-box">
                 <el-select v-model="paramData.kind" placeholder="请选择课件类型" @change="selectCate">
                     <el-option
                     v-for="item in typeList"
@@ -31,13 +31,13 @@
                     :label="item.label"
                     :value="item.value">
                     </el-option>
-                </el-select>               
+                </el-select>
             </div>
         </div>
-        
+
         <div class="fr">
-          <a class="btnDefault pointer abtn" @click="click_new">新增课件</a>      
-          <div class="d-serach"> 
+          <a class="btnDefault pointer abtn" @click="click_new">新增课件</a>
+          <div class="d-serach">
             <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="paramData.name"/>
             <a class="searchBtn pointer" @click="searchCourse"></a>
           </div>
@@ -86,14 +86,14 @@
                 </el-pagination>
             </div>
             </template>
-            
+
              <nodata dataMess="课件库暂无内容" noDataType='1' v-if="!isHasData"></nodata>
 
         </div>
     </div>
      <!--删除实验弹出框-->
     <el-dialog :visible.sync="isDelete" width="500px">
-      <div slot="title" class="dialog_header">请注意!</div>
+      <div slot="title" class="dialog_header">警告!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <span class="span_icon icon_waring">确定要删除当前课件吗？</span>
@@ -110,24 +110,24 @@
            <div class="studentMain">
                 <div class="dis-table-cell">
                 <div class="video_box" v-if="detailType==0">
-                        <video-player 
+                        <video-player
                             @touchstart.passive="passive"
                             class="video-player vjs-custom-skin"
-                            ref="videoPlayer" 
+                            ref="videoPlayer"
                             :playsinline="true"
                             :x5-playsinline="true"
                             :webkit-playsinline="true"
                             :options="playerOptions"
-                            
+
                         >
                         </video-player>
                     <div class="name_box">
                         <div class="name textline1">{{show_name}}</div>
                         <a class="a_close pointer" @click="click_Hidevideo"></a>
                     </div>
-                 
+
                 </div>
-                <div class="video_box pdf_box" v-if="detailType==1"> 
+                <div class="video_box pdf_box" v-if="detailType==1">
                     <div class="pdf_name">
                         {{show_name}}
                         <a class="a_close pointer" @click="click_Hidevideo"></a>
@@ -135,15 +135,15 @@
                     <div class="pdf-main">
                         <div class="p-main">
                             <pdf ref="pdf"  :src="url" v-if="url" @loaded="loadPdfHandler" :page="pdf_currentPage"
-                                @num-pages="pageCount=$event" 
-                                @page-loaded="pdf_currentPage=$event" 
+                                @num-pages="pageCount=$event"
+                                @page-loaded="pdf_currentPage=$event"
                             > </pdf>
                             <div class="pdf_info">
                                 <div class="btn_box">
                                 <a  @click="changePdfPage(0)" class="pointer preve" :class="{grey: pdf_currentPage==1}"></a>
                                 <a  @click="changePdfPage(1)" class="pointer next" :class="{grey: pdf_currentPage==pageCount}"></a>
                                 </div>
-                              
+
                                 <p>{{pdf_currentPage}} / {{pageCount}}</p>
                             </div>
                         </div>
@@ -187,15 +187,15 @@ export default {
             isDelete:false,
             isnewFilter:false,//新增课件选择
             total:1,
-           
-          
-        
-        
+
+
+
+
             category_id:'',
-         
+
             customClass: [], //自定义分类
             i_customClass: [ ], //自定义分类子
-    
+
             options:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
             options1:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
             options2:[{value:'0',label:'区块链1'},{value:'1',label:'节点启动与暂停'}],
@@ -230,7 +230,7 @@ export default {
                 {
                     type: "video/mp4", // 类型
                     src:'', //require("../../assets/video.mp4"), // url地址
-                
+
                 },
                 ],
                 poster: "", // 封面地址
@@ -268,7 +268,7 @@ export default {
             findParentCategory().then(res=> {
                 if(res.code==200){
                     that.customClass = res.data;
-                  
+
                 }else{
                     this.$toast(res.message,2000)
                 }
@@ -297,8 +297,8 @@ export default {
         //获取课件列表方法
         getCourseAll(){
             let that = this;
-      
-            getCoursewareAll(that.paramData).then((res) => {                
+
+            getCoursewareAll(that.paramData).then((res) => {
                 if (res.code == 200) {
                     for(let i = 0;i<res.data.list.length;i++){
                         res.data.list[i].size = (res.data.list[i].size/(1024 * 1024)).toFixed(2) + "MB"
@@ -306,7 +306,7 @@ export default {
                     that.experimentList = res.data.list;
                     res.data.total==0 ? that.isHasData = false :that.isHasData = true
                     that.total = res.data.total
-                    
+
                     //alert(that.total)
 
                 } else {
@@ -324,7 +324,7 @@ export default {
             let that = this;
             that.$refs.newdialog.click_new();
         },
-        
+
         //底部分页
         handleCurrentChange(val) {
             let that = this;
@@ -341,7 +341,7 @@ export default {
         //选择课件类型
          selectCourseWareType(val){
              let that = this;
-              
+
              that.getCourseAll();
         },
         isDeleteWare(id){
@@ -361,9 +361,9 @@ export default {
                 that.coueseWareId = '';
                 if (res.code == 200) {
                     if(res.data.reason){
-                    
+
                         that.$toast(res.data.reason+'无法删除', 3000);
-                       
+
                     }else{
                        if(that.paramData.page!=1){
                              if(list.length == that.total){
@@ -393,7 +393,7 @@ export default {
          videoPlay() {
             this.$refs.videoPlayer.player.play();
         },
-        
+
         //pdf加载
         loadPdfHandler(e) {
         this.pdf_currentPage = 1; // 加载的时候先加载第一页
@@ -401,7 +401,7 @@ export default {
 
         //点击查看视频
         click_showDetail(num,item){
-            
+
           let that = this
         //   alert(that.$store.state.pic_Url + item.url);
           that.showvideo = true
@@ -412,19 +412,19 @@ export default {
           document.body.style.overflow='hidden';
           document.addEventListener("touchmove",mo,false);//禁止页面滑动
           if(num==0){
-              
+
             that.$nextTick(function(){
                 that.playerOptions.sources[0].src= that.$store.state.pic_Url + item.url
                 that.videoPlay();
             })
-          
+
           }else{
               that.$nextTick(function(){
                  that.url =  that.$store.state.pic_Url + item.url
                  that.loadPdfHandler()
               })
           }
-          
+
         },
 
         //视频关闭
@@ -448,14 +448,14 @@ export default {
             // console.log(this.currentPage)
         }
         },
-       
+
 
 
     },
     mounted() {
         let that = this;
-       
-       
+
+
     },
 }
 </script>

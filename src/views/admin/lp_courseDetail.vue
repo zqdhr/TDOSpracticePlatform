@@ -207,7 +207,7 @@ export default {
             })
         },
         clickStartTime() {
-        this.pickerOptionsStart.disabledDate = time => {
+        this.pickerOptionsStart.disabledDate = time => {0
           if (this.endTime) {
             if (time.getTime() > new Date(this.endTime).getTime()) {
               return true

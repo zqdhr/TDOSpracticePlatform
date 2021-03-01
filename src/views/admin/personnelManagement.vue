@@ -185,7 +185,7 @@
         <ul class="fileList_name">
         <li v-for="(file) in files" :key="file.id">
           <span>{{file.name}}</span> -
-         
+
         </li>
       </ul>
         <div class="upload_person">
@@ -218,7 +218,7 @@
 
     <!--删除人员弹出框-->
     <el-dialog :visible.sync="isDelete" width="500px">
-      <div slot="title" class="dialog_header">请注意!</div>
+      <div slot="title" class="dialog_header">警告!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <span class="span_icon icon_waring">确定要删除当前选中人员吗？</span>
@@ -232,11 +232,11 @@
 
     <!--修改编辑弹出框-->
     <el-dialog
-     
+
       :visible.sync="editDialog"
       width="500px"
       class="personDialog"
-      
+
     >
     <div slot="title" class="dialog_header">学生信息修改</div>
 
@@ -247,7 +247,7 @@
           </el-form-item>
           <el-form-item label="性别">
             <el-select  v-model="userInfo.gender"
-              placeholder="请选择" 
+              placeholder="请选择"
               @change="changeSex"
             >
               <el-option
@@ -272,12 +272,12 @@
         <button class="btnDefault" @click="editUserInfo">确认修改</button>
       </span>
     </el-dialog>
-     
+
     <!--重置-->
-    <el-dialog 
+    <el-dialog
       :visible.sync="resetDialog"
       width="500px"
-      class="personDialog"   
+      class="personDialog"
     >
     <div slot="title" class="dialog_header">密码重置</div>
        <!--
@@ -286,7 +286,7 @@
           <el-form-item label="输入密码">
             <el-input  type="password" placeholder="请输入密码" maxlength="20" v-model="password" v-emoji></el-input>
           </el-form-item>
-         
+
           <el-form-item label="确认密码">
             <el-input type="password" placeholder="请输入确认密码" maxlength="20" v-model="confirmPassword" v-emoji></el-input>
           </el-form-item>
@@ -408,7 +408,7 @@ export default {
             ? (that.teacherList = res.data.list)
             : (that.studentList = res.data.list);
           that.total = res.data.total;
-     
+
         } else {
           that.$toast(res.message, 3000);
         }
@@ -452,15 +452,15 @@ export default {
       console.log(JSON.stringify(obj));
       deleteUser(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
-          
+
           if(that.curPage==1){
             that.curPage=1
           }else{
             that.multipleSelection.length == that.total?that.curPage = that.curPage-1:that.curPage = that.curPage;
-            
+
           }
           that.searchUser(that.type, that.searchText, that.className,that.curPage, 10);
-          
+
 
           that.showDel = !that.showDel;
           that.isDelete = false;
@@ -506,7 +506,7 @@ export default {
           }
         })
       },
-    
+
     //信息确认修改
     editUserInfo(){
       let that = this;
@@ -637,7 +637,7 @@ export default {
             this.$message.success("上传成功");
             that.isUpload = false;
             that.searchUser(2, "", "",that.curPage, that.perPage);
-            
+
           } else {
             that.isUpload = false;
             this.$message.error(response.message);

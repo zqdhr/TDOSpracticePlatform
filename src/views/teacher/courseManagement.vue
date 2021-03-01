@@ -5,7 +5,7 @@
                 <div class="clearfix">
                     <div class="fl">
                        <div class="sel-box">
-                          <el-select v-model="className" placeholder="请选择课程" 
+                          <el-select v-model="className" placeholder="请选择课程"
                           @change="changeClass"
                           >
                                 <el-option
@@ -15,17 +15,17 @@
                                 :value="item.id">
                                 </el-option>
                             </el-select>
-                         
+
                        </div>
                     </div>
                     <div class="fr">
-                       <div class="d-serach"> 
+                       <div class="d-serach">
                             <input :placeholder="inplaceholder" type="text" v-emoji autocomplete="off" v-model="searchContent"  @keyup.enter="doSearch(1)"/>
                             <a class="searchBtn pointer" @click="doSearch(1)"></a>
                         </div>
                     </div>
                 </div>
-              
+
             </div>
             <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
               <template v-if="hasData">
@@ -34,7 +34,7 @@
                 <ul class="default_List">
                     <li v-for="(item,index) in machineList" :key="index">
                         <div class="info-box">
-                        
+
                             <div class="d-icon"></div>
                             <p class="p_id textline1">学号：{{item.user_id}}</p>
                             <p class="p_id p_name textline1">用户名称：{{item.user_name}}</p>
@@ -60,13 +60,13 @@
                 >
                 </el-pagination>
                 </div>
-           
-           
+
+
             </div>
              </template>
             <!--结束当前学生的实验-->
             <el-dialog :visible.sync="isClose" width="600px">
-            <div slot="title" class="dialog_header">请注意!</div>
+            <div slot="title" class="dialog_header">警告!</div>
             <div class="confirm_dialog_body">
                 <p class="dialog_mess">
                 <!--成功span的class为icon_success-->
@@ -79,7 +79,7 @@
             </div>
             </el-dialog>
         </div>
-      
+
     </div>
 </template>
 <script>
@@ -94,7 +94,7 @@ export default {
             className:'',//选择的班级名称
             inplaceholder:'请输入用户名称和学号',
             machineList:[
-     
+
             ],
             perPage:24, //虚拟机每页
             curPage:1,//设备列表
@@ -118,10 +118,10 @@ export default {
     },
     components:{noData},
     methods:{
-        //选择班级 
+        //选择班级
         changeClass(val){
             let that = this
-            
+
             that.getRunContainerByTeacher(1)
             console.log('选择班级'+val)
         },
@@ -152,11 +152,11 @@ export default {
                 if (res.code==200) {
                     that.getRunContainerByTeacher(1)
                 } else {
-                    that.$toast(res.message,3000) 
+                    that.$toast(res.message,3000)
                     console.log(res.message)
-                }       
+                }
             })
-          
+
         },
         //点击查看实验
         startExperiment(item){
@@ -172,7 +172,7 @@ export default {
               console.log( err);
            });
         },
-      
+
         //获取班级列表
         getClassList(){
             let that = this;
@@ -183,7 +183,7 @@ export default {
                         that.className = that.classList[0].id
                         that.getRunContainerByTeacher(1)
                     }
-              
+
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -203,15 +203,15 @@ export default {
                     that.classList = res.data.list
                     //  if(that.classList.length>0){
                     //     that.className = that.classList[0].id
-                       
+
                     // }
-                    
+
                 }else{
-                   
+
                     that.$toast(res.message,3000)
                 }
-            })   
-        
+            })
+
         },
         //获取课堂列表
         getRunContainerByTeacher(page){
@@ -234,7 +234,7 @@ export default {
                         that.hasData = true
                     }
                 } else {
-                    
+
                      that.$toast(res.message,3000)
                 }
             })
@@ -243,7 +243,7 @@ export default {
             let that = this
             that.getRunContainerByTeacher(page)
         },
-       
+
     }
 }
 </script>

@@ -49,7 +49,7 @@
 
          <!--是否删除-->
         <el-dialog :visible.sync="isDelete" width="500px">
-            <div slot="title" class="dialog_header">请注意!</div>
+            <div slot="title" class="dialog_header">警告!</div>
             <div class="confirm_dialog_body">
                 <p class="dialog_mess">
                 <span class="span_icon icon_waring">确定要删除当前实验吗？</span>
@@ -192,7 +192,7 @@ export default {
         let that = this;
         that.time = that.timeOptions[1].value
         that.sid = 1
-        
+
 
     },
     components:{
@@ -262,7 +262,7 @@ export default {
         // 学生直接没有删除按钮
         return false
       }else {
-        
+
           if (sessionStorage.getItem('p_p-authority')==2) {
             //管理员判断status
             if (that.status==0) {
@@ -278,7 +278,7 @@ export default {
               return false
             }
           }
-        
+
 
       }
     },
@@ -302,8 +302,8 @@ export default {
         updateExperiment(){
             let that = this
             let obj={}
-            
-          
+
+
             if (that.endTime=='') {
                  return  that.$toast('请设置实验报告截止时间',2000)
             }
@@ -371,7 +371,7 @@ export default {
             }else {
                 that.endTime=''
             }
-            console.log(that.endTime) 
+            console.log(that.endTime)
             // alert(that.value2.length);
          },
          //查看实验详情
@@ -409,9 +409,9 @@ export default {
             if(that.course_info.end_at == "" || that.course_info.end_at ==null){
                 return that.$toast("该课程尚未设置开课时间，请先进行设置！", 3000);
             }
-          
-            
-  
+
+
+
             for (let index = 0; index < that.timeOptions.length; index++) {
               if (that.timeOptions[index].value==item.duration) {
                   that.time = that.timeOptions[index].value

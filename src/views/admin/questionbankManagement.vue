@@ -178,7 +178,7 @@
 
     <!--删除题目-->
     <el-dialog :visible.sync="isDelete" width="600px">
-      <div slot="title" class="dialog_header">请注意!</div>
+      <div slot="title" class="dialog_header">警告!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <span class="span_icon icon_waring"

@@ -23,7 +23,7 @@
                           <template v-if="files.length>0">
                             <div class="PicFm" v-for="(file,index) in files" :key="index" >
                                 <img class="td-image-thumb" v-if="file.thumb" :src="file.thumb" />
-                                
+
                                     <file-upload
                                             style="overflow: visible"
                                             :maximum="1"
@@ -40,7 +40,7 @@
                                         >
                                         <a class="a_upload">
                                             <i class="icon"></i>
-                                           
+
                                         </a>
                                     </file-upload>
 
@@ -65,7 +65,7 @@
                                     <span>上传图片</span>
                                 </a>
                             </file-upload>
-                            
+
                             <div class="upload_mess">（请选择10MB以内比例300:180的图片）</div>
                         </el-form-item>
                     </el-form>
@@ -122,7 +122,7 @@
 
          <!--课程暂未新建退出-->
         <el-dialog :visible.sync="isNewComplete" width="500px">
-        <div slot="title" class="dialog_header">请注意!</div>
+        <div slot="title" class="dialog_header">警告!</div>
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
             <!--成功span的class为icon_success-->
@@ -136,7 +136,7 @@
         </el-dialog>
         <!--点击大纲删除按钮-->
         <el-dialog :visible.sync="isDeleteChapter" width="500px">
-        <div slot="title" class="dialog_header">请注意!</div>
+        <div slot="title" class="dialog_header">警告!</div>
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
             <!--成功span的class为icon_success-->
@@ -173,7 +173,7 @@
         </div>
         <div slot="footer" class="dialog-footer">
             <a class="btnDefault" @click="confirmSuccess">确 认</a>
-            
+
         </div>
         </el-dialog>
     </div>
@@ -201,7 +201,7 @@ export default {
             sectionNum: '',
             chaptersOrsectio:'',
 
-            isNewComplete:false, 
+            isNewComplete:false,
             isDeleteChapter:false, //控制删除章、节
             isNewCourses:false, //控制新建课程前提示
             isNewCoursesSuccess:false, //课程新建成功
@@ -233,9 +233,9 @@ export default {
                     this.$toast("上传图片的大小不能超过 10M!", 3000);
                     return prevent();
                 }
-                
-                
-               
+
+
+
 
             }
 
@@ -268,13 +268,13 @@ export default {
             }
         }
         */
-   
-        if (newFile && oldFile) {   
+
+        if (newFile && oldFile) {
             if (newFile && oldFile && !newFile.active && oldFile.active) {
             //console.log('response', newFile.response)
             let response = newFile.response;
             console.log(this.files)
-     
+
             if (newFile.xhr) {
                 //  Get the response status code
                 console.log("status", newFile.xhr.status);
@@ -305,7 +305,7 @@ export default {
                         if (res.code == 200) {
                             // this.$message.success("新建成功");
                             that.isNewCoursesSuccess=true;
-                            
+
                         } else {
                             that.$toast(res.message, 3000);
                         }
@@ -338,7 +338,7 @@ export default {
         //新建小节
         addSubSection(index,sectionIndex){
             let that = this;
-            
+
             if(sectionIndex+1 != that.chapters[index].sections.length){
                 that.newSubSection = that.newSubSection + 1;
             }else{
@@ -352,7 +352,7 @@ export default {
         linkcourse(){
             let that = this;
             that.isNewComplete = true;
-           
+
         },
         confirm(){
           let that = this;
@@ -362,14 +362,14 @@ export default {
             that.isNewComplete = true;
         },
 
-        
+
         //删除
         deleteChapter(num){
             let that = this;
             that.chaptersNum = num;
             that.isDeleteChapter=true;
             that.chaptersOrsectio=1;
-        
+
         },
         //删除小节
         deleteSection(num,num1){
@@ -387,7 +387,7 @@ export default {
             } else {
                that.chapters[that.chaptersNum].sections.splice(that.sectionNum,1)
             }
-             that.isDeleteChapter = false; 
+             that.isDeleteChapter = false;
         },
         //新建课程前判断然后显示弹窗
         newCourses(){
@@ -402,15 +402,15 @@ export default {
                 return that.$toast('请上传课程封面',2000)
             }
             that.isNewCourses = true;
-            
+
         },
         //此方法是用来写新建课程的接口的
         uploadCourses(){
              let that = this;
              that.isNewCourses = false;
-             
+
             //上传成功后 isNewCoursesSuccess=true即可显示创建课程成功弹窗
-            
+
 
             that.upload(that.files[0].file)
 
@@ -421,7 +421,7 @@ export default {
            that.$router.push({path:'/admin/courseManagement'}).catch((err)=>{
                 console.log(err)
             })
-         
+
         },
     }
 }
@@ -432,7 +432,7 @@ export default {
 .PicFm{width:300px;height: 180px; position: relative;border:1px solid #DCDFE6; }
 .PicFm .a_upload{
     position:absolute;width:56px;height:56px; border:0 none; left:50%; margin-left: -30px;top:50%;margin-top:-30px; background:0 none;
-    
+
     .icon{margin-top: 0px;.borderRadius(30px,30px,30px,30px);}
 }
 </style>

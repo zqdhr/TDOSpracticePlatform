@@ -138,7 +138,7 @@
 
          <!--删除弹出框-->
         <el-dialog :visible.sync="isDelete" width="500px">
-        <div slot="title" class="dialog_header">请注意!</div>
+        <div slot="title" class="dialog_header">警告!</div>
         <div class="confirm_dialog_body">
             <p class="dialog_mess">
             <span class="span_icon icon_waring">确认删除此章（小节）吗？</span>
@@ -272,7 +272,7 @@ export default{
                  }else{
                     this.isHasData = false;
                  }
-                
+
             }
 
 
@@ -553,15 +553,15 @@ export default{
             let obj = {};
             obj.course_id = that.courseId
             obj.chapter = that.chapters[index];
-            
+
             console.log(that.chapters[index])
             if(obj.chapter.name==''){
                return that.$toast('新建章名称不能为空',2000)
             }
-            
+
             console.log(that.chapters[index].sections)
             if(that.chapters[index].sections.length > 0) {
-              
+
               for (let i = 0; i < that.chapters[index].sections.length; i++) {
                 if (that.chapters[index].sections[i].name == '') {
                   return that.$toast('新建节名称不能为空', 2000)

@@ -68,7 +68,7 @@
             :visible.sync="show_dialog_file"
             width="600px">
             <div slot="title" class="dialog_header">
-               请注意!
+               警告!
             </div>
             <div class="confirm_dialog_body">
                <p class="dialog_mess" v-if="!archiveManagementisSuccess"><span class="span_icon icon_waring">确认要归档所有已结束的课程吗</span></p>

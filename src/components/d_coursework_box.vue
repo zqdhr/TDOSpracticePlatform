@@ -129,7 +129,7 @@
     </div>
     <!--删除弹出框-->
     <el-dialog :visible.sync="isDelete" width="600px">
-      <div slot="title" class="dialog_header">请注意!</div>
+      <div slot="title" class="dialog_header">警告!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <span class="span_icon icon_waring"
@@ -152,7 +152,7 @@
 
     <!--确认作业弹框-->
     <el-dialog :visible.sync="isConfirmWork" width="600px">
-      <div slot="title" class="dialog_header">请注意!</div>
+      <div slot="title" class="dialog_header">警告!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <span class="span_icon icon_waring"
@@ -168,7 +168,7 @@
 
         <!--删除作业弹框-->
     <el-dialog :visible.sync="isConfirmDeleteWork" width="600px">
-      <div slot="title" class="dialog_header">请注意!</div>
+      <div slot="title" class="dialog_header">警告!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <span class="span_icon icon_waring"

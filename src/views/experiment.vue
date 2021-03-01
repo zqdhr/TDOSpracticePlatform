@@ -1,13 +1,13 @@
 <template>
     <div class="experiment_pagewrap boxsizing">
         <div class="e-header">
-           
+
             <div class="name textline1">正在进行的实验：{{experiment.name}}</div>
-           
+
             <div class="timeBox" v-if="showtime">{{time}}</div>
 
             <div class="operationBox">
-            
+
                 <a class="a-opera pointer"  @click="makeImg"  v-if="isOpen && authority==0">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
@@ -20,7 +20,7 @@
                     <i><img src="../assets/img/exper_back.png"/></i>
                     <span>返回</span>
                 </a>
-               
+
                 <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=2">
                     <i><img src="../assets/img/exper_restart.png"/></i>
                     <span>重新开始</span>
@@ -29,9 +29,9 @@
                     <i><img src="../assets/img/exper_end.png"/></i>
                     <span>结束所有</span>
                 </a>
-        
+
             </div>
-            
+
         </div>
         <div class="experiment_container clearfix boxsizing">
             <div class="left-noVNc boxsizing " :class="{'changeWidth':isHide}">
@@ -41,23 +41,23 @@
                 </div>
 
                 <div class="operation_box 22"  v-if="!isOpen"  ref="imageWrapper" >
-                   <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>  
-                </div>
-               
-                <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" id="Screenshots" 
-                     v-for="(item,iindex) in containers" :key="iindex"> 
-                   
-                   <div class="operation_box" id="screen" v-if="item.url.indexOf('html')>0 && virtualMachine==iindex && containerstate=='2'" ></div>          
-                  
-                   <xterm :socketURI="item.url" v-show="virtualMachine==iindex && item.url.indexOf('html')==-1 && containerstate=='1'"></xterm>
-                   
-                   
+                   <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>
                 </div>
 
-              
-                  
-               
-              
+                <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" id="Screenshots"
+                     v-for="(item,iindex) in containers" :key="iindex">
+
+                   <div class="operation_box" id="screen" v-if="item.url.indexOf('html')>0 && virtualMachine==iindex && containerstate=='2'" ></div>
+
+                   <xterm :socketURI="item.url" v-show="virtualMachine==iindex && item.url.indexOf('html')==-1 && containerstate=='1'"></xterm>
+
+
+                </div>
+
+
+
+
+
             </div>
             <div class="right_main" :class="{'changeWidth':isHide}">
                 <el-scrollbar style="height:100%">
@@ -79,10 +79,10 @@
                     <template v-if="curIndex==2 && authority==0">
                     <h3 class="htitle">填写实验报告</h3>
                     <div class="labReport_box"  >
-                        <quill-editor 
-                                v-model="yourContent" 
-                                ref="myQuillEditor"  
-                                :options="editorOption" 
+                        <quill-editor
+                                v-model="yourContent"
+                                ref="myQuillEditor"
+                                :options="editorOption"
                                 @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
                             >
                          </quill-editor>
@@ -95,7 +95,7 @@
         </div>
                 <!--弹窗-->
             <el-dialog :visible.sync="isClose" width="500px">
-            <div slot="title" class="dialog_header">请注意!</div>
+            <div slot="title" class="dialog_header">警告!</div>
             <div class="confirm_dialog_body">
                 <p class="dialog_mess">
                 <!--成功span的class为icon_success-->
@@ -109,7 +109,7 @@
             </el-dialog>
             <!--再次上传实验报告弹出框-->
               <el-dialog :visible.sync="isHas" width="500px">
-            <div slot="title" class="dialog_header">请注意!</div>
+            <div slot="title" class="dialog_header">警告!</div>
             <div class="confirm_dialog_body">
                 <p class="dialog_mess">
                 <!--成功span的class为icon_success-->
@@ -222,10 +222,10 @@ export default {
             tagid:'',
             mess:'正在关闭实验，请稍候...',
             showtime:true,
-           
+
         }
     },
-    beforeCreate() {  
+    beforeCreate() {
        document.getElementsByTagName("body")[0].className="equipment-body";
     },
     beforeDestroy(){
@@ -233,7 +233,7 @@ export default {
 
         //离开页面的时候清除定时器
         if(this.timeInterval!=null){
-       
+
            clearInterval(this.timeInterval)
            sessionStorage.setItem(this.userid+this.experimentId,this.second)
         }
@@ -250,7 +250,7 @@ export default {
         that.showtime =  that.userid==sessionStorage.getItem("userId")?true:false
         if (that.authority==0) {
             that.hasExperimentReport()
-        }  
+        }
     },
     methods:{
         // vnc连接断开的回调函数
@@ -263,7 +263,7 @@ export default {
             } else {
                 //这里做不可重新连接的一些操作
                 //this.connectVnc(this.connect_url)
-                
+
             }
         },
         // 连接成功的回调函数
@@ -281,7 +281,7 @@ export default {
                 if (res.code==200) {
                     console.log(res.data)
                     that.containers = res.data
-                 
+
                     if (that.containers!=null&& that.containers.length>0&&that.containers[0]!=null) {
                         if (that.containers[0].status==1) {
                             that.isOpen=true
@@ -290,7 +290,7 @@ export default {
                         }
                         that.container = that.containers[0]
                         if (that.isOpen==true) {
-                             that.openXuniji(that.container)               
+                             that.openXuniji(that.container)
                         }
                     }
                 } else {
@@ -315,7 +315,7 @@ export default {
                         let experiment_time = sessionStorage.getItem(that.userid+that.experimentId).split(':')
                         //time = parseInt(experiment_time[0])*3600+parseInt(experiment_time[1])*60+parseInt(experiment_time[2])
                         that.second =  sessionStorage.getItem(that.userid+that.experimentId);
-                        sessionStorage.removeItem(that.userid+that.experimentId);                       
+                        sessionStorage.removeItem(that.userid+that.experimentId);
                     }else{
                         that.second= that.experiment.duration*60
                     }
@@ -337,16 +337,16 @@ export default {
                 that.timeInterval=null
                 sessionStorage.removeItem(that.userid+that.experimentId);
                 that.closeContainers()
-                
-            }else if (that.type==1) {       
+
+            }else if (that.type==1) {
                 that.mess='正在关闭实验，请稍候...'
                 clearInterval(that.timeInterval)
                 that.timeInterval=null
                 sessionStorage.removeItem(that.userid+that.experimentId);
                 console.log('关闭')
-                that.remove=true              
+                that.remove=true
                 if (that.authority==0) {
-                   //学生关闭实验 
+                   //学生关闭实验
                    that.execContainer(1)
                 }else{
                     //教师与管理员关闭实验
@@ -373,18 +373,18 @@ export default {
                     console.log(res.data)
                     if(type==0){
                       that.createContainers(that.userid,that.experimentId,that.courseId)
-                        
+
                     }
                     if (type==1) {
                         that.remove=false
                         that.click_back()
                     }
                 } else {
-                    that.$toast(res.message,3000) 
+                    that.$toast(res.message,3000)
                     console.log(res.message)
-                }       
+                }
             })
-          
+
         },
         //管理员和老师关闭实验调用
         removeContainers(){
@@ -400,7 +400,7 @@ export default {
                   console.log('返回参数'+res)
                   that.remove=false
                   clearInterval(that.timeInterval)
-                 
+
                   that.click_back()
              })
         },
@@ -420,11 +420,11 @@ export default {
             console.log('返回参数'+res)
             that.restartContainers()
             })
-            
+
         },
         //重启镜像
         restartContainers(){
-            let that=this                 
+            let that=this
             let obj={}
             obj.userId = that.userid
             obj.experimentId = that.experimentId
@@ -432,24 +432,24 @@ export default {
             obj.imageId=that.container.imageId
             createAndRunContainers(obj).then(res=>{
                   console.log(res)
-            that.remove=false   
+            that.remove=false
             if (res.code==200) {
                 console.log(res.data)
                 for (let index = 0; index < that.containers.length; index++) {
                     if (that.containers[index].imageId==res.data.imageId) {
                         that.containers[index]=res.data
                     }
-                    
+
                 }
                 that.container = res.data
-                that.openXuniji(that.container)             
+                that.openXuniji(that.container)
                 that.daojishi(that.experiment.duration*60)
             } else {
                 console.log(res.message)
             }
             })
            .catch((error) => {
-             that.remove=false   
+             that.remove=false
             })
         },
         //添加实验报告
@@ -459,18 +459,18 @@ export default {
             let nowTime=new Date().toLocaleDateString().replace(/\//g,'-')
 
             if (new Date(nowTime).getTime()>new Date(endTime).getTime()) {
-                 return that.$toast("已超过实验报告的最晚提交时间，不能提交报告",3000) 
+                 return that.$toast("已超过实验报告的最晚提交时间，不能提交报告",3000)
             }
 
              console.log('当前时间：'+new Date().toLocaleDateString().replace(/\//g,'-')+'截至时间：'+endTime)
             if (that.yourContent=='') {
-               return that.$toast("请输入实验报告内容",3000) 
+               return that.$toast("请输入实验报告内容",3000)
             }
-            
+
             if ( hasReport==true) {
-                 that.isHas=true           
+                 that.isHas=true
                 return
-                
+
             }
             that.isHas=false
             let obj={}
@@ -480,10 +480,10 @@ export default {
             insertExperimentRepor(obj).then(res=>{
                 if (res.code==200) {
                     that.$toast("实验报告上传成功",3000)
-                    // that.yourContent='' 
+                    // that.yourContent=''
                     that.hasReport=true
                 } else {
-                    that.$toast(res.message,3000) 
+                    that.$toast(res.message,3000)
                 }
             })
 
@@ -504,7 +504,7 @@ export default {
 
         },
 
-        //连接vnc的函数      
+        //连接vnc的函数
         connectVnc (uri) {
             let that = this;
             that.rfb = ''
@@ -512,11 +512,11 @@ export default {
 
             //const url='ws://192.168.1.31:6901/vnc.html?password=123456&autoconnect=true'
             //const url ='ws://192.168.1.133:6080/'
-           
+
            console.log(uri)
 
-         
-          
+
+
             const url =uri
             this.$nextTick(function(){
                 console.log(document.getElementById('screen'));
@@ -528,13 +528,13 @@ export default {
             that.rfb.addEventListener('disconnect', this.disconnectedFromServer);
             that.rfb.scaleViewport = true;  //scaleViewport指示是否应在本地扩展远程会话以使其适                    合其容器。禁用时，如果远程会话小于其容器，则它将居中，或者根据clipViewport它是否更大来处理。默认情况下禁用。
             that.rfb.resizeSession = true; //是一个boolean指示是否每当容器改变尺寸应被发送到调整远程会话的请求。默认情况下禁用
-            
-         
-            
-            
+
+
+
+
             })
-          
-            
+
+
         },
 
         //头部点击返回
@@ -550,7 +550,7 @@ export default {
                   if(that.authority==2){
                     this.$router.push({path:'/admin'})
                  }
-                
+
                 return false
             } else {
                 this.$router.go(-1)
@@ -560,7 +560,7 @@ export default {
         click_screenshots(){
            let that = this;
            that.makeImg()
-           
+
         },
         //时间转化
         formatSecToDate(sec){
@@ -575,12 +575,12 @@ export default {
         daojishi(time){
             let that = this
             that.timeInterval = null;
-            
+
             let min = null;
             let h = null;
             let m = null;
             let s = null;
-            
+
             // if(type==1){
             //     h = time.split(':')[0];
             //     m = time.split(':')[1];
@@ -601,10 +601,10 @@ export default {
             that.timeInterval = setInterval(function () {
             //如果时、分、秒都为0时将停止当前的倒计时
             if (h == 0 && m == 0 && s == 0) {
-                 clearInterval(that.timeInterval); 
+                 clearInterval(that.timeInterval);
                  that.type=1;
                  that.stopOrrestart();
-                 return; 
+                 return;
                  }
              //当秒走到0时，再次为60秒
             if (s == 0) { s = 60; }
@@ -624,7 +624,7 @@ export default {
             //秒继续跳动，减一
             s -= 1;
             //小时赋值
-            
+
             that.time= (h<10?"0"+ h:h )+ ":" +( m<10?"0"+m:m) + ":"+ (s<10?"0"+s:s);
             that.second = h*3600+m*60+s
             sessionStorage.setItem(that.userid+that.experimentId,that.second)
@@ -648,10 +648,10 @@ export default {
                 x:0,
                 scrollX: 0,    //设置这两个scrollX/Y即可
 			    scrollY: 0,
-             
-               
+
+
             }
-       
+
             // eslint-disable-next-line no-undef
             //const iframeHtml = this.$refs.frameWrapper.contentWindow // 获取iframe内容
             //const iframeBody = iframeHtml.document.getElementsByTagName('body')[0]
@@ -668,35 +668,35 @@ export default {
 
         //判断打开虚拟机
         openXuniji(item){
-            
+
             let that = this
             if (that.isOpen) {
                 if (item.url.indexOf("vnc.html")==-1) {
                      that.containerstate='1'
 
                      //that.socketURI = item.url
-                   
+
                 }else {
                     that.containerstate='2'
                     that.connect_url = item.url
-  
+
                      that.$nextTick(function(){
                            that.connectVnc(item.url)
                      })
-                     
-               
-                    
-                  
+
+
+
+
                 }
             }
-            
+
 
         },
 
         downloadCode(){
             let that =this
             if (that.editValue=='') {
-               return that.$toast("请输入文件名称",3000) 
+               return that.$toast("请输入文件名称",3000)
             }
             that.isEdit=false
             let obj={}
@@ -706,9 +706,9 @@ export default {
             downloadCode(obj).then(res=>{
                 if (res.code==200) {
                     if (res.data!=null) {
-                        
+
                     }else {
-                        that.$toast("输入的文件不存在",3000)  
+                        that.$toast("输入的文件不存在",3000)
                     }
                     console.log(res.data)
                     console.log(that.binaryToStr(res.data))

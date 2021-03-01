@@ -68,7 +68,7 @@
       :visible.sync="show_Release"
       width="500px">
       <div slot="title" class="dialog_header">
-          {{!release_success?'警告!':'请注意!'}}
+          {{!release_success?'警告!':'警告!'}}
       </div>
       <div class="confirm_dialog_body">
           <p class="dialog_mess" v-if="!release_success"><span class="span_icon icon_waring">{{dialog_machine}}</span></p>

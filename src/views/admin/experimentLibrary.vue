@@ -19,13 +19,13 @@
               <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value" > </el-option>
             </el-select>
           </div> -->
-          
+
         </div>
         <div class="fr">
           <a class="btnDefault pointer abtn"  @click="click_new">新增实验</a>
-          
-          
-          <div class="d-serach"> 
+
+
+          <div class="d-serach">
             <input :placeholder="inplaceholder" type="text" v-emoji v-model="searchTx" autocomplete="off" @keyup.enter="findExperiment(1)" />
             <a class="searchBtn pointer" @click="findExperiment(1)"></a>
           </div>
@@ -40,7 +40,7 @@
                 <ul class="list_ul clearfix">
                     <li v-for="(item,index) in experimentList" :key="index">
                         <div class="info boxShadow pointer" @click="link_Detail(item.id)">
-                           
+
                             <!--
                             <el-tooltip class="item" effect="dark" content="设置" placement="top">
                                 <a class="icon icon_set pointer"></a>
@@ -55,7 +55,7 @@
                              <el-tooltip class="item" effect="dark" content="删除" placement="top">
                                 <a class="icon icon_close pointer" @click.stop="deleteExper(item.id)"></a>
                             </el-tooltip>
-                           
+
                         </div>
                     </li>
                 </ul>
@@ -78,7 +78,7 @@
     </div>
     <!--删除实验弹出框-->
     <el-dialog :visible.sync="isDelete" width="500px">
-      <div slot="title" class="dialog_header">请注意!</div>
+      <div slot="title" class="dialog_header">警告!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <span class="span_icon icon_waring">确定要删除当前实验吗？</span>
@@ -162,14 +162,14 @@ export default {
           let that = this
           that.deleteExperId = experId
           that.isDelete=true
-          
+
         },
         //实验确认删除
         confirmDeleteExper(){
           let that = this
           that.isDelete = false
           let obj={}
-          obj.id=that.deleteExperId 
+          obj.id=that.deleteExperId
           deleteExperiment(obj).then(res=> {
                 if(res.code==200){
                    that.findExperiment(1)
@@ -178,7 +178,7 @@ export default {
                    that.$toast(res.message,3000)
                 }
             })
-           
+
         },
         //点击新增实验
         click_new(){
@@ -205,9 +205,9 @@ export default {
         findParentCategory(){
           let that = this
           findParentCategory().then(res=> {
-                if(res.code==200){                
+                if(res.code==200){
                    that.options = res.data
-             
+
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -219,8 +219,8 @@ export default {
           let obj={}
           obj.parent_category_id = cateId
           findChildCategory(obj).then(res=> {
-                if(res.code==200){                  
-                   that.options1 = res.data           
+                if(res.code==200){
+                   that.options1 = res.data
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -246,7 +246,7 @@ export default {
 
                    }
                    that.total = res.data.total
-                         
+
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -256,7 +256,7 @@ export default {
 
 
 
-        
+
     }
 }
 </script>
