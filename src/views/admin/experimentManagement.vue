@@ -130,11 +130,12 @@ export default {
   },
     mounted(){
         let that = this;
-        that.getAllRunContainer();
+        that.getAllRunContainer(that.curPage);
         that.searchClass();
     },
   methods: {
       getRunContainerList(type,classId,page){
+        alert(page)
           let that = this;
           let obj = {};
           obj.type = type;
@@ -152,9 +153,9 @@ export default {
               }
           })
       },
-      getAllRunContainer(){
+      getAllRunContainer(page){
         let that = this;
-        that.getRunContainerList(0,'',1);
+        that.getRunContainerList(0,'',page);
       },
       //班级列表
       searchClass() {
@@ -208,6 +209,7 @@ export default {
     //底部分页
     handleCurrentChange(val) {
      let that = this
+      that.curPage = val
       console.log(`当前页: ${val}`);
         if (that.type1 == 1) {
             console.log('老师')
@@ -251,7 +253,7 @@ export default {
                if (res.code == 200) {
                    that.release_success = true
                    that.isClose=false;
-                   that.getAllRunContainer();
+                   that.getAllRunContainer(that.curPage);
                } else {
                    that.$toast(res.message, 3000);
                }
@@ -260,14 +262,12 @@ export default {
             let obj = {}
             obj.userId = that.container.user_id
             obj.experimentId = that.container.experiment_id
-            console.log(obj)
             stopExperiment(obj).then(res=>{
                 that.id = ''
                 if (res.code==200) {
-                    that.show_Release = false;
+                    that.release_success = true
                     that.isClose=false;
-                    that.dialog_machine = false
-                    that.getAllRunContainer();
+                    that.getAllRunContainer(that.curPage);
                 } else {
                     that.isClose=false
                     that.$toast(res.message,3000)

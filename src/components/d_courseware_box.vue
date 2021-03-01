@@ -127,7 +127,6 @@
               ref="videoPlayer"
               :playsinline="true"
               :x5-playsinline="true"
-              :webkit-playsinline="true"
               :options="playerOptions"
               @play="onPlayerPlay($event)"
               @pause="onPlayerPause($event)"
@@ -683,7 +682,7 @@ export default {
         // 学生直接没有删除按钮
         return false
       }else {
-        
+
           if (sessionStorage.getItem('p_p-authority')==2) {
             //管理员判断status
             if (that.status==0) {
@@ -699,7 +698,7 @@ export default {
               return false
             }
           }
-        
+
 
       }
     },

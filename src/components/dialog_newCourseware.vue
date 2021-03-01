@@ -406,7 +406,7 @@ export default {
 
       }
 
-      
+
       if (!this.$refs.upload.active) {
         that.upload(that.files[0].file)
       }
@@ -539,17 +539,17 @@ export default {
         if (extension != "pdf" && extension != "mp4") {
            this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
            this.upload_falg = 1;
-           return 
+           return
         }
         if(extension == 'pdf' && !isLt100M){
           this.$toast("上传的pdf不能大于100M", 3000);
           this.upload_falg = 2;
-          return 
+          return
         }
         if(extension == 'mp4' && !isLt500M){
             this.$toast("上传的视频不能大于500M", 3000);
             this.upload_falg = 3;
-           return 
+           return
         }
       }
     },
@@ -586,7 +586,7 @@ export default {
       let type = that.extension == 'pdf' ?2 : 1
       obj.append('type', type)
       obj.append('file', file)
-      
+
       if(that.upload_falg==1){
         return this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
       }
@@ -600,7 +600,6 @@ export default {
       that.loading = true;
       upload(obj).then(res => {
         if (res.code == 200) {
-          that.loading = false;
           that.picUrl = res.data.name;
           that.size = res.data.size;
           that.time = res.data.time;
@@ -630,7 +629,7 @@ export default {
                     obj.chapter_section_courseware_list = list
                     addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
                       if (resadd.code == 200) {
-                        alert("111")
+                        that.loading = false;
                         that.isnewFilter = false;
                       } else {
                         this.$toast(resadd.message, 2000)
@@ -648,7 +647,7 @@ export default {
                     obj.chapter_section_courseware_list = list
                     addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
                       if (resadd.code == 200) {
-                        alert("111")
+                        that.loading = false;
                         that.isnewFilter = false;
 
                       } else {

@@ -175,6 +175,7 @@ export default {
       that.isnewFilterType = 0;
       that.isnewFilter = true;
       that.chooseList = [];
+      that.category='';
       this.findParentCategory()
     },
 
@@ -309,7 +310,7 @@ export default {
       if(that.upload_falg==3){
         return this.$toast("上传的视频不能大于500M", 3000);
       }
-
+      that.loading = true;
       if(that.upload_falg==0){
           upload(obj).then(res=>{
             if (res.code==200) {

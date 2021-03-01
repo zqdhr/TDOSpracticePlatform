@@ -58,7 +58,7 @@
                 <!--课程课件-->
                 <courseware v-if="navindex==2" :status="status" :typeData = type></courseware>
 
-                <coursework v-if="navindex==3" :status="status" :noEdit = type></coursework>
+                <coursework v-if="navindex==3" :status="status" :noEdit = typeWork></coursework>
 
 
             </div>
@@ -119,6 +119,7 @@ export default {
             section_number:'',
             numbers:'',
             type:0,
+            typeWork:'',
 
            backNum:1,
            navindex:0,
@@ -193,6 +194,7 @@ export default {
                     that.introduction = res.data.introduction;
                     that.course = res.data
                     that.status = res.data.status
+                    that.status == 1 ? that.typeWork = 0:that.typeWork = 1;
                     that.courseChapters = res.data.chapters
                     that.addParamShow(that.courseChapters)
                 }else{
