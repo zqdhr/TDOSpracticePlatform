@@ -629,8 +629,8 @@ export default {
                     list.push(ware);
                     obj.chapter_section_courseware_list = list
                     addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
+                      that.loading = false;
                       if (resadd.code == 200) {
-                        that.loading = false;
                         that.isnewFilter = false;
                       } else {
                         this.$toast(resadd.message, 2000)
@@ -647,10 +647,9 @@ export default {
                     list.push(ware);
                     obj.chapter_section_courseware_list = list
                     addChapterSectionCourseware(JSON.stringify(obj)).then(resadd => {
+                      that.loading = false;
                       if (resadd.code == 200) {
-                        that.loading = false;
                         that.isnewFilter = false;
-
                       } else {
                         this.$toast(resadd.message, 2000)
                       }

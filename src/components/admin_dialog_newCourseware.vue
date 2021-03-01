@@ -329,9 +329,9 @@ export default {
               obj.category_id = that.addCategoryID;
               this.$refs.upload.active = true;
               addCourseware(JSON.stringify(obj)).then((res) => {
+                that.loading = false;
                 if (res.code == 200) {
                   that.isnewFilter =false ; //上传弹窗消失
-                  that.loading = false;
                   that.$emit('getCourseAll')
                 } else {
                   that.$toast(res.message, 3000);
