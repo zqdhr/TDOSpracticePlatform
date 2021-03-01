@@ -136,7 +136,7 @@
             <div class="editMain" >
                 <el-form ref="form" label-width="60px">
                 <el-form-item label="名称">
-                    <el-input v-model="editValue" placeholder="请输入文件名称" :maxlength="16" v-emoji></el-input>
+                    <el-input v-model="editValue" placeholder="请输入文件名称" :maxlength="16" ></el-input>
                 </el-form-item>
 
                 </el-form>
@@ -260,11 +260,11 @@ export default {
             if(msg.detail.clean){
                 // 根据 断开信息的msg.detail.clean 来判断是否可以重新连接
                 this.connectVnc(this.connect_url)
-
+                this.$toast("请输入实验报告内容",3000)
             } else {
                 //这里做不可重新连接的一些操作
                 //this.connectVnc(this.connect_url)
-
+                this.$toast("请输入实验报告内容",3000)
             }
         },
         // 连接成功的回调函数
