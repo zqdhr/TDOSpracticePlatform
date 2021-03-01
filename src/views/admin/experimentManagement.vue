@@ -266,6 +266,7 @@ export default {
                 if (res.code==200) {
                     that.show_Release = false;
                     that.isClose=false;
+                    that.dialog_machine = false
                     that.getAllRunContainer();
                 } else {
                     that.isClose=false
