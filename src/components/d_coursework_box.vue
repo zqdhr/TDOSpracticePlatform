@@ -509,7 +509,7 @@ export default {
     //查题库
     getQuestionBackAll() {
       let that = this;
-      that.findQuestionBackAll(that.type, "", "", 1, that.assignmentId, "");
+      that.findQuestionBackAll(that.type, "", "", that.curPage, that.assignmentId, "");
     },
     findQuestionBackAll(
       type,
@@ -636,11 +636,13 @@ export default {
       console.log(val);
       that.parentId = val.id;
       that.findChildCategory(val);
+      that.findQuestionBackAll(that.type, "", that.parentId, 1, that.assignmentId, "");
     },
     //子类
     selectType1(val) {
       let that = this;
       that.childrenId = val.id;
+      that.findQuestionBackAll(that.type, "", that.parentId, 1, that.assignmentId, that.childrenId);
     },
     //分页
     handleCurrentChange(val) {
@@ -872,12 +874,13 @@ export default {
     //查询课件库
     searchQuestionAll() {
       let that = this;
-      // alert(that.parentId);
+
+      that.curPage = 1;
       that.findQuestionBackAll(
         that.type,
         that.searchText,
         that.parentId,
-        1,
+        that.curPage,
         that.assignmentId,
         that.childrenId
       );
@@ -941,8 +944,13 @@ export default {
     //选择题目类型（选择，简答）
     selectQuestionType(val) {
       console.log("选择题类型" + val);
+      // alert("1111111")
       let that = this;
       that.type = val - 1;
+      that.curPage = 1;
+
+      that.findQuestionBackAll(that.type, "", that.parentId, that.curPage, that.assignmentId, that.childrenId);
+
     },
     //删除确认
     confirmDeleteCourseWork() {
