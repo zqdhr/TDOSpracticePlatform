@@ -656,7 +656,7 @@ export default {
                     })
                   }
             } else {
-
+              that.loading = false;
               that.$toast(resCourse.message, 3000);
             }
           });

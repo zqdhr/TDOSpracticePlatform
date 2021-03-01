@@ -339,6 +339,7 @@ export default {
               });
 
             }else {
+              that.loading = false;
               that.$toast(res.message,3000)
             }
           }).catch(res => {console.log(JSON.stringify(res))})
