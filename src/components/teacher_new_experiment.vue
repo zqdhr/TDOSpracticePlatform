@@ -128,7 +128,7 @@ export default {
       isnewFilterType: 0, //实验库选择 1代表本地实验库  2代表本地上传
 
       chooseList: [], //实验被选择列表
-      parent_id:'',
+      parentId:'',
       childrenId:'',
       count:'',//节下已有的实验，不能超过五个
       sindex:'',//节id
@@ -305,7 +305,7 @@ export default {
       let that = this;
       that.options1 = [];
       that.childrenId='';
-     
+
       that.parentId = val;
        console.log("11"+that.parentId)
       that.findChildCategory(val);

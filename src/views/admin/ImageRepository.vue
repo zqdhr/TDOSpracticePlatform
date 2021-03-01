@@ -274,7 +274,7 @@ export default {
                 that.getImagequoteList(-1,'',1);
             }else{
                 that.isDelete = false;
-                this.$toast("删除失败",3000)
+                this.$toast(res.message,3000)
                 console.log(res)
                 that.getImagequoteList(-1,'',1);
             }
