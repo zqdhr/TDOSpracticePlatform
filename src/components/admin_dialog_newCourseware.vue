@@ -176,6 +176,7 @@ export default {
       that.isnewFilter = true;
       that.chooseList = [];
       that.category='';
+      that.upload_falg = 0;
       this.findParentCategory()
     },
 

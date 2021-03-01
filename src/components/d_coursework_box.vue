@@ -107,8 +107,7 @@
             >
             <a
               class="btnDefault pointer"
-              style="margin-left: 20px"
-              v-if="courseList.length > 0"
+                   v-if="courseList.length > 0"
               @click="(isConfirmWork = true), addQuestionBack(2)"
               >发布</a
             >
