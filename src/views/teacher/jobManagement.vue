@@ -37,10 +37,10 @@
               >
               </el-date-picker>
             </div> -->
-            <div class="sel-box" style="width: 350px">
+            <div class="sel-box" style="width: 350px" v-if="state.id == 1">
               <el-date-picker
                 class="pageTab_date"
-                v-if="state.id == 1"
+                
                 v-model="value2"
                 type="daterange"
                 align="right"
@@ -86,68 +86,75 @@
           </div>
         </div>
       </div>
-      <noData
+
+    </div>
+    
+     <noData
         :noDataType="noDataType"
         :dataMess="dataMess"
         v-if="!hasData"
       ></noData>
-      <template v-if="hasData">
-        <div class="container">
-          <div class="tea_list">
-            <ul class="tab_box">
-              <li v-for="(item, index) in jobList" :key="index">
-                <div class="d1 d15">
-                  <!-- <div class="cell pnum">{{ (index + 1) | catIndex }}</div> -->
-                  <div class="cell textline1">班级：{{ item.className }}</div>
+    <template v-if="hasData">
+      <div class="container">
+        <div class="tea_list">
+          <ul class="tab_box">
+            <li v-for="(item, index) in jobList" :key="index">
+              <div class="d1 d15">
+                <!-- <div class="cell pnum">{{ (index + 1) | catIndex }}</div> -->
+                <div class="cell textline1">班级：{{ item.className }}</div>
+              </div>
+              <div class="d2 d16">
+                <div class="cell textline1">
+                  学号：{{ item.userId }}
                 </div>
-                <div class="d2 d28">
-                  <div class="cell textline1">
-                    学号：{{ item.userId }} 姓名：{{ item.userName }}
-                  </div>
+              </div>
+                <div class="d2 d17">
+                <div class="cell textline1">
+                  姓名：{{ item.userName }}
                 </div>
-                <div class="d3 d30">
-                  <div class="cell">
-                    提交时间：{{ item.committedAt | dateFormatYMDhms }}
-                  </div>
+              </div>
+              <div class="d3 d30">
+                <div class="cell">
+                  提交时间：{{ item.committedAt | dateFormatYMDhms }}
                 </div>
-                <div class="d4 d14">
-                  <div class="cell">
-                    {{ item.status == 0 ? "待批阅" : "已批阅" }}
-                  </div>
+              </div>
+              <div class="d4 d11">
+                <div class="cell">
+                  {{ item.status == 0 ? "待批阅" : "已批阅" }}
                 </div>
-                <div class="d5 d13">
-                  <div class="cell">
-                    <a
-                      class="btnDefault btn_py pointer"
-                      v-if="item.status == 0"
-                      @click="showDetail(0, item)"
-                      >批阅</a
-                    >
-                    <a
-                      class="btnDefault btn_py pointer"
-                      v-if="item.status == 1"
-                      @click="showDetail(1, item)"
-                      >查看详情</a
-                    >
-                  </div>
+              </div>
+              <div class="d5 d13">
+                <div class="cell">
+                  <a
+                    class="btnDefault btn_py pointer"
+                    v-if="item.status == 0"
+                    @click="showDetail(0, item)"
+                    >批阅</a
+                  >
+                  <a
+                    class="btnDefault btn_py pointer"
+                    v-if="item.status == 1"
+                    @click="showDetail(1, item)"
+                    >查看详情</a
+                  >
                 </div>
-              </li>
-            </ul>
-            <div class="tab-pagination">
-              <el-pagination
-                background
-                :current-page="curPage"
-                :page-size="perPage"
-                @current-change="handleCurrentChange"
-                layout="prev, pager, next,jumper"
-                :total="allJob_Nub"
-              >
-              </el-pagination>
-            </div>
+              </div>
+            </li>
+          </ul>
+          <div class="tab-pagination">
+            <el-pagination
+              background
+              :current-page="curPage"
+              :page-size="perPage"
+              @current-change="handleCurrentChange"
+              layout="prev, pager, next,jumper"
+              :total="allJob_Nub"
+            >
+            </el-pagination>
           </div>
         </div>
-      </template>
-    </div>
+      </div>
+    </template>
 
     <!--点击确定按钮弹出确认框-->
     <el-dialog :visible.sync="isCorrectJob" width="600px" top="250px">

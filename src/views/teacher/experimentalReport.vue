@@ -106,13 +106,16 @@
                         <!-- <div class="cell pnum">{{index+1 | catIndex}}</div> -->
                         <div class="cell textline1">班级：{{item.className}}</div>
                      </div>
-                     <div class="d2 d28">
-                        <div class="cell textline1">学号：{{item.user_id}} 姓名：{{item.userName}}</div>
+                     <div class="d2 d16">
+                        <div class="cell textline1">学号：{{item.user_id}} </div>
                      </div>
-                     <div class="d3 d30">
+                      <div class="d2 d16">
+                         <div class="cell textline1"> 姓名：{{item.userName}}</div>
+                     </div>
+                     <div class="d3 d28">
                         <div class="cell">提交时间：{{item.submit_at}}</div>
                      </div>
-                     <div class="d4 d14"> 
+                     <div class="d4 d12"> 
                         <div class="cell">{{item.isCorrect==0?'待批阅':'已批阅'}}</div>
                      </div>
                      <div class="d5 d13">
