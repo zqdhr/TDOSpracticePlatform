@@ -49,7 +49,7 @@
 
                    <div class="operation_box" id="screen" v-if="item.url.indexOf('html')>0 && virtualMachine==iindex && containerstate=='2'" ></div>
 
-                   <xterm :socketURI="item.url" v-show="virtualMachine==iindex && item.url.indexOf('html')==-1 && containerstate=='1'"></xterm>
+                   <xterm :socketURI="item.url" v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1"></xterm>
 
 
                 </div>
