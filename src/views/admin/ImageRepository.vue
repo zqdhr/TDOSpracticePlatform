@@ -275,6 +275,7 @@ export default {
             }else{
                 that.isDelete = false;
                 this.$toast("删除失败",3000)
+                console.log(res)
                 that.getImagequoteList(-1,'',1);
             }
         })
