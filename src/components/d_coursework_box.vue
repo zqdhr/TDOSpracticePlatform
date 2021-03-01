@@ -632,7 +632,12 @@ export default {
     //父类
     selectType(val) {
       let that = this;
-      that.i_customClass = {};
+
+      that.i_customClass = "";
+      // that.customClass = "";
+      that.parentId = "",
+      that.childrenId = "",
+
       console.log(val);
       that.parentId = val.id;
       that.findChildCategory(val);
@@ -949,6 +954,7 @@ export default {
       that.type = val - 1;
       that.curPage = 1;
 
+      // alert(that.parentId + "-------" +that.childrenId)
       that.findQuestionBackAll(that.type, "", that.parentId, that.curPage, that.assignmentId, that.childrenId);
 
     },
@@ -992,6 +998,8 @@ export default {
       that.options2 = [];
       that.i_customClass = "";
       that.customClass = "";
+      that.parentId = "",
+      that.childrenId = "",
       that.cate = this.options[0].label; //默认选中内置课件
       that.type = 0;
       that.showQuestionBank = true;

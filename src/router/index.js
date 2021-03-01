@@ -198,6 +198,11 @@ const router = new VueRouter({
 
 
 router.beforeEach((to, from, next) => {
+
+ if(from.path=='/experiment'){
+    sessionStorage.setItem('slt_Experiment',1)
+ }
+
   //对于登录页面不拦截
   if (to.path === '/login') {
     next();

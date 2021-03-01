@@ -237,13 +237,16 @@ export default {
         let that = this;
         that.backNum = that.$route.query.back?that.$Base64.decode(that.$route.query.back):2;
         that.courseId = that.$route.query.courseId;
+        if(sessionStorage.getItem('slt_Experiment') !=null &&　sessionStorage.getItem('slt_Experiment') == 1){
+            sessionStorage.removeItem('slt_Experiment')
+            that.$store.commit("updateTeacherNavindex",3);
+        }
         that.navindex = that.$store.state.teacherNavindex;
-        //console.log(that.$store.state.teacherNavindex)
-
+      
     },
     beforeDestroy(){
         let that = this;
-        that.$store.commit("updateTeacherNavindex",0);
+        that.$store.commit("updateTeacherNavindex",0); 
 
     },
     mounted(){
