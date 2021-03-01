@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" id="Screenshots"
-                     v-for="(item,iindex) in containers" :key="iindex">
+                     v-for="(item,iindex) in opencontainers" :key="iindex">
 
                    <div class="operation_box" id="screen" v-if="item.url.indexOf('html')>0 && virtualMachine==iindex && containerstate=='2'" ></div>
 
@@ -202,6 +202,7 @@ export default {
             experimentId:'',
             courseId:'',
             containers:[],//虚拟机列表 这里显示标题的时候要显示status 0是已创建 1是运行中
+            opencontainers:[],//用来存放创建容器后的虚拟机列表
             experiment:{},//实验详情
             time:'',
             second:'',//用来记录当前倒计时的秒数
@@ -287,12 +288,14 @@ export default {
                             that.isOpen=true
                             that.virtualMachine=0
                             that.daojishi(that.second)
+                            that.opencontainers=res.data
                         }
                         that.container = that.containers[0]
                         if (that.isOpen==true) {
                              that.openXuniji(that.container)
                         }
                     }
+                    that.$forceUpdate()
                 } else {
                      console.log(res.data)
                 }
@@ -438,6 +441,12 @@ export default {
                 for (let index = 0; index < that.containers.length; index++) {
                     if (that.containers[index].imageId==res.data.imageId) {
                         that.containers[index]=res.data
+                    }
+
+                }
+                for (let index = 0; index < that.opencontainers.length; index++) {
+                    if (that.opencontainers[index].imageId==res.data.imageId) {
+                        that.opencontainers[index]=res.data
                     }
 
                 }
