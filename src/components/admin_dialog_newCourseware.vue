@@ -329,7 +329,7 @@ export default {
               addCourseware(JSON.stringify(obj)).then((res) => {
                 if (res.code == 200) {
                   that.isnewFilter =false ; //上传弹窗消失
-                  that.loading = true;
+                  that.loading = false;
                   that.$emit('getCourseAll')
                 } else {
                   that.$toast(res.message, 3000);
