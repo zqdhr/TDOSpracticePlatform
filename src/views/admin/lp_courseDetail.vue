@@ -35,7 +35,7 @@
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
                                 <div class="btnbox">
-                                    <a class="btnDefault pointer btn-course" @click="resetDialog = true" v-if="status != 1">确认发布</a>
+                                    <a class="btnDefault pointer btn-course" @click="resetDialog = true" v-if="status == 0">确认发布</a>
                                 </div>
                              </div>
                          </div>
