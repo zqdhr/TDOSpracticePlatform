@@ -117,8 +117,7 @@
 
                 <!--课程课件-->
                 <courseware v-if="navindex==4" :typeData = type :status = status  ></courseware>
-
-                <coursework v-if="navindex==5" timeStatus='1' :noEdit = type :course_info = myData></coursework>
+                <coursework v-if="navindex==5" timeStatus='1' :noEdit = canCaozuo() :course_info = myData></coursework>
 
                 <!--老师课程开课确认框-->
                 <el-dialog
@@ -597,6 +596,15 @@ export default {
             }else {
              return false    
             }
+        }
+      },
+
+      canCaozuo(){
+          let that = this
+        if (that.status!=-1&&that.type==1) {
+            return 1
+        }else {
+            return 0
         }
       },
 

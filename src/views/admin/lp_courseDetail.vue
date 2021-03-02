@@ -185,6 +185,7 @@ export default {
             obj.course_id = this.$route.query.courseId
             getCourseById(obj).then(res=> {
                 if(res.code==200){
+                    console.log(res.data)
                     that.picurl = that.$store.state.pic_Url+ res.data.pic_url;
                     that.coursrName = res.data.name;
                     that.chapter_number = res.data.chapter_number
@@ -198,7 +199,7 @@ export default {
                     that.introduction = res.data.introduction;
                     that.course = res.data
                     that.status = res.data.status
-                    that.status == 1 ? that.typeWork = 0:that.typeWork = 1;
+                    that.status == 0 ? that.typeWork = 1:that.typeWork = 0;
                     that.courseChapters = res.data.chapters
                     that.addParamShow(that.courseChapters)
                 }else{
