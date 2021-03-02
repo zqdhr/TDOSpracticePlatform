@@ -46,11 +46,13 @@
 
                 <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" :id="'Screenshots'+iindex"
                      v-for="(item,iindex) in opencontainers" :key="iindex">
-
-                   <div class="operation_box" id="screen" v-if="item.url.indexOf('html')>0 && virtualMachine==iindex && containerstate=='2'" ></div>
-
-                   <xterm :socketURI="item.url" v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1"></xterm>
-
+                   <!--初始化的数据-->
+                   <div class="operation_box" id="screen" v-show="virtualMachine==iindex && containerstate=='2'"  v-if="item.url.indexOf('html')>0 && !item.restart && item.url!=''"></div>
+                   <xterm :socketURI="item.url"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && !item.restart && item.url!=''"></xterm>  
+                  
+                  <div class="operation_box" id="screen" v-show="virtualMachine==iindex && containerstate=='2'"  v-if="item.url.indexOf('html')>0 && item.restart && item.url!=''"></div>
+                <xterm :socketURI="item.url"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && item.restart && item.url!=''"></xterm>  
+             
 
                 </div>
 
@@ -173,6 +175,7 @@ import {createContainers,findAllByType,execContainer,removeContainers,insertExpe
 import transLoading from '@/components/uploadLoading.vue'
 
 export default {
+    inject:['reload'],
     data(){
         return{
             dataURL: '',
@@ -306,6 +309,10 @@ export default {
                             that.isOpen=true
                             that.virtualMachine=0
                             that.daojishi(that.second)
+                            for(var i =0;i<res.data.length;i++){
+                               res.data[i].isLink = false; //是否连接
+                               res.data[i].restart = false;
+                            }
                             that.opencontainers=res.data
                             that.getState()
                         }
@@ -456,8 +463,16 @@ export default {
             obj.experimentId = that.experimentId
             obj.courseId = that.courseId
             obj.imageId=that.container.imageId
+            
+            for (let index = 0; index < that.opencontainers.length; index++) {
+                if (that.opencontainers[index].imageId==that.container.imageId) {
+                    that.opencontainers[index].url='';
+                    
+                }
+
+            }
+
             createAndRunContainers(obj).then(res=>{
-                  console.log(res)
             that.remove=false
             if (res.code==200) {
                 console.log(res.data)
@@ -465,17 +480,21 @@ export default {
                 for (let index = 0; index < that.containers.length; index++) {
                     if (that.containers[index].imageId==res.data.imageId) {
                         that.containers[index]=res.data
+                        
                     }
 
                 }
                 for (let index = 0; index < that.opencontainers.length; index++) {
                     if (that.opencontainers[index].imageId==res.data.imageId) {
                         that.opencontainers[index]=res.data
+                        
                     }
 
                 }
-                that.container = res.data
+                that.container = res.data;
+                that.$set(that.container,'restart',true)   
                 that.openXuniji(that.container)
+                
                 that.daojishi(that.experiment.duration*60)
             } else {
                 console.log(res.message)
@@ -703,20 +722,21 @@ export default {
 
         //判断打开虚拟机
         openXuniji(item){
-
             let that = this
+            console.log(item)
             if (that.isOpen) {
                 if (item.url.indexOf("vnc.html")==-1) {
                      that.containerstate='1'
-
                      //that.socketURI = item.url
-
                 }else {
                     that.containerstate='2'
                     that.connect_url = item.url
-
                      that.$nextTick(function(){
+                         if(!item.isLink){
                            that.connectVnc(item.url)
+                           item.isLink =true
+                         }
+                        
                      })
 
 
