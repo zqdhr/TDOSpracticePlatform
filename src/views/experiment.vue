@@ -107,6 +107,19 @@
                 <a class="btnDefault" @click="isClose=false">取 消</a>
             </div>
             </el-dialog>
+                        <!--弹窗-->
+            <el-dialog :visible.sync="isFinish" width="500px" :close-on-click-modal='false' :show-close="false">
+            <div slot="title" class="dialog_header">警告!</div>
+            <div class="confirm_dialog_body">
+                <p class="dialog_mess">
+                <!--成功span的class为icon_success-->
+                <span class="span_icon icon_waring">该实验已被关闭</span>
+                </p>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <a class="btnDefault" @click="closeexperiment">确 认</a>
+            </div>
+            </el-dialog>
             <!--再次上传实验报告弹出框-->
               <el-dialog :visible.sync="isHas" width="500px">
             <div slot="title" class="dialog_header">警告!</div>
@@ -223,6 +236,8 @@ export default {
             tagid:'',
             mess:'正在关闭实验，请稍候...',
             showtime:true,
+            isFinish:false,
+            timer:''
 
         }
     },
@@ -231,12 +246,16 @@ export default {
     },
     beforeDestroy(){
         document.body.removeAttribute("class","equipment-body");
-
+        let that = this
         //离开页面的时候清除定时器
-        if(this.timeInterval!=null){
+        if(that.timeInterval!=null){
 
-           clearInterval(this.timeInterval)
-           sessionStorage.setItem(this.userid+this.experimentId,this.second)
+           clearInterval(that.timeInterval)
+           sessionStorage.setItem(that.userid+that.experimentId,that.second)
+        }
+        if (that.timer!=null) {
+            clearInterval(that.timer)
+            
         }
     },
     components:{quillEditor,xterm,transLoading},
@@ -252,6 +271,7 @@ export default {
         if (that.authority==0) {
             that.hasExperimentReport()
         }
+ 
     },
     methods:{
         // vnc连接断开的回调函数
@@ -287,13 +307,13 @@ export default {
                             that.virtualMachine=0
                             that.daojishi(that.second)
                             that.opencontainers=res.data
+                            that.getState()
                         }
                         that.container = that.containers[0]
                         if (that.isOpen==true) {
                              that.openXuniji(that.container)
                         }
                     }
-                    that.$forceUpdate()
                 } else {
                      console.log(res.data)
                 }
@@ -338,6 +358,7 @@ export default {
                 that.timeInterval=null
                 sessionStorage.removeItem(that.userid+that.experimentId);
                 that.closeContainers()
+              
 
             }else if (that.type==1) {
                 that.mess='正在关闭实验，请稍候...'
@@ -353,6 +374,10 @@ export default {
                     //教师与管理员关闭实验
                     that.removeContainers()
                 }
+            }
+            if (that.timer!=null) {
+                clearInterval(that.timer)
+                that.timer=null
             }
             that.isClose=false
 
@@ -436,6 +461,7 @@ export default {
             that.remove=false
             if (res.code==200) {
                 console.log(res.data)
+                that.getState()
                 for (let index = 0; index < that.containers.length; index++) {
                     if (that.containers[index].imageId==res.data.imageId) {
                         that.containers[index]=res.data
@@ -742,7 +768,49 @@ export default {
         onEditorBlur(){}, // 失去焦点事件
         onEditorFocus(){}, // 获得焦点事件
         onEditorChange(){}, // 内容改变事件
+        //用来判断该实验是否被关闭
+        judgeState(){
+            let that = this
+            let obj = {}
+            obj.userId = that.userid
+            obj.experimentId = that.experimentId
+            obj.courseId = that.courseId
+            createContainers(obj).then(res=>{
+                if (res.code==200) {
+                    
 
+                    if (res.data!=null&& res.data.length>0&&res.data[0]!=null) {
+                        console.log(res.data[0].status)
+                        if (res.data[0].status!=1) {
+                            that.isFinish=true
+                        }
+                    }
+                } else {
+                     console.log(res.data)
+                }
+            })
+
+        },
+        //轮询访问实验是否被关闭
+        getState(){
+            let that = this
+            that.timer = setInterval(that.judgeState, 1000*15)
+        },
+        //关闭实验
+        closeexperiment(){
+            let that = this
+            that.isFinish=false
+            if ( that.timeInterval!=null) {
+                clearInterval(that.timeInterval)
+                that.timeInterval=null
+            }          
+            sessionStorage.removeItem(that.userid+that.experimentId);
+            if (that.timer!=null) {
+                clearInterval(that.timer)
+                that.timer=null
+            }
+            that.click_back()
+        },
         }
 }
 </script>

@@ -177,8 +177,8 @@ export default {
             obj.owner_id = sessionStorage.getItem("userId")
             modifyExpiredCourseStatus(obj).then(res=> {
               if(res.code==200){
-                alert("成功")
                 that.archiveManagementisSuccess = true
+                that.courseListByUserId()
               }else{
                 this.$toast("归档失败",2000)
               }

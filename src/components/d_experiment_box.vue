@@ -15,7 +15,7 @@
                                 <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if=" isdeleteStatus == 1?showDelete():false">
                                    <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="getDelete(item.id)"></a>
                                 </el-tooltip>
-                                <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="role!=3 && role!=1 && isdeleteStatus == 1 &&(typeData==1 || status == 0)">
+                                <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="isdeleteStatus == 1?showAdd():false">
                                    <a class="icon icon_set pointer" @click.stop="setinfo(item),experiment = item"></a>
                                 </el-tooltip>
                                  <div class="pic">
