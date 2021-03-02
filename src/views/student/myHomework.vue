@@ -130,7 +130,7 @@
 
     <!--点击确定按钮弹出确认框-->
     <el-dialog :visible.sync="isSubmitJob" width="600px">
-      <div slot="title" class="dialog_header">请注意!</div>
+      <div slot="title" class="dialog_header">警告!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <!--成功span的class为icon_success-->
@@ -145,7 +145,7 @@
 
     <!--点击保存按钮弹出确认框-->
     <el-dialog :visible.sync="isExistNoAnswar" width="600px">
-      <div slot="title" class="dialog_header">请注意!</div>
+      <div slot="title" class="dialog_header">警告!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
           <!--成功span的class为icon_success-->
