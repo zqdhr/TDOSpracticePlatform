@@ -50,7 +50,7 @@
                                 <div class="pic_box"><img :src="item.pic_url"/><div class="trans"></div></div>
                             </div>
                             <p class="p-text textline1">{{item.name}}</p>
-                             <p class="p-text textline1">虚拟机{{item.num}}台</p>
+                             <p class="p-text textline1">虚拟机{{item.imagesinfo!=null?item.imagesinfo.length:0}}台</p>
                             <p class="p-text textline1">实验时长：{{item.duration}}分钟</p>
                              <el-tooltip class="item" effect="dark" content="删除" placement="top">
                                 <a class="icon icon_close pointer" @click.stop="deleteExper(item.id)"></a>
