@@ -33,8 +33,9 @@
                                     </div>
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
+                         
                                 <div class="btnbox">
-                                    <a class="btnDefault pointer btn-course" @click="type == 1?sure_newCourse=true:show_dialog_file = true" v-if="status != 1 || type == 0">{{type == 0?"确认备课":"确认开课"}}</a>
+                                    <a class="btnDefault pointer btn-course" @click="type == 1?sure_newCourse=true:show_dialog_file = true" v-if="showopenClass()">{{type == 0?"确认备课":"确认开课"}}</a>
                                 </div>
                              </div>
                          </div>
@@ -584,6 +585,19 @@ export default {
         console.log(that.classList)
     
 
+      },
+
+      showopenClass(){
+        let that =this
+        if (that.type==0) {
+            return true
+        }else{
+            if (that.status==0) {
+             return true   
+            }else {
+             return false    
+            }
+        }
       },
 
 
