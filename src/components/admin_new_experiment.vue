@@ -147,8 +147,11 @@
                   :placeholder="inplaceholder"
                   type="text"
                   autocomplete="off"
+                  v-model="searchTx"
+                  v-emoji
+                  @keyup.enter="getImagequoteList"
                 />
-                <a class="searchBtn pointer"></a>
+                <a class="searchBtn pointer"  @click="getImagequoteList"></a>
               </div>
             </div>
           </div>
@@ -359,7 +362,8 @@ export default {
       curPage: 1,
       steps:[{text:''}],//实验步骤
       yourContent:'',
-      editorOption:{}
+      editorOption:{},
+      searchTx:''
     };
   },
   components: {
@@ -449,7 +453,7 @@ export default {
           let that = this;
           let obj = {};
           obj.kind = that.type;
-          obj.imageName = '';
+          obj.imageName = that.searchTx;
           obj.page = 1;
           obj.perPage = 10;
           getImagequoteList(obj).then(res=> {
