@@ -5,7 +5,7 @@
                 <div class="clearfix">
                     <div class="fl">
                        <div class="sel-box">
-                          <el-select v-model="className" placeholder="课程名称" 
+                          <el-select v-model="className" placeholder="课程名称"
                           @change="changeClass"
                           >
                                 <el-option
@@ -15,11 +15,11 @@
                                 :value="item.id">
                                 </el-option>
                             </el-select>
-                         
+
                        </div>
-                     
+
                        <!-- <div class="sel-box">
-                          <el-select v-model="level1Name" placeholder="课程" 
+                          <el-select v-model="level1Name" placeholder="课程"
                           @change="changeLevel1"
                           >
                                 <el-option
@@ -31,7 +31,7 @@
                             </el-select>
                        </div>
                         <div class="sel-box" v-if="level2List.length>0">
-                          <el-select v-model="level2Name" placeholder="章" 
+                          <el-select v-model="level2Name" placeholder="章"
                           @change="changeLevel2"
                           >
                                 <el-option
@@ -43,7 +43,7 @@
                             </el-select>
                        </div>
                        <div class="sel-box" v-if="level3List.length>0">
-                          <el-select v-model="level3Name" placeholder="节" 
+                          <el-select v-model="level3Name" placeholder="节"
                           @change="changeLevel3"
                           >
                                 <el-option
@@ -55,7 +55,7 @@
                             </el-select>
                        </div> -->
                        <div class="sel-box" >
-                          <el-select v-model="state" placeholder="请选择状态" 
+                          <el-select v-model="state" placeholder="请选择状态"
                           @change="changeState"
                           >
                                 <el-option
@@ -68,17 +68,17 @@
                        </div>
                     </div>
                     <div class="fr">
-                       <div class="d-serach"> 
+                       <div class="d-serach">
                             <input :placeholder="inplaceholder" type="text" v-emoji v-model="searchTx" autocomplete="off"  @keyup.enter="doSearch"/>
                             <a class="searchBtn pointer" @click="doSearch"></a>
                         </div>
                     </div>
                 </div>
-              
+
             </div>
         </div>
             <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
-                        <template v-if="hasData">   
+                        <template v-if="hasData">
         <div class="container">
            <div class="tea_list">
               <ul class="tab_box">
@@ -92,7 +92,7 @@
                      <div class="d3 d18">
                         <div class="cell">分数</div>
                      </div>
-                     <div class="d4 d14"> 
+                     <div class="d4 d14">
                         <div class="cell">状态</div>
                      </div>
                      <div class="d5 d25">
@@ -111,15 +111,15 @@
                      <div class="d3 d18">
                         <div class="cell">{{item.isCorrect==1?item.score:'待老师批阅'}}</div>
                      </div>
-                     <div class="d4 d14"> 
+                     <div class="d4 d14">
                         <div class="cell">{{item.status==1?'已提交':'待提交'}}</div>
                      </div>
                      <div class="d5 d25">
-                         <div class="cell"> 
+                         <div class="cell">
                             <a class="pointer tab_atn" @click="showDetail(item.status,item.isCorrect,item),singleData=item">查看</a>
                             <span class="space-line" v-if="item.status!=1" @click="isCommit=true,singleData=item"></span>
                             <a class="pointer tab_atn" v-if="item.status!=1" @click="isCommit=true,singleData=item">提交</a>
-                           
+
                          </div>
                      </div>
                   </li>
@@ -140,7 +140,7 @@
         </template>
             <!--提交实验报告-->
               <el-dialog :visible.sync="isCommit" width="600px">
-            <div slot="title" class="dialog_header">请注意!</div>
+            <div slot="title" class="dialog_header">警告!</div>
             <div class="confirm_dialog_body">
                 <p class="dialog_mess">
                 <!--成功span的class为icon_success-->
@@ -156,21 +156,21 @@
         <el-dialog width='1100px' :visible.sync="isReport" class="report_detail_dialog">
             <div slot="title" class="dialog_header">{{singleData.name}}实验---{{singleData.userName}}提交</div>
             <p v-if="curStatus==2" class="p-score">
-                报告得分：{{singleData.score}}分  
+                报告得分：{{singleData.score}}分
             </p>
             <div class="reportMain"  v-if="curStatus==2"  id="pdfDom">
                 <div v-html="yourContent"></div>
-                
-               
+
+
             </div>
             <div class="report_detail_btnbox" v-if="curStatus==2">
-                <a class="pointer btnDefault" @click="getPdf(1,singleData.name+'实验')">导出</a>        
+                <a class="pointer btnDefault" @click="getPdf(1,singleData.name+'实验')">导出</a>
             </div>
             <div id="pdfDom" v-if="curStatus!=2">
-                <quill-editor  
-                    v-model="yourContent" 
-                    ref="myQuillEditor"  
-                    :options="editorOption" 
+                <quill-editor
+                    v-model="yourContent"
+                    ref="myQuillEditor"
+                    :options="editorOption"
                     @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
                 >
                 </quill-editor>
@@ -180,7 +180,7 @@
                    <a class="pointer btnDefault" @click="updateExperimentInfo">确认</a>
             </div>
         </el-dialog>
-        
+
     </div>
 </template>
 <script>
@@ -195,7 +195,7 @@ export default {
       return{
         userList:'张三，李四，王龙，李明',
         perPage: 10,//用户列表每页条数
-        curPage:1, 
+        curPage:1,
         jobList:[
         ],
         singleData:{},//存储单个实验报告数据
@@ -221,7 +221,7 @@ export default {
 
         level2List:[],//章节列表
         level2Name:'',//章节名称
-        
+
         level3List:[],//小节列表
         level3Name:'',//小节名称
 
@@ -231,7 +231,7 @@ export default {
         dataMess:'当前暂无实验报告',
         hasData:true,
         isCommit:false,
-     
+
         isReport:false,
         curStatus:0,//当前实验报告的状态
         yourContent:'',//报告内容
@@ -284,7 +284,7 @@ export default {
             that.findByExperimentReportAll(val)
             console.log(`当前页: ${val}`);
         },
-        //选择班级 
+        //选择班级
         changeClass(val){
             let that=this
             that.findByExperimentReportAll(1)
@@ -309,10 +309,10 @@ export default {
                     }else{
                          that.level2List = []
                     }
-                    
+
                 }
             }
-            
+
         },
         //选择章节
         changeLevel2(val){
@@ -326,7 +326,7 @@ export default {
                     }else{
                          that.level3List = []
                     }
-                    
+
                 }
             }
         },
@@ -349,14 +349,14 @@ export default {
         onEditorFocus(){}, // 获得焦点事件
         onEditorChange(){}, // 内容改变事件
 
-        
+
         showDetail(state,isreview,item){
            let that = this;
            that.isReport = true
            if(state==0){
               that.curStatus = 1
            }else{
-               
+
                if(isreview==1){
                     that.curStatus =2
                }
@@ -365,23 +365,23 @@ export default {
                }
            }
            that.findExperimentReportByExperimentAndUserId(item)
-        
-          
+
+
         },
         //获取我的课程列表
         getDataList(){
-            let that = this;  
+            let that = this;
             let obj={}
             obj.user_id = sessionStorage.getItem("userId")
             obj.per_page =100
-            obj.page = 1  
+            obj.page = 1
             obj.start=''
             obj.end=''
             obj.name=''
-            student_getCourseList(obj).then(res=>{   
+            student_getCourseList(obj).then(res=>{
                 if(res.code==200){
                     console.log(res.data)
-                    that.classList = res.data.list  
+                    that.classList = res.data.list
                 }else{
                      this.$toast(res.message, 3000);
                 }
@@ -405,7 +405,7 @@ export default {
                     that.jobList = res.data.list
                     that.hasData=res.data.list.length==0?false:true
                     that.total = res.data.total
-                   
+
                 } else {
                     that.$toast(res.message,3000)
                 }
@@ -449,7 +449,7 @@ export default {
             let that = this
             if (that.yourContent=='') {
                 return that.$toast("请输入实验报告内容",2000)
-                
+
             }
             let obj={}
             obj.experiment_id = that.singleData.experiment_id
