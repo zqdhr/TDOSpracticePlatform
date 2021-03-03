@@ -151,10 +151,12 @@ a,a:hover{text-decoration: none;}
 
 /*分页*/
 .el-pagination.is-background .el-pager li:not(.disabled):hover{color:@basecolor}
-.el-pager li.active{background:@basecolor}
+.stats-page .el-pager li{min-width: 30px; .borderRadius(2px,2px,2px,2px)}
+.stats-page .el-pager li.active{/*background:@basecolor;*/ color: @basecolor;}
 .el-pagination.is-background .el-pager li:not(.disabled).active{background:@basecolor}
 .el-pagination.is-background .el-pager li:not(.disabled).active:hover{color:#fff;}
 .tab-pagination{text-align: right; padding:20px 30px;}
+.stats-page  .el-pagination__jump{margin-left:5px;}
 /*上传*/
 .file-uploads.file-uploads-html4 input, .file-uploads.file-uploads-html5 label{cursor: pointer;}
 .el-select-dropdown__item.selected{font-weight: normal;}
