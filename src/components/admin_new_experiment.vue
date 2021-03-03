@@ -632,7 +632,7 @@ export default {
           return that.$toast('请输入实验步骤',2000)
         }
         if (that.form.images.length==0) {
-          return that.$toast('请至少选择一台虚拟机',2000)
+          return that.$toast('请至少选择一台镜像',2000)
         }
         that.innerVisible = true
     },
