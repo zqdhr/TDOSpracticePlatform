@@ -12,7 +12,7 @@
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen&& authority==0 " @click="isEdit=true">
+                <a class="a-opera pointer" v-if="isOpen " @click="isEdit=true">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -762,12 +762,13 @@ export default {
             downloadCode(obj).then(res=>{
                 if (res.code==200) {
                     if (res.data!=null) {
-
+                        console.log(datob(res.data))
+                        
+                        
                     }else {
                         that.$toast("输入的文件不存在",3000)
                     }
                     console.log(res.data)
-                    console.log(that.binaryToStr(res.data))
                 } else {
                     console.log(res.message)
                 }
