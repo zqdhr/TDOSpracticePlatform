@@ -82,8 +82,7 @@
                   </el-table-column>
                   </el-table>
                   <div class="pagination-box">
-                     <el-pagination
-                      background
+                     <el-pagination class="stats-page"
                       layout="prev,pager, next,jumper"
                       :total="onlineTotal" :current-page.sync="online_page"
                       @current-change="handleOnlineCurrentChange">
@@ -116,7 +115,7 @@
                       </el-table>
                      <div class="pagination-box">
                       <el-pagination
-                        background
+                       class="stats-page"
                         layout="prev,pager, next,jumper"
                         :total="totalExper"
                         :page-size="ex_per_page"
