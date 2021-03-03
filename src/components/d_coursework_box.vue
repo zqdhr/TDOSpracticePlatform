@@ -227,7 +227,7 @@
           placeholder="输入作业名称"
           v-model="modifyName"
           v-emoji
-          maxlength="16"
+          maxlength="20"
         ></el-input>
         <div class="set_endtime_box" v-if="timeStatus == 1">
           <el-date-picker

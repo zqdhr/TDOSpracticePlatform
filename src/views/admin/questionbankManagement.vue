@@ -772,7 +772,7 @@ export default {
 
       console.log(`当前页: ${val}`);
 
-      that.curPage = 1;
+      that.curPage = val;
 
       that.selectQuestionBackAll("");
     },
