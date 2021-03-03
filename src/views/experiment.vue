@@ -529,6 +529,7 @@ export default {
             obj.experiment_id = that.experimentId
             obj.user_id = that.userid
             obj.info = that.yourContent
+            console.log(obj)
             insertExperimentRepor(obj).then(res=>{
                 if (res.code==200) {
                     that.$toast("实验报告上传成功",3000)

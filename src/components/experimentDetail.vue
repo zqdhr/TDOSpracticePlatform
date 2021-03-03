@@ -56,14 +56,12 @@
                 <el-table-column prop="type" label="镜像类型">
                     <template slot-scope="scope">
                     <span>{{
-                        scope.row.type == 0
-                        ? "KVM"
-                        : "Docker"
+                        scope.row.kind == 1 ? "图形化界面" : "命令行"
                     }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="size" label="容量"> </el-table-column>
-                <el-table-column prop="Introduction" label="简介" width="280">
+                <el-table-column prop="introduction" label="简介" width="280">
                 </el-table-column>
                 
                 </el-table>
@@ -158,6 +156,9 @@ export default {
                 if (res.code==200) {
                     console.log(res.data)
                     that.experiment = res.data
+                    for(let i = 0;i<res.data.imagesinfo.length;i++){
+                        res.data.imagesinfo[i].size = (res.data.imagesinfo[i].size/(1024 * 1024)).toFixed(2) + "MB"
+                    }
                     that.Imagelibraries = res.data.imagesinfo
                     that.experiment.pic_url = that.$store.state.pic_Url+that.experiment.pic_url
                 }else {

@@ -417,7 +417,7 @@ export default {
             that.yourContent=''
             let obj = {}
             obj.experiment_id = item.experiment_id
-            obj.user_id = item.user_id
+            obj.user_id = sessionStorage.getItem("userId")
             findExperimentReportByExperimentAndUserId(obj).then(res=>{
                 if (res.code==200) {
                     console.log(res.data)
@@ -433,7 +433,7 @@ export default {
             let obj={}
             that.isCommit=false
             obj.experiment_id = that.singleData.experiment_id
-            obj.user_id = that.singleData.user_id
+            obj.user_id = sessionStorage.getItem("userId")
             obj.status=1
             console.log(obj)
             updateExperimentReport(obj).then(res=>{
@@ -453,7 +453,7 @@ export default {
             }
             let obj={}
             obj.experiment_id = that.singleData.experiment_id
-            obj.user_id = that.singleData.user_id
+            obj.user_id = sessionStorage.getItem("userId")
             obj.status=0
             obj.info=that.yourContent
             updateExperimentReport(obj).then(res=>{

@@ -397,7 +397,7 @@ export default {
             let obj={}
             obj.course_id = that.level1Name
             obj.status=1
-            obj.user_id=''
+            obj.user_id=sessionStorage.getItem("userId")
             obj.isCorrect = that.state
             obj.name = that.searchTx
             obj.startTime = that.timestart
