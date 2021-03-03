@@ -38,7 +38,7 @@
         <div class="fr">
           <a class="btnDefault pointer abtn" @click="click_new">新增课件</a>
           <div class="d-serach">
-            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="paramData.name"/>
+            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model="paramData.name" v-emoji/>
             <a class="searchBtn pointer" @click="searchCourse"></a>
           </div>
         </div>

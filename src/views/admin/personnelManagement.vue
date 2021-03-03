@@ -47,6 +47,7 @@
               type="text"
               autocomplete="off"
               v-model="searchText"
+              v-emoji
             />
             <a class="searchBtn pointer" @click="searchByIdOrName"></a>
           </div>

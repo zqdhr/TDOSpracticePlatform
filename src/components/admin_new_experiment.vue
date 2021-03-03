@@ -692,6 +692,7 @@ export default {
                 that.innerVisible = false
             }else{
               console.log(res.message)
+              that.innerVisible = false
               that.$toast(res.message,3000)
             }
         })
