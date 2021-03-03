@@ -186,12 +186,12 @@ export default {
         /*在线人数列表*/
         onlineUsers(){
             let that = this;
-            that.searchUserOnline(10,1);
+            that.searchUserOnline(10,0);
         },
         /*实验人数列表*/
         runExperiment(){
             let that = this;
-            that.getRunExperiment(10,1);
+            that.getRunExperiment(10,0);
         },
         searchUserOnline(per_page,page){
             let that = this;
