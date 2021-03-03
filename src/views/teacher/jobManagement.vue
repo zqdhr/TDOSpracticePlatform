@@ -40,7 +40,7 @@
             <div class="sel-box" style="width: 350px" v-if="state.id == 1">
               <el-date-picker
                 class="pageTab_date"
-                
+
                 v-model="value2"
                 type="daterange"
                 align="right"
@@ -80,6 +80,7 @@
                 type="text"
                 autocomplete="off"
                 v-emoji
+                @keyup.enter="searchAction"
               />
               <a class="searchBtn pointer" @click="searchAction"></a>
             </div>
@@ -88,7 +89,7 @@
       </div>
 
     </div>
-    
+
      <noData
         :noDataType="noDataType"
         :dataMess="dataMess"

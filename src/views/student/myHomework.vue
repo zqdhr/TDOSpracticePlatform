@@ -44,6 +44,7 @@
                 autocomplete="off"
                 v-model="searchText"
                 v-emoji
+                @keyup.enter="student_getJobList(1)"
               />
               <a
                 class="searchBtn pointer"
