@@ -12,7 +12,7 @@
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen&& authority==0 " @click="isEdit=true">
+                <a class="a-opera pointer" v-if="isOpen " @click="isEdit=true">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -240,7 +240,8 @@ export default {
             mess:'正在关闭实验，请稍候...',
             showtime:true,
             isFinish:false,
-            timer:''
+            timer:'',
+            connectNum:0
 
         }
     },
@@ -285,11 +286,16 @@ export default {
                 this.connectVnc(this.connect_url)
             } else {
                 //这里做不可重新连接的一些操作
-                //this.connectVnc(this.connect_url)
+                if (this.connectNum<5) {
+                     this.connectVnc(this.connect_url)
+                }
+               this.connectNum=this.connectNum+1
+               console.log(this.connectNum)
             }
         },
         // 连接成功的回调函数
         connectedToServer(msg) {
+             this.connectNum=0
             console.log('success',msg)
         },
            //创建实验
@@ -750,6 +756,7 @@ export default {
         },
 
         downloadCode(){
+                      
             let that =this
             if (that.editValue=='') {
                return that.$toast("请输入文件名称",3000)
@@ -762,12 +769,11 @@ export default {
             downloadCode(obj).then(res=>{
                 if (res.code==200) {
                     if (res.data!=null) {
-
+                        that.downloadfile(datob(res.data))                
                     }else {
                         that.$toast("输入的文件不存在",3000)
                     }
                     console.log(res.data)
-                    console.log(that.binaryToStr(res.data))
                 } else {
                     console.log(res.message)
                 }
@@ -815,7 +821,7 @@ export default {
         //轮询访问实验是否被关闭
         getState(){
             let that = this
-            that.timer = setInterval(that.judgeState, 1000*15)
+            that.timer = setInterval(that.judgeState, 1000*5)
         },
         //关闭实验
         closeexperiment(){
@@ -832,6 +838,16 @@ export default {
             }
             that.click_back()
         },
+        downloadfile(data){
+            const blob = new Blob([], {type: "text/plain"})
+            //const blob = new Blob([data], {type: 'audio/wav'})
+            const a= document.createElement("a")
+            a.href = URL.createObjectURL(blob)
+            a.download = "fileName" // 这里填保存成的文件名
+            a.click()
+            URL.revokeObjectURL(a.href)
+　　　       a.remove();
+        }
         }
 }
 </script>
