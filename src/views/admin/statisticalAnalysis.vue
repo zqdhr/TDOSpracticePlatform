@@ -13,7 +13,7 @@
                          </div>
                       </div>
                    </div>
-                   
+
                 </div>
                 <div class="col">
                    <div class="col-info">
@@ -25,7 +25,7 @@
                          </div>
                       </div>
                    </div>
-                   
+
                 </div>
                 <div class="col">
                    <div class="col-info">
@@ -37,7 +37,7 @@
                          </div>
                       </div>
                    </div>
-                   
+
                 </div>
                 <div class="col">
                    <div class="col-info">
@@ -49,7 +49,7 @@
                          </div>
                       </div>
                    </div>
-                   
+
                 </div>
            </div>
         </div>
@@ -84,7 +84,7 @@
                   <div class="pagination-box">
                      <el-pagination
                       background
-                      layout="prev, next"
+                      layout="prev,pager, next,jumper"
                       :total="onlineTotal" :current-page.sync="online_page"
                       @current-change="handleOnlineCurrentChange">
                     </el-pagination>
@@ -117,8 +117,9 @@
                      <div class="pagination-box">
                       <el-pagination
                         background
-                        layout="prev, next"
+                        layout="prev,pager, next,jumper"
                         :total="totalExper"
+                        :page-size="ex_per_page"
                         :current-page.sync="ex_Page"
                         @current-change="handleCurrentChange">
                       </el-pagination>
@@ -137,7 +138,7 @@ export default {
       return{
           tabData: [//在线人数显示12条数据
             {sno: '20200118',name: '王小虎',state: 1},
-          
+
           ],
           onlineTotal:1,
           online_page:1,//在线人数当前页
@@ -147,6 +148,7 @@ export default {
             {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
           ],
           totalExper:1,
+          ex_per_page:10,
           ex_Page:1,//实验当前页
           cpuUse:'',
           memoryUse:'',
@@ -185,12 +187,12 @@ export default {
         /*在线人数列表*/
         onlineUsers(){
             let that = this;
-            that.searchUserOnline(10,0);
+            that.searchUserOnline(10,1);
         },
         /*实验人数列表*/
         runExperiment(){
             let that = this;
-            that.getRunExperiment(10,0);
+            that.getRunExperiment(10,1);
         },
         searchUserOnline(per_page,page){
             let that = this;
@@ -233,6 +235,7 @@ export default {
         let that = this;
 
         console.log(`当前页 ${val} 条`);
+        that.getRunExperiment(10,val);
       },
         handleOnlineCurrentChange(val){
             let that = this;

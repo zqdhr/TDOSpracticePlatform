@@ -165,7 +165,7 @@ export default{
         handleCurrentChange(val) {
           let that = this;
           this.select_flag = false;
-          that.$emit('handleCurrentChange',val,'')  
+          that.$emit('handleCurrentChange',val,'',that.classList)  
         },
 
         //学生用户班级选中
@@ -177,7 +177,7 @@ export default{
                obj = that.classList[i]
             }
           }
-          that.$emit('handleCurrentChange','',obj)
+          that.$emit('handleCurrentChange',1,obj,that.classList)
         },
 
         handleSelectionChange(val) {
@@ -207,11 +207,20 @@ export default{
             let temp = that.classList[i].user_id_list;
             if(row.classId == that.classList[i].id){
                if(that.classList[i].user_id_list.indexOf(row.userId)!=-1){
-                  let index = that.classList[i].user_id_list.indexOf(row.userId);
-                  temp.splice(index,1)
+                  let index = that.classList[i].user_id_list.indexOf(row.userId); 
+                    temp.splice(index,1)
+                  if(temp.length==0){
+                     that.classList[i].checked = 0
+                  }else{
+                     that.classList[i].checked = 2
+                  }
+
                   
                }else{
-                 temp.push(row.userId)
+                 temp.push(row.userId);
+                 if(temp.length == that.classList[i].count){
+                     that.classList[i].checked = 1
+                 }
                }
             }
             that.classList[i].user_id_list = temp;
