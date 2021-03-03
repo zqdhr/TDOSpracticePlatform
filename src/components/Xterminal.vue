@@ -1,5 +1,5 @@
 <template>
-  <div id="xterm" class="xterm" />
+  <div id="xterm" class="xterm" ref="xterm" />
 </template>
 
 <script>
@@ -36,6 +36,7 @@ export default {
 
   mounted() {
     this.initSocket();
+    window.addEventListener('resize',this.windowChange);
   },
 
   beforeDestroy() {
@@ -49,26 +50,38 @@ export default {
       this.term.dispose();
     },
     initTerm() {
-      const term = new Terminal({
-        fontSize: 14,
-        cursorBlink: true,
-      });
-      const attachAddon = new AttachAddon(this.socket);
-      const fitAddon = new FitAddon();
-      term.loadAddon(attachAddon);
-      term.loadAddon(fitAddon);
-      term.open(document.getElementById("xterm"));
-   
-      fitAddon.fit();
-      term.focus();
-      this.term = term;
+        this.$nextTick(function(){
+            let height = 0    
+           height= this.$refs.xterm.offsetHeight;
+           const term = new Terminal({
+              rows:parseInt(height/17, 10),
+              cursorBlink: true,
+  
+           });
+           const attachAddon = new AttachAddon(this.socket);
+           const fitAddon = new FitAddon();         
+            term.loadAddon(attachAddon);
+            term.loadAddon(fitAddon);
+          
+            term.open(document.getElementById("xterm"));
+          
+        
+            //fitAddon.fit();
+            term.focus();
+            this.term = term;
+            
+            console.log(parseInt(height/17, 10))
+
+        })
+  
+      
+
+
+      
     },
     initSocket() {
-      if(this.socketURI.indexOf('html')==-1){
-        this.socket = new WebSocket(this.socketURI);
-        
-      }
-      
+        //ws://192.168.1.167:4002 this.socketURI 
+      this.socket = new WebSocket(this.socketURI);
       this.socketOnClose();
       this.socketOnOpen();
       this.socketOnError();
@@ -89,7 +102,8 @@ export default {
       this.socket.onerror = () => {
         // console.log('socket 链接失败')
       };
-    },
+    }
+   
   },
 };
 </script>
