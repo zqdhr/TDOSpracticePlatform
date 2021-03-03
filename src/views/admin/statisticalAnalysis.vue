@@ -82,8 +82,7 @@
                   </el-table-column>
                   </el-table>
                   <div class="pagination-box">
-                     <el-pagination
-                      background
+                     <el-pagination class="stats-page"
                       layout="prev,pager, next,jumper"
                       :total="onlineTotal" :current-page.sync="online_page"
                       @current-change="handleOnlineCurrentChange">
@@ -116,7 +115,7 @@
                       </el-table>
                      <div class="pagination-box">
                       <el-pagination
-                        background
+                       class="stats-page"
                         layout="prev,pager, next,jumper"
                         :total="totalExper"
                         :page-size="ex_per_page"
@@ -187,12 +186,12 @@ export default {
         /*在线人数列表*/
         onlineUsers(){
             let that = this;
-            that.searchUserOnline(10,1);
+            that.searchUserOnline(10,0);
         },
         /*实验人数列表*/
         runExperiment(){
             let that = this;
-            that.getRunExperiment(10,1);
+            that.getRunExperiment(10,0);
         },
         searchUserOnline(per_page,page){
             let that = this;
