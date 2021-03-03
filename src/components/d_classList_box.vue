@@ -118,23 +118,27 @@ export default{
         //学生列表返回班级列表
         backClass(){
           this.isStudent = false;
+          this.$emit('getCourseById')
 
         },
         
         //子组件调用父组件
-        handleCurrentChange(params){ //第一个参数是第一个页数，第二个参数是当前选中的班级
-        
+        handleCurrentChange(params){ //第一个参数是第一个页数，第二个参数是当前选中的班级,第三个参数是当前班级以及选中的人数   
            let that = this;
-           let class_id = [];       
+           let class_id = [];   
+           let temporary_checkList = params[2]
            if(params[0]!=''){
               that.page = params[0];
            }
+           that.checkedList = temporary_checkList
            if(params[1]!=''){
               class_id.push(params[1])         
               that.searchClassStudents(class_id)
            }else{  
               that.searchClassStudents(that.checkedList)
            }
+
+      
         },
 
         //当前页学生全选
@@ -152,12 +156,15 @@ export default{
                         if(that.checkedList[i].user_id_list.indexOf(that.list[j].userId)==-1){
                            that.checkedList[i].user_id_list.push(that.list[j].userId)
                         }
+                         if(that.checkedList[i].user_id_list.length==that.checkedList[i].count){
+                            that.checkedList[i].checked = 1
+                        }else{
+                            that.checkedList[i].checked = 2
+                        }
                     }
                 }
             }
 
-          
-           console.log('全部全选')
         },
         //当前学生全部取消选择
          stu_select_no(){
@@ -172,16 +179,19 @@ export default{
                             for(let n = 0, len = that.checkedList[i].user_id_list.length; n<len;n++){
                                 let index = that.checkedList[i].user_id_list.indexOf(that.list[j].userId)
                                 temp[i].user_id_list.splice(index,1)
-                            }
-                        
+                            }                        
                           
+                        }
+                        if(temp[i].user_id_list.length==0){
+                            temp[i].checked = 0
+                        }else{
+                            temp[i].checked = 2
                         }
                     }
                 }
             }
             that.checkedList = temp
-                console.log(that.checkedList)
-             console.log(that.list)
+
         },
         
 
@@ -193,12 +203,14 @@ export default{
             let classIds = [];
             obj.per_page = that.per_page
             obj.page = that.page
+            
 
             for(let i=0;i<list.length;i++){
                 classIds.push(list[i].id);          
             }         
             obj.classIds = classIds //表示选中的班级
-
+            
+            
             getStudentsByClasses(obj).then(res=> {
                 if(res.code==200){
     
@@ -206,7 +218,7 @@ export default{
                     //res.data.list:学生列表
                     
                     for (let i=0; i<that.checkedList.length; i++) {
-                        if (that.checkedList[i].user_id_list.length == 0 || that.checkedList[i].checked==1) {//该班级学生全部选中
+                        if (that.checkedList[i].checked==1) {//该班级学生全部选中
                             for (let j=0; j<res.data.list.length; j++) {
                                 if (res.data.list[j].classId == that.checkedList[i].id) {
                                     if (that.checkedList[i].user_id_list.indexOf(res.data.list[j].userId) == -1) {
