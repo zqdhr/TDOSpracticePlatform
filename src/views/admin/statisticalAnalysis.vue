@@ -238,7 +238,7 @@ export default {
       },
         handleOnlineCurrentChange(val){
             let that = this;
-            that.searchUserOnline(10,val-1);
+          that.searchUserOnline(10,val);
             console.log(`当前页 ${val} 条`);
         },
     },

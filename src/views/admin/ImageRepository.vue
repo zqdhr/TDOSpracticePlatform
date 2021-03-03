@@ -14,7 +14,7 @@
           <a class="btnDefault pointer abtn" @click="delDataList">删除镜像</a>
           <a class="btnDefault pointer abtn" @click="show_Add=true">新增镜像</a>
           <div class="d-serach">
-            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model = "searchText" v-emoji/>
+            <input :placeholder="inplaceholder" type="text" autocomplete="off" v-model = "searchText" v-emoji @keyup.enter="searchImage"/>
             <a class="searchBtn pointer" @click="searchImage"></a>
           </div>
         </div>
@@ -39,7 +39,7 @@
           <el-table-column prop="type" label="镜像类型">
             <template slot-scope="scope">
               <span>{{
-                scope.row.type == 0
+                scope.row.kind == 1
                   ? "命令行"
                   : "图形化界面"
               }}</span>
@@ -214,6 +214,9 @@ export default {
     },
       searchImage(){
           let that = this;
+          if(that.kind == ''){
+            that.kind = -1
+          }
           that.getImagequoteList(that.kind,that.searchText,1);
       },
       selectKind(val){
@@ -236,6 +239,9 @@ export default {
           console.log(obj)
           getImagequoteList(obj).then(res=> {
               if(res.code==200){
+                  for(let i = 0;i<res.data.list.length;i++){
+                    res.data.list[i].size = (res.data.list[i].size/(1024 * 1024)).toFixed(2) + "MB"
+                  }
                   that.Imagelibraries = res.data.list;
                   that.total = res.data.total
                   res.data.total==0 ? that.isHasData = false :that.isHasData = true
