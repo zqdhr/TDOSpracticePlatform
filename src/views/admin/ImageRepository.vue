@@ -378,7 +378,7 @@ export default {
                 that.getImagequoteList(-1,'',1);
             }else{
                 that.show_Add = false
-                that.showLoading = true
+                that.showLoading = false
                 this.$toast("上传失败",3000)
                 that.getImagequoteList(-1,'',1);
             }
