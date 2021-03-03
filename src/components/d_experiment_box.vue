@@ -15,7 +15,7 @@
                                 <el-tooltip class="item" effect="dark" content="删除" placement="top" v-if=" isdeleteStatus == 1?showDelete():false">
                                    <a class="icon icon_close pointer" :class="{'admin_icon_close':role==1}" @click.stop="getDelete(item.id)"></a>
                                 </el-tooltip>
-                                <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="isdeleteStatus == 1?showAdd():false">
+                                <el-tooltip class="item" effect="dark" content="设置" placement="top" v-if="isdeleteStatus == 1?showSet():false">
                                    <a class="icon icon_set pointer" @click.stop="setinfo(item),experiment = item"></a>
                                 </el-tooltip>
                                  <div class="pic">
@@ -290,7 +290,38 @@ export default {
 
           if (sessionStorage.getItem('p_p-authority')==2) {
             //管理员判断status
+            if (that.status==0) {
+              return true
+            }else {
               return false
+            }
+          }else {
+            //判断教师端
+           
+            if (that.status!=-1&&that.typeData==1) {
+              return true
+            }else {
+              return false
+            }
+            
+          
+          }
+
+
+      }
+    },
+     showSet(){
+      let that = this
+      if (sessionStorage.getItem('p_p-authority')==0) {
+        // 学生直接没有删除按钮
+        return false
+      }else {
+
+          if (sessionStorage.getItem('p_p-authority')==2) {
+            //管理员判断status
+       
+              return false
+        
           }else {
             //判断教师端
            
