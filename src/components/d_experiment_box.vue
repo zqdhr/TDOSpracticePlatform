@@ -257,7 +257,6 @@ export default {
          showDelete(){
       let that = this
 
-      console.log(sessionStorage.getItem('p_p-authority')+that.status+that.typeData)
       if (sessionStorage.getItem('p_p-authority')==0) {
         // 学生直接没有删除按钮
         return false
@@ -284,8 +283,6 @@ export default {
     },
     showAdd(){
       let that = this
-
-      console.log(sessionStorage.getItem('p_p-authority')+that.status+that.typeData)
       if (sessionStorage.getItem('p_p-authority')==0) {
         // 学生直接没有删除按钮
         return false
@@ -293,11 +290,7 @@ export default {
 
           if (sessionStorage.getItem('p_p-authority')==2) {
             //管理员判断status
-            if (that.status==0) {
-              return true
-            }else {
               return false
-            }
           }else {
             //判断教师端
            

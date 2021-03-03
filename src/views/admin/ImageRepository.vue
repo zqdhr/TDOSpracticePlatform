@@ -86,9 +86,10 @@
 
     <!--新增镜像弹出框-->
     <el-dialog class="dialog_add_mirroring dialog_body_nopadding_bottom"
-
+      @close="Mirroring.name='',Mirroring.introduction='',kind='',Mirroring.url=''"
       :visible.sync="show_Add"
-      width="600px">
+      width="600px"
+     >
       <div slot="title" class="dialog_header">
           新增镜像
       </div>
@@ -185,7 +186,7 @@ export default {
       files:[],
       showLoading:false,
       isHasData:true,//是否有数据 默认有数据
-      kind:-1,
+      kind:'',
       searchText:''
     };
   },
