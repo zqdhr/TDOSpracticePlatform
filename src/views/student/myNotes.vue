@@ -302,7 +302,7 @@ export default {
       jumpTime: 0,
       momentMod: {},
       noDataType:1,  //没有数据展示的样式
-      dataMess:'当前暂无笔记图标',
+      dataMess:'当前暂无笔记',
       hasData:false,
     };
   },
