@@ -29,6 +29,7 @@
                 autocomplete="off"
                 v-model="searchRemark"
                 v-emoji
+                @keyup.enter="getNote(searchRemark)"
               />
               <a class="searchBtn pointer" @click="curPage =1, getNote(searchRemark)"></a>
             </div>

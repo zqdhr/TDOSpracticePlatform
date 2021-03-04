@@ -192,7 +192,7 @@
             <div class="editMain" >
                 <el-form ref="form" label-width="60px">
                     <el-form-item label="名称">
-                        <el-input v-model="addValue" :maxlength='addTitle==1?14:12' :placeholder='addTitle==1?"请输入节最多14个字符":"请输入小节最多12个字符"' v-emoji></el-input>
+                        <el-input v-model="addValue" :maxlength='addTitle==1?20:20' :placeholder='addTitle==1?"请输入节最多20个字符":"请输入小节最多20个字符"' v-emoji></el-input>
                     </el-form-item>
 
                 </el-form>
@@ -599,7 +599,7 @@ export default{
             that.num = num
             //num 1章  2节   3小节
 
-            num==1?that.edit_placeholder = '章名称最多16个字符':num==2?that.edit_placeholder = '节名称最多14个字符':that.edit_placeholder = '小节名称最多12个字符'
+            num==1?that.edit_placeholder = '章名称最多20个字符':num==2?that.edit_placeholder = '节名称最多20个字符':that.edit_placeholder = '小节名称最多20个字符'
 
         },
         modify(text){

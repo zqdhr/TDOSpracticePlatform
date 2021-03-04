@@ -29,6 +29,7 @@
                 v-model="searchText"
                 maxlength="25"
                 v-emoji
+                @keyup.enter="click_search"
               />
               <a class="searchBtn pointer" @click="click_search"></a>
             </div>
@@ -120,7 +121,7 @@ export default {
       noDataType: 1, //没有数据展示的样式
       dataMess: "当前暂无课程列表",
       hasData: true,
- 
+
       total: 1,
 
       dataObj:{
@@ -145,7 +146,7 @@ export default {
       let that = this;
       that.dataObj.page = val
       that.getDataList();
-      
+
     },
     //查看详情
     linkDetail(id) {
@@ -157,7 +158,7 @@ export default {
     },
     changeDate(val) {
       let that = this;
-     
+
       if (val != null && val != undefined) {
         that.dataObj.start = val[0];
         that.dataObj.end = val[1];
