@@ -151,6 +151,7 @@ export default {
             obj.id = experId
             obj.type = 0
             obj.perPage=1
+            obj.experiment_type=0
             obj.page=1
             findAllByType(obj).then(res=>{
                 if (res.code==200) {

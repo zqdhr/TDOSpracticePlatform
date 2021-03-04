@@ -159,6 +159,7 @@ export default {
       obj.page = page;
       obj.section_id = section_id;
       obj.c_category_id = c_category_id;
+      obj.type=0
       console.log(obj)
       findAllExperimentByCategoryId(obj).then(res=> {
         if(res.code==200){

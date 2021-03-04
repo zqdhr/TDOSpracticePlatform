@@ -236,6 +236,7 @@ export default {
           obj.name= that.searchTx
           obj.perPage =that.perPage
           obj.page = page
+          obj.type=0
           findExperiment(obj).then(res=> {
                 if(res.code==200){
                    console.log(res.data)
