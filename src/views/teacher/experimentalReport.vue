@@ -243,7 +243,7 @@ export default {
         timeend:'',//筛选结束时间
         noDataType:1,  //没有数据展示的样式
         dataMess:'当前暂无实验报告',
-        hasData:true,
+        hasData:false,
         total:0,
         yourContent:''
       }
