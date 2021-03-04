@@ -135,7 +135,6 @@ export default {
     },
   methods: {
       getRunContainerList(type,classId,page){
-        alert(page)
           let that = this;
           let obj = {};
           obj.type = type;
@@ -271,7 +270,7 @@ export default {
                 } else {
                     that.isClose=false
                     that.$toast(res.message,3000)
-                    console.log(res.message)
+                    //console.log(res.message)
                 }
             })
         }

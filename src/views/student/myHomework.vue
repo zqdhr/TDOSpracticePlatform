@@ -579,7 +579,6 @@ export default {
           }
         })
         .catch((ero) => {
-          alert(JSON.stringify(ero));
         });
     },
   },

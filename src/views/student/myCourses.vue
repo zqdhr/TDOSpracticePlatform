@@ -180,7 +180,7 @@ export default {
     getDataList() {
       let that = this;
       student_getCourseList(that.dataObj).then((res) => {
-          console.log(res.data)
+          //console.log(res.data)
         if (res.code == 200) {
           that.courseList = res.data.list;
           that.total = res.data.total;

@@ -330,7 +330,7 @@ export default {
     },
     //底部分页
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      //console.log(`当前页: ${val}`);
       let that = this;
       that.curPage = val;
       that.getStudentJobList(0);
@@ -411,7 +411,7 @@ that.curPage = 1;
       // alert(JSON.stringify(obj));
       submitCorrectJob(obj)
         .then((res) => {
-          console.log(JSON.stringify(res));
+          //console.log(JSON.stringify(res));
           if (res.code == 200) {
             that.isHomework = false;
             that.isCorrectJob = false;
@@ -453,7 +453,7 @@ that.curPage = 1;
       obj.assignmentId = val.assignmentId;
 
       getStudentJobDetail(obj).then((res) => {
-        console.log(JSON.stringify(res));
+        //console.log(JSON.stringify(res));
         if (res.code == 200) {
           that.all_courseList = res.data.list;
         } else {

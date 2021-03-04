@@ -202,7 +202,6 @@ export default {
     },
     mounted(){
         let that = this;
-        alert("sss"+that.role)
         that.getAllExperiment();
     },
     methods:{
@@ -300,14 +299,14 @@ export default {
             }
           }else {
             //判断教师端
-           
+
             if (that.status!=-1&&that.typeData==1) {
               return true
             }else {
               return false
             }
-            
-          
+
+
           }
 
 
@@ -322,19 +321,19 @@ export default {
 
           if (sessionStorage.getItem('p_p-authority')==2) {
             //管理员判断status
-       
+
               return false
-        
+
           }else {
             //判断教师端
-           
+
             if (that.status!=-1&&that.typeData==1) {
               return true
             }else {
               return false
             }
-            
-          
+
+
           }
 
 
@@ -360,7 +359,7 @@ export default {
         updateExperiment(){
             let that = this
             let obj={}
-            
+
             console.log(that.endTime)
             if (that.reportinfo==''||that.reportinfo==null) {
                  return  that.$toast('请输入实验报告要求',2000)
@@ -373,10 +372,10 @@ export default {
             }
             if (new Date(that.endTime).getTime()>new Date(that.course_info.end_at.substring(0, that.course_info.end_at.indexOf("T"))).getTime()) {
                  return  that.$toast('实验报告截止时间不能大于课程结束时间',2000)
-                  
+
             }
-            
-        
+
+
             obj.id=that.experiment.id
             obj.duration = that.time
             obj.end_at = that.endTime

@@ -9,8 +9,8 @@
         </div>
         <div class="container container_info">
             <div class="info_box">
-               
-                
+
+
                 <!--头部课程详细信息-->
                 <div class="top_info ">
                      <div class="c_pic"><img :src="picurl"/></div>
@@ -33,7 +33,7 @@
                                         包含内容：{{introduction}}
                                     </div>
                                  </el-scrollbar>
-                                
+
                              </div>
                          </div>
                      </div>
@@ -46,21 +46,21 @@
                  <!--课程大纲-->
                 <chapter :courseId="courseId" v-if="navindex==0" :role="role" :chapters="courseChapters" :isHasData="isHasData"></chapter>
 
-                
-               
-                
+
+
+
                 <!--课程实验-->
                 <experiment v-if="navindex==1" :role="role"></experiment>
-                
+
                 <!--课程课件-->
                 <courseware v-if="navindex==2" :role="role"></courseware>
 
-             
-  
-                
+
+
+
             </div>
 
-       
+
         </div>
     </div>
 </template>
@@ -83,13 +83,13 @@ export default {
 
            navindex:0,
            menu:[
-               {name:'课程大纲'},     
+               {name:'课程大纲'},
                {name:'课程实验'},
                {name:'课程课件'},
             ],
 
            picurl:'',
-           
+
             startTime:'',//课程开始时间
             endTime:'',//课程结束时间
               // 开始日期 :picker-options 中引用
@@ -111,7 +111,7 @@ export default {
     components:{chapter,experiment,courseware},
     created(){
         let that = this;
-      
+
         that.courseId = this.$route.query.courseId
         that.course = 1;
          if(sessionStorage.getItem('slt_Experiment') !=null &&　sessionStorage.getItem('slt_Experiment') == 1){
@@ -119,7 +119,7 @@ export default {
             that.$store.commit("updateStudentNavindex",1);
         }
        that.navindex = that.$store.state.studentNavindex;
-      
+
     },
      beforeDestroy(){
         let that = this;
@@ -136,7 +136,7 @@ export default {
             obj.course_id = that.courseId
             getCourseById(obj).then(res=> {
                 if(res.code==200){
-                  console.log(res.data)
+                  //console.log(res.data)
                     that.coursrName = res.data.name;
                     that.chapter_number = res.data.chapter_number
                     that.section_number = res.data.small_section_number;
@@ -159,16 +159,16 @@ export default {
                 }
             })
         },
-        
+
          //章节下拉显示添加参数
         addParamShow(array){
-             array.sort(this.compare('order')) 
+             array.sort(this.compare('order'))
              for(var i=0;i<array.length;i++){
-                this.$set(array[i], 'show', false); 
-                array[i].sections.sort(this.compare('order'))  
+                this.$set(array[i], 'show', false);
+                array[i].sections.sort(this.compare('order'))
                 for(var j=0;j<array[i].sections.length;j++){
                     this.$set(array[i].sections[j], 'show', false);
-                    array[i].sections[j].small_sections.sort(this.compare('order')) 
+                    array[i].sections[j].small_sections.sort(this.compare('order'))
 
                 }
             }
@@ -211,9 +211,9 @@ export default {
         back(){
             //返回课堂管理
             let that = this;
-            
+
             that.$router.push({path:'/student'}).catch((err)=>{
-                console.log(err)
+                //console.log(err)
             })
         },
 
@@ -225,19 +225,19 @@ export default {
             sessionStorage.setItem("store",JSON.stringify(this.$store.state))
           that.showStudentList = false
         },
-       
+
 
         //学生选择确认
         sureStudent(){
           let that = this;
           that.showStudentList = false
-          console.log('选择学生确认')
-          
+          //console.log('选择学生确认')
+
         },
         //学生列表返回班级列表
         backClass(){
           this.showStudentList = false;
-       
+
         },
         //班级选择确认
         sureCheckClass(){
@@ -246,7 +246,7 @@ export default {
 
     },
     filters: {
-  
+
       }
 }
 </script>

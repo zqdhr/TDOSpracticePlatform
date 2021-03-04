@@ -233,13 +233,13 @@ export default {
       handleCurrentChange(val){
         let that = this;
 
-        console.log(`当前页 ${val} 条`);
+        //console.log(`当前页 ${val} 条`);
         that.getRunExperiment(10,val);
       },
         handleOnlineCurrentChange(val){
             let that = this;
           that.searchUserOnline(10,val);
-            console.log(`当前页 ${val} 条`);
+            //console.log(`当前页 ${val} 条`);
         },
     },
     mounted() {
