@@ -33,7 +33,7 @@
                                     </div>
                                  </el-scrollbar>
                                 <!--如果状态已开课之后就不可以在修改，按钮不显示-->
-                         
+
                                 <div class="btnbox">
                                     <a class="btnDefault pointer btn-course" @click="type == 1?sure_newCourse=true:show_dialog_file = true" v-if="showopenClass()">{{type == 0?"确认备课":"确认开课"}}</a>
                                 </div>
@@ -242,11 +242,11 @@ export default {
             that.$store.commit("updateTeacherNavindex",3);
         }
         that.navindex = that.$store.state.teacherNavindex;
-      
+
     },
     beforeDestroy(){
         let that = this;
-        that.$store.commit("updateTeacherNavindex",0); 
+        that.$store.commit("updateTeacherNavindex",0);
 
     },
     mounted(){
@@ -261,7 +261,7 @@ export default {
         }else if(that.backNum == 2){
           that.type = 1
         }
-      
+
 
 
     },
@@ -317,7 +317,7 @@ export default {
           let that = this;
           if (that.editValue=='') {
               return that.$toast('请输入课程名称',2000)
-              
+
           }
           let obj = {}
           obj.course_id = this.$route.query.courseId
@@ -345,6 +345,13 @@ export default {
             obj.status = 1;
             if (that.time == "暂无设置时间") {
                 return that.$toast("请先设置开课时间", 3000);
+            }
+
+            let dates1 = new Date(that.endTime);
+            let dates2 = new Date();
+
+            if (dates1 < dates2) {
+              return that.$toast("该课程结束时间不能小于当前时间", 3000);
             }
 
             if (that.numbers == 0) {
@@ -554,7 +561,7 @@ export default {
       checkedClass(){
         let that = this;
         //classesList已经选中的班级     //班级列表classList
-       
+
         for (let i=0; i<that.classList.length; i++) {
              that.$set(that.classList[i], 'checked',0)
              that.$set(that.classList[i],'user_id_list',[])
@@ -564,7 +571,7 @@ export default {
                     if(that.classesList[j].completed){
                     that.$set(that.classList[i], 'checked',1)
                     that.$set(that.classList[i],'user_id_list',[])
-                       
+
                     }else{
                     that.$set(that.classList[i], 'checked',2)
                         let obj = {};
@@ -572,7 +579,7 @@ export default {
                         obj.name = that.classList[i].name;
                         obj.user_id_list = that.classesList[j].user_id_list;
                         that.$set(that.classList[i],'user_id_list',that.classesList[j].user_id_list);
-                       
+
                     }
 
 
@@ -582,7 +589,7 @@ export default {
         }
 
         console.log(that.classList)
-    
+
 
       },
 
@@ -592,9 +599,9 @@ export default {
             return true
         }else{
             if (that.status==0) {
-             return true   
+             return true
             }else {
-             return false    
+             return false
             }
         }
       },
@@ -614,7 +621,7 @@ export default {
          let that = this
         let index = params[1]
         let checked = params[2];
-        
+
         //console.log(params);
         if(checked==0){
            that.$set(that.classList[index], 'checked',1)
@@ -622,7 +629,7 @@ export default {
         }else{
            that.$set(that.classList[index], 'checked',0)
            that.$set(that.classList[index], 'user_id_list',[])
-        }   
+        }
      }
 
 
