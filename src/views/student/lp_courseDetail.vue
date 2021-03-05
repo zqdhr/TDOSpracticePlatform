@@ -253,5 +253,5 @@ export default {
 
 <style lang="less" scoped>
 @import url(../../assets/less/teacher.less);
-.content_el-scrollbar{height:50%;}
+.content_el-scrollbar{height:110px;}
 </style>
