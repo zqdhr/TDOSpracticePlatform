@@ -159,7 +159,7 @@ var findAllByCategoryId = function(data){
 
 //管理员查询分类下的实验
 var findAllExperimentByCategoryId = function(data){
-	return axios.get('/findSelectedExperimentByCategory?f_category_id='+data.f_category_id+'&c_category_id='+data.c_category_id+'&section_id='+data.section_id+'&name='+data.name+'&perPage='+data.perPage+'&page='+data.page)
+	return axios.get('/findSelectedExperimentByCategory?f_category_id='+data.f_category_id+'&c_category_id='+data.c_category_id+'&section_id='+data.section_id+'&name='+data.name+'&perPage='+data.perPage+'&page='+data.page+'&type='+data.type)
 }
 
 //管理员查询课件库所有的课件
@@ -231,7 +231,7 @@ var deleteQuestionBackById = function(data){
 
 //查询实验库列表
 var findExperiment = function(data){
-	return axios.get('/findExperimentByCategory?category_id='+data.category_id+'&name='+data.name+'&perPage='+data.perPage+'&page='+data.page)
+	return axios.get('/findExperimentByCategory?category_id='+data.category_id+'&name='+data.name+'&perPage='+data.perPage+'&page='+data.page+'&type='+data.type)
 }
 
 //教师获取作业列表
@@ -255,7 +255,7 @@ var deleteExperiment =function(data){
 
 //查询课程下的实验
 var findAllByType =function(data){
-	return axios.get('/findAllByType?id='+data.id+ '&type=' + data.type+ '&perPage=' + data.perPage+ '&page=' + data.page)
+	return axios.get('/findAllByType?id='+data.id+ '&type=' + data.type+ '&perPage=' + data.perPage+ '&page=' + data.page+'&experiment_type='+data.experiment_type)
 }
 //上传文件
 var upload = function(data){
@@ -398,7 +398,7 @@ var stduentSubmitHomework = function(data){
 }
 //查询实验报告列表
 var findByExperimentReportAll = function(data){
-	return axios.get('/findByExperimentReportAll?course_id='+data.course_id+'&user_id='+data.user_id+'&status='+data.status+'&isCorrect='+data.isCorrect+'&name='+data.name+'&startTime='+data.startTime+'&endTime='+data.endTime+'&perPage=' + data.perPage+ '&page=' +data.page)
+	return axios.get('/findByExperimentReportAll?course_id='+data.course_id+'&ownerId='+data.ownerId+'&status='+data.status+'&isCorrect='+data.isCorrect+'&name='+data.name+'&startTime='+data.startTime+'&endTime='+data.endTime+'&perPage=' + data.perPage+ '&page=' +data.page)
 }
 //学生端提交实验报告和教师端批阅
 var updateExperimentReport = function(data){

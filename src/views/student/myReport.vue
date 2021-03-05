@@ -420,7 +420,7 @@ export default {
             obj.user_id = sessionStorage.getItem("userId")
             findExperimentReportByExperimentAndUserId(obj).then(res=>{
                 if (res.code==200) {
-                    console.log(res.data)
+                    //console.log(res.data)
                     that.yourContent = res.data.info
                 } else {
                      that.$toast(res.message,3000)
@@ -435,7 +435,7 @@ export default {
             obj.experiment_id = that.singleData.experiment_id
             obj.user_id = sessionStorage.getItem("userId")
             obj.status=1
-            console.log(obj)
+            //console.log(obj)
             updateExperimentReport(obj).then(res=>{
                 if (res.code==200) {
                     that.findByExperimentReportAll(1)

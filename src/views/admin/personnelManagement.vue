@@ -48,6 +48,7 @@
               autocomplete="off"
               v-model="searchText"
               v-emoji
+              @keyup.enter="searchByIdOrName"
             />
             <a class="searchBtn pointer" @click="searchByIdOrName"></a>
           </div>
@@ -380,6 +381,8 @@ export default {
       //表示选择的是学生
       let that = this;
       that.className = "";
+      that.curPage = 1;
+      that.searchText = '';
       if (val == 2) {
         that.inplaceholder = "请输入姓名和学号";
         that.searchUser(2, "", "", 1, 10);

@@ -44,6 +44,7 @@
                 autocomplete="off"
                 v-model="searchText"
                 v-emoji
+                @keyup.enter="student_getJobList(1)"
               />
               <a
                 class="searchBtn pointer"
@@ -54,6 +55,8 @@
         </div>
       </div>
     </div>
+    <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
+    <template v-if="hasData">
     <div class="container">
       <div class="tea_list">
         <ul class="tab_box">
@@ -127,7 +130,7 @@
         </div>
       </div>
     </div>
-
+    </template>
     <!--点击确定按钮弹出确认框-->
     <el-dialog :visible.sync="isSubmitJob" width="600px">
       <div slot="title" class="dialog_header">警告!</div>
@@ -240,6 +243,7 @@
   </div>
 </template>
 <script>
+import noData from '@/components/noData.vue'
 import {
   student_getCourseList,
   student_getJobList,
@@ -287,6 +291,9 @@ export default {
       curStatus: 0, //0-->未提交可编辑   1-->已提交未批改   2-->已提交已批改
       totalScore: 0, //题目总分
       momentJob: {},
+      noDataType:1,  //没有数据展示的样式
+      dataMess:'当前暂无作业',
+      hasData:false,
     };
   },
   filters: {
@@ -306,7 +313,7 @@ export default {
     let that = this;
     that.pic_Url = that.$store.state.pic_Url;
   },
-
+  components:{noData},
   methods: {
     //获取学生作业
     student_getJobList(val) {
@@ -332,6 +339,7 @@ export default {
               that.searchText = "";
             }
             that.totalNum = res.data.total;
+            that.hasData=res.data.list.length==0?false:true
             that.jobList = res.data.list;
             console.log(JSON.stringify(res));
           } else {
@@ -578,7 +586,6 @@ export default {
           }
         })
         .catch((ero) => {
-          alert(JSON.stringify(ero));
         });
     },
   },

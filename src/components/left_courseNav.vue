@@ -7,7 +7,7 @@
                   <div class="p-name" :class="{'arrow':!item.show,'arrow_up':item.show}" @click="showSection(item,item.show,item.id)">
                       <p class="textline1">{{index+1}}、{{item.name}}</p>
                  </div>
-                   
+
                     <el-collapse-transition>
                         <ul class="children_ul" v-show="item.show">
                             <li v-for="(iitem,iindex) in item.sections" :key="iindex" class="pointer">
@@ -23,12 +23,12 @@
                                     </li>
                                 </ul>
                                </el-collapse-transition>
-                                
+
                             </li>
                         </ul>
                    </el-collapse-transition>
-                 
-              </li>       
+
+              </li>
            </ul>
         </el-scrollbar>
     </div>
@@ -43,8 +43,8 @@ export default {
             sectionId:'',//当前选中的节id
             chapters: [
             ]
-           
-       
+
+
         }
     },
     props:{
@@ -67,7 +67,7 @@ export default {
                     that.courseName = res.data.name;
                     res.data.chapters.sort(this.compare1('order'))
                     that.chapters = res.data.chapters;
-                    console.log(that.chapters)
+                    //console.log(that.chapters)
                 }else{
                     this.$toast(res.message,2000)
                 }
@@ -90,7 +90,7 @@ export default {
                 for(var j=0;j<that.chapters[i].sections.length;j++){
                     this.$set(that.chapters[i].sections[j], 'show', false)
                 }
-               
+
             }
         },
 
@@ -108,7 +108,7 @@ export default {
             }
             that.$set(item,'show',!show)
             that.sectionId = '';
-            
+
             this.$emit('getData', {cindex:cid,sindex:''})
         },
 
@@ -116,12 +116,12 @@ export default {
         showSubsection(index,obj,show,cid,sid){
             let that = this;
             let temp =that.chapters[index].sections
-            that.sectionId = sid            
+            that.sectionId = sid
             that.$set(obj,'show',!show)
             this.$emit('getData', {cindex:cid,sindex:sid})
-            
+
         },
-       
+
     }
 }
 </script>
@@ -133,13 +133,13 @@ export default {
     position: absolute;width: 320px; background: @background; height: 100%;
     .p-courseName{font-size: 22px; color:@basecolor;text-align: center; padding: 20px 10px;}
     .p-name{padding:0  40px 0 10px ;font-size:20px; color: @fontColor; cursor: pointer; line-height: 50px;
-      position: relative; 
+      position: relative;
     }
     .p-name.arrow{background: url(../assets/img/n_arrow_d.png) right 20px center no-repeat;}
     .p-name.arrow_up{background:@basecolor url(../assets/img/n_arrow_u.png) right 20px center no-repeat; color:#fff;}
     .children_ul{
-        
-     
+
+
         .children_name{
             font-size: 16px;color:@tabcolor;padding: 0 20px 0 30px;line-height: 50px;border-bottom:1px solid @border;
            // background: url(../assets/img/n_arrow_d.png) right 20px center no-repeat;
@@ -162,7 +162,7 @@ export default {
         li{background: @dialog_nav;}
         .subSection_name{height: 40px; line-height: 40px; padding-left: 50px; padding-right: 20px;color:@fontColor1;}
     }
-    
+
 
 }
 

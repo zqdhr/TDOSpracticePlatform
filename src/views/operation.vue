@@ -5,10 +5,11 @@
             <input class="i-in" placeholder="请输入端口如：8080" v-model="port"/>
             <a class="pointer btnSure" @click="sureContact">确定</a>
         </div>
+
         <xterm :socketURI="socketURI" ref="xterm" v-if="socketURI!=''"></xterm> 
-        <!--<iframe src="http://192.168.1.133:6080/" style="width:100%; height:100%"/>-->
+
     </div>
-    
+
 </template>
 <script>
  import xterm from '@/components/Xterminal1.vue'
@@ -27,8 +28,8 @@ export default {
         sureContact(){
             let that = this;
             that.socketURI = 'ws://'+that.ip+':'+that.port+'/terminals/'
-            console.log(that.socketURI )
-           
+            //console.log(that.socketURI )
+
             //that.$refs.xterm.initSocket();
         }
     }

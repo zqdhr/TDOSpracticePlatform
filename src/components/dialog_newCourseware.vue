@@ -479,7 +479,6 @@ export default {
     handleCurrentChange1(val) {
       let that = this
       console.log(`当前页: ${val}`);
-      alert(that.kind)
       that.findCourseWareAll(that.perPage, val, that.kind, that.type, that.searchText, that.category_id, that.cindex, that.sindex,that.c_category_id);
     },
     //数组新增checked元素

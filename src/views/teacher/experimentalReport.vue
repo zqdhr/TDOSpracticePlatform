@@ -5,7 +5,7 @@
                 <div class="clearfix">
                     <div class="fl">
                              <div class="sel-box" >
-                          <el-select v-model="state" placeholder="请选择状态" 
+                          <el-select v-model="state" placeholder="请选择状态"
                           @change="changeState"
                           >
                                 <el-option
@@ -17,9 +17,9 @@
                             </el-select>
                        </div>
 
-                       
+
                        <!-- <div class="sel-box">
-                          <el-select v-model="className" value-key="id" placeholder="请选择班级" 
+                          <el-select v-model="className" value-key="id" placeholder="请选择班级"
                           @change="changeClass"
                           >
                                 <el-option
@@ -29,7 +29,7 @@
                                 :value="item">
                                 </el-option>
                             </el-select>
-                         
+
                        </div> -->
                         <el-date-picker
                             class="pageTab_date"
@@ -47,7 +47,7 @@
                             >
                         </el-date-picker>
                        <div class="sel-box">
-                          <el-select v-model="level1Name" placeholder="课程" 
+                          <el-select v-model="level1Name" placeholder="课程"
                           @change="changeLevel1"
                           >
                                 <el-option
@@ -59,7 +59,7 @@
                             </el-select>
                        </div>
                         <div class="sel-box" v-if="level2List.length>0">
-                          <el-select v-model="level2Name" placeholder="章" 
+                          <el-select v-model="level2Name" placeholder="章"
                           @change="changeLevel2"
                           >
                                 <el-option
@@ -71,7 +71,7 @@
                             </el-select>
                        </div>
                        <div class="sel-box" v-if="level3List.length>0">
-                          <el-select v-model="level3Name" placeholder="节" 
+                          <el-select v-model="level3Name" placeholder="节"
                           @change="changeLevel3"
                           >
                                 <el-option
@@ -84,7 +84,7 @@
                        </div>
                     </div>
                     <div class="fr">
-                       <div class="d-serach"> 
+                       <div class="d-serach">
                             <input :placeholder="inplaceholder"  v-emoji v-model="searchTx" type="text" autocomplete="off"  @keyup.enter="doSearch"/>
                             <a class="searchBtn pointer" @click="doSearch"></a>
                         </div>
@@ -115,7 +115,7 @@
                      <div class="d3 d28">
                         <div class="cell">提交时间：{{item.submit_at}}</div>
                      </div>
-                     <div class="d4 d12"> 
+                     <div class="d4 d12">
                         <div class="cell">{{item.isCorrect==0?'待批阅':'已批阅'}}</div>
                      </div>
                      <div class="d5 d13">
@@ -157,7 +157,7 @@
                 </li>
             </ul>
         </div>
-       
+
         </el-dialog>
 
         <!--实验报告批阅-->
@@ -170,13 +170,13 @@
                 <div class="pic">
                     <img src=""/>
                 </div>
-               
+
             </div>
             <div class="report_detail_btnbox" v-if="isReport_num==1">
                    <div class="din">
-                       <el-input 
-                       placeholder="请输入分数" 
-                       v-model="source" 
+                       <el-input
+                       placeholder="请输入分数"
+                       v-model="source"
                        style="text-align:center"
                        @input="changeScore"
                         oninput="value=value.replace(/[^\d]/g, '')" /></div>
@@ -193,16 +193,16 @@ export default {
       return{
         userList:'张三，李四，王龙，李明',
         perPage: 10,//用户列表每页条数
-        curPage:1, 
+        curPage:1,
         jobList:[
-           
+
         ],
         singleData:{},//存储单个实验报告数据
         classList:[//班级选择列表
-            
+
         ],
         pickerOptions: {
-          
+
         },
         value2: '',
         className:'',//选择的班级名称
@@ -228,7 +228,7 @@ export default {
 
         level2List:[],//章节列表
         level2Name:'',//章节名称
-        
+
         level3List:[],//小节列表
         level3Name:'',//小节名称
 
@@ -243,7 +243,7 @@ export default {
         timeend:'',//筛选结束时间
         noDataType:1,  //没有数据展示的样式
         dataMess:'当前暂无实验报告',
-        hasData:true,
+        hasData:false,
         total:0,
         yourContent:''
       }
@@ -263,18 +263,18 @@ export default {
     created(){
         this.getCourseListByUserId()
         this.findByExperimentReportAll(1)
-        
+
     },
     components:{noData},
     methods:{
-      
+
         //底部分页
         handleCurrentChange(val) {
         let that = this
         that.findByExperimentReportAll(val)
         console.log(`当前页: ${val}`);
         },
-        //选择班级 
+        //选择班级
         changeClass(val){
             let that = this;
             that.classId = val.id
@@ -285,8 +285,8 @@ export default {
             that.level3List = []
             that.level3Name=''
             that.getAdminCourseByClassId()
-            
-             console.log(val);  
+
+             console.log(val);
              console.log('选择班级'+that.className+that.classId)
         },
         //选择状态
@@ -311,7 +311,7 @@ export default {
             //         }else{
             //              that.level2List = []
             //         }
-                    
+
             //     }
             // }
             that.findByExperimentReportAll(1)
@@ -329,7 +329,7 @@ export default {
                     }else{
                          that.level3List = []
                     }
-                    
+
                 }
             }
              console.log('选择章'+val)
@@ -357,7 +357,7 @@ export default {
                 that.score = 100;
                 return that.$toast("分数不能大于100", 3000);
             }
-           
+
     },
         //选择日期
         changeDate(val){
@@ -369,9 +369,9 @@ export default {
                 that.timestart ='';
                 that.timeend = '';
             }
- 
+
             that.findByExperimentReportAll(1)
-            console.log(val) 
+            console.log(val)
         },
         //获取班级列表
         getClassList(){
@@ -385,7 +385,7 @@ export default {
                         that.classId = that.classList[0].id
                         that.getAdminCourseByClassId()
                     }
-              
+
                 }else{
                     that.$toast(res.message,3000)
                 }
@@ -397,7 +397,7 @@ export default {
             let obj={}
             obj.course_id = that.level1Name
             obj.status=1
-            obj.user_id=sessionStorage.getItem("userId")
+            obj.ownerId=sessionStorage.getItem("userId")
             obj.isCorrect = that.state
             obj.name = that.searchTx
             obj.startTime = that.timestart
@@ -428,12 +428,12 @@ export default {
                 if(res.code==200){
                     console.log(res.data)
                     that.course = res.data.list
-                    
+
                 }else{
                     that.$toast(res.message,3000)
                 }
-            })   
-        
+            })
+
         },
         //查看实验报告
         findExperimentReportByExperimentAndUserId(item){
@@ -474,7 +474,7 @@ export default {
             obj.user_id = that.singleData.user_id
             obj.score= that.source
             obj.isCorrect=1
-            console.log(obj)
+            //console.log(obj)
             updateExperimentReport(obj).then(res=>{
                 if (res.code==200) {
                     that.findByExperimentReportAll(1)
@@ -482,7 +482,7 @@ export default {
                     that.$toast(res.message,3000)
                 }
             })
-           
+
         }
 
     }
@@ -493,13 +493,13 @@ export default {
 .reportMain{padding:20px 20px 40px 20px;
     border: 1px solid @border;
     .borderRadius(5px,5px,5px,5px);
-    -moz-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
+    -moz-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04);
     -webkit-box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04);
-    box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04); 
+    box-shadow: 0px 5px 18px 0px rgba(0, 0, 0, 0.04);
     .ptext{font-size:18px; color:#333;}
     .pic{width:100%; margin-top: 20px;}
     .pic img{width:100%}
-    
+
 }.report_detail_btnbox{
     text-align: center;padding-top:20px;
     .din{width: 150px;display: inline-block; vertical-align:middle; text-align: center;}

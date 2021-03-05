@@ -216,7 +216,7 @@ export default {
       let obj = {};
       obj.user_id_list = list;
       obj.password = that.password;
-      console.log(JSON.stringify(obj))
+      //console.log(JSON.stringify(obj))
       updateUserPassword(JSON.stringify(obj)).then(res=>{
         if(res.code==200){
            that.$toast("密码已修改",2000)
@@ -230,7 +230,7 @@ export default {
     //根据登录的账号显示对应的用户信息
     getUserInfo(){
       let that = this
-      console.log(sessionStorage.getItem('p_p-authority'))
+      //console.log(sessionStorage.getItem('p_p-authority'))
       if (sessionStorage.getItem('p_p-authority')==0) {
         that.userinfo=sessionStorage.getItem('userName')+'(学号：'+sessionStorage.getItem('userId')+')'
       }else {

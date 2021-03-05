@@ -137,7 +137,7 @@ export default {
           that.i_customClass = ''
           that.findChildCategory(val)
           that.findExperiment(1)
-          console.log(that.customClass)
+          //console.log(that.customClass)
 
         },
         //自定义分类
@@ -155,7 +155,7 @@ export default {
         handleCurrentChange(val) {
         let that = this;
         that.findExperiment(val)
-        console.log(`当前页: ${val}`);
+        //console.log(`当前页: ${val}`);
         },
         //删除前获取实验id
         deleteExper(experId){
@@ -174,7 +174,7 @@ export default {
                 if(res.code==200){
                    that.findExperiment(1)
                 }else{
-                   console.log(res.message)
+                   //console.log(res.message)
                    that.$toast(res.message,3000)
                 }
             })
@@ -236,9 +236,10 @@ export default {
           obj.name= that.searchTx
           obj.perPage =that.perPage
           obj.page = page
+          obj.type=0
           findExperiment(obj).then(res=> {
                 if(res.code==200){
-                   console.log(res.data)
+                   //console.log(res.data)
                    that.experimentList  =res.data.list
                    res.data.total==0 ? that.isHasData = false :that.isHasData = true
                    for (let index = 0; index <  that.experimentList.length; index++) {

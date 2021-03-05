@@ -29,6 +29,7 @@
                 autocomplete="off"
                 v-model="searchRemark"
                 v-emoji
+                @keyup.enter="getNote(searchRemark)"
               />
               <a class="searchBtn pointer" @click="curPage =1, getNote(searchRemark)"></a>
             </div>
@@ -36,6 +37,8 @@
         </div>
       </div>
     </div>
+    <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
+    <template v-if="hasData">
     <div class="container">
       <div class="notes_list">
         <ul class="ul-notes">
@@ -84,7 +87,7 @@
         </div>
       </div>
     </div>
-
+    </template>
     <!--是否要删除-->
     <el-dialog :visible.sync="isDelete" width="600px">
       <div slot="title" class="dialog_header">警告!</div>
@@ -230,7 +233,7 @@ import { videoPlayer } from "vue-video-player";
 
 import "videojs-flash"; // 如果是直播或者是视频流，注意需要引入这个模块
 import "video.js/dist/video.js";
-
+import noData from '@/components/noData.vue'
 import {
   student_getCourseList,
   getStudentsNotes,
@@ -298,9 +301,12 @@ export default {
       jumpPage: 0,
       jumpTime: 0,
       momentMod: {},
+      noDataType:1,  //没有数据展示的样式
+      dataMess:'当前暂无笔记',
+      hasData:false,
     };
   },
-  components: { videoPlayer, pdf },
+  components: { videoPlayer, pdf,noData },
   filters: {
     catIndex: function (val) {
       let str = "";
@@ -416,7 +422,7 @@ export default {
             }
             that.total = res.data.total;
             that.notesList = res.data.list;
-
+            that.hasData=res.data.list.length==0?false:true
             // alert(JSON.stringify(res));
           } else {
             that.$toast(res.message, 3000);
