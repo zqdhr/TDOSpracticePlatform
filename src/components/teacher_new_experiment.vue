@@ -6,7 +6,7 @@
       :visible.sync="isnewFilter"
       :width="isnewFilterType == 1 ? '1100px' : '600px'"
       :class="{ newCourseware_dialog: isnewFilterType == 0 }"
-      @close="searchTx='',parent_id='',childrenId='',curPage=1"
+      @close="searchTx='',parentId='',childrenId='',curPage=1"
     >
       <!--实验库选择-->
       <template v-if="isnewFilterType == 1">
@@ -14,11 +14,11 @@
         <div class="pageTab clearfix nopaddingBottom">
           <div class="fl">
             <div class="sel-box">
-              <el-select v-model="parent_id" placeholder="自定义分类" @change="selectType" >
+              <el-select v-model="parentId" placeholder="自定义分类" @change="selectType" >
                 <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id" > </el-option>
               </el-select>
             </div>
-            <div class="sel-box" v-if="parent_id!=''">
+            <div class="sel-box" v-if="parentId!=''">
               <el-select v-model="childrenId" placeholder="自定义分类" @change="selectType1" >
                 <el-option v-for="item in options1" :key="item.id" :label="item.name" :value="item.id" > </el-option>
               </el-select>
