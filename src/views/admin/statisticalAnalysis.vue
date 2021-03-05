@@ -191,7 +191,7 @@ export default {
         /*实验人数列表*/
         runExperiment(){
             let that = this;
-            that.getRunExperiment(10,0);
+            that.getRunExperiment(10,1);
         },
         searchUserOnline(per_page,page){
             let that = this;
@@ -238,7 +238,7 @@ export default {
       },
         handleOnlineCurrentChange(val){
             let that = this;
-          that.searchUserOnline(10,val);
+          that.searchUserOnline(10,val-1);
             //console.log(`当前页 ${val} 条`);
         },
     },
