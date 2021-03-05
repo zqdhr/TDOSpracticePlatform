@@ -179,7 +179,8 @@ export default {
       isDelete:false,//是否删除弹出框
       Mirroring:{//新增镜像对象
           name:'',
-          introduction:''
+          introduction:'',
+          url:''
       },
       jwt:'',
       uploadUrl:'',
@@ -364,11 +365,6 @@ export default {
 
       if(that.kind ==-1 || that.kind ==''){
          return that.$toast('请选择镜像类型',2000)
-      }
-
-
-      if(that.Mirroring.url==''){
-         return that.$toast('请输入镜像类型',2000)
       }
       that.show_Add = false
       that.showLoading = true
