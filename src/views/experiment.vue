@@ -12,7 +12,7 @@
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen && authority==0 " @click="isEdit=true">
+                <a class="a-opera pointer" v-if="isOpen  " @click="isEdit=true">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -269,7 +269,6 @@ export default {
         that.userid = that.$route.query.userid
         that.experimentId=that.$route.query.experimentId
         that.courseId =that.authority==0?that.$route.query.courseId:''
-        console.log('课程id:'+that.courseId)
         that.findAllByType(that.experimentId)
         that.showtime =  that.userid==sessionStorage.getItem("userId")?true:false
         if (that.authority==0) {
@@ -280,7 +279,6 @@ export default {
     methods:{
         // vnc连接断开的回调函数
         disconnectedFromServer (msg) {
-          console.log(msg)
             if(msg.detail.clean){
                 // 根据 断开信息的msg.detail.clean 来判断是否可以重新连接
                 this.connectVnc(this.connect_url)
@@ -290,13 +288,11 @@ export default {
                      this.connectVnc(this.connect_url)
                 }
                this.connectNum=this.connectNum+1
-               console.log(this.connectNum)
             }
         },
         // 连接成功的回调函数
         connectedToServer(msg) {
              this.connectNum=0
-            console.log('success',msg)
         },
            //创建实验
         createContainers(userid,experimentId,courseId){
@@ -307,7 +303,6 @@ export default {
             obj.courseId = courseId
             createContainers(obj).then(res=>{
                 if (res.code==200) {
-                    console.log(res.data)
                     that.containers = res.data
 
                     if (that.containers!=null&& that.containers.length>0&&that.containers[0]!=null) {
@@ -344,7 +339,6 @@ export default {
             obj.experiment_type=0
             findAllByType(obj).then(res=>{
                 if (res.code==200) {
-                       console.log(res.data)
                     that.experiment = res.data
                    if(sessionStorage.getItem(that.userid+that.experimentId)!=undefined && sessionStorage.getItem(that.userid+that.experimentId)!=null){
                         let experiment_time = sessionStorage.getItem(that.userid+that.experimentId).split(':')
@@ -354,7 +348,6 @@ export default {
                     }else{
                         that.second= that.experiment.duration*60
                     }
-                     console.log(that.second)
                     that.formatSecToDate( that.second)
                     that.createContainers(that.userid,that.experimentId,that.courseId)
                 }else {
@@ -379,7 +372,6 @@ export default {
                 clearInterval(that.timeInterval)
                 that.timeInterval=null
                 sessionStorage.removeItem(that.userid+that.experimentId);
-                console.log('关闭')
                 that.remove=true
                 if (that.authority==0) {
                    //学生关闭实验
@@ -407,10 +399,8 @@ export default {
             that.isOpen = true
             obj.containerId = containerId
             obj.type = type
-              console.log(obj)
             execContainer(obj).then(res=>{
                 if (res.code==200) {
-                    console.log(res.data)
                     if(type==0){
                       that.createContainers(that.userid,that.experimentId,that.courseId)
 
@@ -421,7 +411,6 @@ export default {
                     }
                 } else {
                     that.$toast(res.message,3000)
-                    console.log(res.message)
                 }
             })
 
@@ -435,9 +424,7 @@ export default {
                 containerId.push( that.containers[index].containerId)
             }
             obj.containerIds = containerId
-            console.log(obj)
             removeContainers(obj).then(res=>{
-                  console.log('返回参数'+res)
                   that.remove=false
                   clearInterval(that.timeInterval)
 
@@ -457,7 +444,6 @@ export default {
             containerId.push(that.container.containerId)
             obj.containerIds = containerId
             removeContainers(obj).then(res=>{
-            console.log('返回参数'+res)
             that.restartContainers()
             })
 
@@ -482,7 +468,6 @@ export default {
             createAndRunContainers(obj).then(res=>{
             that.remove=false
             if (res.code==200) {
-                console.log(res.data)
                 that.getState()
                 for (let index = 0; index < that.containers.length; index++) {
                     if (that.containers[index].imageId==res.data.imageId) {
@@ -521,7 +506,6 @@ export default {
                  return that.$toast("已超过实验报告的最晚提交时间，不能提交报告",3000)
             }
 
-             console.log('当前时间：'+new Date().toLocaleDateString().replace(/\//g,'-')+'截至时间：'+endTime)
             if (that.yourContent=='') {
                return that.$toast("请输入实验报告内容",3000)
             }
@@ -536,7 +520,6 @@ export default {
             obj.experiment_id = that.experimentId
             obj.user_id = that.userid
             obj.info = that.yourContent
-            console.log(obj)
             insertExperimentRepor(obj).then(res=>{
                 if (res.code==200) {
                     that.$toast("实验报告上传成功",3000)
@@ -572,8 +555,6 @@ export default {
 
             //const url='ws://192.168.1.31:6901/vnc.html?password=123456&autoconnect=true'
             //const url ='ws://192.168.1.133:6080/'
-
-           console.log(uri)
 
 
 
@@ -717,13 +698,11 @@ export default {
             //const iframeBody = iframeHtml.document.getElementsByTagName('body')[0]
             //that.$refs.imageWrapper
 
-           console.log(document.getElementById('Screenshots'+that.virtualMachine))
             that.$nextTick(function(){
                 html2canvas(document.getElementById('Screenshots'+that.virtualMachine), opts).then((canvas) => {
                     var url = canvas.toDataURL('image/png')
                     that.dataURL = url
                     that.yourContent =that.yourContent+ '<p><img src="'+that.dataURL+'"/></p>'
-                    console.log(that.yourContent)
                 })
             })
         },
@@ -731,7 +710,6 @@ export default {
         //判断打开虚拟机
         openXuniji(item){
             let that = this
-            console.log(item)
             if (that.isOpen) {
                 if (item.url.indexOf("vnc.html")==-1) {
                      that.containerstate='1'
@@ -766,15 +744,13 @@ export default {
             let obj={}
             obj.containerId = that.container.containerId
             obj.fileName = that.editValue
-            console.log(obj)
             downloadCode(obj).then(res=>{
                 if (res.code==200) {
                     if (res.data!=null) {
-                        that.downloadfile(datob(res.data))                
+                        that.downloadfile(atob(res.data))                
                     }else {
                         that.$toast("输入的文件不存在",3000)
                     }
-                    console.log(res.data)
                 } else {
                     console.log(res.message)
                 }
@@ -808,7 +784,6 @@ export default {
                     
 
                     if (res.data!=null&& res.data.length>0&&res.data[0]!=null) {
-                        console.log(res.data[0].status)
                         if (res.data[0].status!=1) {
                             that.isFinish=true
                         }
@@ -840,7 +815,7 @@ export default {
             that.click_back()
         },
         downloadfile(data){
-            const blob = new Blob([], {type: "text/plain"})
+            const blob = new Blob([data], {type: "text/plain"})
             //const blob = new Blob([data], {type: 'audio/wav'})
             const a= document.createElement("a")
             a.href = URL.createObjectURL(blob)

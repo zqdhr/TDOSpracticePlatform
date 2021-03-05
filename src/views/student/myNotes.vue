@@ -459,14 +459,14 @@ export default {
 
     //底部分页
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
       let that = this;
       that.curPage = val;
       that.getNote("");
     },
     //选择班级
     changeClass(val) {
-      console.log("选择班级");
+      // console.log("选择班级");
     },
 
     //选择课程
@@ -492,7 +492,7 @@ export default {
           that.mess = "确定要删除当前选中的笔记吗？";
         }
       }
-      console.log(that.isShowCheck);
+      // console.log(that.isShowCheck);
     },
 
     //点击选中

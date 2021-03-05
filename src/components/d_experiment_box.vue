@@ -360,7 +360,7 @@ export default {
             let that = this
             let obj={}
 
-            console.log(that.endTime)
+            // console.log(that.endTime)
             if (that.reportinfo==''||that.reportinfo==null) {
                  return  that.$toast('请输入实验报告要求',2000)
             }
@@ -381,7 +381,7 @@ export default {
             obj.end_at = that.endTime
             obj.report_requirement = that.reportinfo
             that.isSet=false
-            console.log(obj)
+            // console.log(obj)
             updateExperiment(obj).then(res=>{
                 if (res.code==200) {
                     that.isdeleteStatus = '';
@@ -404,7 +404,7 @@ export default {
         },
          //底部分页
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            // console.log(`当前页: ${val}`);
             let that = this
             that.isdeleteStatus = '';
             if(that.sindex != "" && that.cindex != ''){
@@ -419,7 +419,7 @@ export default {
         click_new(){
             let that = this;
             that.sid = that.sindex;
-            console.log(that.cindex+'节'+that.sindex)
+            // console.log(that.cindex+'节'+that.sindex)
 
             that.$refs.newdialog.click_new(that.sid,that.count,that.sindex);
 
@@ -431,7 +431,7 @@ export default {
             }else {
                 that.endTime=''
             }
-            console.log(that.endTime)
+            // console.log(that.endTime)
             // alert(that.value2.length);
          },
          //查看实验详情
@@ -445,8 +445,8 @@ export default {
         },
         getData(data){
             let that = this;
-            console.log(data.cindex)
-            console.log(data.sindex)
+            // console.log(data.cindex)
+            // console.log(data.sindex)
             that.sindex = data.sindex;
             that.cindex = data.cindex;
             that.isdeleteStatus = '';
@@ -485,7 +485,7 @@ export default {
                  return that.$toast("该实验报告已设置过，无需再次设置", 3000);
             }
             that.isSet=true
-            console.log('课程详情'+that.course_info.end_at)
+            // console.log('课程详情'+that.course_info.end_at)
         },
     }
 }

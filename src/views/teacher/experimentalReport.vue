@@ -272,7 +272,7 @@ export default {
         handleCurrentChange(val) {
         let that = this
         that.findByExperimentReportAll(val)
-        console.log(`当前页: ${val}`);
+        // console.log(`当前页: ${val}`);
         },
         //选择班级
         changeClass(val){
@@ -286,12 +286,12 @@ export default {
             that.level3Name=''
             that.getAdminCourseByClassId()
 
-             console.log(val);
-             console.log('选择班级'+that.className+that.classId)
+            //  console.log(val);
+            //  console.log('选择班级'+that.className+that.classId)
         },
         //选择状态
         changeState(val){
-            console.log('选择状态')
+            // console.log('选择状态')
             let that = this
             that.value2=''
             that.timestart = ''
@@ -315,7 +315,7 @@ export default {
             //     }
             // }
             that.findByExperimentReportAll(1)
-            console.log('选择课程'+val)
+            // console.log('选择课程'+val)
         },
         //选择章节
         changeLevel2(val){
@@ -332,11 +332,11 @@ export default {
 
                 }
             }
-             console.log('选择章'+val)
+            //  console.log('选择章'+val)
         },
         //选择节
         changeLevel3(val){
-            console.log('选择节'+val)
+            // console.log('选择节'+val)
         },
         showDetail(num,item){
            let that = this;
@@ -371,7 +371,7 @@ export default {
             }
 
             that.findByExperimentReportAll(1)
-            console.log(val)
+            // console.log(val)
         },
         //获取班级列表
         getClassList(){
@@ -404,10 +404,10 @@ export default {
             obj.endTime = that.timeend
             obj.perPage=that.perPage
             obj.page = page
-            console.log(obj)
+            // console.log(obj)
             findByExperimentReportAll(obj).then(res=>{
                 if (res.code==200) {
-                    console.log(res.data)
+                    // console.log(res.data)
                     that.jobList = res.data.list
                     that.hasData=res.data.list.length==0?false:true
                     that.total=res.data.total
@@ -426,7 +426,7 @@ export default {
                obj.search = ''
              getCourseListByUserId(obj).then(res=> {
                 if(res.code==200){
-                    console.log(res.data)
+                    // console.log(res.data)
                     that.course = res.data.list
 
                 }else{
@@ -444,7 +444,7 @@ export default {
             obj.user_id = item.user_id
             findExperimentReportByExperimentAndUserId(obj).then(res=>{
                 if (res.code==200) {
-                    console.log(res.data)
+                    // console.log(res.data)
                     that.yourContent = res.data.info
                 } else {
                      that.$toast(res.message,3000)

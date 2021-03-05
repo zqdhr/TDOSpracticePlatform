@@ -308,8 +308,8 @@ export default {
     //课件所属分类选择
     handleChange(value) {
       let that = this
-      console.log(value)
-      console.log(value.length==1?value[0]:value[1]);
+      // console.log(value)
+      // console.log(value.length==1?value[0]:value[1]);
       if (value!=null&&value.length==2) {
         that.cateId = value.length==1?value[0]:value[1]
       }else {
@@ -330,7 +330,7 @@ export default {
       obj.chapter_id = chapter_id;
       obj.section_id = section_id;
       obj.c_category_id = c_category_id;
-      console.log(obj)
+      // console.log(obj)
       getCoursewareAll(obj).then((res) => {
         if (res.code == 200) {
           that.all_experimentList = res.data.list;
@@ -382,19 +382,19 @@ export default {
     //选择分类
     selectCate(val) {
       let that = this;
-      console.log("选择自定义分类1" + val);
+      // console.log("选择自定义分类1" + val);
       that.type = val == '2' ? '' : that.type;
     },
 
     //选择课件类型
     selectType(val) {
       let that = this;
-      console.log(val);
+      // console.log(val);
       that.kind = val;
     },
     searchCoerseWare(){
       let that = this;
-      console.log(that.searchText)
+      // console.log(that.searchText)
       that.kind = that.kind == '2' ? '' : that.kind;
       that.curPage=1
       that.findCourseWareAll(10, 1, that.kind, that.type, that.searchText, that.category_id, that.cindex, that.sindex,that.cateId);
@@ -430,7 +430,7 @@ export default {
           list.push(obj1);
         }
         obj.chapter_section_courseware_list = list
-        console.log(JSON.stringify(obj))
+        // console.log(JSON.stringify(obj))
         addChapterSectionCourseware(JSON.stringify(obj)).then(res => {
           if (res.code == 200) {
             alert("111")
@@ -444,7 +444,7 @@ export default {
           }
         })
       } else {
-        console.log("章新增课件")
+        // console.log("章新增课件")
         let obj = {};
         let list = [];
         for(let i = 0;i<that.chooseList.length;i++){
@@ -455,7 +455,7 @@ export default {
           list.push(obj1);
         }
         obj.chapter_section_courseware_list = list
-        console.log(JSON.stringify(obj))
+        // console.log(JSON.stringify(obj))
         addChapterSectionCourseware(JSON.stringify(obj)).then(res => {
           if (res.code == 200) {
             //alert("111")
@@ -472,13 +472,13 @@ export default {
     //弹窗关闭
     closeDialog() {
       let that = this;
-      console.log("ok");
+      // console.log("ok");
       //that.$emit('hidedialog')
     },
     //弹窗分页
     handleCurrentChange1(val) {
       let that = this
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
       that.findCourseWareAll(that.perPage, val, that.kind, that.type, that.searchText, that.category_id, that.cindex, that.sindex,that.c_category_id);
     },
     //数组新增checked元素
@@ -568,11 +568,11 @@ export default {
         if (newFile && oldFile && !newFile.active && oldFile.active) {
           //console.log('response', newFile.response)
           let response = newFile.response;
-          console.log(this.files)
+          // console.log(this.files)
 
           if (newFile.xhr) {
             //  Get the response status code
-            console.log("status", newFile.xhr.status);
+            // console.log("status", newFile.xhr.status);
           }
         }
       }
@@ -615,7 +615,7 @@ export default {
           addCourseware(JSON.stringify(obj)).then((resCourse) => {
             if (resCourse.code == 200) {
               //alert("新建成功");
-              console.log(resCourse.data.id)
+              // console.log(resCourse.data.id)
                   if (that.sindex !== '') {
                     //console.log("节新增课件")
                     alert("aaa"+that.sindex)
@@ -636,7 +636,7 @@ export default {
                       }
                     })
                   } else {
-                    console.log("章新增课件")
+                    // console.log("章新增课件")
                     let obj = {};
                     let list = [];
                     let ware = {};

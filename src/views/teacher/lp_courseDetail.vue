@@ -274,7 +274,7 @@ export default {
             obj.course_id = course_id;
             getCourseById(obj).then(res=> {
                 if(res.code==200){
-                    console.log(res.data)
+                    // console.log(res.data)
                     that.courseDetail =res.data
                     that.courseName = res.data.name
                     that.introduction = res.data.introduction
@@ -454,7 +454,7 @@ export default {
             obj.end = that.endTime;
             obj.status = '';
             obj.user_id_list = [];
-            console.log(JSON.stringify(obj))
+            // console.log(JSON.stringify(obj))
             modifyCourseStatus(JSON.stringify(obj)).then(res=> {
                 if(res.code==200){
                     that.reload();
@@ -588,7 +588,7 @@ export default {
 
         }
 
-        console.log(that.classList)
+        // console.log(that.classList)
 
 
       },

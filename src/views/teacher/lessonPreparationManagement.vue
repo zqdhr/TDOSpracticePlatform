@@ -118,7 +118,7 @@ export default {
             obj.page = that.curPage;
             obj.per_page = that.perPage;
             obj.search = that.searchTx
-            console.log(obj)
+            // console.log(obj)
             getCourseListByUserId(obj).then(res=> {
                 if(res.code==200){
                     that.courseList = res.data.list;
@@ -138,7 +138,7 @@ export default {
         },
         //底部分页
         handleCurrentChange(val) {
-           console.log(`当前页: ${val}`);
+        //    console.log(`当前页: ${val}`);
             let that = this;
             let obj = {};
             obj.user_id = sessionStorage.getItem("userId");
@@ -167,7 +167,7 @@ export default {
             let that = this
             that.$store.commit("updateNavindex", 1);
             that.$router.push({path:'/teacher/couseDetail',query:{back:this.$Base64.encode(2), courseId: id}}).catch((err)=>{
-                console.log(err)
+                // console.log(err)
             })
         },
         //归档管理弹出框确认

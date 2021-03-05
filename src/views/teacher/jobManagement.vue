@@ -325,7 +325,7 @@ export default {
       that.timeend = val[1];
       that.curPage = 1;
       that.getStudentJobList(2);
-      console.log(val);
+      // console.log(val);
       // alert(that.value2.length);
     },
     //底部分页
@@ -494,7 +494,7 @@ that.curPage = 1;
       obj.ownerId = sessionStorage.getItem("userId");
 
       // alert(JSON.stringify(obj));
-      console.log(obj);
+      // console.log(obj);
       getStudentJobList(obj)
         .then((res) => {
           // alert(JSON.stringify(res));

@@ -282,19 +282,19 @@ export default {
         handleCurrentChange(val) {
             let that = this
             that.findByExperimentReportAll(val)
-            console.log(`当前页: ${val}`);
+            // console.log(`当前页: ${val}`);
         },
         //选择班级
         changeClass(val){
             let that=this
             that.findByExperimentReportAll(1)
-            console.log('选择课程')
+            // console.log('选择课程')
         },
         //选择状态
         changeState(val){
             let that = this
             that.findByExperimentReportAll(1)
-            console.log('选择状态'+val)
+            // console.log('选择状态'+val)
         },
         //选择课程
         changeLevel1(val){
@@ -341,7 +341,7 @@ export default {
         },
         //选择节
         changeLevel3(val){
-            console.log('选择节')
+            // console.log('选择节')
         },
         onEditorReady(editor) { // 准备编辑器
         },
@@ -380,7 +380,7 @@ export default {
             obj.name=''
             student_getCourseList(obj).then(res=>{
                 if(res.code==200){
-                    console.log(res.data)
+                    // console.log(res.data)
                     that.classList = res.data.list
                 }else{
                      this.$toast(res.message, 3000);
@@ -398,10 +398,10 @@ export default {
             obj.name = that.searchTx
             obj.perPage=that.perPage
             obj.page = page
-            console.log(obj)
+            // console.log(obj)
             findStudentExperimentReport(obj).then(res=>{
                 if (res.code==200) {
-                    console.log(res.data)
+                    // console.log(res.data)
                     that.jobList = res.data.list
                     that.hasData=res.data.list.length==0?false:true
                     that.total = res.data.total

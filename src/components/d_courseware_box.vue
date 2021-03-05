@@ -488,7 +488,7 @@ export default {
       obj.type = type;
       obj.perPage = perPage;
       obj.page = page;
-      console.log(obj)
+      // console.log(obj)
       getCoursewareBySectionId(obj).then((res) => {
         if (res.code == 200) {
           that.count = res.data.total;
@@ -515,7 +515,7 @@ export default {
       let that = this;
       that.cindex = data.cindex;
       that.sindex = data.sindex;
-      console.log(that.sindex + that.cindex);
+      // console.log(that.sindex + that.cindex);
       that.cate = ''
       that.kind = ''
       that.type = ''
@@ -549,12 +549,12 @@ export default {
           val
         );
       }
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
     },
 
     //选择分类
     selectCate(val) {
-      console.log("分类" + val);
+      // console.log("分类" + val);
       let that = this;
       that.kind = val;
       if (that.sindex == "" && that.cindex == "") {
@@ -580,7 +580,7 @@ export default {
 
     //选择课件类型
     selectType(val) {
-      console.log("类型" + val);
+      // console.log("类型" + val);
       let that = this;
       that.typeware = val;
       if (that.sindex == "" && that.cindex == "") {
@@ -609,7 +609,7 @@ export default {
       let that = this;
       that.isDelete = true;
       that.isdeleteId = item.id;
-      console.log(item);
+      // console.log(item);
     },
     //删除弹出确认
     confirmDelete() {
@@ -677,7 +677,7 @@ export default {
     showDelete(){
       let that = this
 
-      console.log(sessionStorage.getItem('p_p-authority')+that.status+that.typeData)
+      // console.log(sessionStorage.getItem('p_p-authority')+that.status+that.typeData)
       if (sessionStorage.getItem('p_p-authority')==0) {
         // 学生直接没有删除按钮
         return false
@@ -705,7 +705,7 @@ export default {
      showAdd(){
       let that = this
 
-      console.log(sessionStorage.getItem('p_p-authority')+that.status+that.typeData)
+      // console.log(sessionStorage.getItem('p_p-authority')+that.status+that.typeData)
       if (sessionStorage.getItem('p_p-authority')==0) {
         // 学生直接没有删除按钮
         return false

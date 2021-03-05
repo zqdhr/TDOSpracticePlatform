@@ -341,7 +341,7 @@ export default {
             that.totalNum = res.data.total;
             that.hasData=res.data.list.length==0?false:true
             that.jobList = res.data.list;
-            console.log(JSON.stringify(res));
+            // console.log(JSON.stringify(res));
           } else {
             that.$toast(res.message, 3000);
           }
@@ -409,14 +409,14 @@ export default {
 
     //底部分页
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
       let that = this;
       that.curPage = val;
       that.student_getJobList(0);
     },
     //选择状态
     changeState(val) {
-      console.log("选择状态");
+      // console.log("选择状态");
       let that = this;
       that.curPage = 1;
       that.student_getJobList(0);
