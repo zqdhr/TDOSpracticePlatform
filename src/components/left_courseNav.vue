@@ -38,8 +38,8 @@ import {getCourseById} from '@/API/api';
 export default {
     data(){
         return{
-            courseName:'《节点的模拟运行课程》',
-            courseId:'36a81315-c928-430f-940a-af913743621b',
+            courseName:'',
+            courseId:'',
             sectionId:'',//当前选中的节id
             chapters: [
             ]

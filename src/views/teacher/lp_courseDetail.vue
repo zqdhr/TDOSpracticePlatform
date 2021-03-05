@@ -201,7 +201,7 @@ export default {
                {name:'课程作业'}
             ],
 
-           picurl:require('../../assets/pic/course.png'),
+           picurl:'',
 
             startTime:'',//课程开始时间
             endTime:'',//课程结束时间
