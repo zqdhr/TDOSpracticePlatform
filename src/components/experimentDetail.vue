@@ -46,10 +46,10 @@
                 <el-table
                 class="center-tab tab-userList"
                 :data="Imagelibraries"
-                
+
                 style="width: 100%"
                 >
-        
+
 
                 <el-table-column prop="name" label="名称" width="240">
                 </el-table-column>
@@ -63,22 +63,22 @@
                 <el-table-column prop="size" label="容量"> </el-table-column>
                 <el-table-column prop="introduction" label="简介" width="280">
                 </el-table-column>
-                
+
                 </el-table>
             </div>
          </div>
 
          <div class="info_main" v-if="activeIndex==3">
-            
+
             <div>
                 <p class="pt">实验报告需求：</p>
                 <p>{{experiment.report_requirement}}</p>
             </div>
-            
+
         </div>
 
         <div class="info_main" v-if="activeIndex==4">
-            
+
             <div>
                 <p class="pt">任务1：</p>
                 <p>介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本介绍文本</p>
@@ -89,9 +89,9 @@
             </div>
         </div>
 
-    </div>  
+    </div>
     </el-dialog>
-  </div>   
+  </div>
 </template>
 <script>
 import { findAllByType } from "@/API/api";
@@ -155,7 +155,7 @@ export default {
             obj.page=1
             findAllByType(obj).then(res=>{
                 if (res.code==200) {
-                    console.log(res.data)
+                    //console.log(res.data)
                     that.experiment = res.data
                     for(let i = 0;i<res.data.imagesinfo.length;i++){
                         res.data.imagesinfo[i].size = (res.data.imagesinfo[i].size/(1024 * 1024)).toFixed(2) + "MB"

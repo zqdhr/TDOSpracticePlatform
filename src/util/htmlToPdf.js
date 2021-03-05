@@ -13,7 +13,7 @@ export default{
        else{
          dd  = document.querySelector('.ql-editor')
        }
-     
+
     document.body.appendChild(dd.cloneNode(true));
     document.body.lastChild.classList.add("html_pdfdom")
     let pdfdom = document.querySelector('.html_pdfdom');
@@ -27,16 +27,16 @@ export default{
         allowTaint: true,
         dpi: 192,
         useCORS: true, // 如果截图的内容里有图片,解决文件跨域问题
-        scale:2,      
+        scale:2,
         height: pdfdom.scrollHeight ,
         width:pdfdom.offsetWidth,
         windowWidth:pdfdom.scrollWidth,
         windowHeight:pdfdom.scrollHeight,
         scrollX:0,
         scrollY:0
-        
+
       }).then(function (canvas) {
-        console.log(canvas)
+        //console.log(canvas)
         let contentWidth = canvas.width
         let contentHeight = canvas.height
         let pageHeight = contentWidth / 592.28 * 841.89
@@ -48,7 +48,7 @@ export default{
         //document.getElementsByTagName("body")[0].innerHTML = '<img src="'+pageData+'"/>'
         //删除元素
         document.body.removeChild(document.body.lastChild)
-        
+
         let PDF = new JsPDF('', 'pt', 'a4')
         if (leftHeight < pageHeight) {
           PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight)
@@ -64,9 +64,9 @@ export default{
         }
         PDF.save(title + '.pdf')
       })
-    
+
     },800);
-   
+
     }
 
   }

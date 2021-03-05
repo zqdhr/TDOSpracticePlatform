@@ -199,7 +199,7 @@ export default {
             obj.search = ''
              getCourseListByUserId(obj).then(res=> {
                 if(res.code==200){
-                    console.log(res.data)
+                    //console.log(res.data)
                     that.classList = res.data.list
                     //  if(that.classList.length>0){
                     //     that.className = that.classList[0].id

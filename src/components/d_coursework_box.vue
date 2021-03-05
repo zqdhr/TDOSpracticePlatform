@@ -538,7 +538,7 @@ export default {
             for (let j = 0; j < that.courseList.length; j++) {
               if (res.data.list[i].id == that.courseList[j].id) {
                 res.data.list[i].checked = true;
-                console.log(123);
+                //console.log(123);
               }
             }
           }

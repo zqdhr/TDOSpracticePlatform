@@ -107,7 +107,7 @@ export default {
             obj.per_page = per_page;
             obj.page = page;
             obj.search = search;
-            console.log(obj)
+            //console.log(obj)
 
             getAdminCourseList(obj).then(res=> {
                 if(res.code==200){
@@ -124,7 +124,7 @@ export default {
         },
         //底部分页
         handleCurrentChange(val) {
-           console.log(`当前页: ${val}`);
+           //console.log(`当前页: ${val}`);
             let that = this;
             let search = that.searchText;
             that.getAdminCourseList(10,val,search);

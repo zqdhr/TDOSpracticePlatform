@@ -39,7 +39,7 @@
           <el-table-column prop="type" label="镜像类型">
             <template slot-scope="scope">
               <span>{{
-                scope.row.kind == 1
+                scope.row.kind == 0
                   ? "命令行"
                   : "图形化界面"
               }}</span>
@@ -334,16 +334,16 @@ export default {
       }
       if (newFile && oldFile) {
         // update
-        console.log("update", newFile);
+        //console.log("update", newFile);
       }
       if (!newFile && oldFile) {
         // remove
-        console.log("remove", oldFile);
+        //console.log("remove", oldFile);
       }
     },
     //底部分页
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      //console.log(`当前页: ${val}`);
       let that = this;
       that.getImagequoteList(that.kind,that.searchText,val);
     },

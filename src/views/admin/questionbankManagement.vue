@@ -913,10 +913,10 @@ export default {
           obj.category_id = that.addCategoryItem[1];
         }
 
-        console.log(JSON.stringify(obj));
+        //console.log(JSON.stringify(obj));
 
         adminSubmitQuestions(obj).then((res) => {
-          console.log(JSON.stringify(res));
+          //console.log(JSON.stringify(res));
           if (res.code == 200) {
             that.files1 = [];
             that.pic_upload_url = "";

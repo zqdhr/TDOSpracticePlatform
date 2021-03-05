@@ -691,7 +691,7 @@ export default {
                 that.$parent.findExperiment(1)
                 that.innerVisible = false
             }else{
-              console.log(res.message)
+              //console.log(res.message)
               that.innerVisible = false
               that.$toast(res.message,3000)
             }
