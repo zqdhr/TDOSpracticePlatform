@@ -312,6 +312,7 @@
                 autocomplete="off"
                 v-model="searchText"
                 v-emoji
+                @keyup.enter="searchQuestionAll"
               />
               <!--<a class="searchBtn pointer"></a>-->
             </div>
