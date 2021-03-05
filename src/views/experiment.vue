@@ -241,7 +241,8 @@ export default {
             showtime:true,
             isFinish:false,
             timer:'',
-            connectNum:0
+            connectNum:0,
+            experimentstate:{}
 
         }
     },
@@ -268,9 +269,10 @@ export default {
         that.authority = that.$route.query.authority?that.$Base64.decode(that.$route.query.authority):0;
         that.userid = that.$route.query.userid
         that.experimentId=that.$route.query.experimentId
-        that.courseId =that.authority==0?that.$route.query.courseId:''
+        that.courseId =that.$route.query.courseId
         that.findAllByType(that.experimentId)
         that.showtime =  that.userid==sessionStorage.getItem("userId")?true:false
+        console.log(that.authority)
         if (that.authority==0) {
             that.hasExperimentReport()
         }
@@ -502,13 +504,20 @@ export default {
             let endTime = that.experiment.end_at!=null? that.experiment.end_at.substring(0, that.experiment.end_at.indexOf("T")):''
             let nowTime=new Date().toLocaleDateString().replace(/\//g,'-')
 
-            if (new Date(nowTime).getTime()>new Date(endTime).getTime()) {
-                 return that.$toast("已超过实验报告的最晚提交时间，不能提交报告",3000)
-            }
-
             if (that.yourContent=='') {
                return that.$toast("请输入实验报告内容",3000)
             }
+
+            if (new Date(nowTime).getTime()>new Date(endTime).getTime()) {
+                 return that.$toast("已超过实验报告的最晚提交时间，不能提交报告",3000)
+            }
+            if (hasReport==true&&that.experimentstate.status==1) {
+                return that.$toast("实验报告已提交，不能再次修改",3000)
+            }
+            if (hasReport==true&&that.experimentstate.isCorrect==1) {
+                return that.$toast("该实验报告已批阅，不能再次修改",3000)
+            }
+           
 
             if ( hasReport==true) {
                  that.isHas=true
@@ -538,8 +547,10 @@ export default {
             obj.experiment_id = that.experimentId
             obj.user_id =  that.userid
             hasExperimentReport(obj).then(res=>{
+                 console.log(res.data)
                 if (res.code==200) {
                     that.hasReport=true
+                    that.experimentstate =res.data
                 } else {
                     that.hasReport=false
                 }
@@ -797,7 +808,7 @@ export default {
         //轮询访问实验是否被关闭
         getState(){
             let that = this
-            that.timer = setInterval(that.judgeState, 1000*5)
+            that.timer = setInterval(that.judgeState, 1000)
         },
         //关闭实验
         closeexperiment(){

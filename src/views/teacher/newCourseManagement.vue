@@ -111,6 +111,7 @@ export default {
 
             getAdminCourseList(obj).then(res=> {
                 if(res.code==200){
+                    console.log(res.data)
                     that.courseList = res.data.list
                     for (let index = 0; index <  that.courseList.length; index++) {
                         that.courseList[index].pic_url = that.$store.state.pic_Url+ that.courseList[index].pic_url

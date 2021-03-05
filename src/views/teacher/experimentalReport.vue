@@ -113,7 +113,7 @@
                          <div class="cell textline1"> 姓名：{{item.userName}}</div>
                      </div>
                      <div class="d3 d28">
-                        <div class="cell">提交时间：{{item.submit_at}}</div>
+                        <div class="cell">提交时间：{{item.submit_at | dateFormatYMDhms}}</div>
                      </div>
                      <div class="d4 d12">
                         <div class="cell">{{item.isCorrect==0?'待批阅':'已批阅'}}</div>

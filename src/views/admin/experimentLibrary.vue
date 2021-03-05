@@ -192,7 +192,7 @@ export default {
           let that = this;
           that.isNewExperiment = true;
           that.experId = experId
-          that.$refs.experimentDetail.click_Detail(experId);
+          that.$refs.experimentDetail.click_Detail(experId,'');
 
         },
         //输入关键字查询列表
