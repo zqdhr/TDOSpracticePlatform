@@ -407,7 +407,9 @@ export default {
 
       }
 
-
+      if (that.count == 5) {
+        return this.$toast("最多上传5个课件，还需添加请删除", 3000);
+      }
       if (!this.$refs.upload.active) {
         that.upload(that.files[0].file)
       }
