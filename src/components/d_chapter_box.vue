@@ -101,7 +101,7 @@
                                                 <div class="din">
                                                     <input placeholder="请输入小节名称，最多支持20个字符" type="text" v-model="i_item.name" maxlength="20" autocomplete="off"/>
                                                 </div>
-                                                <a class=" a_delete" @click="deleteSmallSection(index,iindex,i_index,iitem)"></a>
+                                                <a class=" a_delete" @click="deleteSmallSection(index,iindex,i_index,i_item)"></a>
                                             </div>
                                     </template>
 
@@ -332,8 +332,12 @@ export default{
             that.smallSectionNum=num2;
             that.isDelete=true;
             that.chaptersOrsectio=3;
-            that.deleteStatus = 1;
-            that.smallSectionId = item.id;
+            if(item.id != undefined){
+              that.deleteStatus = 1;
+              that.smallSectionId = item.id;
+            }else{
+              that.deleteStatus = 0;
+            }
         },
         //删除章
         removeChapter(chapterId){
@@ -399,7 +403,6 @@ export default{
 
                     that.removeChapter(that.chaptersId)
                 }else  if( that.smallSectionNum === '' && that.sectionNum !== ''){
-
                     that.removeSection(that.sectionId)
                 } else  if( that.smallSectionNum !== ''){
 
