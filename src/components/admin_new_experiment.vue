@@ -9,16 +9,16 @@
       <div slot="title" class="dialog_header">新增实验</div>
       <div class="newdialog_body">
         <div class="new_nav">
-          <a class="pointer" @click="curIndex=1" :class="{ active: curIndex == 1 }"
+          <a class="pointer" @click="tab_basic" :class="{ active: curIndex == 1 }"
             ><span class="num">1</span> 基本资料</a
           >
           <a class="pointer" @click="tab_virtualMachine" :class="{ active: curIndex == 2 }"
             ><span class="num">2</span> 选择镜像</a
           >
-          <a class="pointer" @click="curIndex=3" :class="{ active: curIndex == 3 }"
+          <a class="pointer" @click="tab_step" :class="{ active: curIndex == 3 }"
             ><span class="num">3</span> 实验步骤</a
           >
-          <a class="pointer" @click="curIndex=4" :class="{ active: curIndex == 4 }"
+          <a class="pointer" @click="tab_finish" :class="{ active: curIndex == 4 }"
             ><span class="num">4</span> 完成发布</a
           >
         </div>
@@ -481,30 +481,117 @@ export default {
        that.getImagequoteList()
       that.isNew_experiment = true;
     },
+
+     tab_basic(){
+        let that = this
+        that.form.images=[]
+        for (let index = 0; index < that.multipleSelection.length; index++) {
+          that.form.images.push( that.multipleSelection[index].id)
+        }
+
+        that.curIndex = 1
+      },
     tab_virtualMachine(){
+        let that = this
+        if(that.form.name ==''){
+          return  that.$toast('请输入实验名称',2000)
+        }
+        if (that.form.cateId=='') {
+          return that.$toast('请选择所属分类',2000)
+        }
+        if (that.form.duration=='') {
+          return that.$toast('请选择实验时长',2000)
+        }
+        if (that.form.introduction=='') {
+          return that.$toast('请输入实验描述',2000)
+        }
+        if (that.files.length==0) {
+          return that.$toast('请上传实验封面',2000)
+        }
+
         this.curIndex = 2
         console.log('Imagelibraries'+this.multipleSelection)
         console.log('multipleSelection'+this.multipleSelection)
-        this.$nextTick(function(){
-           this.Imagelibraries.forEach((item,i)=>{
-               this.multipleSelection.forEach((multItem,j)=>{
-                   if(this.Imagelibraries[i].id == this.multipleSelection[j].id){
-                      this.$refs.multipleTable.toggleRowSelection(this.Imagelibraries[i],true);
+
+        that.$nextTick(function(){
+          for (let i = 0; i < that.Imagelibraries.length; i++) {
+              for (let j = 0; j < that.form.images.length; j++) {
+                if(that.Imagelibraries[i].id ==  that.form.images[j]){
+                      that.$refs.multipleTable.toggleRowSelection(that.Imagelibraries[i],true);
 
                   }
-               })
-          })
+            
+          }
+          
+        }
         })
+     
+    },
+    tab_step(){
+        let that = this
+        that.form.images=[]
+        for (let index = 0; index < that.multipleSelection.length; index++) {
+          that.form.images.push( that.multipleSelection[index].id)
+        }
+        console.log( that.form.images)
+        if(that.form.name ==''){
+          return  that.$toast('请输入实验名称',2000)
+        }
+        if (that.form.cateId=='') {
+          return that.$toast('请选择所属分类',2000)
+        }
+        if (that.form.duration=='') {
+          return that.$toast('请选择实验时长',2000)
+        }
+        if (that.form.introduction=='') {
+          return that.$toast('请输入实验描述',2000)
+        }
+        if (that.files.length==0) {
+          return that.$toast('请上传实验封面',2000)
+        }
+        if (that.form.images.length==0) {
+          return that.$toast('请至少选择一台镜像',2000)
+        }
+
+        this.curIndex = 3
+      
+
+    },
+        tab_finish(){
+        let that = this
+        that.form.images=[]
+        for (let index = 0; index < that.multipleSelection.length; index++) {
+          that.form.images.push( that.multipleSelection[index].id)
+        }
+        if(that.form.name ==''){
+          return  that.$toast('请输入实验名称',2000)
+        }
+        if (that.form.cateId=='') {
+          return that.$toast('请选择所属分类',2000)
+        }
+        if (that.form.duration=='') {
+          return that.$toast('请选择实验时长',2000)
+        }
+        if (that.form.introduction=='') {
+          return that.$toast('请输入实验描述',2000)
+        }
+        if (that.files.length==0) {
+          return that.$toast('请上传实验封面',2000)
+        }
+        if (that.form.images.length==0) {
+          return that.$toast('请至少选择一台镜像',2000)
+        }
+        if (that.yourContent=='') {
+          return that.$toast('请输入实验步骤',2000)
+        }
+        this.curIndex = 4
 
     },
     /*tab选择 */
     handleSelectionChange(val) {
       let that = this
       that.multipleSelection = val;
-      that.form.images=[]
-      for (let index = 0; index < val.length; index++) {
-        that.form.images.push(val[index].id)
-          }
+   
       console.log( that.form.images);
     },
     //上传前的钩子函数

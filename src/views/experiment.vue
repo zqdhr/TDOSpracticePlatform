@@ -8,11 +8,11 @@
 
             <div class="operationBox">
 
-                <a class="a-opera pointer"  @click="makeImg"  v-if="isOpen && authority==0">
+                <a class="a-opera pointer"  @click="makeImg"  v-if="isOpen && authority==0 &&experiment.end_at!=null">
                     <i><img src="../assets/img/exper_screen.png"/></i>
                     <span>一键截屏</span>
                 </a>
-                <a class="a-opera pointer" v-if="isOpen && authority==0  " @click="isEdit=true">
+                <a class="a-opera pointer" v-if="isOpen && authority==0 &&experiment.end_at!=null" @click="isEdit=true">
                      <i><img src="../assets/img/exper_download.png"/></i>
                     <span>下载代码</span>
                 </a>
@@ -306,7 +306,7 @@ export default {
             createContainers(obj).then(res=>{
                 if (res.code==200) {
                     that.containers = res.data
-
+                    console.log(that.containers)
                     if (that.containers!=null&& that.containers.length>0&&that.containers[0]!=null) {
                         if (that.containers[0].status==1) {
                             that.isOpen=true
@@ -367,7 +367,7 @@ export default {
                 that.timeInterval=null
                 sessionStorage.removeItem(that.userid+that.experimentId);
                 that.closeContainers()
-              
+                that.yourContent=''
 
             }else if (that.type==1) {
                 that.mess='正在关闭实验，请稍候...'
