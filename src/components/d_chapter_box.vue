@@ -613,8 +613,6 @@ export default{
             //章
             if(that.num==1){
                 let that = this;
-                alert(that.editId)
-                alert(that.iindex)
                 let obj = {};
                 obj.chapter_id = that.editId
                 obj.chapter_name = that.editValue;
@@ -631,8 +629,6 @@ export default{
             //节
             if(that.num==2){
                 let that = this;
-                alert(that.editId)
-                alert(that.iindex)
                 let obj = {};
                 obj.section_id = that.editId
                 obj.section_name = that.editValue;
@@ -648,8 +644,6 @@ export default{
             //小节
             if(that.num==3){
                 let that = this;
-                alert(that.editId)
-                alert(that.iindex)
                 let obj = {};
                 obj.small_section_id = that.editId
                 obj.small_section_name = that.editValue;

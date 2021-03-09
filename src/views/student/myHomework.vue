@@ -331,7 +331,7 @@ export default {
       }
       obj.status = that.state == "-1" ? "" : that.state;
 
-      // alert(JSON.stringify(obj));
+      // (JSON.stringify(obj));
       student_getJobList(obj)
         .then((res) => {
           if (res.code == 200) {
@@ -540,7 +540,6 @@ export default {
           }
         })
         .catch((ero) => {
-          alert(JSON.stringify(ero));
         });
     },
     confirm1(val) {

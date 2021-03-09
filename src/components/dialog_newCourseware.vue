@@ -435,7 +435,6 @@ export default {
         // console.log(JSON.stringify(obj))
         addChapterSectionCourseware(JSON.stringify(obj)).then(res => {
           if (res.code == 200) {
-            alert("111")
             that.isnewFilter = false;
             this.$toast("新增成功", 2000)
             //that.reload();
@@ -620,7 +619,6 @@ export default {
               // console.log(resCourse.data.id)
                   if (that.sindex !== '') {
                     //console.log("节新增课件")
-                    alert("aaa"+that.sindex)
                     let obj = {};
                     let list = [];
                     let ware = {};

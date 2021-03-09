@@ -83,13 +83,14 @@
 
       </div>
       </el-dialog>
-
+    <loading v-if="loading" @hideloading="hideloading" mess='文件正在上传,请稍候...'></loading>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
 import {getRunContainerList,searchClass,stopRunContainerList,execContainer,stopExperiment} from '@/API/api';
 import nodata from '@/components/noData'
+import loading from '@/components/uploadLoading.vue'
 export default {
   data() {
     return {
@@ -113,7 +114,8 @@ export default {
        isHasData:true,//是否有数据 默认有数据
         type1:'',
         flag_state:'',//1一件释放 2释放单个
-        container:{}
+        container:{},
+      loading:false
     };
   },
   components:{nodata},
@@ -122,6 +124,7 @@ export default {
     ...mapState({
       state: (state) => state,
     }),
+    loading
   },
   created(){
     let that = this;
@@ -234,7 +237,6 @@ export default {
       //that.type = num;
       that.flag_state=num
       if(num==1){
-        console.log(that.type)
         that.type == 1?that.dialog_machine ='确定要一键释放所有老师内存吗？':that.type==2?that.dialog_machine ='确定要一键释放所有学生内存吗？':that.dialog_machine ='确定要一键释放所有内存吗？'
 
       }else{
@@ -246,6 +248,10 @@ export default {
     //虚拟机释放确认
     confiremRelease(){
         let that = this;
+        if(that.total == 0){
+          that.show_Release = false;
+          return that.$toast("暂无正在运行的实验", 3000);
+        }
         if(that.flag_state == 1){
             that.type    = ''
             stopRunContainerList().then((res) => {
@@ -259,16 +265,19 @@ export default {
             });
         }else{
             let obj = {}
+            that.loading = true;
             obj.userId = that.container.user_id
             obj.experimentId = that.container.experiment_id
             stopExperiment(obj).then(res=>{
                 that.id = ''
                 if (res.code==200) {
+                     that.loading = false;
                     that.release_success = true
                     that.isClose=false;
                     that.getAllRunContainer(that.curPage);
                 } else {
                     that.isClose=false
+                    that.loading = false;
                     that.$toast(res.message,3000)
                     //console.log(res.message)
                 }
