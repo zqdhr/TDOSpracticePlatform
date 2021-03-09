@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="operation_box 22"  v-if="!isOpen"  ref="imageWrapper" >
-                   <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0),useractions=true">开启全部虚拟机</a>
+                   <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>
                 </div>
 
                 <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" :id="'Screenshots'+iindex"
@@ -151,7 +151,7 @@
             <div class="editMain" >
                 <el-form ref="form" label-width="60px">
                 <el-form-item label="名称">
-                    <el-input v-model="editValue" placeholder="请输入文件名称" :maxlength="16" ></el-input>
+                    <el-input v-model="editValue" placeholder="请输入路径/root/Downloads/下的文件名称" :maxlength="16" ></el-input>
                 </el-form-item>
 
                 </el-form>
@@ -318,20 +318,25 @@ export default {
         },
            //创建实验
         createContainers(userid,experimentId,courseId){
+           
             let that = this
+            that.useractions=true
             let obj = {}
             obj.userId = userid
             obj.experimentId = experimentId
             obj.courseId = courseId
             createContainers(obj).then(res=>{
                 if (res.code==200) {
-                
+                   
                     that.containers = res.data
                     if (that.containers!=null&& that.containers.length>0&&that.containers[0]!=null) {
                         if (that.containers[0].status==1) {
                             that.isOpen=true
                             that.virtualMachine=0
-                            that.daojishi(that.second)
+                            if (that.showtime) {
+                                that.daojishi(that.second)
+                            }
+                            
                             for(var i =0;i<res.data.length;i++){
                                res.data[i].isLink = false; //是否连接
                                res.data[i].restart = false;
@@ -512,8 +517,11 @@ export default {
                 that.container = res.data;
                 that.$set(that.container,'restart',true)   
                 that.openXuniji(that.container)
+                  if (that.showtime) {
+                       that.daojishi(that.experiment.duration*60)
+                  }
+                            
                 
-                that.daojishi(that.experiment.duration*60)
             } 
             })
            .catch((error) => {
