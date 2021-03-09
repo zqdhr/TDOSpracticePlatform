@@ -146,7 +146,7 @@
             class="personDialog"
 
             >
-            <div slot="title" class="dialog_header">下载名称填写</div>
+            <div slot="title" class="dialog_header">下载代码</div>
 
             <div class="editMain" >
                 <el-form ref="form" label-width="60px">
