@@ -136,18 +136,15 @@ export default {
     data(){
       return{
           tabData: [//在线人数显示12条数据
-            {sno: '20200118',name: '王小虎',state: 1},
-
           ],
           onlineTotal:1,
           online_page:1,//在线人数当前页
           onlinePage:1,//在线人数分页
           onlinePageSize:10,//在线人数每页条数
           experimentData:[//运行实验每页8条
-            {experName:'节点模拟启停',duration:'45:00',curDuration:'23:45',courname:'节点的概述>节点的模拟启停>尝试启动一个全节点'},
           ],
-          totalExper:1,
-          ex_per_page:10,
+          totalExper:0,
+          ex_per_page:8,
           ex_Page:1,//实验当前页
           cpuUse:'',
           memoryUse:'',
@@ -191,7 +188,7 @@ export default {
         /*实验人数列表*/
         runExperiment(){
             let that = this;
-            that.getRunExperiment(10,1);
+            that.getRunExperiment(1);
         },
         searchUserOnline(per_page,page){
             let that = this;
@@ -216,10 +213,10 @@ export default {
                 }
             })
         },
-        getRunExperiment(per_page,page){
+        getRunExperiment(page){
             let that = this;
             let obj = {};
-            obj.perPage = per_page;
+            obj.perPage = that.ex_per_page;
             obj.page = page;
             getRunExperiment(obj).then(res=> {
                 if(res.code==200){
@@ -233,8 +230,8 @@ export default {
       handleCurrentChange(val){
         let that = this;
 
-        //console.log(`当前页 ${val} 条`);
-        that.getRunExperiment(10,val);
+        console.log(`当前页 ${val} 条`);
+        that.getRunExperiment(val);
       },
         handleOnlineCurrentChange(val){
             let that = this;
