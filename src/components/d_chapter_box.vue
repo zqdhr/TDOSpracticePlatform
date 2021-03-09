@@ -34,7 +34,7 @@
                 <div  class="textline1 cha_title new_cha_title" :class="{'arrow':!item.show,'arrow_up':item.show}"  v-if="!item.id" >
                      <span class="s_name">章节{{index+1}}：</span>
                      <div class="din">
-                         <input type="text" placeholder="请输入章名称，最多支持20个字符"   v-model="item.name" maxlength="20" autocomplete="off"/>
+                         <input type="text" placeholder="请输入章名称，最多支持20个字符"  v-emoji  v-model="item.name" maxlength="20" autocomplete="off"/>
                          <!--已保存添加s-saved-->
                          <span class="s-state s-Not_saved" :class="{'s-saved':1==0}">未保存</span>
                      </div>
@@ -99,7 +99,7 @@
                                             <div class="sec_name textline1 ">
                                                 <span class="textline1">第{{i_index+1}}小节：</span>
                                                 <div class="din">
-                                                    <input placeholder="请输入小节名称，最多支持20个字符" type="text" v-model="i_item.name" maxlength="20" autocomplete="off"/>
+                                                    <input placeholder="请输入小节名称，最多支持20个字符" type="text" v-model="i_item.name" maxlength="20" autocomplete="off" v-emoji/>
                                                 </div>
                                                 <a class=" a_delete" @click="deleteSmallSection(index,iindex,i_index,i_item)"></a>
                                             </div>

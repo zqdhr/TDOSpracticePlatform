@@ -14,6 +14,7 @@ export default {
     return {
       socket: null,
       term: null,
+      xterm_height:0
     };
   },
   props: {
@@ -21,6 +22,9 @@ export default {
       type: String,
       default: "",
     },
+    height:{
+      default:0
+    }
   },
 
   watch: {
@@ -32,6 +36,14 @@ export default {
       },
       
     },
+    height:{
+      handler(val, olVal) { 
+       
+        this.xterm_height = val;
+        
+      },
+ 
+    }
   },
 
   mounted() {
@@ -42,6 +54,8 @@ export default {
   beforeDestroy() {
     this.socket.close();
     this.term.dispose();
+    window.removeEventListener("resize",this.windowChange);
+    
   },
  
   methods: {
@@ -51,10 +65,11 @@ export default {
     },
     initTerm() {
         this.$nextTick(function(){
-            let height = 0    
-           height= this.$refs.xterm.offsetHeight;
+            //let height = 0    
+           let that = this
+           console.log(parseInt(that.xterm_height/17, 10))
            const term = new Terminal({
-              rows:parseInt(height/17, 10),
+              rows:parseInt(that.xterm_height/17, 10),
               cursorBlink: true,
   
            });
@@ -69,8 +84,7 @@ export default {
             //fitAddon.fit();
             term.focus();
             this.term = term;
-            
-            console.log(parseInt(height/17, 10))
+           
 
         })
   
@@ -96,15 +110,28 @@ export default {
     socketOnClose() {
       this.socket.onclose = () => {
         // console.log('close socket')
+        this.$parent.imageClose()
       };
     },
     socketOnError() {
       this.socket.onerror = () => {
         // console.log('socket 链接失败')
       };
-    }
+    },
    
+  windowChange(){
+      this.$nextTick(function(){
+
+     let that = this
+  
+      this.term.resize(90,parseInt(that.xterm_height/17, 10));
+      this.term.scrollToBottom();
+       })
+    }
+
+  
   },
+  
 };
 </script>
 

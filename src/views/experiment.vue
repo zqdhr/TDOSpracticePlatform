@@ -21,11 +21,11 @@
                     <span>返回</span>
                 </a>
 
-                <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=2">
+                <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=2,useractions=true">
                     <i><img src="../assets/img/exper_restart.png"/></i>
                     <span>重新开始</span>
                 </a>
-                  <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=1">
+                  <a class="a-opera pointer" v-if="isOpen" @click="isClose=true,type=1,useractions=true">
                     <i><img src="../assets/img/exper_end.png"/></i>
                     <span>结束所有</span>
                 </a>
@@ -41,17 +41,17 @@
                 </div>
 
                 <div class="operation_box 22"  v-if="!isOpen"  ref="imageWrapper" >
-                   <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>
+                   <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0),useractions=true">开启全部虚拟机</a>
                 </div>
 
                 <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" :id="'Screenshots'+iindex"
                      v-for="(item,iindex) in opencontainers" :key="iindex">
                    <!--初始化的数据-->
-                   <div class="operation_box" id="screen" v-show="virtualMachine==iindex && containerstate=='2'"  v-if="item.url.indexOf('html')>0 && !item.restart && item.url!=''"></div>
-                   <xterm :socketURI="item.url"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && !item.restart && item.url!=''"></xterm>  
+                   <div class="operation_box" id="screen" v-show="virtualMachine==iindex && containerstate=='2'"  v-if="item.url.indexOf('html')>0 && !item.restart && item.url!=''" ></div>
+                   <xterm :socketURI="item.url" :height="xterm_height"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && !item.restart && item.url!=''" ></xterm>  
                   
                   <div class="operation_box" id="screen" v-show="virtualMachine==iindex && containerstate=='2'"  v-if="item.url.indexOf('html')>0 && item.restart && item.url!=''"></div>
-                <xterm :socketURI="item.url"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && item.restart && item.url!=''"></xterm>  
+                  <xterm :socketURI="item.url" :height="xterm_height"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && item.restart && item.url!=''" ref="imageWrapper"></xterm>  
              
 
                 </div>
@@ -242,7 +242,10 @@ export default {
             isFinish:false,
             timer:'',
             connectNum:0,
-            experimentstate:{}
+            experimentstate:{},
+            xterm_height:0,
+            restartForMe:false,
+            useractions:false
 
         }
     },
@@ -272,7 +275,6 @@ export default {
         that.courseId =that.$route.query.courseId
         that.findAllByType(that.experimentId)
         that.showtime =  that.userid==sessionStorage.getItem("userId")?true:false
-        console.log(that.authority)
         if (that.authority==0) {
             that.hasExperimentReport()
         }
@@ -283,18 +285,36 @@ export default {
         disconnectedFromServer (msg) {
             if(msg.detail.clean){
                 // 根据 断开信息的msg.detail.clean 来判断是否可以重新连接
-                this.connectVnc(this.connect_url)
+                if (this.useractions==false) {
+                     this.imageClose()
+                }else{
+                    this.connectVnc(this.connect_url)
+            
+                }
+                   
+            
+              
             } else {
                 //这里做不可重新连接的一些操作
-                if (this.connectNum<5) {
+                   if (this.useractions==false) {
+                      this.imageClose()
+                }else{
+                  if (this.connectNum<2) {
                      this.connectVnc(this.connect_url)
+                  }
+                    this.connectNum=this.connectNum+1  
+                    
                 }
-               this.connectNum=this.connectNum+1
+                  
+           
+                
+                
             }
         },
         // 连接成功的回调函数
         connectedToServer(msg) {
              this.connectNum=0
+             this.useractions=false
         },
            //创建实验
         createContainers(userid,experimentId,courseId){
@@ -305,8 +325,8 @@ export default {
             obj.courseId = courseId
             createContainers(obj).then(res=>{
                 if (res.code==200) {
+                
                     that.containers = res.data
-                    console.log(that.containers)
                     if (that.containers!=null&& that.containers.length>0&&that.containers[0]!=null) {
                         if (that.containers[0].status==1) {
                             that.isOpen=true
@@ -317,7 +337,7 @@ export default {
                                res.data[i].restart = false;
                             }
                             that.opencontainers=res.data
-                            that.getState()
+                            // that.getState()
                         }
                         that.container = that.containers[0]
                         if (that.isOpen==true) {
@@ -368,6 +388,7 @@ export default {
                 sessionStorage.removeItem(that.userid+that.experimentId);
                 that.closeContainers()
                 that.yourContent=''
+                that.restartForMe=true
 
             }else if (that.type==1) {
                 that.mess='正在关闭实验，请稍候...'
@@ -446,12 +467,13 @@ export default {
             containerId.push(that.container.containerId)
             obj.containerIds = containerId
             removeContainers(obj).then(res=>{
-            that.restartContainers()
+                that.restartContainers()
             })
 
         },
         //重启镜像
         restartContainers(){
+            
             let that=this
             let obj={}
             obj.userId = that.userid
@@ -469,8 +491,10 @@ export default {
 
             createAndRunContainers(obj).then(res=>{
             that.remove=false
+            that.restartForMe=true
             if (res.code==200) {
-                that.getState()
+
+                // that.getState()
                 for (let index = 0; index < that.containers.length; index++) {
                     if (that.containers[index].imageId==res.data.imageId) {
                         that.containers[index]=res.data
@@ -490,12 +514,11 @@ export default {
                 that.openXuniji(that.container)
                 
                 that.daojishi(that.experiment.duration*60)
-            } else {
-                console.log(res.message)
-            }
+            } 
             })
            .catch((error) => {
              that.remove=false
+             that.restartForMe=true
             })
         },
         //添加实验报告
@@ -547,7 +570,6 @@ export default {
             obj.experiment_id = that.experimentId
             obj.user_id =  that.userid
             hasExperimentReport(obj).then(res=>{
-                 console.log(res.data)
                 if (res.code==200) {
                     that.hasReport=true
                     that.experimentstate =res.data
@@ -721,13 +743,23 @@ export default {
         //判断打开虚拟机
         openXuniji(item){
             let that = this
+  
             if (that.isOpen) {
                 if (item.url.indexOf("vnc.html")==-1) {
-                     that.containerstate='1'
+                     that.containerstate='1';
+                      that.xterm_height = 0
+                      that.$nextTick(function(){
+                          that.xterm_height =  document.getElementById('Screenshots'+that.virtualMachine).offsetHeight
+                      })
+                       //that.xterm_height = that.$refs.imageWrapper[that.virtualMachine].offsetHeight;
                      //that.socketURI = item.url
                 }else {
                     that.containerstate='2'
+                    that.xterm_height = 0
                     that.connect_url = item.url
+                       that.$nextTick(function(){
+                          that.xterm_height =  document.getElementById('Screenshots'+that.virtualMachine).offsetHeight
+                      })
                      that.$nextTick(function(){
                          if(!item.isLink){
                            that.connectVnc(item.url)
@@ -768,6 +800,25 @@ export default {
             })
 
         },
+        //监听命令行镜像是否断开
+        imageClose(){
+            let that = this
+            if (that.useractions==false) {
+            that.isFinish=true
+            if ( that.timeInterval!=null) {
+                  clearInterval(that.timeInterval)
+                  that.timeInterval=null
+            }          
+            sessionStorage.removeItem(that.userid+that.experimentId);
+            if (that.timer!=null) {
+                clearInterval(that.timer)
+                that.timer=null
+            }
+            }else {
+                that.useractions=false
+            }
+           
+        },
         // http图片转成base64，防止解决不了的图片跨域问题
         getBase64Image(img) {
         var canvas = document.createElement('canvas')
@@ -792,17 +843,35 @@ export default {
             obj.courseId = that.courseId
             createContainers(obj).then(res=>{
                 if (res.code==200) {
-                    
-
                     if (res.data!=null&& res.data.length>0&&res.data[0]!=null) {
-                        if (res.data[0].status!=1) {
+                        if (res.data[0].status!=1&&that.restartForMe==false) {
                             that.isFinish=true
+                            if ( that.timeInterval!=null) {
+                                clearInterval(that.timeInterval)
+                                that.timeInterval=null
+                            }          
+                            sessionStorage.removeItem(that.userid+that.experimentId);
+                            if (that.timer!=null) {
+                                clearInterval(that.timer)
+                                that.timer=null
+                            }
                         }
                     }
                 } else {
                      console.log(res.data)
                 }
-            })
+            }) .catch((error) => {
+                        that.isFinish=true
+                        if ( that.timeInterval!=null) {
+                                clearInterval(that.timeInterval)
+                                that.timeInterval=null
+                            }          
+                            sessionStorage.removeItem(that.userid+that.experimentId);
+                            if (that.timer!=null) {
+                                clearInterval(that.timer)
+                                that.timer=null
+                            }
+        });
 
         },
         //轮询访问实验是否被关闭
