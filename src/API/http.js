@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+import router from '@/router/index'
 //自定义配置新建一个axios实例
 const http = axios.create({
 	baseURL: 'http://192.168.1.138:8111',
@@ -11,6 +12,7 @@ const http = axios.create({
 
 //添加请求拦截器
 http.interceptors.request.use(function (config) {
+  console.log(sessionStorage.getItem('jwt'))
 	if(config.method=='delete'){
 		config.headers['Content-Type']='application/json'
 	}
@@ -21,6 +23,9 @@ http.interceptors.request.use(function (config) {
 	  }
 	  */
 	config.headers.Authorization = sessionStorage.getItem('jwt')
+
+
+
 	//对响应数据做点什么\
 	return config;
 
@@ -29,7 +34,7 @@ http.interceptors.request.use(function (config) {
 //添加响应拦截器
 http.interceptors.response.use(function (response) {
   if (response.data.code == 400 || response.data.message == 'jwt is invalid') {
-    router.push({
+   router.push({
       path: "/login"
     })
   }

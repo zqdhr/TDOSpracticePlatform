@@ -177,6 +177,7 @@ export default {
         if (res.code == 200) {
           window.sessionStorage.removeItem('store')
           window.sessionStorage.removeItem('userId')
+          window.sessionStorage.removeItem('jwt')
           let authority = sessionStorage.getItem('p_p-authority') ;
           if(authority==2){
             window.sessionStorage.removeItem('p_p-admin_userName')

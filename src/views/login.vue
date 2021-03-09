@@ -20,15 +20,15 @@
                                 <router-link to=""></router-link>
                             </p>
                             <div class="btnbox">
-                                <a class="pointer btnlogin"  @click="pp_login">登录</a>
+                                <a class="pointer btnlogin"  @click="getJwt">登录</a>
                             </div>
                         </div>
                     </div>
                     <div class="logo"></div>
                 </div>
             </div>
-         
-            
+
+
         </div>
     </div>
 </template>
@@ -47,13 +47,13 @@ export default {
         this.$nextTick(()=>{
            this.setBodyBackGround()
         })
-         
-         
+
+
     },
      beforeDestroy(){
         // 离开页面的时候清除
             this.clearBodyBackGround()
-            
+
     },
    methods:{
         pp_login(){
@@ -71,7 +71,7 @@ export default {
             login(obj).then(res=> {
                 if(res.code==200){
                     //生成token
-                    that.getJwt(that.userName);
+                    //that.getJwt(that.userName);
                     window.sessionStorage.setItem('userId',res.data.user_id);
                     window.sessionStorage.setItem('userName',res.data.user_name);
                     role_id = res.data.role_id;
@@ -99,11 +99,17 @@ export default {
             })
         },
        getJwt(id){
+          id='';
            let obj={};
-           obj.id=id
+           let that = this;
+           obj.id=that.userName;
            createToken(obj).then(res=> {
                if(res.code==200){
+                   sessionStorage.removeItem('jwt')
                    sessionStorage.setItem('jwt',res.data);
+
+                  that.pp_login();
+
                }else{
                    this.$toast(res.message,2000)
                }
@@ -111,13 +117,13 @@ export default {
        },
          // 添加body图片
         setBodyBackGround () {
-            
-          
+
+
             document.body.style.backgroundImage = this.bodyBgImage
             document.body.style.backgroundSize = 'cover'
-         
-           
-            
+
+
+
         },
             // 清除背景图
         clearBodyBackGround () {
@@ -139,7 +145,7 @@ export default {
     .tab-cell{
         display: table-cell; vertical-align:middle;text-align:center;
         .icon{width:40%;display: inline-block; vertical-align:middle; margin: 0 50px;}
-    
+
     }
     .login-from{display: inline-block; vertical-align: middle; text-align: center;margin: 0 50px;}
     .htitle{font-size:40px;color: @fontColor2; padding-bottom: 40px;}

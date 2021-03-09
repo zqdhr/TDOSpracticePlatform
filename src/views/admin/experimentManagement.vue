@@ -118,13 +118,12 @@ export default {
       loading:false
     };
   },
-  components:{nodata},
+  components:{nodata,loading},
 
   computed: {
     ...mapState({
       state: (state) => state,
     }),
-    loading
   },
   created(){
     let that = this;
