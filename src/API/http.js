@@ -34,6 +34,7 @@ http.interceptors.request.use(function (config) {
 //添加响应拦截器
 http.interceptors.response.use(function (response) {
   if (response.data.code == 400 || response.data.message == 'jwt is invalid') {
+    response.data.message = 'jwt失效，请重新登录'
    router.push({
       path: "/login"
     })
