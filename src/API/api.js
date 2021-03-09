@@ -73,12 +73,12 @@ var getAdminCourseList = function(data){
 
 //老师获取自己的课程（备课管理的列表）
 var getCourseListByUserId = function(data){
-	return axios.get('/get_course_list_by_user_id?user_id='+data.user_id+'&page='+data.page+'&per_page='+data.per_page+'&name='+data.search)
+	return axios.get('/get_public_course_list_by_user_id?user_id='+data.user_id+'&page='+data.page+'&per_page='+data.per_page+'&name='+data.search)
 }
 
 //老师获取自己的课程（备课管理的列表,不含名称）
 var getCourseListNoNameByUserId = function(data){
-  return axios.get('/get_course_list_by_user_id?user_id='+data.user_id+'&page='+data.page+'&per_page='+data.per_page)
+  return axios.get('/get_public_course_list_by_user_id?user_id='+data.user_id+'&page='+data.page+'&per_page='+data.per_page)
 }
 
 //通过id获取课程
@@ -503,7 +503,7 @@ var layout =function(data){
 }
 //学生获取实验报告列表
 var findStudentExperimentReport =function(data){
-	return axios.get('/findStudentExperimentReport?course_id='+data.course_id+'&isCorrect='+data.isCorrect+'&name='+data.name+'&user_id='+data.user_id+'&perPage=' + data.perPage+ '&page=' +data.page)	
+	return axios.get('/findStudentExperimentReport?course_id='+data.course_id+'&isCorrect='+data.isCorrect+'&name='+data.name+'&user_id='+data.user_id+'&perPage=' + data.perPage+ '&page=' +data.page)
 }
 
 export{

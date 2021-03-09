@@ -251,7 +251,6 @@ export default {
       console.log(obj)
       bindExperiments(JSON.stringify(obj)).then(res=> {
         if(res.code==200){
-          alert(res.code)
           that.isnewFilter = false;
           // that.reload();
            //that.findAllByType(that.sindex,3,8,1)
@@ -279,7 +278,6 @@ export default {
     findParentCategory() {
       let that = this;
       findParentCategory().then((res) => {
-        // alert(JSON.stringify(res));
         console.log(res);
         if (res.code == 200) {
           that.options = res.data;
@@ -342,7 +340,6 @@ export default {
       let that = this;
       if (!checked) {
         if (!(that.chooseList.indexOf(obj.id) != -1)) {
-          alert(that.count)
           if (that.chooseList.length+that.count  > 4) {
             return this.$toast("最多上传5个实验，还需添加请删除", 3000);
           }

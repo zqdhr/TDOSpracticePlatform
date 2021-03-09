@@ -234,6 +234,7 @@ export default {
     //上传前的钩子函数
     inputFilter(newFile, oldFile, prevent) {
       let that = this;
+      that.upload_falg = 0;
       if (newFile && !oldFile) {
         const extension = newFile.name.substring(
           newFile.name.lastIndexOf(".") + 1
@@ -299,7 +300,6 @@ export default {
       //alert("asddd"+type)
       obj.append('type',type)
       obj.append('file',file)
-
       //alert(that.files[0].file.name)
       if(that.upload_falg==1){
         return this.$toast("只能上传后缀是pdf或mp4的文件", 3000);
