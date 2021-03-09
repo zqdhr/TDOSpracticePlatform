@@ -41,18 +41,18 @@
                 </div>
 
                 <div class="operation_box 22"  v-if="!isOpen"  ref="imageWrapper" >
-                   <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0),useractions=true">开启全部虚拟机</a>
+                   <a class="btn-open pointer" v-if="!isOpen" @click="execContainer(0)">开启全部虚拟机</a>
                 </div>
 
                 <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" :id="'Screenshots'+iindex"
                      v-for="(item,iindex) in opencontainers" :key="iindex">
                    <!--初始化的数据-->
                    <div class="operation_box" id="screen" v-show="virtualMachine==iindex && containerstate=='2'"  v-if="item.url.indexOf('html')>0 && !item.restart && item.url!=''" ></div>
-                   <xterm :socketURI="item.url" :height="xterm_height"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && !item.restart && item.url!=''" ></xterm>
-
+                   <xterm :socketURI="item.url" :height="xterm_height"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && !item.restart && item.url!=''" ></xterm>  
+                  
                   <div class="operation_box" id="screen" v-show="virtualMachine==iindex && containerstate=='2'"  v-if="item.url.indexOf('html')>0 && item.restart && item.url!=''"></div>
-                  <xterm :socketURI="item.url" :height="xterm_height"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && item.restart && item.url!=''" ref="imageWrapper"></xterm>
-
+                  <xterm :socketURI="item.url" :height="xterm_height"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && item.restart && item.url!=''" ref="imageWrapper"></xterm>  
+             
 
                 </div>
 
@@ -151,7 +151,7 @@
             <div class="editMain" >
                 <el-form ref="form" label-width="60px">
                 <el-form-item label="名称">
-                    <el-input v-model="editValue" placeholder="请输入文件名称" :maxlength="16" ></el-input>
+                    <el-input v-model="editValue" placeholder="请输入路径/root/Downloads/下的文件名称" :maxlength="16" ></el-input>
                 </el-form-item>
 
                 </el-form>
@@ -263,7 +263,7 @@ export default {
         }
         if (that.timer!=null) {
             clearInterval(that.timer)
-
+            
         }
     },
     components:{quillEditor,xterm,transLoading},
@@ -278,7 +278,7 @@ export default {
         if (that.authority==0) {
             that.hasExperimentReport()
         }
-
+ 
     },
     methods:{
         // vnc连接断开的回调函数
@@ -289,11 +289,11 @@ export default {
                      this.imageClose()
                 }else{
                     this.connectVnc(this.connect_url)
-
+            
                 }
-
-
-
+                   
+            
+              
             } else {
                 //这里做不可重新连接的一些操作
                    if (this.useractions==false) {
@@ -302,13 +302,13 @@ export default {
                   if (this.connectNum<2) {
                      this.connectVnc(this.connect_url)
                   }
-                    this.connectNum=this.connectNum+1
-
+                    this.connectNum=this.connectNum+1  
+                    
                 }
-
-
-
-
+                  
+           
+                
+                
             }
         },
         // 连接成功的回调函数
@@ -318,20 +318,25 @@ export default {
         },
            //创建实验
         createContainers(userid,experimentId,courseId){
+           
             let that = this
+            that.useractions=true
             let obj = {}
             obj.userId = userid
             obj.experimentId = experimentId
             obj.courseId = courseId
             createContainers(obj).then(res=>{
                 if (res.code==200) {
-
+                   
                     that.containers = res.data
                     if (that.containers!=null&& that.containers.length>0&&that.containers[0]!=null) {
                         if (that.containers[0].status==1) {
                             that.isOpen=true
                             that.virtualMachine=0
-                            that.daojishi(that.second)
+                            if (that.showtime) {
+                                that.daojishi(that.second)
+                            }
+                            
                             for(var i =0;i<res.data.length;i++){
                                res.data[i].isLink = false; //是否连接
                                res.data[i].restart = false;
@@ -473,18 +478,18 @@ export default {
         },
         //重启镜像
         restartContainers(){
-
+            
             let that=this
             let obj={}
             obj.userId = that.userid
             obj.experimentId = that.experimentId
             obj.courseId = that.courseId
             obj.imageId=that.container.imageId
-
+            
             for (let index = 0; index < that.opencontainers.length; index++) {
                 if (that.opencontainers[index].imageId==that.container.imageId) {
                     that.opencontainers[index].url='';
-
+                    
                 }
 
             }
@@ -498,23 +503,26 @@ export default {
                 for (let index = 0; index < that.containers.length; index++) {
                     if (that.containers[index].imageId==res.data.imageId) {
                         that.containers[index]=res.data
-
+                        
                     }
 
                 }
                 for (let index = 0; index < that.opencontainers.length; index++) {
                     if (that.opencontainers[index].imageId==res.data.imageId) {
                         that.opencontainers[index]=res.data
-
+                        
                     }
 
                 }
                 that.container = res.data;
-                that.$set(that.container,'restart',true)
+                that.$set(that.container,'restart',true)   
                 that.openXuniji(that.container)
-
-                that.daojishi(that.experiment.duration*60)
-            }
+                  if (that.showtime) {
+                       that.daojishi(that.experiment.duration*60)
+                  }
+                            
+                
+            } 
             })
            .catch((error) => {
              that.remove=false
@@ -540,7 +548,7 @@ export default {
             if (hasReport==true&&that.experimentstate.isCorrect==1) {
                 return that.$toast("该实验报告已批阅，不能再次修改",3000)
             }
-
+           
 
             if ( hasReport==true) {
                  that.isHas=true
@@ -593,7 +601,7 @@ export default {
 
             const url =uri
             this.$nextTick(function(){
-
+           
             that.rfb = new RFB(document.getElementById('screen'), url, {
             // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
                 credentials: {password: '123456' }
@@ -743,7 +751,7 @@ export default {
         //判断打开虚拟机
         openXuniji(item){
             let that = this
-
+  
             if (that.isOpen) {
                 if (item.url.indexOf("vnc.html")==-1) {
                      that.containerstate='1';
@@ -765,7 +773,7 @@ export default {
                            that.connectVnc(item.url)
                            item.isLink =true
                          }
-
+                        
                      })
 
 
@@ -778,7 +786,7 @@ export default {
         },
 
         downloadCode(){
-
+                      
             let that =this
             if (that.editValue=='') {
                return that.$toast("请输入文件名称",3000)
@@ -790,7 +798,7 @@ export default {
             downloadCode(obj).then(res=>{
                 if (res.code==200) {
                     if (res.data!=null) {
-                        that.downloadfile(atob(res.data))
+                        that.downloadfile(atob(res.data))                
                     }else {
                         that.$toast("输入的文件不存在",3000)
                     }
@@ -808,7 +816,7 @@ export default {
             if ( that.timeInterval!=null) {
                   clearInterval(that.timeInterval)
                   that.timeInterval=null
-            }
+            }          
             sessionStorage.removeItem(that.userid+that.experimentId);
             if (that.timer!=null) {
                 clearInterval(that.timer)
@@ -817,7 +825,7 @@ export default {
             }else {
                 that.useractions=false
             }
-
+           
         },
         // http图片转成base64，防止解决不了的图片跨域问题
         getBase64Image(img) {
@@ -849,7 +857,7 @@ export default {
                             if ( that.timeInterval!=null) {
                                 clearInterval(that.timeInterval)
                                 that.timeInterval=null
-                            }
+                            }          
                             sessionStorage.removeItem(that.userid+that.experimentId);
                             if (that.timer!=null) {
                                 clearInterval(that.timer)
@@ -858,14 +866,14 @@ export default {
                         }
                     }
                 } else {
-                     //console.log(res.data)
+                     console.log(res.data)
                 }
             }) .catch((error) => {
                         that.isFinish=true
                         if ( that.timeInterval!=null) {
                                 clearInterval(that.timeInterval)
                                 that.timeInterval=null
-                            }
+                            }          
                             sessionStorage.removeItem(that.userid+that.experimentId);
                             if (that.timer!=null) {
                                 clearInterval(that.timer)
@@ -886,7 +894,7 @@ export default {
             if ( that.timeInterval!=null) {
                 clearInterval(that.timeInterval)
                 that.timeInterval=null
-            }
+            }          
             sessionStorage.removeItem(that.userid+that.experimentId);
             if (that.timer!=null) {
                 clearInterval(that.timer)
