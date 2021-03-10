@@ -40,7 +40,6 @@
             <div class="sel-box" style="width: 350px" v-if="state.id == 1">
               <el-date-picker
                 class="pageTab_date"
-
                 v-model="value2"
                 type="daterange"
                 align="right"
@@ -87,14 +86,13 @@
           </div>
         </div>
       </div>
-
     </div>
 
-     <noData
-        :noDataType="noDataType"
-        :dataMess="dataMess"
-        v-if="!hasData"
-      ></noData>
+    <noData
+      :noDataType="noDataType"
+      :dataMess="dataMess"
+      v-if="!hasData"
+    ></noData>
     <template v-if="hasData">
       <div class="container">
         <div class="tea_list">
@@ -105,14 +103,10 @@
                 <div class="cell textline1">班级：{{ item.className }}</div>
               </div>
               <div class="d2 d16">
-                <div class="cell textline1">
-                  学号：{{ item.userId }}
-                </div>
+                <div class="cell textline1">学号：{{ item.userId }}</div>
               </div>
-                <div class="d2 d17">
-                <div class="cell textline1">
-                  姓名：{{ item.userName }}
-                </div>
+              <div class="d2 d17">
+                <div class="cell textline1">姓名：{{ item.userName }}</div>
               </div>
               <div class="d3 d30">
                 <div class="cell">
@@ -348,7 +342,7 @@ export default {
     //选择课程
     changeLevel1(val) {
       let that = this;
-that.curPage = 1;
+      that.curPage = 1;
       that.getStudentJobList(0);
     },
 
@@ -386,10 +380,20 @@ that.curPage = 1;
     //提交批改
     submit() {
       let that = this;
+
       let obj = {};
       let answerArr = [];
       for (var i = 0; i < that.all_courseList.length; i++) {
         let tmpDic = that.all_courseList[i];
+
+        if (
+          tmpDic.score === null ||
+          tmpDic.score === undefined ||
+          tmpDic.score === ""
+        ) {
+          return that.$toast("简答题评分存在空值，请检查！", 3000);
+        }
+
         let dic = {};
         dic.question_id = tmpDic.id;
         dic.assignment_id = that.momentJobMod.assignmentId;
@@ -401,15 +405,7 @@ that.curPage = 1;
             dic.score = 0;
           }
         } else {
-          if (
-            tmpDic.score === null ||
-            tmpDic.score === undefined ||
-            tmpDic.score === ""
-          ) {
-            dic.score = 0;
-          } else {
-            dic.score = tmpDic.score;
-          }
+          dic.score = tmpDic.score;
         }
         answerArr.push(dic);
       }
