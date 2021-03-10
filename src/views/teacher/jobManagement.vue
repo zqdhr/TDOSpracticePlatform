@@ -401,7 +401,15 @@ that.curPage = 1;
             dic.score = 0;
           }
         } else {
-          dic.score = tmpDic.score;
+          if (
+            tmpDic.score === null ||
+            tmpDic.score === undefined ||
+            tmpDic.score === ""
+          ) {
+            dic.score = 0;
+          } else {
+            dic.score = tmpDic.score;
+          }
         }
         answerArr.push(dic);
       }

@@ -11,10 +11,10 @@
                         <div class="login-from">
                             <h3 class="htitle">欢迎登陆实链通</h3>
                             <div class="din din-user">
-                                <input placeholder="请输入账号" v-model="userName" autocomplete="off" @keyup.enter="pp_login"/>
+                                <input placeholder="请输入账号" v-model="userName" autocomplete="off" @keyup.enter="getJwt"/>
                             </div>
                             <div class="din din-paw">
-                                <input type="password" placeholder="请输入密码" v-model="password" autocomplete="off" @keyup.enter="pp_login"/>
+                                <input type="password" placeholder="请输入密码" v-model="password" autocomplete="off" @keyup.enter="getJwt"/>
                             </div>
                              <p class="p-forget">
                                 <router-link to=""></router-link>
@@ -68,6 +68,7 @@ export default {
             obj.id = that.userName;
             obj.password = that.password;
             let role_id;
+            console.log(obj)
             login(obj).then(res=> {
                 if(res.code==200){
                     //生成token
