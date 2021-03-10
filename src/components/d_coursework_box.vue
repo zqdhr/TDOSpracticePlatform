@@ -916,13 +916,16 @@ export default {
         let dates1 = new Date(that.homework.endTime);
         let dates2 = new Date(that.course_info.end_at);
         let dates3 = new Date(that.course_info.start_at);
+        var dateNow = new Date();
         if (dates1 > dates2) {
           return that.$toast("作业截止时间不能大于课程截止时间", 3000);
         }
         if (dates1 < dates3) {
           return that.$toast("作业截止时间不能小于课程开始时间", 3000);
         }
-
+        if(dates1 < dateNow){
+          return that.$toast("作业截止时间不能小于当前时间", 3000);
+        }
         obj.end_at = that.homework.endTime;
       } else {
         var date = new Date();
