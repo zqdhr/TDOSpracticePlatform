@@ -107,7 +107,7 @@
             >
             <a
               class="btnDefault pointer"
-                   v-if="courseList.length > 0"
+              v-if="courseList.length > 0"
               @click="(isConfirmWork = true), addQuestionBack(2)"
               >发布</a
             >
@@ -165,14 +165,12 @@
       </div>
     </el-dialog>
 
-        <!--删除作业弹框-->
+    <!--删除作业弹框-->
     <el-dialog :visible.sync="isConfirmDeleteWork" width="600px">
       <div slot="title" class="dialog_header">警告!</div>
       <div class="confirm_dialog_body">
         <p class="dialog_mess">
-          <span class="span_icon icon_waring"
-            >确定要删除当前作业吗？</span
-          >
+          <span class="span_icon icon_waring">确定要删除当前作业吗？</span>
         </p>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -180,7 +178,6 @@
         <a class="btnDefault" @click="isConfirmDeleteWork = false">取 消</a>
       </div>
     </el-dialog>
-
 
     <!--新增作业弹窗-->
     <el-dialog
@@ -403,7 +400,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
-      isConfirmDeleteWork:false,
+      isConfirmDeleteWork: false,
       setNameOrTimeTitle: "请设置作业名称",
       canEdit: 0,
       nowData: {},
@@ -509,7 +506,14 @@ export default {
     //查题库
     getQuestionBackAll() {
       let that = this;
-      that.findQuestionBackAll(that.type, "", "", that.curPage, that.assignmentId, "");
+      that.findQuestionBackAll(
+        that.type,
+        "",
+        "",
+        that.curPage,
+        that.assignmentId,
+        ""
+      );
     },
     findQuestionBackAll(
       type,
@@ -635,19 +639,30 @@ export default {
 
       that.i_customClass = "";
       // that.customClass = "";
-      that.parentId = "",
-      that.childrenId = "",
-
-      console.log(val);
+      (that.parentId = ""), (that.childrenId = ""), console.log(val);
       that.parentId = val.id;
       that.findChildCategory(val);
-      that.findQuestionBackAll(that.type, "", that.parentId, 1, that.assignmentId, "");
+      that.findQuestionBackAll(
+        that.type,
+        "",
+        that.parentId,
+        1,
+        that.assignmentId,
+        ""
+      );
     },
     //子类
     selectType1(val) {
       let that = this;
       that.childrenId = val.id;
-      that.findQuestionBackAll(that.type, "", that.parentId, 1, that.assignmentId, that.childrenId);
+      that.findQuestionBackAll(
+        that.type,
+        "",
+        that.parentId,
+        1,
+        that.assignmentId,
+        that.childrenId
+      );
     },
     //分页
     handleCurrentChange(val) {
@@ -805,21 +820,49 @@ export default {
     confirmQuestionBack() {
       let that = this;
 
-      that.isConfirmWork = false;
-      let obj = {};
-      obj.id = that.assignmentId;
-      obj.status = 1;
-      // alert(that.assignmentId);
-      modifyAssignmentStatusById(JSON.stringify(obj)).then((res) => {
-        if (res.code == 200) {
-          this.$toast("发布成功，不可修改", 2000);
-          that.canEdit = 0;
-          // alert("确认成功，不可修改");
-        } else {
-          // alert("确认失败");
-          this.$toast(res.message, 2000);
+      if (that.timeStatus == 1) {
+        /*
+        let datetime=that.homework.endTime.getFullYear() + '-' + (that.homework.endTime.getMonth() + 1) + '-' + that.homework.endTime.getDate() + ' ' + that.homework.endTime.getHours() + ':' + that.homework.endTime.getMinutes() + ':' + that.homework.endTime.getSeconds();
+        obj.end_at = new Date(datetime).toISOString();
+        */
+        if (that.homework.endTime == "" || that.homework.endTime == null) {
+          return that.$toast("作业截止时间不为空", 2000);
         }
-      });
+        if (that.course_info.end_at == "" || that.course_info.end_at == null) {
+          return that.$toast("该课程尚未设置起止时间，请先进行设置！", 3000);
+        }
+
+        let dates1 = new Date(that.homework.endTime);
+        let dates2 = new Date(that.course_info.end_at);
+        let dates3 = new Date(that.course_info.start_at);
+        var dateNow = new Date();
+        if (dates1 > dates2) {
+          return that.$toast("作业截止时间不能大于课程截止时间", 3000);
+        }
+        if (dates1 < dates3) {
+          return that.$toast("作业截止时间不能小于课程开始时间", 3000);
+        }
+        if (dates1 < dateNow) {
+          return that.$toast("作业截止时间不能小于当前时间", 3000);
+        }
+        obj.end_at = that.homework.endTime;
+      } else {
+        that.isConfirmWork = false;
+        let obj = {};
+        obj.id = that.assignmentId;
+        obj.status = 1;
+        // alert(that.assignmentId);
+        modifyAssignmentStatusById(JSON.stringify(obj)).then((res) => {
+          if (res.code == 200) {
+            this.$toast("发布成功，不可修改", 2000);
+            that.canEdit = 0;
+            // alert("确认成功，不可修改");
+          } else {
+            // alert("确认失败");
+            this.$toast(res.message, 2000);
+          }
+        });
+      }
     },
 
     //删除当前作业
@@ -830,7 +873,7 @@ export default {
       let arr = [];
       arr.push(that.assignmentId);
       obj.assignment_id_list = arr;
-      that.isConfirmDeleteWork = false
+      that.isConfirmDeleteWork = false;
 
       deleteAssignmentById(JSON.stringify(obj)).then((res) => {
         if (res.code == 200) {
@@ -923,7 +966,7 @@ export default {
         if (dates1 < dates3) {
           return that.$toast("作业截止时间不能小于课程开始时间", 3000);
         }
-        if(dates1 < dateNow){
+        if (dates1 < dateNow) {
           return that.$toast("作业截止时间不能小于当前时间", 3000);
         }
         obj.end_at = that.homework.endTime;
@@ -958,8 +1001,14 @@ export default {
       that.curPage = 1;
 
       // alert(that.parentId + "-------" +that.childrenId)
-      that.findQuestionBackAll(that.type, "", that.parentId, that.curPage, that.assignmentId, that.childrenId);
-
+      that.findQuestionBackAll(
+        that.type,
+        "",
+        that.parentId,
+        that.curPage,
+        that.assignmentId,
+        that.childrenId
+      );
     },
     //删除确认
     confirmDeleteCourseWork() {
@@ -1001,9 +1050,9 @@ export default {
       that.options2 = [];
       that.i_customClass = "";
       that.customClass = "";
-      that.parentId = "",
-      that.childrenId = "",
-      that.cate = this.options[0].label; //默认选中内置课件
+      (that.parentId = ""),
+        (that.childrenId = ""),
+        (that.cate = this.options[0].label); //默认选中内置课件
       that.type = 0;
       that.showQuestionBank = true;
       that.curPage = 1;
@@ -1121,7 +1170,10 @@ export default {
     top: 50%;
     margin-top: -9px;
   }
-  .delete{right:0px;background: url(../assets/img/d_coursework_del.png) center no-repeat;}
+  .delete {
+    right: 0px;
+    background: url(../assets/img/d_coursework_del.png) center no-repeat;
+  }
 }
 .add_btn_box {
   text-align: center;
