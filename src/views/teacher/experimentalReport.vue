@@ -186,7 +186,7 @@
     </div>
 </template>
 <script>
-import {searchClass,getCourseListByUserId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId} from "@/API/api";
+import {searchClass,getCourseListByUserId,findByExperimentReportAll,updateExperimentReport,findExperimentReportByExperimentAndUserId,getCourseListNoNameByUserId} from "@/API/api";
 import noData from '@/components/noData.vue'
 export default {
     data(){
@@ -423,8 +423,7 @@ export default {
             obj.user_id = sessionStorage.getItem("userId");
             obj.page=1;
             obj.per_page=100;
-               obj.search = ''
-             getCourseListByUserId(obj).then(res=> {
+             getCourseListNoNameByUserId(obj).then(res=> {
                 if(res.code==200){
                     // console.log(res.data)
                     that.course = res.data.list

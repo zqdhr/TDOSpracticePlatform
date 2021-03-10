@@ -46,13 +46,18 @@
 
                 <div class="operation_box"  ref="imageWrapper" v-show="isOpen && virtualMachine==iindex" :id="'Screenshots'+iindex"
                      v-for="(item,iindex) in opencontainers" :key="iindex">
+                    
+                
                    <!--初始化的数据-->
                    <div class="operation_box" id="screen" v-show="virtualMachine==iindex && containerstate=='2'"  v-if="item.url.indexOf('html')>0 && !item.restart && item.url!=''" ></div>
-                   <xterm :socketURI="item.url" :height="xterm_height"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && !item.restart && item.url!=''" ></xterm>  
+                   
+                   
+                   <xterm :id="iindex"  :socketURI="item.url" :height="xterm_height"   v-show="item.isFirst?containerstate=='1':virtualMachine==    iindex && containerstate=='1'" v-if="item.isFirst?virtualMachine==iindex && item.url.indexOf('html')==-1 && !item.restart && item.url!='':item.url.indexOf('html')==-1 && !item.restart && item.url!=''" ></xterm>  
                   
                   <div class="operation_box" id="screen" v-show="virtualMachine==iindex && containerstate=='2'"  v-if="item.url.indexOf('html')>0 && item.restart && item.url!=''"></div>
-                  <xterm :socketURI="item.url" :height="xterm_height"  v-show="virtualMachine==iindex && containerstate=='1'" v-if="item.url.indexOf('html')==-1 && item.restart && item.url!=''" ref="imageWrapper"></xterm>  
-             
+                  <xterm :id="iindex"  :socketURI="item.url" :height="xterm_height"  v-show="item.isFirst?containerstate=='1':virtualMachine==iindex && containerstate=='1'" v-if="item.isFirst?virtualMachine==iindex && item.url.indexOf('html')==-1 && item.restart && item.url!='':item.url.indexOf('html')==-1 && item.restart && item.url!=''" ref="imageWrapper"></xterm>  
+               
+
 
                 </div>
 
@@ -245,7 +250,10 @@ export default {
             experimentstate:{},
             xterm_height:0,
             restartForMe:false,
-            useractions:false
+            useractions:false,
+
+            isFirst:true,
+           
 
         }
     },
@@ -328,9 +336,16 @@ export default {
             createContainers(obj).then(res=>{
                 if (res.code==200) {
                    
+                    for(var i =0;i<res.data.length;i++){
+                         res.data[i].isFirst = true,
+                               res.data[i].isLink = false; //是否连接
+                               res.data[i].restart = false;
+                     }
+                      console.log(res.data)
                     that.containers = res.data
                     if (that.containers!=null&& that.containers.length>0&&that.containers[0]!=null) {
                         if (that.containers[0].status==1) {
+                            that.isFirst = true;
                             that.isOpen=true
                             that.virtualMachine=0
                             if (that.showtime) {
@@ -338,10 +353,13 @@ export default {
                             }
                             
                             for(var i =0;i<res.data.length;i++){
+                                res.data[i].isFirst = true,
                                res.data[i].isLink = false; //是否连接
                                res.data[i].restart = false;
                             }
                             that.opencontainers=res.data
+
+                            console.log(that.opencontainers)
                             // that.getState()
                         }
                         that.container = that.containers[0]
@@ -751,7 +769,11 @@ export default {
         //判断打开虚拟机
         openXuniji(item){
             let that = this
-  
+            
+            if(item.isFirst){
+                that.$set(item,'isFirst',false)
+            }
+
             if (that.isOpen) {
                 if (item.url.indexOf("vnc.html")==-1) {
                      that.containerstate='1';
@@ -826,6 +848,10 @@ export default {
                 that.useractions=false
             }
            
+        },
+        imageOpen(){
+            let that = this
+            that.useractions=false
         },
         // http图片转成base64，防止解决不了的图片跨域问题
         getBase64Image(img) {

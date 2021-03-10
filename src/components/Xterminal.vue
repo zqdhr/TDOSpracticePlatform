@@ -1,5 +1,7 @@
 <template>
-  <div id="xterm" class="xterm" ref="xterm" />
+<div>
+  <div :id="'xterm'+id" class="xterm" ref="xterm" />
+  </div>
 </template>
 
 <script>
@@ -23,6 +25,12 @@ export default {
       default: "",
     },
     height:{
+      default:0
+    },
+    isShow:{
+      default:true
+    },
+    id:{
       default:0
     }
   },
@@ -78,9 +86,9 @@ export default {
             term.loadAddon(attachAddon);
             term.loadAddon(fitAddon);
           
-            term.open(document.getElementById("xterm"));
+            term.open(document.getElementById("xterm"+this.id));
           
-        
+            console.log(document.getElementById("xterm"+this.id))
             //fitAddon.fit();
             term.focus();
             this.term = term;
@@ -95,7 +103,9 @@ export default {
     },
     initSocket() {
         //ws://192.168.1.167:4002 this.socketURI 
+      console.log(this.isShow)
       this.socket = new WebSocket(this.socketURI);
+     
       this.socketOnClose();
       this.socketOnOpen();
       this.socketOnError();
@@ -105,6 +115,8 @@ export default {
       this.socket.onopen = () => {
         // 链接成功后
         this.initTerm();
+        console.log(' socket 连接成功')
+        this.$parent.imageOpen()
       };
     },
     socketOnClose() {
