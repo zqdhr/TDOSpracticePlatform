@@ -83,7 +83,7 @@
 
       </div>
       </el-dialog>
-    <loading v-if="loading" @hideloading="hideloading" mess='文件正在上传,请稍候...'></loading>
+    <loading v-if="loading" @hideloading="hideloading" mess='正在进行释放,请稍候...'></loading>
   </div>
 </template>
 <script>
