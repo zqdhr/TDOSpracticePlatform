@@ -31,62 +31,71 @@
                 v-emoji
                 @keyup.enter="getNote(searchRemark)"
               />
-              <a class="searchBtn pointer" @click="curPage =1, getNote(searchRemark)"></a>
+              <a
+                class="searchBtn pointer"
+                @click="(curPage = 1), getNote(searchRemark)"
+              ></a>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <noData :noDataType="noDataType" :dataMess="dataMess" v-if="!hasData"></noData>
+    <noData
+      :noDataType="noDataType"
+      :dataMess="dataMess"
+      v-if="!hasData"
+    ></noData>
     <template v-if="hasData">
-    <div class="container">
-      <div class="notes_list">
-        <ul class="ul-notes">
-          <li v-for="(item, index) in notesList" :key="index">
-            <span
-              class="check"
-              v-if="isShowCheck"
-              @click="click_check(item.remark_id)"
-              :class="{ checkh: selectNotes.indexOf(item.remark_id) != -1 }"
-            ></span>
-            <div class="name-box">
-              <div class="d-name textline1">{{ item.title }}</div>
-              <div class="d-time">{{ item.created_at | dateFormatYMDhms}}</div>
-            </div>
-            <p class="intro">{{ item.content }}</p>
-            <div class="link-courseware">
-              <a
-                class="pointer"
-                v-if="item.type == 1"
-                @click="click_showDetail(1, item)"
-                >&lt;{{ item.courseware_name }}&gt;-&lt;第{{
-                  item.remark_page
-                }}页&gt;</a
-              >
-              <a
-                class="pointer"
-                v-if="item.type == 0"
-                @click="click_showDetail(0, item)"
-                >&lt;{{ item.courseware_name }}&gt;-&lt;观看时间：{{
-                  item.remark_at
-                }}&gt;</a
-              >
-            </div>
-          </li>
-        </ul>
-        <div class="tab-pagination">
-          <el-pagination
-            background
-            :current-page="curPage"
-            :page-size="perPage"
-            @current-change="handleCurrentChange"
-            layout="prev, pager, next,jumper"
-            :total="total"
-          >
-          </el-pagination>
+      <div class="container">
+        <div class="notes_list">
+          <ul class="ul-notes">
+            <li v-for="(item, index) in notesList" :key="index">
+              <span
+                class="check"
+                v-if="isShowCheck"
+                @click="click_check(item.remark_id)"
+                :class="{ checkh: selectNotes.indexOf(item.remark_id) != -1 }"
+              ></span>
+              <div class="name-box">
+                <div class="d-name textline1">{{ item.title }}</div>
+                <div class="d-time">
+                  {{ item.created_at | dateFormatYMDhms }}
+                </div>
+              </div>
+              <p class="intro">{{ item.content }}</p>
+              <div class="link-courseware">
+                <a
+                  class="pointer"
+                  v-if="item.type == 1"
+                  @click="click_showDetail(1, item)"
+                  >&lt;{{ item.courseware_name }}&gt;-&lt;第{{
+                    item.remark_page
+                  }}页&gt;</a
+                >
+                <a
+                  class="pointer"
+                  v-if="item.type == 0"
+                  @click="click_showDetail(0, item)"
+                  >&lt;{{ item.courseware_name }}&gt;-&lt;观看时间：{{
+                    item.remark_at | dealwithVideoTime
+                  }}&gt;</a
+                >
+              </div>
+            </li>
+          </ul>
+          <div class="tab-pagination">
+            <el-pagination
+              background
+              :current-page="curPage"
+              :page-size="perPage"
+              @current-change="handleCurrentChange"
+              layout="prev, pager, next,jumper"
+              :total="total"
+            >
+            </el-pagination>
+          </div>
         </div>
       </div>
-    </div>
     </template>
     <!--是否要删除-->
     <el-dialog :visible.sync="isDelete" width="600px">
@@ -176,7 +185,11 @@
                   </div>
                   <a
                     class="pointer pdf_btnrecord"
-                    @click="isRecordNotes = true,titleText ='',contentText ='' "
+                    @click="
+                      (isRecordNotes = true),
+                        (titleText = ''),
+                        (contentText = '')
+                    "
                   ></a>
                   <p>{{ currentPage }} / {{ pageCount }}</p>
                 </div>
@@ -233,7 +246,7 @@ import { videoPlayer } from "vue-video-player";
 
 import "videojs-flash"; // 如果是直播或者是视频流，注意需要引入这个模块
 import "video.js/dist/video.js";
-import noData from '@/components/noData.vue'
+import noData from "@/components/noData.vue";
 import {
   student_getCourseList,
   getStudentsNotes,
@@ -301,12 +314,12 @@ export default {
       jumpPage: 0,
       jumpTime: 0,
       momentMod: {},
-      noDataType:1,  //没有数据展示的样式
-      dataMess:'当前暂无笔记',
-      hasData:false,
+      noDataType: 1, //没有数据展示的样式
+      dataMess: "当前暂无笔记",
+      hasData: false,
     };
   },
-  components: { videoPlayer, pdf,noData },
+  components: { videoPlayer, pdf, noData },
   filters: {
     catIndex: function (val) {
       let str = "";
@@ -317,6 +330,27 @@ export default {
         str = value;
       }
       return str;
+    },
+    dealwithVideoTime: function (value) {
+      let result = parseInt(value);
+      let h =
+        Math.floor(result / 3600) < 10
+          ? "0" + Math.floor(result / 3600)
+          : Math.floor(result / 3600);
+      let m =
+        Math.floor((result / 60) % 60) < 10
+          ? "0" + Math.floor((result / 60) % 60)
+          : Math.floor((result / 60) % 60);
+      let s =
+        Math.floor(result % 60) < 10
+          ? "0" + Math.floor(result % 60)
+          : Math.floor(result % 60);
+
+      let res = "";
+      if (h !== "00") res += `${h}时`;
+      if (m !== "00") res += `${m}分`;
+      res += `${s}秒`;
+      return res;
     },
   },
   created() {
@@ -417,12 +451,12 @@ export default {
       getStudentsNotes(obj)
         .then((res) => {
           if (res.code == 200) {
-            if(val != ""){
+            if (val != "") {
               that.searchRemark = "";
             }
             that.total = res.data.total;
             that.notesList = res.data.list;
-            that.hasData=res.data.list.length==0?false:true
+            that.hasData = res.data.list.length == 0 ? false : true;
             // alert(JSON.stringify(res));
           } else {
             that.$toast(res.message, 3000);
