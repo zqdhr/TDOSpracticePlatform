@@ -848,7 +848,7 @@ export default {
         }
         obj.end_at = that.homework.endTime;
       }
-      
+
       that.isConfirmWork = false;
       obj.id = that.assignmentId;
       obj.status = 1;
@@ -857,7 +857,6 @@ export default {
         if (res.code == 200) {
           this.$toast("发布成功，不可修改", 2000);
           that.canEdit = 0;
-          // alert("确认成功，不可修改");
         } else {
           // alert("确认失败");
           this.$toast(res.message, 2000);
